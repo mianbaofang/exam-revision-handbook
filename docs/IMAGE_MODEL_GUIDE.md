@@ -180,8 +180,8 @@ python -m intl_exam_guide review --out ./outputs/chemistry-9202
 ## Prompt Template
 
 ```text
-Create an educational illustration for an International GCSE or International
-AS-A-level revision guide.
+Create a polished educational worksheet infographic for an International GCSE
+or International AS-A-level revision guide.
 
 Exam board: {exam_board}
 Qualification: {qualification_title}
@@ -192,9 +192,12 @@ Required labels: {required_labels}
 Language policy: use English labels for the handbook body and visual text;
 preserve official formulae, symbols, and reviewed syllabus terms when needed.
 
-Make it clear, printable, student-friendly, and suitable for a revision guide.
-Do not add new syllabus facts, named examples, equations, or exam claims beyond
-the source point.
+Art direction: use a clean landscape worksheet layout with a large topic
+banner, clear teaching panels, pastel subject colors, readable black labels,
+accurate diagrams or icons, and a small Quick Q&A or practice box. Keep the
+design printable and student-friendly. Do not add institutional logos, exam
+board branding, course-cover headers, watermarks, new syllabus facts, named
+examples, equations, or exam claims beyond the source point.
 ```
 
 ## 中文
@@ -225,6 +228,11 @@ visual brief 和 prompt queue。
 - `custom`
 - `deterministic-svg`：只用于 SVG 安全图
 - `prompt-queue`：默认路线，生成提示词队列，不代表复杂信息图已经完成
+
+外部复杂信息图的默认美术方向应接近复习 worksheet / 教学海报：横向版式、清晰标题横幅、
+分区面板、柔和学科配色、可读英文标签、准确图标或示意图，并保留小型 Quick Q&A /
+practice 区域。不要让模型自动添加 AQA、Oxford、Pearson、Cambridge、学校 logo、
+封面式课程包装或水印。
 
 只有用户提供可调用的生图 Skill、API、脚本、生成后的图片目录或 custom provider
 配置时，才进行真实图片生成或导入。这里的“外部”不是要求用户手动搬文件；如果路线可调用，

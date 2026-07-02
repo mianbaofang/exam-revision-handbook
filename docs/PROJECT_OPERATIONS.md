@@ -325,6 +325,13 @@ Current public logic:
 - SVG is only a fallback for simple diagrams and must carry review warnings when
   used for complex visuals.
 
+External complex-infographic prompts should preserve the revision-worksheet
+look that has tested well: landscape layout, large topic banner, clear teaching
+panels, pastel subject colors, readable black English labels, accurate diagrams
+or icons, and a small Quick Q&A or practice box. If generated images drift into
+generic icons, brand-logo posters, course covers, or low-density decorative art,
+fix the prompt or regenerate before importing them as reviewed assets.
+
 Do not show a user-facing menu that implies these models are always available.
 Ask for the subject/language/style first. Report complex infographic needs after
 the base handbook plan exists.

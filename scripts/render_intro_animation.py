@@ -108,6 +108,7 @@ def render_mp4(ffmpeg: str, frames_dir: Path, fps: int, output: Path) -> None:
 
 def render_gif(ffmpeg: str, frames_dir: Path, fps: int, output: Path) -> None:
     palette = output.with_suffix(".palette.png")
+    preview_filter = "fps=5,scale=720:-1:flags=lanczos"
     subprocess.run(
         [
             ffmpeg,
@@ -117,7 +118,7 @@ def render_gif(ffmpeg: str, frames_dir: Path, fps: int, output: Path) -> None:
             "-i",
             str(frames_dir / "frame_%04d.png"),
             "-vf",
-            "fps=8,scale=960:-1:flags=lanczos,palettegen",
+            f"{preview_filter},palettegen=max_colors=96",
             str(palette),
         ],
         check=True,
@@ -136,7 +137,7 @@ def render_gif(ffmpeg: str, frames_dir: Path, fps: int, output: Path) -> None:
                 "-i",
                 str(palette),
                 "-lavfi",
-                "fps=8,scale=960:-1:flags=lanczos[x];[x][1:v]paletteuse",
+                f"{preview_filter}[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=5",
                 str(output),
             ],
             check=True,

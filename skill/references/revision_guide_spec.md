@@ -165,6 +165,14 @@ hierarchies, timelines, relationship maps, concept maps, and source-to-ledger
 routes. Good infographic cases include lab apparatus, complex geometry,
 circuits, dense economics scenes, and high-design text+diagram charts.
 
+External infographic prompts should use the default revision-worksheet visual
+style: a landscape educational infographic with a clear topic banner, separated
+teaching panels, pastel subject colors, readable black English labels, accurate
+diagrams/icons, and a small Quick Q&A or practice box. This is the preferred
+style for rich generated PNG/JPG/WebP assets. Do not request board logos,
+school branding, course-cover packaging, decorative watermarks, or unsupported
+facts.
+
 For SVG-safe chart, axis, curve, table, and simple geometry cases, use the
 scientific-vector fallback in `references/scientific_vector_fallback.md`. This
 adapts the `nature-figure` idea of a figure contract to revision guides: state

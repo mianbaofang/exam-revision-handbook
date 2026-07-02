@@ -206,6 +206,13 @@ SenseNova U1 Fast because they tend to handle text+diagram educational
 infographics better than generic art models. These are recommendations only.
 Do not imply every user can call them by default.
 
+When preparing prompts for external complex infographics, use the project's
+default revision-worksheet art direction: clean landscape layout, large topic
+banner, clear teaching panels, pastel subject colors, readable black English
+labels, accurate diagrams/icons, and a small Quick Q&A or practice box. Do not
+ask for exam-board logos, Oxford/Pearson/Cambridge packaging, school branding,
+course-cover headers, badges, footers, or watermarks.
+
 When no callable image model is available, do not treat every visual as a rough
 generic SVG. The visual stack is automatic: exact simple diagrams use local
 SVG/scientific-vector output; medium-complexity professional diagrams such as

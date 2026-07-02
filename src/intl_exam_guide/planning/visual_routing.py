@@ -121,12 +121,15 @@ def build_content_only_image_prompt(
     clean_type = clean_prompt_phrase(visual_type)
     label_clause = prompt_label_clause(visible_points, language)
     return (
-        "Create a concise educational visual. "
+        "Create a polished educational worksheet infographic for a revision guide. "
         f"Topic: {subject}: {clean_focus}. "
         f"Visual task: {clean_type}. "
+        "Use a clean landscape layout with a large topic banner, clear teaching panels, "
+        "pastel subject colors, readable black labels, accurate diagrams or icons, "
+        "and a small Quick Q&A or practice box. "
         "Show only the diagrams, formulas, and short labels needed for this topic. "
         "Do not add institutional logos, course-cover headers, badges, footers, "
-        f"or watermarks.{label_clause} Leave a small practice frame."
+        f"or watermarks.{label_clause}"
     )
 
 

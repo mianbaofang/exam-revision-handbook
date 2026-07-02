@@ -646,7 +646,9 @@ def test_term_support_language_visual_prompts_stay_english():
     )
 
     prompt = plan.visual_briefs[0].prompt
-    assert "Create a concise educational visual" in prompt
+    assert "Create a polished educational worksheet infographic" in prompt
+    assert "large topic banner" in prompt
+    assert "Quick Q&A or practice box" in prompt
     assert "Topic: economics and business" in prompt
     assert "Short labels may include" in prompt
     assert "Factors which determine demand" in prompt

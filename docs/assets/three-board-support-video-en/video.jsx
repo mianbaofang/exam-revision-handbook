@@ -3,20 +3,20 @@ const { Stage, Sprite, useTime, Easing, interpolate, clamp } = window;
 const boardData = [
   {
     name: "AQA",
-    note: "Discovers courses from the official catalogue and reads the specification",
-    status: "Supported",
+    note: "Reads the official catalogue and public specification",
+    status: "Official source",
     accent: "#d89b33",
   },
   {
     name: "Edexcel",
-    note: "Matches official candidates by subject; URL/PDF can pin the exact specification",
-    status: "Candidate discovery",
+    note: "Matches official subject pages or specification PDFs",
+    status: "Candidate check",
     accent: "#be4750",
   },
   {
     name: "CAIE",
-    note: "Matches candidates from the official subject index and confirms exam year",
-    status: "Candidate discovery",
+    note: "Matches the subject index and confirms the exam year",
+    status: "Year check",
     accent: "#4fa394",
   },
 ];
@@ -26,19 +26,19 @@ const providerData = [
     tag: "01",
     title: "AQA",
     accent: "#d89b33",
-    points: ["Discover courses from the official catalogue", "Read public specification PDFs", "Turn syllabus detail into handbook sections"],
+    points: ["Discover courses from the official catalogue", "Read public specification PDFs", "Turn syllabus detail into CourseSpec"],
   },
   {
     tag: "02",
     title: "Edexcel",
     accent: "#be4750",
-    points: ["Match official candidates by subject name", "Accept official subject pages or specification PDFs", "Return options when candidates are not unique"],
+    points: ["Match official candidates by subject name", "Accept official pages or PDFs", "Ask the user when candidates are not unique"],
   },
   {
     tag: "03",
     title: "CAIE",
     accent: "#4fa394",
-    points: ["Match candidates from the official subject index", "Confirm exam year on multi-year syllabus pages", "Stop and ask when the year is unclear"],
+    points: ["Match candidates from the official subject index", "Confirm exam year on multi-year pages", "Stop when the year is unclear"],
   },
 ];
 
@@ -98,10 +98,10 @@ function IntroScene() {
   return (
     <SceneFrame start={0} end={5.2}>
       <div className="orbit" style={{ transform: `rotate(${orbit}deg) scale(${1 + Math.sin(time * 0.7) * 0.025})` }}></div>
-      <div className="kicker">v0.4.2 · Three-Board Support</div>
-      <h1 className="headline">Three common international exam boards now run in one workflow.</h1>
+      <div className="kicker">v0.4.2 · Revision Handbook Skill</div>
+      <h1 className="headline">Turn official syllabuses into revision handbooks students can actually use.</h1>
       <p className="lead">
-        AQA, Edexcel, and CAIE share one handbook framework, while each provider reads the syllabus from its own official source.
+        For AQA, Edexcel, and CAIE: fetch the official syllabus first, then let agents split writing, visuals, and final review.
       </p>
       <div className="hero-board-row">
         {boardData.map((board, index) => (
@@ -151,15 +151,15 @@ function OriginScene() {
 function UsageScene() {
   const time = useTime();
   const steps = [
-    ["01", "Give the Skill link to an agent", "OpenClaw, Hermes, or another Skill-compatible agent can use it."],
-    ["02", "Ask in one sentence", "For example: generate an AQA IGCSE Accounting revision handbook in English."],
-    ["03", "Confirm the choices", "Exam board, subject or year, output language, and explanation style."],
-    ["04", "Receive the handbook", "HTML, PDF, generation records, visual queue, and validation output."],
+    ["01", "Syllabus analyst agent", "Fetch official pages/PDFs and split CourseSpec into LearningUnits."],
+    ["02", "Handbook writer agent", "Write explanations, examples, glossary support, and visual needs."],
+    ["03", "Visual routing agent", "Use local SVG for simple cases, Kroki for structured diagrams, and external jobs for rich infographics."],
+    ["04", "Independent review agent", "Read final pages and sampled PDFs against the outline; fix what can be fixed before handoff."],
   ];
   return (
     <SceneFrame start={9.4} end={14.4}>
-      <div className="kicker">How A User Runs It</div>
-      <h2 className="headline route-headline">It is not a complex install flow; the agent follows the handbook workflow.</h2>
+      <div className="kicker">Multi-Agent Collaboration</div>
+      <h2 className="headline route-headline">Not one model writing straight through: separate roles write, route, and review.</h2>
       <div className="usage-steps">
         {steps.map((step, index) => {
           const p = clamp((time - 10.0 - index * 0.16) / 0.58, 0, 1);
@@ -180,16 +180,16 @@ function PreflightScene() {
   const time = useTime();
   const sourceT = clamp((time - 14.9) / 3.2, 0, 1);
   const rows = [
-    ["Exam board", "AQA / Edexcel / CAIE"],
-    ["Subject", "Qualification level, subject name, code, or official URL"],
-    ["Exam year", "Cambridge multi-year pages need confirmation first"],
-    ["Output language", "Chinese or English, locked before writing"],
-    ["Explanation style", "Serious, light, life-scene, story, detective, or challenge mode"],
+    ["Board and subject", "AQA / Edexcel / CAIE, or an official page/PDF"],
+    ["Exam year", "Cambridge multi-year pages must be confirmed first"],
+    ["Term-support language", "Chinese, Traditional Chinese, Japanese, or another glossary language"],
+    ["Explanation style", "formal, friendly, life, story, detective, or adventure"],
+    ["Infographic capability", "Ask whether a Skill/API/asset folder exists; continue as draft if not"],
   ];
   return (
     <SceneFrame start={14.1} end={19.1}>
       <div className="kicker">Confirm first, then generate</div>
-      <h2 className="headline">Confirm the required choices before generation starts.</h2>
+      <h2 className="headline">Ask the first-run questions before the handbook starts.</h2>
       <div className="choice-grid">
         <div className="control-panel">
           {rows.map((row, index) => {
@@ -226,8 +226,8 @@ function ProviderScene() {
   return (
     <SceneFrame start={18.8} end={23.8}>
       <div className="kicker">How The Three Boards Are Supported</div>
-      <h2 className="headline provider-headline">Each board uses its own official source.</h2>
-      <p className="lead provider-lead">AQA can discover courses from the official catalogue; Edexcel matches candidates from official pages; CAIE matches from the official subject index. If there is no unique match, the user chooses.</p>
+      <h2 className="headline provider-headline">Automatically fetch three-board syllabuses without mixing sources.</h2>
+      <p className="lead provider-lead">AQA, Edexcel, and CAIE publish syllabuses in different shapes, so the workflow parses each official source first, then normalizes it into a reviewable course structure.</p>
       <div className="provider-system">
         {providerData.map((provider, index) => {
           const p = clamp((time - 19.2 - index * 0.28) / 0.75, 0, 1);
@@ -258,7 +258,7 @@ function SyllabusScene() {
   return (
     <SceneFrame start={23.5} end={28.3}>
       <div className="kicker">From Syllabus To Handbook</div>
-      <h2 className="headline route-headline">Protect the official source first, then make it readable for students.</h2>
+      <h2 className="headline route-headline">Protect the official source first, then make it usable for preview and revision.</h2>
       <div className="pipeline-board">
         {steps.map((step, index) => {
           const p = clamp((time - 24.0 - index * 0.14) / 0.6, 0, 1);
@@ -278,15 +278,15 @@ function SyllabusScene() {
 function LanguageStyleScene() {
   const time = useTime();
   const cards = [
-    ["Language lock", "Choose Chinese or English first; labels, examples, and visual prompts stay in one language."],
-    ["Explanation style", "Formal, friendly, life-scene, story, detective, or challenge mode."],
-    ["Worked examples", "Each topic gets practice cards with steps, answer frames, and common pitfalls."],
-    ["Visual judgment", "AI decides which topics need diagrams or infographics instead of leaving the handbook text-only."],
+    ["English body", "Support languages add a 30-50 term glossary instead of translating the whole handbook."],
+    ["Style modes", "formal, friendly, life, story, detective, or adventure, so the prose is not painfully stiff."],
+    ["Worked examples", "Each topic gets original questions, steps, answer frames, and common pitfalls."],
+    ["Visual judgment", "Only concepts that genuinely need visuals get diagrams or infographics."],
   ];
   return (
     <SceneFrame start={28.0} end={32.8}>
-      <div className="kicker">Make The Handbook Readable</div>
-      <h2 className="headline provider-headline">Language, tone, examples, and visuals all need explicit rules.</h2>
+      <div className="kicker">Language, Style, Examples</div>
+      <h2 className="headline provider-headline">The exam is in English; support languages belong in the glossary.</h2>
       <div className="style-grid">
         {cards.map((card, index) => {
           const p = clamp((time - 28.6 - index * 0.16) / 0.58, 0, 1);
@@ -349,25 +349,25 @@ function VisualRouteScene() {
   const time = useTime();
   const cards = [
     {
-      title: "Count complex visuals first",
-      body: "Generate the base handbook first, then report how many complex infographics are needed instead of asking for a model at the start.",
+      title: "Simple exact visuals: local SVG",
+      body: "Number lines, axes, simple geometry, and compact tables stay local and deterministic.",
       visual: <div className="svg-diagram"><span></span><span></span><span></span></div>,
     },
     {
-      title: "User provides the image route",
-      body: "The user may provide an API, Skill, script, designer workflow, or existing image folder; the tool only verifies whether it is actually callable.",
+      title: "Structured diagrams: Kroki",
+      body: "Flows, hierarchies, timelines, relationship maps, and concept maps use professional diagram rendering.",
       visual: <div className="queue-lines"><i></i><i></i><i></i><i></i></div>,
     },
     {
-      title: "SVG fallback when no model is available",
-      body: "Complex infographics get an SVG fallback and a review note; it can aid understanding, but detail errors may be larger.",
+      title: "Rich infographics: external generation",
+      body: "Labs, economics scenes, and dense text-plus-diagram explanations become worksheet-style image jobs and auto-imported assets.",
       visual: <div className="model-grid"><span>GPT Image 2.0</span><span>Qwen Image 2.0 Pro</span><span>SenseNova U1 Fast</span></div>,
     },
   ];
   return (
     <SceneFrame start={32.5} end={38.2}>
-      <div className="kicker">Visual Explanations Stay Reviewable</div>
-      <h2 className="headline route-headline">Generate the handbook first, then handle complex visuals.</h2>
+      <div className="kicker">Professional Visual Handling</div>
+      <h2 className="headline route-headline">SVG, Kroki, and external infographics each have their own job.</h2>
       <div className="visual-routing">
         {cards.map((card, index) => {
           const p = clamp((time - 33.0 - index * 0.18) / 0.7, 0, 1);
@@ -387,15 +387,15 @@ function VisualRouteScene() {
 function QualityScene() {
   const time = useTime();
   const metrics = [
-    ["topics", "topic coverage"],
-    ["practice", "worked-example coverage"],
-    ["svg_fallback", "SVG fallback assets"],
-    ["pending_images", "pending external infographics"],
+    ["outline", "syllabus comparison"],
+    ["glossary", "term table check"],
+    ["visuals", "image/diagram check"],
+    ["pdf", "sampled PDF pages"],
   ];
   return (
     <SceneFrame start={42.8} end={46.2}>
-      <div className="kicker">Validate Before Delivery</div>
-      <h2 className="headline provider-headline">The run does not end at generation; the quality summary exposes gaps.</h2>
+      <div className="kicker">Independent Agent Review</div>
+      <h2 className="headline provider-headline">Generation is not the finish line; the final handbook must be read and repaired.</h2>
       <div className="quality-grid">
         {metrics.map((metric, index) => {
           const p = clamp((time - 43.3 - index * 0.12) / 0.5, 0, 1);
@@ -415,14 +415,14 @@ function QualityScene() {
 function ClosingScene() {
   const time = useTime();
   const p = clamp((time - 46.0) / 1.0, 0, 1);
-  const boxes = ["Knowledge explanation", "Worked examples", "Visual needs", "Exam metadata"];
+  const boxes = ["Official syllabus", "English body + glossary", "Worked examples", "Review evidence"];
   return (
     <SceneFrame start={45.8} end={TOTAL_DURATION}>
       <div className="final-lockup">
         <div>
-          <div className="kicker">Handbook Generation Around Official Syllabuses</div>
-          <h2 className="headline">Turn official syllabuses into revision handbooks students can actually read.</h2>
-          <p className="lead">Three-board support is now in one framework: preserve sources first, then write explanations, examples, visual routes, and HTML/PDF deliverables.</p>
+          <div className="kicker">Final Delivery Standard</div>
+          <h2 className="headline">The final file should feel like material a student can really use.</h2>
+          <p className="lead">Syllabus, explanations, glossary, visuals, examples, and PDF pages must pass the final product review before final-ready.</p>
         </div>
         <div className="deliverable" style={{ opacity: p, transform: `rotate(${-1.5 + (1 - p) * -7}deg) translateY(${(1 - p) * 100}px)` }}>
           <h3>International GCSE / AS-A-level Revision Handbook</h3>
@@ -442,13 +442,10 @@ function ClosingScene() {
 }
 
 function Footer() {
-  const time = useTime();
-  const p = `${Math.min(100, (time / TOTAL_DURATION) * 100)}%`;
   return (
     <div className="footer-mark">
       <span>IGCSE & A-Level AI Revision Handbook Skill · v0.4.2</span>
-      <div className="progress-line" style={{ "--p": p }}><span></span></div>
-      <span>{Math.floor(time).toString().padStart(2, "0")} / {TOTAL_DURATION}s</span>
+      <span>official syllabus → reviewed handbook</span>
     </div>
   );
 }

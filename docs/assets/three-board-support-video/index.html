@@ -773,6 +773,111 @@
       width: var(--p);
       background: #d89b33;
     }
+
+    /* v0.4.2 README animation refresh: warmer handbook/worksheet art direction. */
+    .stage {
+      color: #14233b;
+      background:
+        linear-gradient(135deg, #f7f2e8 0%, #fbf7ef 54%, #eef5f2 100%);
+    }
+
+    .grid-lines {
+      opacity: 0.07;
+      background-image:
+        linear-gradient(rgba(20, 35, 59, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(20, 35, 59, 0.08) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+
+    .noise {
+      display: none;
+    }
+
+    .headline,
+    .provider-headline,
+    .route-headline,
+    .sample-headline {
+      color: #10233e;
+    }
+
+    .lead,
+    .provider-lead,
+    .board-card span,
+    .provider-column ul,
+    .route-card p,
+    .stat span {
+      color: rgba(20, 35, 59, 0.74);
+    }
+
+    .kicker {
+      color: #bf3450;
+    }
+
+    .kicker::before {
+      background: #2b8f83;
+    }
+
+    .board-card,
+    .control-panel,
+    .provider-column,
+    .route-card,
+    .quality-card,
+    .quote-panel,
+    .story-points article,
+    .style-card {
+      border: 1px solid rgba(42, 70, 112, 0.16);
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: 0 24px 70px rgba(34, 52, 84, 0.14);
+    }
+
+    .board-card strong,
+    .provider-column h3,
+    .route-card h3,
+    .usage-steps h3,
+    .pipeline-step h3,
+    .style-card h3,
+    .quote-panel strong {
+      color: #10233e;
+    }
+
+    .choice-row,
+    .route-visual,
+    .source-stack {
+      border-color: rgba(42, 70, 112, 0.16);
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .choice-row span,
+    .story-points p,
+    .usage-steps p,
+    .pipeline-step p,
+    .quality-card span,
+    .style-card p {
+      color: rgba(20, 35, 59, 0.72);
+    }
+
+    .model-grid span {
+      border-color: rgba(42, 70, 112, 0.18);
+      background: rgba(255, 255, 255, 0.88);
+      color: #10233e;
+    }
+
+    .orbit {
+      border-color: rgba(42, 70, 112, 0.22);
+    }
+
+    .orbit::before,
+    .orbit::after {
+      border-color: rgba(42, 70, 112, 0.14);
+    }
+
+    .footer-mark {
+      color: rgba(20, 35, 59, 0.48);
+    }
+
+    .progress-line {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -1542,20 +1647,20 @@ const { Stage, Sprite, useTime, Easing, interpolate, clamp } = window;
 const boardData = [
   {
     name: "AQA",
-    note: "可从官网目录发现课程并读取大纲",
-    status: "已支持",
+    note: "自动读取官方目录与公开 specification",
+    status: "官方大纲",
     accent: "#d89b33",
   },
   {
     name: "Edexcel",
-    note: "根据科目名匹配官方候选，URL/PDF 可精确指定",
-    status: "候选发现",
+    note: "按科目候选匹配官方页面或 PDF",
+    status: "候选确认",
     accent: "#be4750",
   },
   {
     name: "CAIE",
-    note: "从官方科目索引匹配候选，并确认考试年份",
-    status: "候选发现",
+    note: "从科目索引匹配并确认考试年份",
+    status: "年份确认",
     accent: "#4fa394",
   },
 ];
@@ -1565,19 +1670,19 @@ const providerData = [
     tag: "01",
     title: "AQA",
     accent: "#d89b33",
-    points: ["从官网目录发现课程", "读取公开大纲 PDF", "把大纲转成手册结构"],
+    points: ["从官网目录发现课程", "读取公开 specification PDF", "把大纲转成 CourseSpec"],
   },
   {
     tag: "02",
     title: "Edexcel",
     accent: "#be4750",
-    points: ["按科目名匹配官方候选", "支持官方科目页或大纲 PDF 输入", "候选不唯一就返回列表让用户选择"],
+    points: ["按科目名匹配官方候选", "支持官方科目页或 PDF 输入", "不唯一时先让用户选择"],
   },
   {
     tag: "03",
     title: "CAIE",
     accent: "#4fa394",
-    points: ["从官方科目索引匹配候选", "多年份大纲要先确认考试年份", "年份不清楚就先停下确认"],
+    points: ["从官方科目索引匹配候选", "多年大纲先确认考试年份", "年份不清楚就停下确认"],
   },
 ];
 
@@ -1637,10 +1742,10 @@ function IntroScene() {
   return (
     <SceneFrame start={0} end={5.2}>
       <div className="orbit" style={{ transform: `rotate(${orbit}deg) scale(${1 + Math.sin(time * 0.7) * 0.025})` }}></div>
-      <div className="kicker">v0.4.2 · 三大考试局支持</div>
-      <h1 className="headline">三大常用国际考试局，现在都能跑。</h1>
+      <div className="kicker">v0.4.2 · 复习手册生成 Skill</div>
+      <h1 className="headline">把官方大纲，变成孩子看得下去的复习手册。</h1>
       <p className="lead">
-        AQA、Edexcel、CAIE：同一套复习手册框架，但每个考试局都按自己的官方来源读取大纲。
+        面向 AQA、Edexcel、CAIE：先抓取官方大纲，再由多个 Agent 分工写作、配图和验收。
       </p>
       <div className="hero-board-row">
         {boardData.map((board, index) => (
@@ -1690,15 +1795,15 @@ function OriginScene() {
 function UsageScene() {
   const time = useTime();
   const steps = [
-    ["01", "把 Skill 链接交给 Agent", "OpenClaw、Hermes 或其他支持 Skill 的 Agent 都可以。"],
-    ["02", "说一句需求", "例如：帮我生成 AQA IGCSE Accounting 中文复习手册。"],
-    ["03", "确认四件事", "考试局、科目/年份、输出语言、讲解风格。"],
-    ["04", "拿到手册", "输出 HTML、PDF、生成记录、图文清单和质量验证。"],
+    ["01", "大纲分析 Agent", "抓取官方页面/PDF，拆出 CourseSpec 和 LearningUnit。"],
+    ["02", "主编写 Agent", "写讲解、例题、术语表和视觉需求，不直接冒充最终审核。"],
+    ["03", "视觉处理 Agent", "简单 SVG，中等 Kroki，复杂信息图进入外部生成任务。"],
+    ["04", "独立验收 Agent", "读最终页面和抽样 PDF，对照大纲，能修就修，不能修就标 draft。"],
   ];
   return (
     <SceneFrame start={9.4} end={14.4}>
-      <div className="kicker">用户怎么用</div>
-      <h2 className="headline route-headline">不是安装复杂软件，而是让 Agent 按流程生成手册。</h2>
+      <div className="kicker">多 Agent 协同</div>
+      <h2 className="headline route-headline">不是一个模型一路写到底，而是分工协作再独立复查。</h2>
       <div className="usage-steps">
         {steps.map((step, index) => {
           const p = clamp((time - 10.0 - index * 0.16) / 0.58, 0, 1);
@@ -1719,16 +1824,16 @@ function PreflightScene() {
   const time = useTime();
   const sourceT = clamp((time - 14.9) / 3.2, 0, 1);
   const rows = [
-    ["考试局", "AQA / Edexcel / CAIE"],
-    ["科目", "课程阶段、科目名称、代码，或官方链接"],
-    ["考试年份", "Cambridge 多年份页面需要先确认"],
-    ["输出语言", "中文或英文，开始写作前锁定"],
-    ["讲解风格", "严谨、轻松、生活化、故事、侦探、闯关"],
+    ["考试局与科目", "AQA / Edexcel / CAIE，或官方页面/PDF"],
+    ["考试年份", "Cambridge 多年份页面必须先确认"],
+    ["术语支持语言", "中文、繁中、日语等只生成术语对照表"],
+    ["讲解风格", "formal、friendly、life、story、detective、adventure"],
+    ["信息图能力", "先问有无 Skill/API/图片目录；没有也可继续 draft"],
   ];
   return (
     <SceneFrame start={14.1} end={19.1}>
       <div className="kicker">先确认，再生成</div>
-      <h2 className="headline">先确认必要信息，再开始生成。</h2>
+      <h2 className="headline">第一次使用先问清楚，不跑完才补问。</h2>
       <div className="choice-grid">
         <div className="control-panel">
           {rows.map((row, index) => {
@@ -1765,8 +1870,8 @@ function ProviderScene() {
   return (
     <SceneFrame start={18.8} end={23.8}>
       <div className="kicker">三大考试局怎么支持</div>
-      <h2 className="headline provider-headline">各走官方来源，不混用大纲。</h2>
-      <p className="lead provider-lead">AQA 可从官网目录发现课程；Edexcel 会按官方页面规则匹配候选；CAIE 会从官方科目索引匹配候选。无法唯一确认时，先让用户选。</p>
+      <h2 className="headline provider-headline">自动抓取三大考试局大纲，但不混用来源。</h2>
+      <p className="lead provider-lead">AQA、Edexcel、CAIE 的大纲格式不同，所以先解析官方来源，再统一成可写作、可复查的课程结构。</p>
       <div className="provider-system">
         {providerData.map((provider, index) => {
           const p = clamp((time - 19.2 - index * 0.28) / 0.75, 0, 1);
@@ -1797,7 +1902,7 @@ function SyllabusScene() {
   return (
     <SceneFrame start={23.5} end={28.3}>
       <div className="kicker">从大纲到手册</div>
-      <h2 className="headline route-headline">先守住官方来源，再写成学生能读的内容。</h2>
+      <h2 className="headline route-headline">先守住官方来源，再写成学生能预习复习的内容。</h2>
       <div className="pipeline-board">
         {steps.map((step, index) => {
           const p = clamp((time - 24.0 - index * 0.14) / 0.6, 0, 1);
@@ -1817,15 +1922,15 @@ function SyllabusScene() {
 function LanguageStyleScene() {
   const time = useTime();
   const cards = [
-    ["语言锁", "中文或英文先锁定，正文、标签、例题和配图提示不再中英混排。"],
-    ["讲解风格", "严谨备考、轻松愉快、生活场景、故事、侦探推理、闯关式。"],
-    ["例题生成", "每个 topic 至少有练习卡，带步骤、答案框架、常见失分点。"],
-    ["图文判断", "AI 二次分析哪些知识点需要图文结合，而不是全篇堆文字。"],
+    ["正文保持英文", "中文、繁中、日语等需求会变成 30-50 个专业词对照表，而不是整本翻译。"],
+    ["多种语言风格", "formal、friendly、life、story、detective、adventure，避免死板教辅腔。"],
+    ["配套例题讲解", "每个 topic 有原创例题、步骤、答案框架和常见失分点。"],
+    ["图文判断", "只给必须靠图说清楚的知识点配图，不把每个 topic 都硬画一张。"],
   ];
   return (
     <SceneFrame start={28.0} end={32.8}>
-      <div className="kicker">手册要适合孩子读</div>
-      <h2 className="headline provider-headline">语言、语气、例题和图文都要先定规则。</h2>
+      <div className="kicker">语言、风格和例题</div>
+      <h2 className="headline provider-headline">考试是英文，辅助语言应该放在术语表，而不是整本翻译。</h2>
       <div className="style-grid">
         {cards.map((card, index) => {
           const p = clamp((time - 28.6 - index * 0.16) / 0.58, 0, 1);
@@ -1888,25 +1993,25 @@ function VisualRouteScene() {
   const time = useTime();
   const cards = [
     {
-      title: "先统计复杂图数量",
-      body: "基础手册先跑完，再告诉用户需要多少张复杂信息图，不在开始阶段要求用户选择模型。",
+      title: "简单精确图：本地 SVG",
+      body: "数轴、坐标轴、简单几何、基础表格这类可精确绘制的图，直接本地生成。",
       visual: <div className="svg-diagram"><span></span><span></span><span></span></div>,
     },
     {
-      title: "用户自行提供方式",
-      body: "用户可以给 API、Skill、脚本、设计师流程或已生成图片目录；工具只负责验证是否真的可调用。",
+      title: "专业结构图：Kroki",
+      body: "流程、层级、时间线、关系图、概念图等中等复杂图，自动走专业图形渲染。",
       visual: <div className="queue-lines"><i></i><i></i><i></i><i></i></div>,
     },
     {
-      title: "没有模型就 SVG 兜底",
-      body: "复杂信息图会生成 SVG 兜底图并标注需要复核；它能帮助理解，但细节误差可能更大。",
+      title: "复杂信息图：外部生成",
+      body: "实验、经济场景、密集图文解释生成 worksheet 风格信息图，导入后自动替换。",
       visual: <div className="model-grid"><span>GPT Image 2.0</span><span>Qwen Image 2.0 Pro</span><span>SenseNova U1 Fast</span></div>,
     },
   ];
   return (
     <SceneFrame start={32.5} end={38.2}>
-      <div className="kicker">图文讲解可复核</div>
-      <h2 className="headline route-headline">先生成手册，再处理复杂配图。</h2>
+      <div className="kicker">专业图形生成处理</div>
+      <h2 className="headline route-headline">SVG、Kroki、外部信息图各做自己擅长的事。</h2>
       <div className="visual-routing">
         {cards.map((card, index) => {
           const p = clamp((time - 33.0 - index * 0.18) / 0.7, 0, 1);
@@ -1926,15 +2031,15 @@ function VisualRouteScene() {
 function QualityScene() {
   const time = useTime();
   const metrics = [
-    ["topics", "知识点覆盖"],
-    ["practice", "例题覆盖"],
-    ["svg_fallback", "SVG 兜底图"],
-    ["pending_images", "待外部信息图"],
+    ["outline", "大纲逐项对照"],
+    ["glossary", "术语表检查"],
+    ["visuals", "图片/图形检查"],
+    ["pdf", "PDF 抽页检查"],
   ];
   return (
     <SceneFrame start={42.8} end={46.2}>
-      <div className="kicker">交付前做验证</div>
-      <h2 className="headline provider-headline">不是生成完就算，质量摘要会把问题暴露出来。</h2>
+      <div className="kicker">独立 Agent 验收</div>
+      <h2 className="headline provider-headline">不是生成完就算，最终手册要自己读一遍、修一遍。</h2>
       <div className="quality-grid">
         {metrics.map((metric, index) => {
           const p = clamp((time - 43.3 - index * 0.12) / 0.5, 0, 1);
@@ -1954,14 +2059,14 @@ function QualityScene() {
 function ClosingScene() {
   const time = useTime();
   const p = clamp((time - 46.0) / 1.0, 0, 1);
-  const boxes = ["知识点讲解", "例题卡片", "配图需求", "考试信息"];
+  const boxes = ["官方大纲", "英文正文+术语表", "例题讲解", "复查证据"];
   return (
     <SceneFrame start={45.8} end={TOTAL_DURATION}>
       <div className="final-lockup">
         <div>
-          <div className="kicker">围绕官方大纲生成手册</div>
-          <h2 className="headline">把官方大纲，变成孩子看得下去的复习手册。</h2>
-          <p className="lead">三大考试局支持已进入同一框架：先守住来源，再写出知识点、例题、图文路线和 HTML/PDF 交付。</p>
+          <div className="kicker">最终交付标准</div>
+          <h2 className="headline">最终交付必须像一份能给孩子用的资料。</h2>
+          <p className="lead">大纲、讲解、术语表、图形、例题和 PDF 都通过最终复查，才允许进入 final-ready。</p>
         </div>
         <div className="deliverable" style={{ opacity: p, transform: `rotate(${-1.5 + (1 - p) * -7}deg) translateY(${(1 - p) * 100}px)` }}>
           <h3>International GCSE / AS-A-level 复习手册</h3>
@@ -1981,13 +2086,10 @@ function ClosingScene() {
 }
 
 function Footer() {
-  const time = useTime();
-  const p = `${Math.min(100, (time / TOTAL_DURATION) * 100)}%`;
   return (
     <div className="footer-mark">
       <span>IGCSE & A-Level AI 复习手册 Skill · v0.4.2</span>
-      <div className="progress-line" style={{ "--p": p }}><span></span></div>
-      <span>{Math.floor(time).toString().padStart(2, "0")} / {TOTAL_DURATION}s</span>
+      <span>official syllabus → reviewed handbook</span>
     </div>
   );
 }
