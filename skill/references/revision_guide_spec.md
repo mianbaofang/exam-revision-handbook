@@ -228,3 +228,21 @@ if `agent_self_review.must_not_present_as_final` is true, present the output as
 a draft or blocked run, not as final. For release evidence, map a ready packet
 to `final-ready` only when concepts, visuals, package files, and PDF/export
 status are also current; map unresolved blockers to `draft`.
+
+The user's active LLM/Agent must do this as a real product review, not as a
+checkbox pass over machine gates. It should read the final visible handbook,
+compare the topic sequence and concept explanations with the syllabus outline,
+inspect diagrams/images and sampled PDF pages, and fix any repairable issue it
+finds before handoff. A handbook is not final merely because the Skill
+generated files or the validation summary says `ready`. Record the pass in
+`agent-product-review.json`, including inspected PDF pages, syllabus-outline
+comparison, visual/glossary checks, fixable issues, repairs made, unresolved
+fixable issues, and final decision. Without this complete artifact, the package
+must stay review-ready or draft.
+
+The run must also preserve the multi-agent contract. When the user's Agent
+runtime supports subagents or fresh child contexts, dispatch the syllabus/
+outline analyst, handbook writer, and independent final reviewer as separate
+roles using `agent-orchestration.json`. If that independent reviewer cannot run,
+keep the output at review-ready or draft. The final reviewer must inspect the
+rendered handbook and review packet, not just the writer's summary.

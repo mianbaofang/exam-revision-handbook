@@ -85,7 +85,13 @@ def state_from_artifacts(
     if delivery_state == "certified":
         return "certified"
     agent_review = packet.get("agent_self_review") if isinstance(packet, dict) else None
-    if isinstance(agent_review, dict) and agent_review.get("status") == "ready":
+    product_review = packet.get("product_review_evidence") if isinstance(packet, dict) else None
+    if (
+        isinstance(agent_review, dict)
+        and agent_review.get("status") == "ready"
+        and isinstance(product_review, dict)
+        and product_review.get("complete") is True
+    ):
         return "final-ready"
     return "review-ready"
 

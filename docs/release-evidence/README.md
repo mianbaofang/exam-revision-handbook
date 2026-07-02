@@ -16,8 +16,9 @@ asset.
   self-review block.
 - `final-ready`: fresh evidence from the current code shows validation success,
   `final-review-packet.json` reports ready, concepts and visuals are reviewed
-  or explicitly nonblocking, and the manifest records the exact commands and
-  summaries.
+  or explicitly nonblocking, `agent-product-review.json` records the active
+  Agent's visible-handbook review and repair pass, and the manifest records the
+  exact commands and summaries.
 - `certified`: final-ready evidence has also been reviewed and approved by the
   release owner or a subject-aware reviewer, with no code or asset drift after
   the evidence was captured.
@@ -57,6 +58,11 @@ small manifest such as `docs/release-evidence/v0.4/manifest.json`.
       "final_review": {
         "delivery_status": "ready",
         "must_not_present_as_final": false
+      },
+      "product_review": {
+        "complete": true,
+        "artifact": "agent-product-review.json",
+        "decision": "final-ready"
       },
       "visual_summary": {
         "pending_infographic_assets": 0,

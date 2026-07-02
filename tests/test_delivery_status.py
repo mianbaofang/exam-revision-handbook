@@ -68,6 +68,18 @@ def test_delivery_panel_requires_final_review_before_final_ready():
             {"agent_self_review": {"status": "ready"}},
             {"delivery_status": "ready", "delivery_state": "final-ready"},
         )
+        == "review-ready"
+    )
+    assert (
+        state_from_artifacts(
+            0,
+            0,
+            {
+                "agent_self_review": {"status": "ready"},
+                "product_review_evidence": {"complete": True},
+            },
+            {"delivery_status": "ready", "delivery_state": "final-ready"},
+        )
         == "final-ready"
     )
 

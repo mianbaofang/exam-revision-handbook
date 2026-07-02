@@ -37,8 +37,19 @@ User-facing promise:
    `concepts/concept_jobs.json` before treating the handbook as final.
 7. Agent keeps the production roles separated in `agent-orchestration.json`:
    syllabus/outline analyst, handbook writer, and independent final reviewer.
-   The final reviewer may mark the output draft or blocked; review completion is
-   not the same as final-ready approval.
+   In runtimes with subagent support, the Agent must dispatch these roles rather
+   than letting the writer self-approve. If no independent Agent/LLM context is
+   available, the output remains review-ready or draft. The final reviewer may
+   mark the output draft or blocked; review completion is not the same as
+   final-ready approval.
+8. The user's active LLM/Agent performs a final product review over the actual
+   rendered handbook before handoff. It must compare the final topic sequence,
+   concept explanations, visuals, glossary support, and sampled PDF pages
+   against the syllabus outline and repair fixable problems before giving the
+   file to the user. Machine gates and Skill output are evidence, not a
+   substitute for this review-and-repair loop. The pass must be recorded in
+   `agent-product-review.json`; without complete product-review evidence, the
+   output remains review-ready or draft even when validation is clean.
 
 Verified delivery entries are only the routes recorded in the delivery matrix
 with current evidence. Candidate routes must not be described as verified

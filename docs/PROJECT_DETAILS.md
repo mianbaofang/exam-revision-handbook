@@ -24,7 +24,15 @@ then turn the official syllabus into a reusable revision-handbook framework.
    callable image route or reviewed assets;
 9. render the handbook package: HTML, PDF, `sections/`, `images/`, manifests,
    source metadata, and validation;
-10. validate that the output is complete enough to review and hand to the user.
+10. validate that the output is complete enough for final review;
+11. require the user's active LLM/Agent to read the final rendered handbook,
+    compare it with the syllabus outline and visible PDF/HTML quality, repair
+    fixable problems, record `agent-product-review.json`, rerender, and rerun
+    final review before handoff;
+12. when the Agent runtime supports subagents or fresh child contexts, dispatch
+    syllabus/outline analysis, handbook writing, and final review as separate
+    roles from `agent-orchestration.json`; without an independent reviewer, the
+    output stays review-ready or draft.
 
 ### What Makes It Different
 
@@ -48,6 +56,14 @@ then turn the official syllabus into a reusable revision-handbook framework.
   avoiding protected-IP copying by default.
 - **Child-safety mindset**: examples are original and source-bound, and should
   be reviewed by a subject specialist before high-stakes exam preparation.
+- **LLM review before handoff**: the user's Agent must inspect and repair the
+  final visible handbook instead of treating generated files or validation
+  gates as proof of student-usable quality. Complete `agent-product-review.json`
+  evidence is required before final-ready handoff.
+- **Multi-agent orchestration**: generated outputs include
+  `agent-orchestration.json` with `multi_agent_required: true`, dispatch briefs,
+  and a final reviewer that must be independent from outline analysis and
+  writing.
 - **International qualification structure**: International GCSE is handled as
   linear; International AS-A-level is handled as modular.
 - **Website listing checks**: OxfordAQA subject buttons are recorded as the

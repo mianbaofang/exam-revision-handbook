@@ -171,6 +171,16 @@ def verify_evidence_entry(entry: dict[str, object]) -> tuple[dict[str, object], 
             failures.append(f"{entry_id}: final-ready/certified entries cannot have pending concept or image work")
         if must_not_present is not False:
             failures.append(f"{entry_id}: final-ready/certified entry must allow final presentation")
+        product_review = entry.get("product_review")
+        if not isinstance(product_review, dict):
+            failures.append(f"{entry_id}: final-ready/certified entry must include product_review evidence")
+        else:
+            if product_review.get("complete") is not True:
+                failures.append(f"{entry_id}: product_review.complete must be true")
+            if product_review.get("artifact") != "agent-product-review.json":
+                failures.append(f"{entry_id}: product_review.artifact must be agent-product-review.json")
+            if product_review.get("decision") != "final-ready":
+                failures.append(f"{entry_id}: product_review.decision must be final-ready")
     elif must_not_present is not True:
         failures.append(f"{entry_id}: draft/candidate entry must not be presentable as final")
 
@@ -207,10 +217,11 @@ def verify_sample(
     pdf_path = sample_dir / "guide.pdf"
     final_review_path = sample_dir / "final-review-packet.json"
     delivery_contract_path = sample_dir / "delivery-contract.json"
+    product_review_path = sample_dir / "agent-product-review.json"
 
     required_files = [validation_path, run_options_path, manifest_path, html_path]
     if not allow_pending:
-        required_files.extend([pdf_path, final_review_path, delivery_contract_path])
+        required_files.extend([pdf_path, final_review_path, delivery_contract_path, product_review_path])
     for path in required_files:
         if not path.exists():
             failures.append(f"{sample}: missing {path.name}")
@@ -219,6 +230,7 @@ def verify_sample(
     run_options = read_json(run_options_path, {})
     final_review = read_json(final_review_path, {})
     delivery_contract = read_json(delivery_contract_path, {})
+    product_review = read_json(product_review_path, {})
     raw_manifest = read_json(manifest_path, [])
     manifest = manifest_entries_from_payload(raw_manifest)
     if manifest is None:
@@ -231,7 +243,13 @@ def verify_sample(
     if issue_errors:
         failures.append(f"{sample}: validation has {len(issue_errors)} error issue(s)")
     if not allow_pending:
-        final_failures = final_delivery_failures(sample, validation, final_review, delivery_contract)
+        final_failures = final_delivery_failures(
+            sample,
+            validation,
+            final_review,
+            delivery_contract,
+            product_review,
+        )
         failures.extend(final_failures)
 
     if review.get("topics") != expected["topics"]:
@@ -281,6 +299,7 @@ def verify_sample(
         "has_pdf": pdf_path.exists(),
         "has_final_review": final_review_path.exists(),
         "has_delivery_contract": delivery_contract_path.exists(),
+        "has_product_review": product_review_path.exists(),
         "delivery_status": validation.get("delivery_status") if isinstance(validation, dict) else None,
         "delivery_state": validation.get("delivery_state") if isinstance(validation, dict) else None,
         "validation_errors": len(issue_errors),
@@ -335,6 +354,7 @@ def final_delivery_failures(
     validation: object,
     final_review: object,
     delivery_contract: object,
+    product_review: object,
 ) -> list[str]:
     failures: list[str] = []
     if not isinstance(validation, dict):
@@ -358,6 +378,15 @@ def final_delivery_failures(
         failures.append(f"{sample}: final review delivery_status is not ready")
     if not isinstance(agent_review, dict) or agent_review.get("must_not_present_as_final") is not False:
         failures.append(f"{sample}: final review does not allow final presentation")
+    product_review_evidence = final_review.get("product_review_evidence")
+    if not isinstance(product_review_evidence, dict) or product_review_evidence.get("complete") is not True:
+        failures.append(f"{sample}: final review is missing complete product-review evidence")
+    if not isinstance(product_review, dict):
+        failures.append(f"{sample}: agent-product-review.json is not an object")
+    elif product_review.get("schema_version") != "v0.4-agent-product-review":
+        failures.append(f"{sample}: agent-product-review.json has the wrong schema_version")
+    elif product_review.get("decision") != "final-ready":
+        failures.append(f"{sample}: agent-product-review.json decision is not final-ready")
     return failures
 
 

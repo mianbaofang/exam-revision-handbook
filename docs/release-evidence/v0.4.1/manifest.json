@@ -2,15 +2,15 @@
   "release": "v0.4.1-sample-quality-fixes",
   "generated_at": "2026-07-02",
   "git_revision": "v0.4.1",
-  "overall_status": "final-ready",
+  "overall_status": "draft",
   "notes": [
-    "This manifest records fresh local final-ready sample evidence after the v0.4.1 quality fixes.",
+    "This manifest records fresh local validation-clean sample evidence now requiring product-review artifacts before final-ready after the v0.4.1 quality fixes.",
     "Generated outputs, downloaded specifications, PDFs, and local assets remain ignored and are not committed."
   ],
   "entries": [
     {
-      "id": "oxfordaqa-as-mathematics-zh-term-support-final-ready",
-      "status": "final-ready",
+      "id": "oxfordaqa-as-mathematics-zh-term-support-draft",
+      "status": "draft",
       "provider": "oxfordaqa",
       "level": "as-level",
       "subject": "Mathematics",
@@ -21,7 +21,7 @@
       ],
       "validation_summary": {
         "delivery_status": "ready",
-        "delivery_state": "final-ready",
+        "delivery_state": "review-ready",
         "error_count": 0,
         "warning_count": 0,
         "topics": 99,
@@ -34,12 +34,13 @@
         "pdf_file_uri_footer_pages": 0
       },
       "final_review": {
-        "must_not_present_as_final": false
+        "must_not_present_as_final": true,
+        "reason": "Missing agent-product-review.json under the v0.4.2 product-review evidence rule."
       }
     },
     {
-      "id": "cambridge-igcse-economics-0455-zh-term-support-final-ready",
-      "status": "final-ready",
+      "id": "cambridge-igcse-economics-0455-zh-term-support-draft",
+      "status": "draft",
       "provider": "cambridge",
       "level": "igcse",
       "subject": "Economics",
@@ -50,7 +51,7 @@
       ],
       "validation_summary": {
         "delivery_status": "ready",
-        "delivery_state": "final-ready",
+        "delivery_state": "review-ready",
         "error_count": 0,
         "warning_count": 0,
         "topics": 100,
@@ -63,12 +64,13 @@
         "pdf_file_uri_footer_pages": 0
       },
       "final_review": {
-        "must_not_present_as_final": false
+        "must_not_present_as_final": true,
+        "reason": "Missing agent-product-review.json under the v0.4.2 product-review evidence rule."
       }
     },
     {
-      "id": "oxfordaqa-igcse-business-zh-term-support-final-ready",
-      "status": "final-ready",
+      "id": "oxfordaqa-igcse-business-zh-term-support-draft",
+      "status": "draft",
       "provider": "oxfordaqa",
       "level": "igcse",
       "subject": "Business",
@@ -79,7 +81,7 @@
       ],
       "validation_summary": {
         "delivery_status": "ready",
-        "delivery_state": "final-ready",
+        "delivery_state": "review-ready",
         "error_count": 0,
         "warning_count": 0,
         "topics": 29,
@@ -92,12 +94,13 @@
         "pdf_file_uri_footer_pages": 0
       },
       "final_review": {
-        "must_not_present_as_final": false
+        "must_not_present_as_final": true,
+        "reason": "Missing agent-product-review.json under the v0.4.2 product-review evidence rule."
       }
     },
     {
-      "id": "pearson-igcse-accounting-zh-term-support-final-ready",
-      "status": "final-ready",
+      "id": "pearson-igcse-accounting-zh-term-support-draft",
+      "status": "draft",
       "provider": "pearson",
       "level": "igcse",
       "subject": "Accounting",
@@ -108,7 +111,7 @@
       ],
       "validation_summary": {
         "delivery_status": "ready",
-        "delivery_state": "final-ready",
+        "delivery_state": "review-ready",
         "error_count": 0,
         "warning_count": 0,
         "topics": 22,
@@ -121,12 +124,13 @@
         "pdf_file_uri_footer_pages": 0
       },
       "final_review": {
-        "must_not_present_as_final": false
+        "must_not_present_as_final": true,
+        "reason": "Missing agent-product-review.json under the v0.4.2 product-review evidence rule."
       }
     },
     {
-      "id": "pearson-igcse-physics-2017-zh-term-support-final-ready",
-      "status": "final-ready",
+      "id": "pearson-igcse-physics-2017-zh-term-support-draft",
+      "status": "draft",
       "provider": "pearson",
       "level": "igcse",
       "subject": "Physics",
@@ -137,7 +141,7 @@
       ],
       "validation_summary": {
         "delivery_status": "ready",
-        "delivery_state": "final-ready",
+        "delivery_state": "review-ready",
         "error_count": 0,
         "warning_count": 0,
         "topics": 107,
@@ -150,12 +154,13 @@
         "pdf_file_uri_footer_pages": 0
       },
       "final_review": {
-        "must_not_present_as_final": false
+        "must_not_present_as_final": true,
+        "reason": "Missing agent-product-review.json under the v0.4.2 product-review evidence rule."
       }
     },
     {
-      "id": "cambridge-igcse-history-0470-zh-term-support-final-ready",
-      "status": "final-ready",
+      "id": "cambridge-igcse-history-0470-zh-term-support-draft",
+      "status": "draft",
       "provider": "cambridge",
       "level": "igcse",
       "subject": "History",
@@ -166,7 +171,7 @@
       ],
       "validation_summary": {
         "delivery_status": "ready",
-        "delivery_state": "final-ready",
+        "delivery_state": "review-ready",
         "error_count": 0,
         "warning_count": 0,
         "topics": 30,
@@ -179,7 +184,8 @@
         "pdf_file_uri_footer_pages": 0
       },
       "final_review": {
-        "must_not_present_as_final": false
+        "must_not_present_as_final": true,
+        "reason": "Missing agent-product-review.json under the v0.4.2 product-review evidence rule."
       }
     }
   ]

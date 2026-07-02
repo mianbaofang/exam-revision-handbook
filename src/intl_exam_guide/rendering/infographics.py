@@ -33,10 +33,8 @@ def _render_generated_infographic(
     language: str,
 ) -> str:
     filename = str(asset["file"])
-    provider = str(asset.get("image_provider") or visual.image_provider)
     caption = "Generated Infographic" if language == "en" else "已生成信息图"
     source_prefix = "Source anchor" if language == "en" else "来源依据"
-    model_note = "reviewed visual asset" if language == "en" else "已复核视觉资源"
     question = "Use the infographic to explain or apply:" if language == "en" else "用这张信息图解释或应用："
     prompt_label = "Generation prompt" if language == "en" else "生图提示词"
     visual_steps = (
@@ -59,7 +57,6 @@ def _render_generated_infographic(
   <div class="generated-infographic-grid">
     <img class="infographic-image" src="images/{html_escape(filename)}" alt="{html_escape(title)} infographic for {html_escape(visual.focus_point)}">
     <div class="visual-notes">
-      <div class="visual-model">{html_escape(provider)} - {html_escape(model_note)}</div>
       <div class="visual-source">{html_escape(source_prefix)}: {html_escape(source_label)}</div>
       <p class="visual-question">{html_escape(question)} <strong>{html_escape(visual.focus_point)}</strong>.</p>
       <ol>{step_items}</ol>
@@ -83,12 +80,6 @@ def _render_svg_fallback_infographic(
     filename = str(asset["file"])
     caption = "SVG Fallback - Review Needed" if language == "en" else "SVG 兜底图 - 需要复核"
     source_prefix = "Source anchor" if language == "en" else "来源依据"
-    model_note = (
-        "No callable image model was provided. This SVG is a fallback for a complex "
-        "infographic, so details may be less accurate and need review."
-        if language == "en"
-        else "未提供可调用生图模型或方式；这是复杂信息图的 SVG 兜底图，细节可能不够准确，需要复核。"
-    )
     question = "Use this draft only as a study aid for:" if language == "en" else "这张草图仅用于辅助理解："
     prompt_label = "External image brief" if language == "en" else "外部生图需求"
     visual_steps = (
@@ -112,7 +103,6 @@ def _render_svg_fallback_infographic(
   <div class="generated-infographic-grid">
     <img class="infographic-image" src="images/{html_escape(filename)}" alt="{html_escape(title)} SVG fallback for {html_escape(visual.focus_point)}">
     <div class="visual-notes">
-      <div class="visual-model">{html_escape(model_note)}</div>
       <div class="visual-source">{html_escape(source_prefix)}: {html_escape(source_label)}</div>
       {replacement_note}
       <p class="visual-question">{html_escape(question)} <strong>{html_escape(visual.focus_point)}</strong>.</p>

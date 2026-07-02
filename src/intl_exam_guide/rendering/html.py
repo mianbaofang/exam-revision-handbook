@@ -607,19 +607,6 @@ def render_visual_example(
     source = topic.source_snippets[0] if topic.source_snippets else None
     source_label = format_source_reference(source, language)
     visual_html = render_manifest_visual_asset(title, visual, asset) or render_topic_visual_svg(visual, index, language)
-    model_note = (
-        (
-            "Local SVG draft"
-            if language == "en"
-            else "本地矢量图草图"
-        )
-        if visual.image_provider == "deterministic-svg"
-        else (
-            f"Image model slot: {visual.image_provider}"
-            if language == "en"
-            else f"生图模型：{visual.image_provider}"
-        )
-    )
     caption = "Visual Worked Example" if language == "en" else "图形例题"
     source_prefix = "Source anchor" if language == "en" else "来源依据"
     question = (
@@ -647,7 +634,6 @@ def render_visual_example(
   <div class="visual-grid">
     {visual_html}
     <div class="visual-notes">
-      <div class="visual-model">{html_escape(model_note)}</div>
       <div class="visual-source">{html_escape(source_prefix)}: {html_escape(source_label)}</div>
       <p class="visual-question">{html_escape(question)} <strong>{html_escape(visual.focus_point)}</strong>.</p>
       <ol>{step_items}</ol>

@@ -662,7 +662,10 @@ def test_topic_renderers_cover_guides_practice_story_and_visual_blocks():
 
     assert "Everyday Analogy" in render_topic_guide(guide, "en")
     assert "Concept map for 3.1 - Source documents" in render_topic_diagram(topic, guide, 1, "en")
-    assert "Local SVG draft" in render_visual_example(topic, guide, visual, 1, {}, "en")
+    local_visual_html = render_visual_example(topic, guide, visual, 1, {}, "en")
+    assert "Source anchor" in local_visual_html
+    assert "Source-bound diagram" not in local_visual_html
+    assert "Local SVG draft" not in local_visual_html
     kroki_visual = sample_visual_brief(image_provider="kroki")
     kroki_asset = {
         visual_asset_key_from_brief(kroki_visual): {
@@ -673,7 +676,7 @@ def test_topic_renderers_cover_guides_practice_story_and_visual_blocks():
     kroki_html = render_visual_example(topic, guide, kroki_visual, 1, kroki_asset, "en")
     assert 'src="images/visual_001_kroki.svg"' in kroki_html
     assert '<svg class="visual-svg"' not in kroki_html
-    assert "Image model slot: custom-provider" in render_visual_example(
+    custom_provider_html = render_visual_example(
         topic,
         guide,
         sample_visual_brief(image_provider="custom-provider"),
@@ -681,6 +684,24 @@ def test_topic_renderers_cover_guides_practice_story_and_visual_blocks():
         {},
         "en",
     )
+    assert "Source anchor" in custom_provider_html
+    assert "Source-bound diagram" not in custom_provider_html
+    reviewed_asset = {
+        visual_asset_key_from_brief(visual): {
+            "file": "visual_001.png",
+            "asset_status": "reviewed-generated",
+        }
+    }
+    reviewed_html = render_visual_example(
+        topic,
+        guide,
+        visual,
+        1,
+        reviewed_asset,
+        "en",
+    )
+    assert "Reviewed visual asset" not in reviewed_html
+    assert 'src="images/visual_001.png"' in reviewed_html
     assert "Narrative explanation styles" in render_story_modes(topic, guide, "en", 1)
     assert "Source documents - Worked Example" in render_practice(practice, "en")
 
@@ -739,7 +760,8 @@ def test_infographic_visual_branch_uses_manifest_asset_when_available():
 
     assert "Generated Infographic" in html
     assert "accounting-flow.png" in html
-    assert "external-reviewed-workflow - reviewed visual asset" in html
+    assert "external-reviewed-workflow" not in html
+    assert "reviewed visual asset" not in html
 
 
 def test_secondary_html_sections_and_chinese_rendering_paths():
@@ -840,7 +862,8 @@ def test_legacy_chinese_rendering_helpers_keep_contracts_while_overview_uses_new
     assert "做题逻辑" in topics
     assert "一句话本质" in topic_guide
     assert "图文解释" in topic_diagram
-    assert "本地矢量图草图" in visual_example
+    assert "依据来源的图示" not in visual_example
+    assert "来源依据" in visual_example
     assert "图形例题" in visual_example
     assert "会计记录 - 例题" in practice_html
     assert "附录：来源与考试信息" in appendix

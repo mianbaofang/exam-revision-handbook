@@ -183,6 +183,27 @@ def test_validate_html_output_accepts_escaped_chinese_topic_marker(tmp_path):
     assert not any(issue.message == f"Topic missing from HTML: {marker}" for issue in issues)
 
 
+def test_validate_html_output_rejects_internal_visual_status_text(tmp_path):
+    plan = valid_plan()
+    marker = expected_topic_marker(plan.qualification.topics[0].title, 1, "en")
+    html_path = tmp_path / "guide.html"
+    html_path.write_text(
+        (
+            "<html><body>"
+            f"<h2>{marker}</h2>"
+            "<p>How to Study Study Roadmap One-Sentence Essence Method Worked Example "
+            "Solution Check Exam Pitfall Source anchor</p>"
+            "<p>Reviewed visual asset</p>"
+            "</body></html>"
+        ),
+        encoding="utf-8",
+    )
+
+    messages = [issue.message for issue in validate_html_output(plan, html_path)]
+
+    assert "HTML output exposes internal visual status text: Reviewed visual asset" in messages
+
+
 def test_validate_html_output_uses_disambiguated_rendered_topic_titles(tmp_path):
     plan = valid_plan()
     plan.run_options.output_language = "zh-CN"

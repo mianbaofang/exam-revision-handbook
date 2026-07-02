@@ -31,7 +31,8 @@ def test_render_generated_infographic_branch():
     assert "generated-infographic" in html
     assert "Generated Infographic" in html
     assert "visual_001_bonding.png" in html
-    assert "gpt-image-2 - reviewed visual asset" in html
+    assert "gpt-image-2" not in html
+    assert "reviewed visual asset" not in html
     assert "Infographic Queue" not in html
 
 

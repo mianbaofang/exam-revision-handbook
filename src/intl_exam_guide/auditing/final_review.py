@@ -27,6 +27,7 @@ PENDING_INFOGRAPHIC_STATUSES = {
     "provider-selected-pending-generation",
     "svg-fallback-needs-review",
 }
+PRODUCT_REVIEW_FILE = "agent-product-review.json"
 
 
 def build_final_review_packet(output_dir: Path) -> dict[str, object]:
@@ -60,6 +61,7 @@ def build_final_review_packet(output_dir: Path) -> dict[str, object]:
     if not isinstance(summary, dict):
         summary = {}
     orchestration = agent_orchestration_payload(final_review_complete=True)
+    product_review = product_review_evidence(output_dir)
     return {
         "agent_review_required": True,
         "agent_orchestration": orchestration,
@@ -77,9 +79,12 @@ def build_final_review_packet(output_dir: Path) -> dict[str, object]:
             rendered_text,
             [item for item in pending if item],
             orchestration,
+            product_review,
         ),
+        "product_review_evidence": product_review,
         "manual_review_contract": {
             "required": True,
+            "required_artifact": PRODUCT_REVIEW_FILE,
             "instruction": (
                 "Before user handoff, the Agent/LLM must read this packet, inspect the rendered handbook, "
                 "classify any content, visual, PDF, or language problems, fix the generation logic or "
@@ -93,6 +98,15 @@ def build_final_review_packet(output_dir: Path) -> dict[str, object]:
                 "pending complex infographic assets",
                 "near-blank PDF pages",
                 "language/style mismatch in student-facing sections",
+            ],
+            "required_product_review_fields": [
+                "visible_handbook_inspected",
+                "syllabus_outline_compared",
+                "pdf_pages_sampled",
+                "visuals_inspected",
+                "glossary_policy_checked",
+                "repair_loop_completed",
+                "decision",
             ],
         },
         "review_summary": summary,
@@ -112,6 +126,7 @@ def build_agent_self_review(
     rendered_text: str,
     pending_visual_ids: list[str],
     orchestration: dict[str, object] | None = None,
+    product_review: dict[str, object] | None = None,
 ) -> dict[str, object]:
     """Give the Agent a concrete final-delivery verdict to review, not just raw gates."""
 
@@ -127,6 +142,14 @@ def build_agent_self_review(
     if not orchestration_has_independent_final_reviewer(orchestration):
         status = "blocked"
         reasons.append("Final review must be performed by a role independent from outline analysis and handbook writing.")
+    if not product_review_is_complete(product_review):
+        if status != "blocked":
+            status = "draft"
+        reasons.append(
+            "Final product review evidence is missing or incomplete. "
+            f"Write {PRODUCT_REVIEW_FILE} after the active Agent/LLM has compared the visible handbook "
+            "with the syllabus outline and repaired fixable issues."
+        )
 
     pending_concepts = summary_int(summary, "pending_concept_explanations")
     if pending_concepts:
@@ -157,6 +180,58 @@ def build_agent_self_review(
         "must_not_present_as_final": status != "ready",
         "agent_must_inspect_before_handoff": True,
     }
+
+
+def product_review_evidence(output_dir: Path) -> dict[str, object]:
+    review = read_json(output_dir / PRODUCT_REVIEW_FILE)
+    issues = product_review_issues(review)
+    return {
+        "required": True,
+        "file": PRODUCT_REVIEW_FILE,
+        "present": bool(review),
+        "complete": not issues,
+        "issues": issues,
+        "review": review if isinstance(review, dict) else {},
+    }
+
+
+def product_review_is_complete(product_review: dict[str, object] | None) -> bool:
+    return bool(isinstance(product_review, dict) and product_review.get("complete") is True)
+
+
+def product_review_issues(review: object) -> list[str]:
+    if not isinstance(review, dict) or not review:
+        return [f"Missing {PRODUCT_REVIEW_FILE}."]
+    issues: list[str] = []
+    if review.get("schema_version") != "v0.4-agent-product-review":
+        issues.append("schema_version must be v0.4-agent-product-review.")
+    required_true_fields = [
+        "visible_handbook_inspected",
+        "syllabus_outline_compared",
+        "visuals_inspected",
+        "glossary_policy_checked",
+        "repair_loop_completed",
+    ]
+    for field in required_true_fields:
+        if review.get(field) is not True:
+            issues.append(f"{field} must be true.")
+    sampled_pages = review.get("pdf_pages_sampled")
+    if not isinstance(sampled_pages, list) or not sampled_pages:
+        issues.append("pdf_pages_sampled must list at least one inspected PDF page.")
+    unresolved = review.get("unresolved_fixable_issues")
+    if unresolved not in (None, []):
+        issues.append("unresolved_fixable_issues must be empty before final handoff.")
+    repairs = review.get("repairs_made")
+    if isinstance(repairs, list) and repairs:
+        if review.get("rerendered_after_repairs") is not True:
+            issues.append("rerendered_after_repairs must be true when repairs_made is non-empty.")
+        if review.get("final_review_rerun_after_repairs") is not True:
+            issues.append("final_review_rerun_after_repairs must be true when repairs_made is non-empty.")
+    elif repairs is not None and not isinstance(repairs, list):
+        issues.append("repairs_made must be a list when provided.")
+    if review.get("decision") != "final-ready":
+        issues.append("decision must be final-ready.")
+    return issues
 
 
 def orchestration_has_independent_final_reviewer(orchestration: object) -> bool:

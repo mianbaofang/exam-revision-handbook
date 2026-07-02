@@ -190,6 +190,20 @@ ZH_FORBIDDEN_TEMPLATE_PHRASES = [
 ]
 
 
+INTERNAL_VISUAL_STATUS_TERMS = [
+    "Local SVG draft",
+    "Reviewed visual asset",
+    "Source-bound diagram",
+    "Professional diagram",
+    "Image model slot",
+    "本地矢量图草图",
+    "已审核图示",
+    "依据来源的图示",
+    "专业图表",
+    "生图模型",
+]
+
+
 def validate_plan(
     plan: GuidePlan,
     html_path: Path | None = None,
@@ -779,6 +793,14 @@ def validate_html_output(plan: GuidePlan, html_path: Path) -> list[ValidationIss
         issues.append(ValidationIssue("error", "HTML output contains syllabus shell text in student-facing content."))
     if has_source_boilerplate_text(html_body):
         issues.append(ValidationIssue("error", "HTML output contains source boilerplate in student-facing content."))
+    for term in INTERNAL_VISUAL_STATUS_TERMS:
+        if term in html_body:
+            issues.append(
+                ValidationIssue(
+                    "error",
+                    f"HTML output exposes internal visual status text: {term}",
+                )
+            )
     issues.extend(validate_html_glossary_policy(html, options.output_language))
     rendered_titles = rendered_topic_titles(html)
     for message in topic_title_quality_issues(rendered_titles, body_language):

@@ -54,12 +54,13 @@ syllabus, expand it into teachable topic units, write reviewed concept
 explanations from the current topic/source points, create worked examples,
 decide which points need visuals, and deliver HTML/PDF output.
 
-The workflow is recorded as a minimum three-role agent process. The syllabus and
-outline analyst turns official sources into course and learning-unit contracts;
-the handbook writer creates source-bound explanations, practice, visuals, HTML,
-and PDF; the final reviewer is recorded separately and must be independent from
-the first two roles before an output can be treated as final-ready. The evidence
-is written to `agent-orchestration.json`, `delivery-contract.json`, and
+The workflow is a minimum three-role agent process. In Agent runtimes with
+subagent support, the Skill must dispatch the syllabus/outline analyst,
+handbook writer, and independent final reviewer as separate roles. The final
+reviewer cannot be the same writing context approving its own output; if no
+independent Agent/LLM context is available, the handbook stays review-ready or
+draft, not final-ready. The evidence and dispatch briefs are written to
+`agent-orchestration.json`, `delivery-contract.json`, and
 `final-review-packet.json`.
 
 Delivery quality claims are tracked in the delivery matrix at
@@ -143,6 +144,7 @@ outputs/chemistry-9202/
   validation.json            quality-check report
   agent-orchestration.json   syllabus/writer/reviewer role evidence
   final-review-packet.json   Agent/LLM final self-review evidence
+  agent-product-review.json  active Agent product-review and repair evidence
   handbook-package.json      final delivery manifest
 ```
 
@@ -164,6 +166,15 @@ concept/image job status, then label the output as draft or final-ready for
 release evidence. A route with only candidate evidence is not delivery-grade.
 A base run with pending `concepts/concept_jobs.json` entries is a draft until
 reviewed concept explanations are imported.
+
+The user's LLM/Agent must also perform a final product review before handoff:
+read the generated handbook as the student will see it, compare the topic
+sequence and concept explanations with the syllabus outline, inspect sampled
+PDF pages and visuals, and repair fixable problems before giving the file to
+the user. The project must not present "the Skill generated it" or "the gate
+returned ready" as a substitute for this review-and-repair loop. Record that
+pass in `agent-product-review.json`; without complete product-review evidence,
+the package remains review-ready or draft even if validation has no errors.
 
 ## Preview
 
@@ -254,12 +265,18 @@ translated-body mode:
 README only summarizes changes that affect the Skill's actual generation flow.
 See [CHANGELOG.md](CHANGELOG.md) for the complete history.
 
+- **v0.4.2:** makes final-ready depend on real product-review evidence:
+  generated outputs now require `agent-product-review.json` from the active
+  Agent/LLM, plus machine-readable multi-agent dispatch briefs in
+  `agent-orchestration.json`.
 - **v0.4.1:** fixes the first real v0.4 sample-audit regressions: term-support
   languages now mean English body plus glossary only, cross-subject template
   leakage is blocked for Business/Economics/Physics samples, Cambridge/Pearson
   syllabus boilerplate is filtered before student-facing text, Kroki
   professional-diagram assets are rendered/importable, and PDF export strips
-  browser footers plus trailing blank pages. Six fresh samples are final-ready.
+  browser footers plus trailing blank pages. Six fresh samples are
+  validation-clean but are review-ready/draft under the v0.4.2
+  product-review evidence rule.
 - **v0.4:** adds the conservative delivery-state vocabulary (`candidate`,
   `draft`, `final-ready`, `certified`), the lightweight
   `docs/release-evidence/` manifest expectation, the English-body plus

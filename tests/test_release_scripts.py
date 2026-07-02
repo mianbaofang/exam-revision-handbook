@@ -111,6 +111,49 @@ def test_verify_release_samples_defaults_to_lightweight_v04_evidence():
     assert all(entry["status"] in {"candidate", "draft", "final-ready", "certified"} for entry in payload["entries"])
 
 
+def test_verify_release_evidence_requires_product_review_for_final_ready(tmp_path):
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "release": "v0.4.2",
+                "overall_status": "final-ready",
+                "entries": [
+                    {
+                        "id": "sample-final-ready",
+                        "status": "final-ready",
+                        "provider": "oxfordaqa",
+                        "level": "as-level",
+                        "subject": "Mathematics",
+                        "language": "en",
+                        "commands": ["python -m intl_exam_guide review --out outputs/sample"],
+                        "output_dir": "outputs/sample",
+                        "validation_summary": {
+                            "error_count": 0,
+                            "pending_concept_explanations": 0,
+                            "pending_infographic_assets": 0,
+                        },
+                        "final_review": {"must_not_present_as_final": False},
+                    }
+                ],
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    script = Path(__file__).resolve().parents[1] / "scripts" / "verify_release_samples.py"
+
+    result = subprocess.run(
+        [sys.executable, str(script), "--evidence-manifest", str(manifest)],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 1
+    assert "final-ready/certified entry must include product_review evidence" in result.stderr
+
+
 def test_import_infographic_assets_updates_manifest(tmp_path):
     output_dir = tmp_path / "guide"
     images_dir = output_dir / "images"
@@ -635,6 +678,28 @@ def write_sample_outputs(outputs: Path, completed: bool) -> None:
                     {
                         "machine_validation": {"delivery_status": "ready"},
                         "agent_self_review": {"must_not_present_as_final": False},
+                        "product_review_evidence": {
+                            "complete": True,
+                            "file": "agent-product-review.json",
+                        },
+                    },
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
+            (sample_dir / "agent-product-review.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": "v0.4-agent-product-review",
+                        "visible_handbook_inspected": True,
+                        "syllabus_outline_compared": True,
+                        "pdf_pages_sampled": [1],
+                        "visuals_inspected": True,
+                        "glossary_policy_checked": True,
+                        "repair_loop_completed": True,
+                        "repairs_made": [],
+                        "unresolved_fixable_issues": [],
+                        "decision": "final-ready",
                     },
                     indent=2,
                 ),

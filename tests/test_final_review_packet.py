@@ -7,6 +7,7 @@ import intl_exam_guide.auditing.final_review as final_review_module
 from intl_exam_guide.auditing.final_review import (
     build_agent_self_review,
     build_final_review_packet,
+    product_review_evidence,
     write_final_review_packet,
 )
 from intl_exam_guide.models import (
@@ -211,14 +212,20 @@ def test_final_review_packet_includes_user_visible_evidence(tmp_path):
     orchestration = packet["agent_orchestration"]
     roles = {role["role_id"]: role for role in orchestration["roles"]}
     assert orchestration["final_reviewer_independent"] is True
+    assert orchestration["multi_agent_required"] is True
+    assert "writer self-approve" in orchestration["agent_runtime_contract"]["automatic_dispatch"]
     assert roles["final_reviewer"]["status"] == "complete"
     assert roles["final_reviewer"]["independent_from"] == [
         "syllabus_outline_analyst",
         "handbook_writer",
     ]
+    assert "repair fixable" in " ".join(roles["final_reviewer"]["dispatch_brief"])
     assert packet["agent_self_review"]["status"] == "draft"
     assert packet["agent_self_review"]["must_not_present_as_final"] is True
+    assert packet["product_review_evidence"]["present"] is False
+    assert packet["product_review_evidence"]["complete"] is False
     assert packet["manual_review_contract"]["required"] is True
+    assert packet["manual_review_contract"]["required_artifact"] == "agent-product-review.json"
     assert "fix the generation logic" in packet["manual_review_contract"]["instruction"]
     assert "Should this output be presented as final" in " ".join(packet["review_questions"])
 
@@ -255,6 +262,94 @@ def test_agent_self_review_blocks_missing_independent_reviewer():
     assert review["status"] == "blocked"
     assert review["must_not_present_as_final"] is True
     assert any("independent" in reason for reason in review["reasons"])
+
+
+def complete_product_review() -> dict[str, object]:
+    return {
+        "schema_version": "v0.4-agent-product-review",
+        "visible_handbook_inspected": True,
+        "syllabus_outline_compared": True,
+        "pdf_pages_sampled": [1, 2],
+        "visuals_inspected": True,
+        "glossary_policy_checked": True,
+        "repair_loop_completed": True,
+        "repairs_made": [],
+        "unresolved_fixable_issues": [],
+        "decision": "final-ready",
+    }
+
+
+def test_agent_self_review_requires_product_review_evidence():
+    review = build_agent_self_review(
+        {"error_count": 0},
+        {},
+        "Rendered student text",
+        [],
+        {
+            "roles": [
+                {
+                    "role_id": "final_reviewer",
+                    "status": "complete",
+                    "independent_from": ["syllabus_outline_analyst", "handbook_writer"],
+                }
+            ]
+        },
+        {
+            "required": True,
+            "file": "agent-product-review.json",
+            "present": False,
+            "complete": False,
+            "issues": ["Missing agent-product-review.json."],
+            "review": {},
+        },
+    )
+
+    assert review["status"] == "draft"
+    assert review["must_not_present_as_final"] is True
+    assert any("Final product review evidence is missing" in reason for reason in review["reasons"])
+
+
+def test_agent_self_review_ready_requires_complete_product_review_evidence():
+    review = build_agent_self_review(
+        {"error_count": 0},
+        {},
+        "Rendered student text",
+        [],
+        {
+            "roles": [
+                {
+                    "role_id": "final_reviewer",
+                    "status": "complete",
+                    "independent_from": ["syllabus_outline_analyst", "handbook_writer"],
+                }
+            ]
+        },
+        {
+            "required": True,
+            "file": "agent-product-review.json",
+            "present": True,
+            "complete": True,
+            "issues": [],
+            "review": complete_product_review(),
+        },
+    )
+
+    assert review["status"] == "ready"
+    assert review["must_not_present_as_final"] is False
+
+
+def test_product_review_evidence_validates_review_and_repair_artifact(tmp_path):
+    assert product_review_evidence(tmp_path)["complete"] is False
+    (tmp_path / "agent-product-review.json").write_text(
+        json.dumps(complete_product_review(), ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    evidence = product_review_evidence(tmp_path)
+
+    assert evidence["present"] is True
+    assert evidence["complete"] is True
+    assert evidence["issues"] == []
 
 
 def test_final_review_packet_excerpt_omits_css_and_script(tmp_path):

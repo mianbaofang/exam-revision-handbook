@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.4.2 - 2026-07-02
+
+### Changed
+
+- Added machine-readable multi-agent dispatch briefs to
+  `agent-orchestration.json` so Skill-compatible Agents can separate syllabus
+  analysis, handbook writing, and independent final review instead of allowing
+  the writer to self-approve.
+- Added `agent-product-review.json` as required final handoff evidence. A clean
+  validation run and `final-review-packet.json` are no longer enough to mark an
+  output final-ready; the active Agent/LLM must record visible-handbook review,
+  syllabus-outline comparison, sampled PDF/visual/glossary checks, repair-loop
+  status, unresolved fixable issues, and the final decision.
+- Updated release evidence vocabulary so prior v0.4.1 validation-clean samples
+  are treated as draft/review-ready until product-review evidence exists.
+
+### Fixed
+
+- Removed internal visual provider/review-status labels from student-facing
+  generated and local visual blocks, and added validation coverage so those
+  implementation labels cannot appear in final HTML/PDF output.
+
 ## 0.4.1 - 2026-07-02
 
 ### Fixed
@@ -23,11 +45,13 @@
 
 ### Verified
 
-- Fresh final-ready samples were generated and reviewed for AQA AS Mathematics,
+- Fresh validation-clean samples were generated and reviewed for AQA AS Mathematics,
   Cambridge IGCSE Economics 0455, OxfordAQA IGCSE Business, Pearson IGCSE
   Accounting, Pearson IGCSE Physics 2017, and Cambridge IGCSE History 0470.
   Each has zero validation errors, zero pending concept explanations, zero
-  blank PDF text pages, and no local-file footer leakage.
+  blank PDF text pages, and no local-file footer leakage. Under the v0.4.2
+  handoff rule, these samples are review-ready/draft until
+  `agent-product-review.json` evidence is recorded.
 
 ## 0.4 - 2026-07-02
 

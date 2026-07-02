@@ -144,6 +144,10 @@ def test_course_contract_payload_exposes_delivery_state_without_mutating_plan():
     assert payload["delivery_state"] == "review-ready"
     orchestration = payload["agent_orchestration"]
     roles = {role["role_id"]: role for role in orchestration["roles"]}
+    runtime_contract = orchestration["agent_runtime_contract"]
+    assert orchestration["multi_agent_required"] is True
+    assert "subagent support must dispatch" in runtime_contract["automatic_dispatch"]
+    assert "do not present it as final-ready" in runtime_contract["fallback_without_subagents"]
     assert orchestration["final_reviewer_independent"] is True
     assert roles["syllabus_outline_analyst"]["status"] == "complete"
     assert roles["handbook_writer"]["status"] == "complete"
@@ -152,6 +156,7 @@ def test_course_contract_payload_exposes_delivery_state_without_mutating_plan():
         "syllabus_outline_analyst",
         "handbook_writer",
     ]
+    assert "fresh Agent/LLM context" in roles["final_reviewer"]["dispatch_brief"][0]
     assert payload["course_spec"]["provider"] == "oxfordaqa"
     assert payload["learning_units"][0]["id"] == "unit_001"
     assert payload["pedagogical_units"][0]["writing_job_id"] == "concept_001"

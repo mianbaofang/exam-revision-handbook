@@ -63,6 +63,12 @@ a likely route.
 - CHECKPOINT: quality passed. Present the guide as usable only after validation
   has no `error` issues and the output includes detailed units, worked examples,
   source snippets, visual briefs, `sections/`, and `images/`.
+- STOP: multi-agent workflow not separated. When the Agent runtime supports
+  subagents or fresh child contexts, dispatch the run as three roles:
+  syllabus/outline analyst, handbook writer, and independent final reviewer.
+  Use `agent-orchestration.json` as the required role contract. If no
+  independent Agent/LLM context is available for the final reviewer, keep the
+  output at review-ready or draft and do not present it as final-ready.
 - CHECKPOINT: final Agent review passed. Before presenting a generated handbook
   as final, run `python -m intl_exam_guide review --out <output-dir>`, read
   `final-review-packet.json`, and perform an Agent/LLM review over the rendered
@@ -71,6 +77,21 @@ a likely route.
   `agent_self_review.must_not_present_as_final` flag. If the Agent cannot
   honestly answer the review questions, present the output as a draft or blocked
   run, not as final.
+- STOP: final review is only a gate report. The user's active LLM/Agent must
+  read the generated handbook as a final product, compare it against the
+  official syllabus outline, inspect visible HTML/PDF pages and visuals, and
+  repair fixable issues before handoff. Do not treat "the Skill generated it"
+  or "validation returned ready" as proof that the result is student-usable.
+  If the review finds mismatched topic explanations, duplicated mastery text,
+  unsuitable/repeated visuals, missing glossary support, PDF layout issues, or
+  pending concept/image work, fix the content/assets, rerender, and rerun final
+  review before giving the user the file.
+- STOP: product-review evidence missing. After the active LLM/Agent performs
+  that final product review, write `agent-product-review.json` with the
+  inspected PDF pages, syllabus-outline comparison, visual/glossary checks,
+  fixable issues, repairs made, and final decision. Without complete
+  `agent-product-review.json` evidence, the output remains review-ready or
+  draft even when validation and `final-review-packet.json` look clean.
 - STOP: reviewer is not independent. The final reviewer role in
   `agent-orchestration.json` must be separate from the syllabus/outline analyst
   and handbook writer roles. A writer self-check can help, but it does not
