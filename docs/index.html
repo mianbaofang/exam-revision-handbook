@@ -767,7 +767,7 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div>
-          <div class="kicker">三大考试局支持 · v0.4</div>
+          <div class="kicker">三大考试局支持 · v0.4.2</div>
           <h1>三大考试局复习手册，一句话生成。</h1>
           <p class="lead">支持 AQA、Edexcel、CAIE。把 Skill 链接交给你的 OpenClaw、Hermes 或其他 Agent，说一句“帮我生成某个科目的复习手册”，确认考试局、科目、语言和讲解风格后，它会生成知识点讲解、例题、图文学习单元和可打印 PDF。</p>
           <div class="action-row">
@@ -1057,36 +1057,36 @@
     <section class="band">
       <div class="shell">
         <div class="section-head">
-          <h2>v0.3：围绕最终交付质量的重置。</h2>
-          <p>主流程仍然围绕“如何生成复习手册”：选择考试局、科目、语言和讲解风格，生成知识点、例题与图文学习单元。本次更新把最终交付标准前移到产品体验：概念解释需要复核，复习路线不能重复，复杂信息图必须进入可复核的生图/导入流程，最终交付前需要完整 final review packet。</p>
+          <h2>当前交付流程：先确认，再生成，最后独立复查。</h2>
+          <p>用户第一次使用时先确认考试局、科目、年份、术语支持语言、讲解风格和可用生图方式；生成过程中按官方大纲拆分学习单元，简单图本地生成，结构图走 Kroki，复杂信息图进入外部生成与导入；交付前由独立复查步骤读页面和抽样 PDF，有问题先修，不能修就标记为 draft。</p>
         </div>
         <div class="flow">
           <article class="flow-item">
-            <div class="num">01 · 学科</div>
+            <div class="num">01 · 确认</div>
             <div>
-              <h3>学科识别测试</h3>
-              <p>新增 subject_profiles.py 专属测试，直接覆盖声明科目、模糊 Science 文本路由，以及 Economics / Accounting source-text 回退。</p>
+              <h3>先问清楚</h3>
+              <p>确认 AQA / Edexcel / CAIE、科目、考试年份、术语表语言和讲解风格；如果需要复杂信息图，先确认用户是否有可调用的生图 Skill、API 或图片目录。</p>
             </div>
           </article>
           <article class="flow-item">
-            <div class="num">02 · 视觉</div>
+            <div class="num">02 · 大纲</div>
             <div>
-              <h3>视觉路由测试</h3>
-              <p>新增 visual_routing.py 专属测试，锁住 Accounting、Economics、Chemistry、Mathematics、Generic 的 infographic / SVG / text-only 分支。</p>
+              <h3>只围绕官方来源</h3>
+              <p>抓取或读取官方 syllabus / specification，把不同考试局的大纲格式整理成 CourseSpec、LearningUnit 和可写作的教学单元。</p>
             </div>
           </article>
           <article class="flow-item">
-            <div class="num">03 · 中文</div>
+            <div class="num">03 · 图形</div>
             <div>
-              <h3>中文边角路由</h3>
-              <p>zh_topic_reference 继续使用精确值断言，zh_visual_type 额外单独触发 accounting process 与 neutralisation 两个 OR 边角。</p>
+              <h3>图形各走合适路线</h3>
+              <p>数轴、坐标轴等简单精确图留在本地；流程、层级、关系等专业结构图走 Kroki；大量文字和场景结合的信息图走外部生成并自动导入。</p>
             </div>
           </article>
           <article class="flow-item">
-            <div class="num">04 · 验证</div>
+            <div class="num">04 · 复查</div>
             <div>
-              <h3>验证器覆盖</h3>
-              <p>validation/checks.py 收紧 HTML language 弱断言，并直接覆盖 contents/index snippet、14 组中文 topic marker 与交付包验证分支。</p>
+              <h3>不是生成完就交付</h3>
+              <p>最终文件需要 Agent 自己全盘复查：大纲覆盖、解释质量、例题、术语表、图形和 PDF 页面都要看；通过后才进入 final-ready。</p>
             </div>
           </article>
         </div>
