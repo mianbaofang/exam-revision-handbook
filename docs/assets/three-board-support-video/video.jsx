@@ -356,7 +356,27 @@ function VisualRouteScene() {
     {
       title: "专业结构图：Kroki",
       body: "流程、层级、时间线、关系图、概念图等中等复杂图，自动走专业图形渲染。",
-      visual: <div className="queue-lines"><i></i><i></i><i></i><i></i></div>,
+      visual: (
+        <svg className="kroki-preview" viewBox="0 0 360 190" aria-label="Kroki 结构图示意">
+          <defs>
+            <marker id="arrow-cn" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" />
+            </marker>
+          </defs>
+          <path d="M180 48 L96 86" />
+          <path d="M180 48 L264 86" />
+          <path d="M96 124 L180 150" />
+          <path d="M264 124 L180 150" />
+          <rect x="126" y="14" width="108" height="42" rx="8" />
+          <rect x="34" y="84" width="124" height="42" rx="8" />
+          <rect x="202" y="84" width="124" height="42" rx="8" />
+          <rect x="120" y="140" width="120" height="42" rx="8" className="output" />
+          <text x="180" y="41">来源</text>
+          <text x="96" y="111">流程</text>
+          <text x="264" y="111">层级</text>
+          <text x="180" y="167">复查图</text>
+        </svg>
+      ),
     },
     {
       title: "复杂信息图：外部生成",

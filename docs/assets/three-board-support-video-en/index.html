@@ -477,21 +477,51 @@
     .svg-diagram span:nth-child(2) { left: 104px; height: 74px; background: #4fa394; }
     .svg-diagram span:nth-child(3) { left: 154px; height: 104px; background: #be4750; }
 
-    .queue-lines {
-      width: 290px;
-      display: grid;
-      gap: 14px;
+    .kroki-preview {
+      width: 340px;
+      height: 180px;
+      overflow: visible;
     }
 
-    .queue-lines i {
-      height: 18px;
-      background: rgba(255,255,255,0.22);
+    .kroki-preview path {
+      fill: none;
+      stroke: rgba(20, 35, 59, 0.42);
+      stroke-width: 3.5;
+      marker-end: url(#arrow-en);
     }
 
-    .queue-lines i:nth-child(1) { width: 92%; background: #d89b33; }
-    .queue-lines i:nth-child(2) { width: 72%; }
-    .queue-lines i:nth-child(3) { width: 100%; background: #4fa394; }
-    .queue-lines i:nth-child(4) { width: 58%; }
+    .kroki-preview marker path {
+      fill: rgba(20, 35, 59, 0.55);
+    }
+
+    .kroki-preview rect {
+      fill: rgba(255, 255, 255, 0.92);
+      stroke: rgba(42, 70, 112, 0.28);
+      stroke-width: 2;
+    }
+
+    .kroki-preview rect:first-of-type {
+      fill: #d89b33;
+      stroke: #c78922;
+    }
+
+    .kroki-preview .output {
+      fill: #4fa394;
+      stroke: #3f8c80;
+    }
+
+    .kroki-preview text {
+      fill: #10233e;
+      font-size: 18px;
+      font-weight: 800;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+
+    .kroki-preview rect:first-of-type + rect + rect + rect + text,
+    .kroki-preview .output ~ text:last-child {
+      fill: #fff;
+    }
 
     .model-grid {
       display: grid;
@@ -2000,7 +2030,27 @@ function VisualRouteScene() {
     {
       title: "Structured diagrams: Kroki",
       body: "Flows, hierarchies, timelines, relationship maps, and concept maps use professional diagram rendering.",
-      visual: <div className="queue-lines"><i></i><i></i><i></i><i></i></div>,
+      visual: (
+        <svg className="kroki-preview" viewBox="0 0 360 190" aria-label="Kroki structured diagram preview">
+          <defs>
+            <marker id="arrow-en" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" />
+            </marker>
+          </defs>
+          <path d="M180 48 L96 86" />
+          <path d="M180 48 L264 86" />
+          <path d="M96 124 L180 150" />
+          <path d="M264 124 L180 150" />
+          <rect x="126" y="14" width="108" height="42" rx="8" />
+          <rect x="34" y="84" width="124" height="42" rx="8" />
+          <rect x="202" y="84" width="124" height="42" rx="8" />
+          <rect x="120" y="140" width="120" height="42" rx="8" className="output" />
+          <text x="180" y="41">source</text>
+          <text x="96" y="111">flow</text>
+          <text x="264" y="111">hierarchy</text>
+          <text x="180" y="167">reviewed</text>
+        </svg>
+      ),
     },
     {
       title: "Rich infographics: external generation",
