@@ -17,6 +17,9 @@ def main() -> int:
     parser.add_argument("--start-offset", type=float, default=0.6)
     parser.add_argument("--width", type=int, default=1920)
     parser.add_argument("--height", type=int, default=1080)
+    parser.add_argument("--device-scale-factor", type=float, default=1.0)
+    parser.add_argument("--mp4-crf", type=int, default=21)
+    parser.add_argument("--skip-gif", action="store_true")
     args = parser.parse_args()
 
     html_path = Path(args.html).resolve()
@@ -40,14 +43,17 @@ def main() -> int:
             start_offset=args.start_offset,
             width=args.width,
             height=args.height,
+            device_scale_factor=args.device_scale_factor,
         )
         mp4_path.parent.mkdir(parents=True, exist_ok=True)
         gif_path.parent.mkdir(parents=True, exist_ok=True)
-        render_mp4(ffmpeg, frames_dir, args.fps, mp4_path)
-        render_gif(ffmpeg, frames_dir, args.fps, gif_path)
+        render_mp4(ffmpeg, frames_dir, args.fps, mp4_path, args.mp4_crf)
+        if not args.skip_gif:
+            render_gif(ffmpeg, frames_dir, args.fps, gif_path)
 
     print(mp4_path)
-    print(gif_path)
+    if not args.skip_gif:
+        print(gif_path)
     return 0
 
 
@@ -59,6 +65,7 @@ def capture_frames(
     start_offset: float,
     width: int,
     height: int,
+    device_scale_factor: float,
 ) -> None:
     browser_path = find_browser()
     if not browser_path:
@@ -68,7 +75,7 @@ def capture_frames(
     for index in range(frame_count):
         t = min(start_offset + index / fps, duration - 0.001)
         out = frames_dir / f"frame_{index:04d}.png"
-        url = f"{html_path.as_uri()}?t={t:.4f}"
+        url = f"{html_path.as_uri()}?capture=1&t={t:.4f}"
         command = [
             browser_path,
             "--headless=new",
@@ -77,7 +84,7 @@ def capture_frames(
             "--hide-scrollbars",
             f"--user-data-dir={profile_dir}",
             f"--window-size={width},{height}",
-            "--force-device-scale-factor=1",
+            f"--force-device-scale-factor={device_scale_factor}",
             "--virtual-time-budget=800",
             f"--screenshot={out.resolve()}",
             url,
@@ -85,7 +92,7 @@ def capture_frames(
         subprocess.run(command, check=True, capture_output=True, text=True, timeout=30)
 
 
-def render_mp4(ffmpeg: str, frames_dir: Path, fps: int, output: Path) -> None:
+def render_mp4(ffmpeg: str, frames_dir: Path, fps: int, output: Path, crf: int) -> None:
     command = [
         ffmpeg,
         "-y",
@@ -98,7 +105,7 @@ def render_mp4(ffmpeg: str, frames_dir: Path, fps: int, output: Path) -> None:
         "-pix_fmt",
         "yuv420p",
         "-crf",
-        "21",
+        str(crf),
         "-movflags",
         "+faststart",
         str(output),

@@ -443,6 +443,18 @@
       color: var(--ink);
     }
     .flow-item p { font-size: 14px; }
+    .capability-flow {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .capability-flow .flow-item {
+      border-bottom: 1px solid var(--line);
+    }
+    .capability-flow .flow-item:nth-child(3n) {
+      border-right: 0;
+    }
+    .capability-flow .flow-item:nth-last-child(-n + 3) {
+      border-bottom: 0;
+    }
 
     .scope-grid {
       display: grid;
@@ -723,6 +735,7 @@
         grid-template-columns: 1fr;
       }
       .flow-item { border-right: 0; border-bottom: 1px solid var(--line); }
+      .capability-flow .flow-item:nth-last-child(-n + 3) { border-bottom: 1px solid var(--line); }
       .flow-item:last-child { border-bottom: 0; }
       .spread { min-height: 680px; }
       .real-samples { min-height: auto; }
@@ -880,36 +893,50 @@
     <section class="band">
       <div class="shell">
         <div class="section-head">
-          <h2>不是题库搬运器，而是一套复习手册生成流程。</h2>
-          <p>先让用户知道它能交付什么，再展示真实样例，最后说明能力边界和工作机制。核心承诺很简单：把考试大纲变成能读、能练、能看图理解的学习手册。</p>
+          <h2>当前核心能力，不只是把文字排成 PDF。</h2>
+          <p>v0.4.2 的重点是把生成过程拆成可复查的协作流水线：官方大纲、教学写作、图形处理、例题和最终验收分开做，避免一个模型从头写到尾、错了也没人发现。</p>
         </div>
-        <div class="flow">
+        <div class="flow capability-flow">
           <article class="flow-item">
-            <div class="num">01 · 选择</div>
+            <div class="num">01 · 大纲</div>
             <div>
-              <h3>选择科目和语言</h3>
-              <p>用户先确认考试局、科目、代码，以及是否需要中文、繁体中文、日语等术语对照表；正文默认保持英文。</p>
+              <h3>自动读取官方来源</h3>
+              <p>围绕 AQA、Edexcel、CAIE 的官方 syllabus / specification 工作；无法唯一确认时先返回候选，不猜测考试局或课程版本。</p>
             </div>
           </article>
           <article class="flow-item">
-            <div class="num">02 · 风格</div>
+            <div class="num">02 · 协作</div>
             <div>
-              <h3>选择讲解风格</h3>
-              <p>可以走严肃备考、轻松愉快、生活化场景、侦探推理、闯关式讲解等不同语气。</p>
+              <h3>多 Agent 分工</h3>
+              <p>大纲分析、主编写、视觉路由和最终验收拆开执行；最终验收 Agent 独立阅读结果，而不是照着生成器的说法直接放行。</p>
             </div>
           </article>
           <article class="flow-item">
-            <div class="num">03 · 图文</div>
+            <div class="num">03 · 语言</div>
             <div>
-              <h3>规划图文路线</h3>
-              <p>简单结构图用 SVG；复杂知识点和例题需要信息图时，先生成配图需求清单；有可调用生图 Skill/API/脚本时，Agent 自动生成并导入。</p>
+              <h3>英文正文 + 术语表</h3>
+              <p>考试本身是英文，手册正文、例题和图中文字保持英文；中文、繁中、日语等作为 30-50 个专业词对照表加入。</p>
             </div>
           </article>
           <article class="flow-item">
-            <div class="num">04 · 交付</div>
+            <div class="num">04 · 图形</div>
             <div>
-              <h3>生成 HTML/PDF 手册</h3>
-              <p>输出包含知识点讲解、例题、复习题、图文学习单元和最终可打印 PDF。</p>
+              <h3>专业图形分流</h3>
+              <p>简单精确图本地生成；流程、层级、关系图走 Kroki；大量文字和图解结合的信息图走外部生图并自动导入。</p>
+            </div>
+          </article>
+          <article class="flow-item">
+            <div class="num">05 · 讲解</div>
+            <div>
+              <h3>风格和例题一起生成</h3>
+              <p>支持 formal、friendly、life、story、detective、adventure 等风格，同时配套 worked examples 和练习卡片。</p>
+            </div>
+          </article>
+          <article class="flow-item">
+            <div class="num">06 · 验收</div>
+            <div>
+              <h3>独立 Agent 复查</h3>
+              <p>最终交付前检查大纲覆盖、解释质量、术语表、图形和 PDF 抽页；问题能修就修，不能修就保留 draft 状态。</p>
             </div>
           </article>
         </div>
