@@ -200,17 +200,17 @@ def render_language_policy() -> str:
 
 def render_listing_note(qualification: Qualification, language: str = "en") -> str:
     source = qualification.source
-    if not source.listing_group_label and not source.listing_subject:
+    if not source.listing_subject:
         return ""
     pieces = []
     if source.listing_subject:
         label = "Subject group" if language == "en" else "科目组"
         pieces.append(f"{label}: {html_escape(source.listing_subject)}")
     if source.listing_group_label:
-        label = "Website group" if language == "en" else "官网分组"
+        label = "Website group" if language == "en" else "Website group"
         pieces.append(f"{label}: {html_escape(source.listing_group_label)}")
     if source.listing_style_class:
-        label = "Detected class" if language == "en" else "识别类型"
+        label = "Detected class" if language == "en" else "Detected class"
         pieces.append(f"{label}: {html_escape(source.listing_style_class)}")
     return f"<p class=\"listing-note\">{' · '.join(pieces)}</p>"
 
@@ -491,15 +491,17 @@ def render_topics(
         source_block = render_source_snippets(topic.source_snippets, language=language)
         key_heading = "Key Ideas" if language == "en" else "本节要掌握"
         logic_heading = "Exam Logic" if language == "en" else "做题逻辑"
+        logic_focus = point_values[0] if point_values else title
         logic_goal = (
-            "Goal: identify what this unit is testing, then turn the syllabus point into a calculation, explanation, or judgement step."
+            render_exam_logic_goal(f"{title} {logic_focus}", language, logic_focus)
             if language == "en"
-            else "一句话目标：先判断本节在考什么，再把知识点变成可计算、可解释或可判断的步骤。"
+            else f"题目焦点：把 {logic_focus} 用到指令词要求的计算、读图、解释或判断中。"
         )
+        topic_pitfall = guide.pitfall if guide and guide.pitfall else ""
         logic_pitfall = (
-            "Common mark loss: memorising key terms without answering the command word, or giving a conclusion without using the question evidence."
+            f"Watch for: {topic_pitfall or 'answer the exact condition in the question before moving to the final line.'}"
             if language == "en"
-            else "常见失分点：只背关键词，不回应指令词；只写结论，不把题干信息用进去。"
+            else f"注意：{topic_pitfall or '先回应题目的具体条件，再写最终答案。'}"
         )
         sections.append(
             f"""
@@ -554,6 +556,38 @@ def render_topic_guide(guide: TopicGuide, language: str) -> str:
   <article class="pitfall"><h3>{render_icon("alert")}<span>{labels["pitfall"]}</span></h3><p>{html_escape(guide.pitfall)}</p><ul>{checklist}</ul></article>
 </div>
 """
+
+
+def render_exam_logic_goal(focus: str, language: str, source_focus: str | None = None) -> str:
+    display_focus = source_focus or focus
+    if language != "en":
+        return f"Question focus: stay inside this syllabus point: {display_focus}."
+    lower = focus.lower()
+    if any(word in lower for word in ["momentum", "impulse", "impact", "collision"]):
+        action = "choose a positive direction, write signed momenta, and use the before-and-after relationship."
+    elif any(word in lower for word in ["newton", "force", "friction", "normal reaction", "tension", "thrust"]):
+        action = "start with a force diagram, choose directions, and apply equilibrium or F = ma."
+    elif any(word in lower for word in ["velocity", "speed", "displacement", "acceleration", "kinematic"]) or (
+        "motion" in lower and any(word in lower for word in ["graph", "gradient", "area under"])
+    ):
+        action = "identify the motion quantity or graph type before using formulae, gradients, or areas."
+    elif any(word in lower for word in ["probability", "random variable", "bernoulli", "binomial"]):
+        action = "define the event or distribution first, then calculate the required probability or statistic."
+    elif any(word in lower for word in ["sine", "cosine", "trigonometry"]):
+        action = "connect the angle range, triangle rule, identity, or graph feature to the values requested."
+    elif any(word in lower for word in ["integral", "integration", "area under", "trapezium"]):
+        action = "decide whether the task needs an antiderivative, a definite area, or an approximation."
+    elif any(word in lower for word in ["derivative", "differentiation", "tangent", "stationary"]):
+        action = "connect the derivative to gradient, rate of change, tangent, normal, or stationary-point meaning."
+    elif any(word in lower for word in ["circle", "straight line", "coordinate", "gradient", "midpoint"]):
+        action = "translate the geometry into coordinates, gradients, equations, distances, or intersections."
+    elif any(word in lower for word in ["sequence", "series", "progression"]):
+        action = "identify the term, sum, ratio, or convergence condition before choosing a formula."
+    elif any(word in lower for word in ["surd", "indices", "factor", "polynomial", "quadratic", "equation", "inequality"]):
+        action = "choose the algebraic form that exposes the roots, factors, signs, or exact simplification."
+    else:
+        action = "match the exact syllabus wording to the mathematical object in the question."
+    return f"Question focus: {action} Source point: {display_focus}"
 
 
 def render_topic_diagram(topic: Topic, guide: TopicGuide, index: int, language: str) -> str:

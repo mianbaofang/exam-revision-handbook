@@ -295,6 +295,27 @@ def test_fragment_topic_titles_are_delivery_errors():
                 SourceSnippet(page=9, text="Students will be required", matched_term="3.1")
             ],
         ),
+        Topic(
+            title="P1.5 - Sequences and series: The binomial expansion of",
+            points=["The binomial expansion of", "(1+ x)n for positive integer n."],
+            source_snippets=[
+                SourceSnippet(page=12, text="The binomial expansion of (1+x)n", matched_term="P1.5")
+            ],
+        ),
+        Topic(
+            title="P1.5 - Sequences and series: Arithmetic series,",
+            points=["Arithmetic series, including the formula for the sum of the first n natural numbers."],
+            source_snippets=[
+                SourceSnippet(page=12, text="Arithmetic series, including the formula", matched_term="P1.5")
+            ],
+        ),
+        Topic(
+            title="M1.1 - Motion: Difference bet...",
+            points=["Difference between displacement and distance, and between velocity and speed."],
+            source_snippets=[
+                SourceSnippet(page=17, text="Difference between displacement and distance", matched_term="M1.1")
+            ],
+        ),
     ]
     plan.topic_guides = []
     plan.practice_items = []

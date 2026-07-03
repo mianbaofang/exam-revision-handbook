@@ -1422,6 +1422,8 @@ def zh_math_variant(base: str, text: str) -> str:
             return "mechanics:momentum"
         return "mechanics:forces"
     if base == "coordinate":
+        if "coordinate geometry of the circle" in text:
+            return "coordinate:circle"
         if any(word in text for word in ["tangent", "normal"]):
             return "coordinate:tangent"
         if any(word in text for word in ["translation", "transformed"]):

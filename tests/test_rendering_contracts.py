@@ -706,6 +706,39 @@ def test_topic_renderers_cover_guides_practice_story_and_visual_blocks():
     assert "Source documents - Worked Example" in render_practice(practice, "en")
 
 
+def test_render_topics_does_not_repeat_generic_exam_logic_template():
+    qualification = sample_rendering_qualification()
+    topic = qualification.topics[0]
+    topic.title = "P1.4 - Integration: Approximation of the area under a curve using the trapezium rule"
+    topic.points = ["Approximation of the area under a curve using the trapezium rule."]
+    guide = sample_topic_guide(topic.title)
+    guide.pitfall = "Do not confuse a trapezium-rule estimate with exact integration."
+
+    html = render_topics([topic], [guide], [], [], {}, "en")
+
+    assert "Goal: identify what this unit is testing" not in html
+    assert "memorising key terms without answering the command word" not in html
+    assert "calculation, graph reading, proof step, explanation, or judgement" not in html
+    assert "decide whether the task needs an antiderivative, a definite area, or an approximation" in html
+    assert "Approximation of the area under a curve using the trapezium rule" in html
+    assert "Do not confuse a trapezium-rule estimate with exact integration" in html
+
+
+def test_render_topics_classifies_kinematics_area_under_graphs_as_motion_logic():
+    topic = Topic(
+        title="M1.1 - Motion in a straight line with constant acceleration: Use of gradients and area under graphs to solve problems",
+        points=["Use of gradients and area under graphs to solve problems."],
+    )
+    guide = sample_topic_guide(topic.title)
+    guide.pitfall = "Do not take area under a displacement-time graph."
+
+    html = render_topics([topic], [guide], [], [], {}, "en")
+
+    assert "identify the motion quantity or graph type" in html
+    assert "antiderivative, a definite area, or an approximation" not in html
+    assert "Use of gradients and area under graphs to solve problems" in html
+
+
 def test_render_topics_cleans_syllabus_shell_text_from_key_ideas():
     topic = Topic(
         title="3.1.1.2 - The factors of production",

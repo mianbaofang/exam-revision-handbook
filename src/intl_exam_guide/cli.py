@@ -275,7 +275,7 @@ def write_guide_outputs(
         pdf_path.unlink()
 
     qualification_path.write_text(
-        json.dumps(qualification.to_dict(), ensure_ascii=False, indent=2),
+        json.dumps(plan.qualification.to_dict(), ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
     run_options_path.write_text(

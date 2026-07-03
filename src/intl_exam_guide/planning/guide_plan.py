@@ -34,7 +34,7 @@ from intl_exam_guide.planning.practice_generator import (
     concrete_example_zh,
 )
 from intl_exam_guide.planning.language_policy import LANGUAGE_CHOICES, handbook_body_language
-from intl_exam_guide.planning.source_points import visible_source_points
+from intl_exam_guide.planning.source_points import normalized_student_topic, visible_source_points
 from intl_exam_guide.planning.visual_routing import (
     build_visual_brief,
     choose_provider_for_visual,
@@ -121,6 +121,11 @@ def build_guide_plan(
     visual_briefs: list[VisualBrief] = []
     diagram_briefs: list[str] = []
 
+    prepared_topics = [
+        topic if is_scope_exclusion_topic(topic) else normalized_student_topic(topic)
+        for topic in qualification.topics
+    ]
+    qualification = replace(qualification, topics=prepared_topics)
     handbook_topics = [topic for topic in qualification.topics if not is_scope_exclusion_topic(topic)]
 
     for topic_index, topic in enumerate(handbook_topics):

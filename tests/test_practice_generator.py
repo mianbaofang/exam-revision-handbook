@@ -139,6 +139,234 @@ def test_mathematics_algebra_example_is_not_generic():
     assert "memorised phrase" not in combined
 
 
+def test_mathematics_trapezium_rule_example_uses_approximation_not_exact_integration():
+    question, frame, steps, checkpoints = concrete_example(
+        Topic(
+            title="P1.5 - Integration: Approximation of the area under a curve using the trapezium rule",
+            points=["Approximation of the area under a curve using the trapezium rule."],
+        ),
+        "Approximation of the area under a curve using the trapezium rule.",
+        1,
+        "Mathematics",
+    )
+    combined = " ".join([question, *frame, *steps, *checkpoints]).lower()
+
+    assert "trapezium rule" in combined
+    assert "estimate" in combined or "approximation" in combined
+    assert "antiderivative" not in combined
+    assert "integral from" not in combined
+
+
+def test_mathematics_inequality_example_solves_an_inequality():
+    question, frame, steps, checkpoints = concrete_example(
+        Topic(
+            title="P1.1 - Algebra: Solution of linear and quadratic inequalities",
+            points=["Solution of linear and quadratic inequalities."],
+        ),
+        "Solution of linear and quadratic inequalities.",
+        0,
+        "Mathematics",
+    )
+    combined = " ".join([question, *frame, *steps, *checkpoints]).lower()
+
+    assert "inequality" in combined
+    assert "<" in combined or ">" in combined
+    assert "interval" in combined or "number line" in combined
+    assert "solve x^2 - 5x + 6 = 0" not in combined
+
+
+def test_mathematics_binomial_expansion_example_is_not_sequence_or_distribution():
+    question, frame, steps, checkpoints = concrete_example(
+        Topic(
+            title="P1.5 - Sequences and series: The binomial expansion of (1 + x)^n for positive integer n",
+            points=["The binomial expansion of (1 + x)^n for positive integer n."],
+        ),
+        "The binomial expansion of (1 + x)^n for positive integer n.",
+        0,
+        "Mathematics",
+    )
+    combined = " ".join([question, *frame, *steps, *checkpoints]).lower()
+
+    assert "expand" in combined
+    assert "(1" in combined
+    assert "arithmetic sequence" not in combined
+    assert "x ~ b" not in combined
+
+
+def test_mathematics_trigonometric_equation_example_solves_interval():
+    question, frame, steps, checkpoints = concrete_example(
+        Topic(
+            title="PP1.2 - Trigonometry: Solution of simple trigonometric equations in a given interval",
+            points=["Solution of simple trigonometric equations in a given interval of degrees or radians."],
+        ),
+        "Solution of simple trigonometric equations in a given interval of degrees or radians.",
+        0,
+        "Mathematics",
+    )
+    combined = " ".join([question, *frame, *steps, *checkpoints]).lower()
+
+    assert "solve" in combined
+    assert "interval" in combined
+    assert "convert pi/3" not in combined
+    assert "pi radians = 180" not in combined
+
+
+def test_mathematics_sine_cosine_rule_example_is_triangle_specific():
+    question, frame, steps, checkpoints = concrete_example(
+        Topic(
+            title="PP1.2 - Trigonometry: The sine and cosine rules",
+            points=["The sine and cosine rules."],
+        ),
+        "The sine and cosine rules.",
+        0,
+        "Mathematics",
+    )
+    combined = " ".join([question, *frame, *steps, *checkpoints]).lower()
+
+    assert "triangle" in combined
+    assert "cosine rule" in combined or "sine rule" in combined
+    assert "pi/3" not in combined
+    assert "radians = 180" not in combined
+
+
+def test_mathematics_triangle_area_example_is_not_radian_conversion():
+    question, frame, steps, checkpoints = concrete_example(
+        Topic(
+            title="PP1.2 - Trigonometry: Area of a triangle",
+            points=["Area of a triangle using 1/2 ab sin C."],
+        ),
+        "Area of a triangle using 1/2 ab sin C.",
+        0,
+        "Mathematics",
+    )
+    combined = " ".join([question, *frame, *steps, *checkpoints]).lower()
+
+    assert "area" in combined
+    assert "1/2" in combined
+    assert "sin" in combined
+    assert "pi/3" not in combined
+
+
+def test_mathematics_trig_graph_example_is_not_quadratic_vertex():
+    question, frame, steps, checkpoints = concrete_example(
+        Topic(
+            title="PP1.2 - Trigonometry: Their graphs, symmetries and periodicity",
+            points=["Their graphs, symmetries and periodicity."],
+        ),
+        "Their graphs, symmetries and periodicity.",
+        0,
+        "Mathematics",
+    )
+    combined = " ".join([question, *frame, *steps, *checkpoints]).lower()
+
+    assert "sin" in combined or "cos" in combined or "tan" in combined
+    assert "period" in combined or "symmetry" in combined
+    assert "vertex" not in combined
+    assert "line of symmetry x = 3" not in combined
+
+
+def test_mathematics_simultaneous_equations_example_is_not_generic_quadratic():
+    question, frame, steps, checkpoints = concrete_example(
+        Topic(
+            title="P1.1 - Algebra: Simultaneous equations",
+            points=["Solution of simultaneous equations."],
+        ),
+        "Solution of simultaneous equations.",
+        0,
+        "Mathematics",
+    )
+    combined = " ".join([question, *frame, *steps, *checkpoints]).lower()
+
+    assert "simultaneous" in combined
+    assert "x^2 - x - 6" in combined
+    assert "x^2 - 5x + 6 = 0" not in combined
+
+
+def test_mathematics_unknown_topic_fallback_does_not_import_quadratic_roots():
+    question, frame, steps, checkpoints = concrete_example(
+        Topic(
+            title="P1.9 - Algebra: Specialist notation boundary",
+            points=["Specialist notation boundary."],
+        ),
+        "Specialist notation boundary.",
+        0,
+        "Mathematics",
+    )
+    combined = " ".join([question, *frame, *steps, *checkpoints]).lower()
+
+    assert "specialist notation boundary" in combined
+    assert "x^2 - 5x + 6" not in combined
+    assert "both roots" not in combined
+
+
+def test_mathematics_geometric_ratio_notation_example_uses_convergence_condition():
+    question, frame, steps, checkpoints = concrete_example(
+        Topic(
+            title="P1.5 - Sequences and series: Notation |r|<1 in this context",
+            points=["the notation |r|<1 in this context"],
+        ),
+        "the notation |r|<1 in this context",
+        0,
+        "Mathematics",
+    )
+    combined = " ".join([question, *frame, *steps, *checkpoints]).lower()
+
+    assert "|r|<1" in combined.replace(" ", "")
+    assert "convergent" in combined or "converges" in combined
+    assert "arithmetic sequence" not in combined
+
+
+def test_mathematics_variable_acceleration_example_uses_calculus_not_suvat():
+    question, frame, steps, checkpoints = concrete_example(
+        Topic(
+            title="M1.2 - Motion in a straight line with variable acceleration",
+            points=["Use differentiation and integration with displacement, velocity and acceleration."],
+        ),
+        "Use differentiation and integration with displacement, velocity and acceleration.",
+        0,
+        "Mathematics",
+    )
+    combined = " ".join([question, *frame, *steps, *checkpoints]).lower()
+
+    assert "differentiate" in combined or "integrate" in combined
+    assert "s(t)" in combined or "v(t)" in combined
+    assert "v = u + at" not in combined
+
+
+def test_mathematics_force_of_gravity_example_uses_weight_formula():
+    question, frame, steps, checkpoints = concrete_example(
+        Topic(
+            title="M1.3 - Forces and Newton's Laws: Force of gravity",
+            points=["Force of gravity. W = mg"],
+        ),
+        "Force of gravity. W = mg",
+        0,
+        "Mathematics",
+    )
+    combined = " ".join([question, *frame, *steps, *checkpoints]).lower()
+
+    assert "w = mg" in combined
+    assert "weight" in combined
+    assert "resultant force" not in combined
+
+
+def test_mathematics_vertical_motion_under_gravity_uses_g_and_direction():
+    question, frame, steps, checkpoints = concrete_example(
+        Topic(
+            title="M1.1 - Motion in a straight line with constant acceleration: Vertical motion under gravity",
+            points=["Vertical motion under gravity."],
+        ),
+        "Vertical motion under gravity.",
+        0,
+        "Mathematics",
+    )
+    combined = " ".join([question, *frame, *steps, *checkpoints]).lower()
+
+    assert "g" in combined
+    assert "upwards" in combined or "downwards" in combined
+    assert "9.8" in combined
+
+
 def test_biology_example_is_subject_specific():
     question, frame, steps, checkpoints = concrete_example(
         Topic(title="Cell membranes", points=["Osmosis across cell membranes."]),
@@ -570,3 +798,32 @@ def test_chinese_practice_example_keeps_student_facing_text_chinese():
     assert "购货发票" in combined
     assert "source document" not in combined.lower()
     assert "purchase invoice" not in combined.lower()
+
+
+def test_mathematics_kinematics_graph_example_is_not_quadratic_vertex():
+    topic = Topic(
+        title="M1.1 - Motion in a straight line with constant acceleration: Sketching and interpreting kinematics graphs",
+        points=["Sketching and interpreting kinematics graphs."],
+    )
+
+    text = combined_text(concrete_example(topic, topic.points[0], 0, "Mathematics"))
+
+    assert "displacement-time graph" in text
+    assert "horizontal" in text
+    assert "motion story" in text
+    assert "vertex" not in text
+    assert "(x - 3)^2" not in text
+
+
+def test_mathematics_intersection_graph_example_solves_intersections():
+    topic = Topic(
+        title="P1.1 - Algebra: Geometrical interpretation of algebraic solution of equations",
+        points=["Use of intersection points of graphs of functions to solve equations."],
+    )
+
+    text = combined_text(concrete_example(topic, topic.points[0], 0, "Mathematics"))
+
+    assert "intersection" in text
+    assert "repeated root" in text
+    assert "graphs touch" in text or "just touch" in text
+    assert "vertex" not in text

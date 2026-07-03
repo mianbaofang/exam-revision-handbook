@@ -109,6 +109,18 @@ def test_trig_tangent_functions_do_not_route_to_circle_tangent_svg():
     assert "radius ⟂ tangent" not in svg
 
 
+def test_coordinate_circle_visual_does_not_borrow_tangent_normal_svg():
+    brief = visual_with_focus(
+        "circle coordinate visual",
+        "Coordinate geometry of the circle. The use of tangent and radius properties is required.",
+    )
+
+    svg = render_topic_visual_svg(brief, 1, "en")
+
+    assert "(x-a)²+(y-b)²=r²" in svg
+    assert "radius ⟂ tangent" not in svg
+
+
 def test_math_topic_svg_uses_compact_internal_frame():
     svg = render_math_topic_svg(
         1,

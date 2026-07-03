@@ -119,6 +119,93 @@ def test_checklist_mastery_includes_topic_context_for_repeated_source_points():
     assert "5.2 - Depreciation" in checklist_first_lines[1]
 
 
+def test_build_guide_plan_completes_parser_fragment_topic_titles():
+    qualification = sample_accounting_qualification()
+    qualification.subject_area = "Mathematics"
+    qualification.topics = [
+        Topic(
+            title="P1.5 - Sequences and series: Arithmetic series,",
+            points=[
+                "Arithmetic series, including the formula for the sum of the first n natural numbers.",
+                "To include ∑ notation for sums of series.",
+            ],
+            source_snippets=[
+                SourceSnippet(page=12, text="Arithmetic series, including the formula", matched_term="P1.5")
+            ],
+        ),
+        Topic(
+            title="P1.5 - Sequences and series: The binomial expansion of",
+            points=[
+                "The binomial expansion of",
+                "(1+ x)n for positive integer n.",
+                "To include the notations n! and n r",
+            ],
+            source_snippets=[
+                SourceSnippet(page=12, text="The binomial expansion of (1+x)n", matched_term="P1.5")
+            ],
+        ),
+        Topic(
+            title="P1.1 - Algebra: Use of the Remainder Theorem and the",
+            points=["Use of the Remainder Theorem and the"],
+            source_snippets=[
+                SourceSnippet(page=10, text="Use of the Remainder Theorem and the", matched_term="P1.1")
+            ],
+        ),
+        Topic(
+            title="M1.1 - Motion: Difference bet...",
+            points=["Difference between displacement and distance, and between velocity and speed."],
+            source_snippets=[
+                SourceSnippet(page=17, text="Difference between displacement and distance", matched_term="M1.1")
+            ],
+        ),
+        Topic(
+            title="P1.1 - Algebra: Use of factorisation, −± −bb ac a",
+            points=["Use of factorisation, −± −bb ac a"],
+            source_snippets=[
+                SourceSnippet(page=10, text="Use of factorisation, quadratic formula", matched_term="P1.1")
+            ],
+        ),
+        Topic(
+            title="P1.5 - Sequences and series: Students should be familiar with the notation |r|<1 in this context",
+            points=["Students should be familiar with the notation |r|<1 in this context."],
+            source_snippets=[
+                SourceSnippet(page=12, text="Students should be familiar with the notation |r|<1", matched_term="P1.5")
+            ],
+        ),
+    ]
+
+    plan = build_guide_plan(
+        qualification,
+        image_provider="prompt-queue",
+        explanation_style="friendly",
+        output_language="en",
+        requested_subject="mathematics",
+    )
+
+    titles = [topic.title for topic in plan.qualification.topics]
+    assert titles == [
+        "P1.5 - Sequences and series: Arithmetic series, including the formula for the sum of the first n natural numbers",
+        "P1.5 - Sequences and series: The binomial expansion of (1 + x)^n for positive integer n",
+        "P1.1 - Algebra: Use of the Remainder Theorem and the Factor Theorem",
+        "M1.1 - Motion: Difference between displacement and distance, and between velocity and speed",
+        "P1.1 - Algebra: Use of factorisation, completing the square and the quadratic formula",
+        "P1.5 - Sequences and series: Notation |r|<1 in this context",
+    ]
+    structured_text = " ".join(
+        " ".join([topic.title, *topic.points])
+        for topic in plan.qualification.topics
+    )
+    assert "−± −bb ac a" not in structured_text
+    assert "Use of factorisation, completing the square and the quadratic formula" in structured_text
+    visible_text = " ".join(
+        " ".join([guide.essence, *guide.checklist])
+        for guide in plan.topic_guides
+    )
+    assert ", is a" not in visible_text
+    assert ",:" not in visible_text
+    assert "The binomial expansion of is" not in visible_text
+
+
 def test_clean_source_point_removes_embedded_syllabus_shell():
     assert clean_source_point("The factors of production Students should be able to") == "The factors of production"
     assert (
@@ -129,6 +216,28 @@ def test_clean_source_point_removes_embedded_syllabus_shell():
         clean_source_point("Students should be able to understand the nature of an economic resource")
         == "understand the nature of an economic resource"
     )
+    assert (
+        clean_source_point("Use of the Remainder Theorem and the")
+        == "Use of the Remainder Theorem and the Factor Theorem"
+    )
+    assert clean_source_point("eg 2 2xx + /greaterthanorequalangled6") == "eg 2x^2 + x >= 6"
+    assert (
+        clean_source_point("tan sin cosθ θ θ= ; and sinc os 122 +=θθ")
+        == "tan theta = sin theta / cos theta; and sin^2 theta + cos^2 theta = 1"
+    )
+    assert (
+        clean_source_point("The binomial expansion of (1+ x)n for positive integer n.")
+        == "The binomial expansion of (1 + x)^n for positive integer n"
+    )
+    assert (
+        clean_source_point("The notations f' (x) or d d y x will be used.")
+        == "The notations f' (x) or dy/dx will be used"
+    )
+    assert (
+        clean_source_point("The area of a triangle in the form ab Csin2")
+        == "The area of a triangle in the form 1/2 ab sin C"
+    )
+    assert clean_source_point("2t as vtt= 2") == "s = ut + 1/2 at^2 and v = u + at"
 
 
 def test_source_points_remove_cambridge_page_boilerplate():

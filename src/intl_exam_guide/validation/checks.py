@@ -26,6 +26,7 @@ from intl_exam_guide.planning.language_policy import (
     language_mode_label,
 )
 from intl_exam_guide.planning.localization import zh_teachable_topic_title, zh_topic_keyword_label
+from intl_exam_guide.planning.source_points import is_incomplete_topic_title
 from intl_exam_guide.planning.visual_routing import is_professional_diagram_visual
 from intl_exam_guide.rendering.html import display_topic_titles
 from intl_exam_guide.rendering.visual_assets import (
@@ -1529,6 +1530,8 @@ def is_fragment_topic_title(topic: object) -> bool:
     title = getattr(topic, "title", "").strip()
     points = [str(point).strip().lower() for point in getattr(topic, "points", [])]
     lower = title.lower()
+    if is_incomplete_topic_title(title):
+        return True
     if re.search(r"\s-\s\d+$", title):
         return True
     if lower.endswith("students will be required to demonstrate"):

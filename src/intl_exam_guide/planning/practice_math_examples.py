@@ -3,17 +3,125 @@ from __future__ import annotations
 from intl_exam_guide.planning.subject_profiles import has_terms
 
 
+def _quadratic_graph_topic(text: str) -> bool:
+    return has_terms(text, ["quadratic function", "quadratic functions"]) or has_terms(
+        text, ["vertex", "line of symmetry"]
+    )
+
+
+def _kinematics_graph_topic(text: str) -> bool:
+    return has_terms(text, ["kinematic", "kinematics", "motion", "displacement", "velocity", "speed"]) and has_terms(
+        text, ["graph", "graphs", "gradient", "area under"]
+    )
+
+
+def _short_focus(text: str, limit: int = 80) -> str:
+    cleaned = " ".join(text.replace("\n", " ").split()).strip(" .;:")
+    if len(cleaned) <= limit:
+        return cleaned
+    return cleaned[: limit - 3].rstrip() + "..."
+
+
 def mathematics_specialist_example(
     text: str,
     number: int,
 ) -> tuple[str, list[str], list[str], list[str]]:
-    if has_terms(text, ["relative frequencies", "equally likely outcomes", "assigning probabilities", "probability"]):
+    if has_terms(text, ["inequality", "inequalities"]):
+        return (
+            "Solve the inequality x^2 - 5x + 6 > 0 and give the answer as intervals.",
+            ["Find the boundary values by solving x^2 - 5x + 6 = 0.", "Use a sign table or number line.", "Choose the intervals where the expression is positive."],
+            ["x^2 - 5x + 6 = (x - 2)(x - 3), so the boundary values are x = 2 and x = 3.", "The quadratic is positive outside the two roots.", "Therefore the solution is x < 2 or x > 3.", "Answer: x < 2 or x > 3."],
+            ["The inequality sign is answered, not just the equation.", "The boundary values split the number line into intervals.", "The middle interval 2 < x < 3 is rejected."],
+        )
+    if has_terms(text, ["binomial expansion"]):
+        return (
+            "Expand (1 + x)^5 up to and including the x^3 term.",
+            ["Use binomial coefficients from row 5.", "Write the powers of x in order.", "Stop at the requested term."],
+            ["(1 + x)^5 = 1 + 5x + 10x^2 + 10x^3 + 5x^4 + x^5.", "Up to and including x^3 gives 1 + 5x + 10x^2 + 10x^3.", "Answer: 1 + 5x + 10x^2 + 10x^3."],
+            ["The coefficients 1, 5, 10, 10 are used in order.", "The powers of x increase by 1 each time.", "Terms beyond x^3 are not included."],
+        )
+    if has_terms(text, ["trigonometric equations", "simple trigonometric equations"]):
+        return (
+            "Solve sin x = 1/2 for 0 <= x < 360 degrees.",
+            ["Find the reference angle.", "Use the quadrants where sine is positive.", "Keep only solutions inside the interval."],
+            ["The reference angle is 30 degrees.", "Sine is positive in quadrants I and II.", "So x = 30 degrees or x = 150 degrees.", "Answer: 30 degrees, 150 degrees."],
+            ["Both interval solutions are included.", "The interval endpoint rule is followed.", "The answer solves the equation rather than only converting units."],
+        )
+    if has_terms(text, ["sine and cosine rules", "sine rule", "cosine rule"]):
+        return (
+            "In triangle ABC, a = 8 cm, b = 11 cm and angle C = 37 degrees. Use the cosine rule to find side c to 3 significant figures.",
+            ["Choose the cosine rule because two sides and the included angle are known.", "Substitute into c^2 = a^2 + b^2 - 2ab cos C.", "Square-root and round appropriately."],
+            ["c^2 = 8^2 + 11^2 - 2(8)(11)cos37 degrees.", "c^2 = 185 - 176cos37 degrees.", "c is approximately 6.67.", "Answer: c = 6.67 cm to 3 significant figures."],
+            ["The included angle is used.", "The cosine rule is used instead of a right-angle formula.", "The final answer has a length unit."],
+        )
+    if has_terms(text, ["area of a triangle", "1/2 ab sin", "1/2ab sin"]):
+        return (
+            "Find the area of a triangle with sides a = 7 cm and b = 10 cm enclosing angle C = 40 degrees.",
+            ["Use the non-right-angled triangle area formula.", "Substitute the two sides and included angle.", "Round the area with square units."],
+            ["Area = 1/2 ab sin C.", "Area = 1/2 x 7 x 10 x sin40 degrees.", "Area is approximately 22.5.", "Answer: 22.5 cm^2."],
+            ["The angle is between the two given sides.", "The sine formula is used for area, not the sine rule.", "The unit is squared."],
+        )
+    if has_terms(text, ["trigonometrical identities", "trigonometric identities", "tan theta", "sin^2", "cos^2"]):
+        return (
+            "Use sin^2 x + cos^2 x = 1 to simplify 1 - cos^2 x.",
+            ["Choose the identity that contains sin^2 x and cos^2 x.", "Rearrange the identity.", "Replace the expression with the equivalent trig term."],
+            ["sin^2 x + cos^2 x = 1.", "Subtract cos^2 x from both sides.", "1 - cos^2 x = sin^2 x.", "Answer: sin^2 x."],
+            ["The identity is rearranged, not memorised as a loose phrase.", "Squares stay attached to the trig functions.", "The simplified expression is equivalent for all allowed x."],
+        )
+    if has_terms(text, ["variable acceleration"]) or (
+        has_terms(text, ["displacement", "velocity", "acceleration"])
+        and has_terms(text, ["differentiat", "integrat"])
+    ):
+        if has_terms(text, ["application of calculus"]):
+            return (
+                "A particle has velocity v(t)=3t^2-4t. Use calculus to find its acceleration at t=2.",
+                ["Identify acceleration as dv/dt.", "Differentiate v(t).", "Substitute t=2."],
+                ["a(t)=dv/dt=6t-4.", "a(2)=12-4=8.", "Answer: acceleration = 8 m/s^2."],
+                ["The calculus operation is chosen from the required quantity.", "Velocity is differentiated once.", "The final value uses the stated time."],
+            )
+        if has_terms(text, ["restricted to the calculus", "as unit p1"]):
+            return (
+                "A particle has acceleration a(t)=6t. Given v(0)=2, find v(t) using AS-level integration.",
+                ["Integrate acceleration to get velocity.", "Add a constant of integration.", "Use v(0)=2 to find the constant."],
+                ["v(t)=integral 6t dt = 3t^2 + C.", "v(0)=C=2.", "Answer: v(t)=3t^2+2."],
+                ["Only basic integration is needed.", "The initial condition fixes C.", "The result is a velocity function."],
+            )
+        return (
+            "A particle has displacement s(t) = t^3 - 6t^2 + 9t metres. Find v(t), a(t), and the velocity at t = 2.",
+            ["Differentiate displacement to get velocity.", "Differentiate velocity to get acceleration.", "Substitute t = 2 into v(t)."],
+            ["v(t) = ds/dt = 3t^2 - 12t + 9.", "a(t) = dv/dt = 6t - 12.", "v(2) = 3(2)^2 - 12(2) + 9 = -3.", "Answer: v(t)=3t^2-12t+9, a(t)=6t-12, and v(2)=-3 m/s."],
+            ["This is calculus, not constant-acceleration SUVAT.", "Velocity is the derivative of displacement.", "Acceleration is the derivative of velocity."],
+        )
+    if has_terms(text, ["relative frequencies", "equally likely outcomes", "assigning probabilities", "probability"]) and not has_terms(
+        text, ["random variable", "random variables", "discrete random"]
+    ):
         if has_terms(text, ["relative frequencies"]):
             return (
                 "A coin is tossed 50 times and lands heads 31 times. Estimate the probability of heads from the relative frequency.",
                 ["Use frequency divided by total trials.", "Write the estimate as a decimal or fraction.", "State that it is an estimate."],
                 ["Estimated probability = 31/50.", "31/50 = 0.62.", "Answer: estimated probability of heads is 0.62."],
                 ["Relative frequency uses observed results.", "The answer is an estimate, not an exact value.", "The total number of trials is 50."],
+            )
+        if has_terms(text, ["addition law"]):
+            return (
+                "Events A and B have P(A)=0.4, P(B)=0.3 and P(A and B)=0.1. Find P(A or B).",
+                ["Use the addition law.", "Subtract the overlap once.", "State the union probability."],
+                ["P(A or B)=P(A)+P(B)-P(A and B).", "P(A or B)=0.4+0.3-0.1.", "Answer: 0.6."],
+                ["The overlap is not double-counted.", "The addition law is named.", "The answer is between 0 and 1."],
+            )
+        if has_terms(text, ["multiplication law", "conditional probability"]):
+            return (
+                "P(A)=0.5 and P(B|A)=0.6. Find P(A and B).",
+                ["Use the multiplication law.", "Multiply P(A) by P(B|A).", "State the joint probability."],
+                ["P(A and B)=P(A)P(B|A).", "P(A and B)=0.5 x 0.6.", "Answer: 0.3."],
+                ["The conditional probability is used in the correct direction.", "The result is a joint probability.", "The answer is between 0 and 1."],
+            )
+        if has_terms(text, ["application of probability laws"]):
+            return (
+                "In a class, P(studies maths)=0.7, P(studies physics)=0.4 and P(studies both)=0.25. Find the probability a student studies maths or physics.",
+                ["Choose the appropriate probability law.", "Add the two probabilities.", "Subtract the overlap."],
+                ["P(M or P)=P(M)+P(P)-P(M and P).", "P(M or P)=0.7+0.4-0.25.", "Answer: 0.85."],
+                ["The context is translated into events.", "The overlap is subtracted.", "The probability is not greater than 1."],
             )
         return (
             "A fair die is rolled once. Find the probability of getting a number greater than 4.",
@@ -27,6 +135,20 @@ def mathematics_specialist_example(
             ["Write the intersection equation.", "Calculate the discriminant.", "Interpret the sign of the discriminant in context."],
             ["For x^2 - 4x + 5 = 0, a=1, b=-4, c=5.", "b^2 - 4ac = 16 - 20 = -4.", "The discriminant is negative.", "Answer: there are no real intersections."],
             ["The discriminant links algebra to graph intersections.", "No real roots means no real intersection points.", "The conclusion is stated in context."],
+        )
+    if has_terms(text, ["geometrical interpretation", "algebraic solution"]):
+        return (
+            "The equation x^2 - 4x + 4 = 0 comes from two graphs meeting. Use the repeated root to describe the graph relationship.",
+            ["Solve or identify the root structure.", "Connect a repeated root to a single contact point.", "State the graphical interpretation."],
+            ["x^2 - 4x + 4 = (x - 2)^2.", "There is one repeated root, x = 2.", "A repeated root means the graphs touch at one point.", "Answer: the graphs are tangent or just touch at the intersection."],
+            ["The root count is interpreted geometrically.", "A repeated root is not two crossings.", "The answer describes the graph relationship."],
+        )
+    if has_terms(text, ["simultaneous equations"]):
+        return (
+            "Solve the simultaneous equations y = x + 1 and y = x^2 - 5.",
+            ["Set the two expressions for y equal.", "Solve the resulting quadratic.", "Substitute each x-value into either equation."],
+            ["x + 1 = x^2 - 5, so x^2 - x - 6 = 0.", "(x - 3)(x + 2) = 0, so x = 3 or x = -2.", "Then y = 4 or y = -1.", "Answer: (3, 4) and (-2, -1)."],
+            ["Both coordinates are found.", "The equations are solved together.", "The answers can be checked in both equations."],
         )
     if has_terms(text, ["translation of circles", "translated circle"]):
         return (
@@ -42,6 +164,20 @@ def mathematics_specialist_example(
             ["sqrt(72) = sqrt(36 x 2) = 6sqrt(2).", "sqrt(18) = sqrt(9 x 2) = 3sqrt(2), so the sum is 9sqrt(2).", "5/sqrt(2) = 5sqrt(2)/2.", "Answer: 9sqrt(2) and 5sqrt(2)/2."],
             ["Square factors are taken outside the root.", "Only like surds are combined.", "The denominator is rational after rationalising."],
         )
+    if has_terms(text, ["exponential", "logarithm", "logarithms"]):
+        if has_terms(text, ["graph"]):
+            return (
+                "For y = 2^x, state the y-intercept and describe what happens as x becomes very negative.",
+                ["Substitute x = 0 for the y-intercept.", "Use the shape of an exponential graph.", "State the asymptote behaviour."],
+                ["When x = 0, y = 2^0 = 1.", "As x becomes very negative, 2^x gets closer to 0 but stays positive.", "Answer: y-intercept (0, 1); the graph approaches y = 0."],
+                ["The intercept is found from x = 0.", "The graph stays above the x-axis.", "The horizontal asymptote is described in words."],
+            )
+        return (
+            "Solve 3^x = 81, then write the result using logarithm notation.",
+            ["Write 81 as a power of 3.", "Equate the powers.", "Connect the answer to log notation."],
+            ["81 = 3^4.", "So 3^x = 3^4 gives x = 4.", "In log form, log_3 81 = 4.", "Answer: x = 4."],
+            ["The base is 3.", "The logarithm statement matches the exponential statement.", "The answer is checked by substitution."],
+        )
     if has_terms(text, ["indices", "index", "rational exponent", "rational exponents"]):
         return (
             "Simplify a^(3/2) x a^(1/2), then write a^(1/2) as a surd.",
@@ -56,7 +192,23 @@ def mathematics_specialist_example(
             ["Here a=1, b=-4 and c=5.", "b^2 - 4ac = (-4)^2 - 4(1)(5) = 16 - 20 = -4.", "The discriminant is negative.", "Answer: the equation has no real roots."],
             ["The negative b value is squared correctly.", "A negative discriminant means no real roots.", "The conclusion is about roots, not turning points."],
         )
+    if has_terms(text, ["quadratic equation", "quadratic equations"]) and not has_terms(
+        text, ["inequality", "inequalities", "discriminant", "graph", "graphs", "function", "functions"]
+    ):
+        return (
+            "Solve x^2 - 7x + 10 = 0 by factorising.",
+            ["Find two numbers that multiply to 10 and add to -7.", "Write the quadratic as two factors.", "Set each factor equal to zero."],
+            ["x^2 - 7x + 10 = (x - 5)(x - 2).", "So x - 5 = 0 or x - 2 = 0.", "x = 5 or x = 2.", "Answer: x = 2 or x = 5."],
+            ["Both roots are included.", "The factor signs produce -7x.", "The answer is solving an equation, not an inequality."],
+        )
     if has_terms(text, ["completing the square", "complete the square"]):
+        if has_terms(text, ["factorisation", "quadratic formula"]):
+            return (
+                "Solve x^2 + 6x + 2 = 0 by completing the square, then state why the quadratic formula would give the same roots.",
+                ["Complete the square.", "Set the completed-square expression equal to zero.", "Connect the rearranged form to the quadratic formula method."],
+                ["x^2 + 6x + 2 = (x + 3)^2 - 7.", "So (x + 3)^2 = 7.", "x = -3 +/- sqrt(7).", "Answer: x = -3 +/- sqrt(7); the quadratic formula is the same algebra rearranged."],
+                ["The square is completed before solving.", "Both plus and minus roots are included.", "The method matches a quadratic-equation topic."],
+            )
         return (
             "Write x^2 + 6x - 1 in completed-square form.",
             ["Halve the coefficient of x.", "Add and subtract the square of that half.", "Simplify the constant term."],
@@ -70,7 +222,58 @@ def mathematics_specialist_example(
             ["2x^2 + x - 6 = 2x^2 + 4x - 3x - 6.", "Group: 2x(x+2) - 3(x+2).", "Take out the common bracket.", "Answer: (2x-3)(x+2)."],
             ["Expanding gives 2x^2 + x - 6.", "The signs in the brackets are correct.", "Both factors are included."],
         )
-    if has_terms(text, ["quadratic function", "quadratic functions", "graphs", "vertex", "line of symmetry"]):
+    if has_terms(text, ["sine", "cosine", "tangent", "trigonometry", "trigonometric"]) and has_terms(
+        text, ["graphs", "symmetries", "periodicity", "period"]
+    ):
+        return (
+            "For y = sin x on 0 <= x <= 360 degrees, state the period and the x-values where y = 0.",
+            ["Use the standard sine graph.", "Read one full cycle.", "List the zeros in the interval."],
+            ["The sine graph repeats every 360 degrees, so the period is 360 degrees.", "On 0 <= x <= 360 degrees, sin x = 0 at x = 0, 180 and 360 degrees.", "Answer: period 360 degrees; zeros at 0, 180 and 360 degrees."],
+            ["The graph property is trigonometric, not quadratic.", "Both endpoints are included.", "The answer is tied to the stated interval."],
+        )
+    if "|r|<1" in text.replace(" ", "") or has_terms(text, ["convergent"]):
+        if has_terms(text, ["sum to infinity"]):
+            return (
+                "A geometric series has first term 5 and common ratio 0.4. Find the sum to infinity.",
+                ["Check that |r|<1.", "Use S_infinity = a/(1-r).", "Substitute a and r."],
+                ["Here |r| = 0.4 < 1, so the sum to infinity exists.", "S_infinity = 5/(1 - 0.4).", "S_infinity = 5/0.6 = 25/3.", "Answer: 25/3."],
+                ["The convergence condition is checked.", "The first term is used as a.", "The answer is for an infinite sum."],
+            )
+        return (
+            "A geometric series has common ratio r = -0.6. Use |r|<1 to decide whether it is convergent.",
+            ["Find the absolute value of the common ratio.", "Compare it with 1.", "State the convergence conclusion."],
+            ["Here |r| = |-0.6| = 0.6.", "Since 0.6 < 1, the condition |r|<1 is satisfied.", "Answer: the geometric series is convergent."],
+            ["The absolute value of r is used.", "The comparison is with 1.", "The conclusion names the geometric-series condition."],
+        )
+    if _kinematics_graph_topic(text):
+        if has_terms(text, ["sketching", "interpreting"]):
+            return (
+                "A particle moves with constant positive velocity for 4 seconds, then rests for 2 seconds. Describe the shape of its displacement-time graph.",
+                ["Use gradient on a displacement-time graph to represent velocity.", "Constant positive velocity gives a straight rising line.", "Rest gives a horizontal line."],
+                ["From 0 to 4 seconds, displacement increases at a constant rate, so the graph is a straight rising line.", "From 4 to 6 seconds, the particle rests, so displacement is constant.", "Answer: rising straight line followed by a horizontal segment."],
+                ["The axes are displacement and time.", "Rest is horizontal on a displacement-time graph.", "The sketch matches the motion story."],
+            )
+        return (
+            "A velocity-time graph is a straight line from (0, 2) to (4, 10). Find the acceleration and the displacement in the first 4 seconds.",
+            ["Use the gradient of a velocity-time graph for acceleration.", "Use the area under the graph for displacement.", "State units."],
+            ["Acceleration = (10 - 2)/(4 - 0) = 2 m/s^2.", "Displacement is the area of the trapezium under the graph.", "Area = 1/2 x (2 + 10) x 4 = 24.", "Answer: acceleration 2 m/s^2; displacement 24 m."],
+            ["The graph is velocity-time, not displacement-time.", "Gradient gives acceleration.", "Area under velocity-time gives displacement."],
+        )
+    if has_terms(text, ["intersection points of graphs", "graphs of functions to solve equations"]):
+        if has_terms(text, ["vice versa", "interpreting the solutions"]):
+            return (
+                "A graph shows intersections at x = -1 and x = 3. Write the corresponding solution set for the equation f(x)=g(x).",
+                ["Read the x-coordinates of the intersection points.", "Translate intersections into equation solutions.", "State the solution set."],
+                ["Solutions of f(x)=g(x) occur where the graphs have equal y-values.", "The intersections have x-coordinates -1 and 3.", "Answer: x = -1 or x = 3."],
+                ["Only the x-values are needed for the equation solution.", "The graph reading is translated back into algebra.", "Both intersections are included."],
+            )
+        return (
+            "Find the intersection points of y = x^2 and y = x + 2.",
+            ["Set the two expressions for y equal.", "Solve the resulting quadratic.", "Substitute each x-value to find y."],
+            ["x^2 = x + 2, so x^2 - x - 2 = 0.", "(x - 2)(x + 1) = 0, so x = 2 or x = -1.", "When x = 2, y = 4; when x = -1, y = 1.", "Answer: (2, 4) and (-1, 1)."],
+            ["Intersection means the y-values are equal.", "Both coordinates are given.", "The algebra is interpreted as graph intersections."],
+        )
+    if _quadratic_graph_topic(text):
         return (
             "For y = (x - 3)^2 + 2, state the vertex and line of symmetry.",
             ["Recognise completed-square form.", "Read the horizontal shift carefully.", "The line of symmetry passes through the vertex."],
@@ -78,6 +281,13 @@ def mathematics_specialist_example(
             ["The sign inside the bracket reverses for the x-coordinate.", "The line of symmetry is vertical.", "The answer describes the graph, not just the equation."],
         )
     if has_terms(text, ["divided", "division"]) and has_terms(text, ["polynomial", "polynomials"]):
+        if has_terms(text, ["remainder is", "factor and vice versa"]):
+            return (
+                "For f(x)=2x^3-3x+5, find the remainder when f(x) is divided by x-2.",
+                ["Use the Remainder Theorem.", "Substitute x = 2 into f(x).", "State the result as the remainder."],
+                ["f(2)=2(2)^3-3(2)+5.", "f(2)=16-6+5=15.", "The remainder is f(2).", "Answer: remainder 15."],
+                ["The divisor x-2 gives x=2.", "No full division is needed.", "The value is the remainder, not the quotient."],
+            )
         return (
             "Find the remainder when f(x)=x^3-4x^2+x+6 is divided by x-2.",
             ["Use the Remainder Theorem.", "Evaluate f(2).", "State the remainder."],
@@ -85,6 +295,13 @@ def mathematics_specialist_example(
             ["The divisor x-2 gives x=2.", "The value of f(2) is the remainder.", "A zero remainder means exact division."],
         )
     if has_terms(text, ["factor theorem", "remainder theorem"]):
+        if has_terms(text, ["use of the remainder theorem and the factor theorem"]):
+            return (
+                "For f(x)=x^3-x^2-4x+4, use the Remainder Theorem and Factor Theorem to test x-1 and x-2.",
+                ["Evaluate f(1) and f(2).", "Interpret each value as a remainder.", "A zero remainder identifies a factor."],
+                ["f(1)=1-1-4+4=0, so x-1 is a factor.", "f(2)=8-4-8+4=0, so x-2 is also a factor.", "Both tested divisors give zero remainders.", "Answer: x-1 and x-2 are factors."],
+                ["Each divisor gives its own test value.", "Zero means factor.", "The theorem is used rather than guessed from a graph."],
+            )
         if has_terms(text, ["application"]):
             return (
                 "For f(x)=x^3+2x^2-x-2, use the Factor Theorem to check whether x+2 is a factor.",
@@ -99,11 +316,25 @@ def mathematics_specialist_example(
             ["The test value has the correct sign.", "A zero value means factor, not just root by guesswork.", "The conclusion names the factor."],
         )
     if has_terms(text, ["circle", "circles"]):
+        if has_terms(text, ["tangent", "normal"]):
+            return (
+                "For the circle x^2 + y^2 = 25, point P(3, 4) lies on the circle. Find the gradient of the tangent at P.",
+                ["Find the gradient of the radius OP.", "Use the perpendicular-gradient rule for the tangent.", "State the tangent gradient."],
+                ["The radius from (0,0) to (3,4) has gradient 4/3.", "The tangent is perpendicular to the radius.", "So the tangent gradient is -3/4.", "Answer: -3/4."],
+                ["The radius and tangent are perpendicular.", "Use the negative reciprocal.", "The point lies on the circle."],
+            )
         return (
             "Write the centre and radius of (x-3)^2 + (y+2)^2 = 25.",
             ["Compare with (x-a)^2 + (y-b)^2 = r^2.", "Read the centre signs carefully.", "Square-root the right-hand side."],
             ["The centre is (3, -2).", "r^2 = 25.", "r = 5.", "Answer: centre (3, -2), radius 5."],
             ["The y-coordinate sign is not copied as +2.", "The radius is positive.", "The equation is in completed-square circle form."],
+        )
+    if has_terms(text, ["sine, cosine and tangent functions", "sine cosine and tangent functions"]):
+        return (
+            "In a right-angled triangle, the side opposite angle A is 5 and the hypotenuse is 13. Find sin A.",
+            ["Use sine as opposite over hypotenuse.", "Substitute the given side lengths.", "Simplify if possible."],
+            ["sin A = opposite / hypotenuse.", "sin A = 5/13.", "Answer: 5/13."],
+            ["The correct trig ratio is selected.", "The hypotenuse is the denominator.", "No radian conversion is needed."],
         )
     if has_terms(text, ["trigonometry", "radian", "radians", "sine", "cosine"]):
         return (
@@ -113,6 +344,27 @@ def mathematics_specialist_example(
             ["Radian conversion uses pi radians = 180 degrees.", "The exact value is not rounded.", "The angle is in the first quadrant."],
         )
     if has_terms(text, ["sequence", "sequences", "series", "arithmetic", "geometric"]):
+        if has_terms(text, ["x_(n+1)", "recurrence", "simple relation"]):
+            return (
+                "A sequence is defined by x_1 = 2 and x_(n+1) = 3x_n - 1. Find x_2 and x_3.",
+                ["Use the recurrence relation one step at a time.", "Substitute x_1 to find x_2.", "Substitute x_2 to find x_3."],
+                ["x_2 = 3(2) - 1 = 5.", "x_3 = 3(5) - 1 = 14.", "Answer: x_2 = 5 and x_3 = 14."],
+                ["Each term uses the previous term.", "The starting value is used first.", "Do not treat n as the term value."],
+            )
+        if has_terms(text, ["finite geometric series"]):
+            return (
+                "A geometric series has first term 3 and common ratio 2. Find the sum of the first 5 terms.",
+                ["Use the finite geometric-series formula.", "Substitute a=3, r=2, n=5.", "Calculate the finite sum."],
+                ["S_5 = a(r^5 - 1)/(r - 1).", "S_5 = 3(2^5 - 1)/(2 - 1).", "S_5 = 3(31) = 93.", "Answer: 93."],
+                ["This is finite, not sum to infinity.", "The common ratio is used as r.", "The number of terms is 5."],
+            )
+        if has_terms(text, ["arithmetic series", "natural numbers"]):
+            return (
+                "Find the sum of the first 20 natural numbers.",
+                ["Use the arithmetic-series formula.", "Substitute n=20.", "Simplify the product."],
+                ["S_n = n(n+1)/2 for the first n natural numbers.", "S_20 = 20(21)/2.", "Answer: 210."],
+                ["The formula is for 1 + 2 + ... + n.", "n is 20.", "The result is a sum, not the 20th term."],
+            )
         return (
             "An arithmetic sequence has first term 7 and common difference 4. Find the 12th term and the sum of the first 12 terms.",
             ["Use a_n = a + (n-1)d.", "Substitute n = 12.", "Use the arithmetic-series sum formula."],
@@ -133,21 +385,126 @@ def mathematics_specialist_example(
             "velocity",
         ],
     ):
+        if has_terms(text, ["parallel"]):
+            return (
+                "Line l has equation y = 2x + 5. Find the gradient of a line parallel to l.",
+                ["Recall that parallel lines have equal gradients.", "Read the gradient from y = mx + c.", "State the matching gradient."],
+                ["For y = 2x + 5, the gradient is 2.", "A parallel line has the same gradient.", "Answer: gradient 2."],
+                ["The y-intercept is not needed.", "Parallel means same gradient.", "The answer is a gradient, not an equation."],
+            )
+        if has_terms(text, ["perpendicular"]):
+            return (
+                "Line l has gradient 4. Find the gradient of a line perpendicular to l.",
+                ["Use m1 x m2 = -1 for perpendicular lines.", "Substitute m1 = 4.", "Solve for m2."],
+                ["4m2 = -1.", "m2 = -1/4.", "Answer: the perpendicular gradient is -1/4."],
+                ["The gradients multiply to -1.", "The sign changes.", "The answer is the negative reciprocal."],
+            )
+        if has_terms(text, ["intersection of a straight line and a curve"]):
+            return (
+                "Find where the line y = x + 1 meets the curve y = x^2 - 5.",
+                ["Set the two expressions for y equal.", "Solve the resulting quadratic.", "Substitute back to find y-values."],
+                ["x + 1 = x^2 - 5, so x^2 - x - 6 = 0.", "(x - 3)(x + 2)=0, so x=3 or x=-2.", "The points are (3,4) and (-2,-1).", "Answer: (3,4), (-2,-1)."],
+                ["Both intersection points are given.", "The line and curve equations are both used.", "The answer includes coordinates."],
+            )
         return (
             "Find the equation of the line through (2, 5) with gradient 3.",
             ["Start with y = mx + c.", "Substitute the gradient.", "Use the point to find c."],
             ["y = 3x + c.", "Using (2, 5): 5 = 3(2) + c.", "c = -1.", "Answer: y = 3x - 1."],
             ["The gradient is the coefficient of x.", "The point is substituted into the line equation.", "The final equation is in terms of x and y."],
         )
-    if has_terms(text, ["derivative", "differentiation", "tangent", "gradient", "stationary"]):
+    if has_terms(text, ["indefinite integration as the reverse of differentiation"]):
+        return (
+            "Differentiate 2x^3 - 5x + C to show why it is a possible indefinite integral of 6x^2 - 5.",
+            ["Differentiate the proposed antiderivative.", "Compare it with the integrand.", "Explain the role of C."],
+            ["d/dx(2x^3 - 5x + C) = 6x^2 - 5.", "This matches the integrand.", "C differentiates to 0, so any constant is possible.", "Answer: 2x^3 - 5x + C is an indefinite integral."],
+            ["Integration reverses differentiation.", "The constant C is explained.", "The check is done by differentiating."],
+        )
+    if has_terms(text, ["derivative", "differentiation", "tangent", "gradient", "stationary", "second order"]):
+        if has_terms(text, ["notation", "notations", "dy/dx", "f'"]):
+            return (
+                "If f(x)=x^3, write f'(x) and dy/dx for y=x^3.",
+                ["Use derivative notation for f.", "Use dy/dx notation for y.", "Differentiate x^3."],
+                ["f'(x)=3x^2.", "For y=x^3, dy/dx=3x^2.", "Answer: f'(x)=3x^2 and dy/dx=3x^2."],
+                ["Both notations mean the derivative in this context.", "The power rule is applied once.", "The notation matches the function name."],
+            )
+        if has_terms(text, ["second order"]):
+            return (
+                "For y = x^3 - 3x^2 + 2, find d2y/dx2.",
+                ["Differentiate once to find dy/dx.", "Differentiate again.", "State the second derivative."],
+                ["dy/dx = 3x^2 - 6x.", "d2y/dx2 = 6x - 6.", "Answer: d2y/dx2 = 6x - 6."],
+                ["The function is differentiated twice.", "The notation means second derivative.", "The final expression is not set equal to zero unless asked."],
+            )
+        if has_terms(text, ["general appreciation", "interpreting it"]):
+            return (
+                "A graph has gradient 5 at x = 2. Interpret this derivative value in words.",
+                ["Connect derivative to local rate of change.", "Use the x-value as the point of interpretation.", "State what the sign and size mean."],
+                ["The derivative at x = 2 is the gradient of the tangent there.", "A value of 5 means y is increasing at 5 units of y per unit of x at that point.", "Answer: the local rate of change is 5."],
+                ["This is interpretation, not another differentiation calculation.", "The derivative is local to the point.", "The positive value means increasing."],
+            )
+        if has_terms(text, ["x^n", "rational number"]):
+            return (
+                "Differentiate y = x^(1/2) + x^(-2).",
+                ["Use the power rule for each rational power.", "Reduce each exponent by 1.", "Keep negative powers in exact form."],
+                ["dy/dx = (1/2)x^(-1/2) - 2x^(-3).", "Answer: dy/dx = 1/(2sqrt(x)) - 2/x^3."],
+                ["The fractional power is differentiated by the same rule.", "The negative exponent is handled carefully.", "The expression is exact."],
+            )
+        if has_terms(text, ["polynomials"]):
+            return (
+                "Differentiate y = 4x^3 - 5x^2 + 7 with respect to x.",
+                ["Apply the power rule to each term.", "The constant differentiates to zero.", "Collect the derivative terms."],
+                ["dy/dx = 12x^2 - 10x.", "The derivative of 7 is 0.", "Answer: dy/dx = 12x^2 - 10x."],
+                ["Each power is reduced by 1.", "Coefficients are multiplied by the old power.", "Constants disappear."],
+            )
+        if has_terms(text, ["maxima", "minima", "stationary", "increasing", "decreasing"]):
+            return (
+                "For y = x^2 - 6x + 8, find the stationary point.",
+                ["Differentiate the function.", "Set dy/dx = 0.", "Substitute the x-value back into y."],
+                ["dy/dx = 2x - 6.", "2x - 6 = 0 gives x = 3.", "y = 3^2 - 6(3) + 8 = -1.", "Answer: stationary point (3, -1)."],
+                ["A stationary point has zero gradient.", "The y-coordinate is found by substitution.", "The answer is a point."],
+            )
+        if has_terms(text, ["normal"]):
+            return (
+                "A curve has tangent gradient 2 at point P. Find the gradient of the normal at P.",
+                ["Use the perpendicular-gradient rule.", "The tangent and normal gradients multiply to -1.", "Solve for the normal gradient."],
+                ["2 x m_normal = -1.", "m_normal = -1/2.", "Answer: normal gradient -1/2."],
+                ["The normal is perpendicular to the tangent.", "Use negative reciprocal.", "The answer is a gradient."],
+            )
         return (
             "For y = 3x^2 - 4x + 1, find dy/dx and the gradient of the tangent when x = 2.",
             ["Differentiate term by term.", "Substitute x = 2 into the derivative.", "State the gradient clearly."],
             ["dy/dx = 6x - 4.", "When x = 2, dy/dx = 6(2) - 4.", "The gradient is 8.", "Answer: dy/dx = 6x - 4; tangent gradient = 8."],
             ["The constant differentiates to 0.", "The x-value is substituted after differentiating.", "The gradient is a number."],
         )
-    if has_terms(text, ["integration", "integral", "trapezium", "area under"]):
-        if has_terms(text, ["area", "curve", "x-axis"]) and number % 2:
+    if has_terms(text, ["trapezium"]):
+        return (
+            "Use the trapezium rule with step width 1 to estimate the area under y = x^2 from x = 0 to x = 4.",
+            ["List the ordinates at x = 0, 1, 2, 3 and 4.", "Substitute them into h/2(first + last + 2 x middle sum).", "State that the result is an estimate."],
+            ["The ordinates are 0, 1, 4, 9 and 16.", "With h = 1, estimate = 1/2[0 + 16 + 2(1 + 4 + 9)].", "Estimate = 1/2[16 + 28] = 22.", "Answer: the estimated area is 22 square units."],
+            ["The internal ordinates are doubled.", "The width h is included.", "The answer is described as an estimate, not an exact integral."],
+        )
+    if has_terms(text, ["integration", "integral", "area under"]):
+        if has_terms(text, ["interpretation of the definite integral as the area under a curve"]):
+            return (
+                "Explain what the definite integral of a positive function from x = 1 to x = 4 represents on its graph.",
+                ["Identify the interval on the x-axis.", "Connect the integral to area under the curve.", "State the condition about positivity."],
+                ["The limits x = 1 and x = 4 mark the horizontal interval.", "For a positive function, the definite integral gives the area between the curve and the x-axis.", "Answer: it represents that area over 1 <= x <= 4."],
+                ["This is interpretation, not just calculation.", "The area is tied to the limits.", "The positivity condition avoids signed-area confusion."],
+            )
+        if has_terms(text, ["definite integral", "evaluation of definite"]):
+            return (
+                "Evaluate the definite integral of 3x^2 from x = 1 to x = 3.",
+                ["Find an antiderivative.", "Substitute the upper limit.", "Subtract the lower-limit value."],
+                ["An antiderivative of 3x^2 is x^3.", "At x=3, x^3=27; at x=1, x^3=1.", "27 - 1 = 26.", "Answer: 26."],
+                ["Upper minus lower is used.", "No constant C is needed for a definite integral.", "The antiderivative differentiates back to 3x^2."],
+            )
+        if has_terms(text, ["x^n", "rational number"]):
+            return (
+                "Find the indefinite integral of x^(1/2) + 2x^3 with respect to x.",
+                ["Increase each power by 1.", "Divide by the new power.", "Add the constant of integration."],
+                ["Integral of x^(1/2) is x^(3/2)/(3/2) = (2/3)x^(3/2).", "Integral of 2x^3 is (1/2)x^4.", "Answer: (2/3)x^(3/2) + (1/2)x^4 + C."],
+                ["The fractional power rule is used.", "The constant C is included.", "The excluded n=-1 case is avoided."],
+            )
+        if has_terms(text, ["area", "curve", "x-axis"]):
             return (
                 "Find the area under y = 2x from x = 1 to x = 4.",
                 ["Set up the definite integral.", "Find an antiderivative.", "Subtract lower limit from upper limit."],
@@ -168,12 +525,47 @@ def mathematics_specialist_example(
             ["The base is 3.", "The logarithm statement matches the exponential statement.", "The answer is checked by substitution."],
         )
     if has_terms(text, ["binomial", "bernoulli"]):
+        if has_terms(text, ["deductions of np", "corresponding values"]):
+            return (
+                "A Bernoulli random variable has P(success)=p. Use this to state the mean and variance of X ~ B(n,p).",
+                ["Recall the Bernoulli mean and variance.", "Scale from one trial to n independent trials.", "State the binomial results."],
+                ["For one Bernoulli trial, mean is p and variance is p(1-p).", "For n independent trials, the binomial mean is np.", "The binomial variance is np(1-p).", "Answer: E(X)=np, Var(X)=np(1-p)."],
+                ["The result is derived from repeated Bernoulli trials.", "The variance includes 1-p.", "No numerical substitution is needed."],
+            )
+        if has_terms(text, ["conditions for application"]):
+            return (
+                "A trial records whether a component is defective. State why this can be modelled as a Bernoulli trial.",
+                ["Check the number of outcomes.", "Identify success/failure.", "State the constant probability condition."],
+                ["There are two outcomes: defective or not defective.", "One outcome can be called success.", "If the success probability is fixed for the trial, it is Bernoulli.", "Answer: two outcomes with fixed success probability."],
+                ["The model condition is stated, not calculated.", "Success is defined clearly.", "Only one trial is being described."],
+            )
+        if has_terms(text, ["calculation of probabilities", "formula and tables"]):
+            return (
+                "Let X ~ B(8, 0.25). Write the formula expression for P(X=3).",
+                ["Use the binomial probability formula.", "Substitute n=8, p=0.25 and x=3.", "Leave as an exact expression if no calculator is required."],
+                ["P(X=3)=C(8,3)(0.25)^3(0.75)^5.", "This is the formula expression for exactly 3 successes.", "Answer: C(8,3)(0.25)^3(0.75)^5."],
+                ["The success power is 3.", "The failure power is 5.", "The combination term counts arrangements."],
+            )
         if not has_terms(text, ["mean", "variance", "standard deviation"]):
+            if has_terms(text, ["binomial distribution"]):
+                return (
+                    "State the two parameters needed to define X ~ B(n,p), and explain what they mean.",
+                    ["Identify n.", "Identify p.", "Connect the notation to repeated Bernoulli trials."],
+                    ["n is the number of independent trials.", "p is the probability of success on each trial.", "Answer: X ~ B(n,p) is defined by n and p."],
+                    ["The distribution is described, not immediately calculated.", "n and p have different meanings.", "The success probability is constant."],
+                )
             return (
                 "Let X ~ B(5, 0.4). Find P(X=2).",
                 ["Use the binomial probability formula.", "Substitute n=5, p=0.4 and x=2.", "Keep the combination term."],
                 ["P(X=2)=C(5,2)(0.4)^2(0.6)^3.", "C(5,2)=10.", "P(X=2)=10 x 0.16 x 0.216.", "Answer: P(X=2)=0.3456."],
                 ["The power of 0.4 matches the number of successes.", "The power of 0.6 matches failures.", "The combination counts arrangements."],
+            )
+        if has_terms(text, ["mean and variance of a bernoulli"]):
+            return (
+                "A Bernoulli random variable has P(success)=0.3. Find its mean and variance.",
+                ["Use E(X)=p for a Bernoulli variable.", "Use Var(X)=p(1-p).", "Substitute p=0.3."],
+                ["E(X)=0.3.", "Var(X)=0.3(0.7)=0.21.", "Answer: mean 0.3, variance 0.21."],
+                ["This is one Bernoulli trial, not B(n,p).", "The variance uses 1-p.", "No n value is needed."],
             )
         return (
             "Let X ~ B(10, 0.3). Find E(X) and Var(X).",
@@ -182,12 +574,54 @@ def mathematics_specialist_example(
             ["The value of 1-p is 0.7.", "Expectation and variance use different formulae.", "X is identified as binomial."],
         )
     if has_terms(text, ["random variable", "variance", "standard deviation"]):
+        if has_terms(text, ["sum or difference"]):
+            return (
+                "Independent random variables X and Y have E(X)=8, E(Y)=3, Var(X)=5 and Var(Y)=2. Find E(X-Y) and Var(X-Y).",
+                ["Subtract expectations for X-Y.", "Add variances because X and Y are independent.", "State both results."],
+                ["E(X-Y)=8-3=5.", "Var(X-Y)=Var(X)+Var(Y)=5+2=7.", "Answer: E(X-Y)=5 and Var(X-Y)=7."],
+                ["Variance adds for a difference when variables are independent.", "Expectation follows the sign.", "Do not subtract variances."],
+            )
         if has_terms(text, ["sum", "independent"]):
             return (
                 "A random variable X has E(X)=4 and Var(X)=1.5. An independent random variable Y has E(Y)=3 and Var(Y)=2. Find E(X+Y) and Var(X+Y).",
                 ["Add expectations.", "Use independence to add variances.", "State both values clearly."],
                 ["E(X+Y)=E(X)+E(Y)=4+3=7.", "Because X and Y are independent, Var(X+Y)=Var(X)+Var(Y).", "Var(X+Y)=1.5+2=3.5.", "Answer: E(X+Y)=7 and Var(X+Y)=3.5."],
                 ["Independence is needed for adding variances.", "Expectation is linear.", "Do not add standard deviations."],
+            )
+        if has_terms(text, ["associated probability distributions"]):
+            return (
+                "A table gives P(X=1)=0.2, P(X=2)=0.3 and P(X=3)=0.5. State the probability distribution of X.",
+                ["List each possible value of X.", "Pair each value with its probability.", "Check that the probabilities sum to 1."],
+                ["The distribution is x: 1, 2, 3 with probabilities 0.2, 0.3, 0.5.", "The probabilities add to 1.", "Answer: the table defines the distribution."],
+                ["A distribution pairs values with probabilities.", "All probabilities are included.", "The total probability is 1."],
+            )
+        if has_terms(text, ["number of possible outcomes", "finite"]):
+            return (
+                "A discrete random variable X can take values 0, 1 and 2 with probabilities 0.2, 0.5 and 0.3. Check that this is a valid distribution.",
+                ["List the possible outcomes.", "Check each probability is between 0 and 1.", "Add the probabilities."],
+                ["The possible outcomes are finite: 0, 1 and 2.", "Each probability is between 0 and 1.", "0.2 + 0.5 + 0.3 = 1.", "Answer: this is a valid probability distribution."],
+                ["The outcomes are finite.", "Probabilities add to 1.", "No probability is negative."],
+            )
+        if has_terms(text, ["simple function"]):
+            return (
+                "A random variable X has E(X)=4 and Var(X)=3. Find E(2X+1) and Var(2X+1).",
+                ["Use the linearity rule for expectation.", "Use the scaling rule for variance.", "Substitute the values."],
+                ["E(2X+1)=2E(X)+1=9.", "Var(2X+1)=2^2 Var(X)=12.", "Answer: E(2X+1)=9 and Var(2X+1)=12."],
+                ["Adding 1 changes the expectation.", "Adding 1 does not change the variance.", "The multiplier is squared for variance."],
+            )
+        if has_terms(text, ["mean, variance and standard deviation for discrete random variables"]):
+            return (
+                "A random variable has E(X)=2 and Var(X)=0.64. Find its standard deviation and describe what Var(X) measures.",
+                ["Take the positive square root for standard deviation.", "Keep the variance as the spread measure.", "State both meanings clearly."],
+                ["Standard deviation = sqrt(0.64)=0.8.", "Variance measures the average squared spread about the mean.", "Answer: standard deviation 0.8; variance measures spread."],
+                ["Standard deviation is the square root of variance.", "Variance and standard deviation are not the same number.", "The interpretation is included."],
+            )
+        if has_terms(text, ["standard deviation"]):
+            return (
+                "A random variable has variance 2.25. Find its standard deviation.",
+                ["Use standard deviation as the square root of variance.", "Take the positive square root.", "State the unit if one is given."],
+                ["Standard deviation = sqrt(2.25).", "sqrt(2.25)=1.5.", "Answer: 1.5."],
+                ["Standard deviation is not the variance itself.", "The square root is positive.", "The answer measures spread."],
             )
         if has_terms(text, ["spread"]):
             return (
@@ -196,16 +630,44 @@ def mathematics_specialist_example(
                 ["E(X)=0(0.2)+1(0.5)+2(0.3)=1.1.", "E(X^2)=0^2(0.2)+1^2(0.5)+2^2(0.3)=1.7.", "Var(X)=1.7-1.1^2.", "Answer: Var(X)=0.49."],
                 ["Variance measures spread.", "E(X^2) is not the same as [E(X)]^2.", "The variance is non-negative."],
             )
+        if has_terms(text, ["central tendency"]):
+            return (
+                "A discrete random variable X has P(X=1)=0.25 and P(X=5)=0.75. Find the mean E(X).",
+                ["Multiply each value by its probability.", "Add the products.", "Interpret the mean as a long-run average."],
+                ["E(X)=1(0.25)+5(0.75).", "E(X)=0.25+3.75=4.", "Answer: E(X)=4."],
+                ["The probabilities weight the values.", "The mean need not be equally spaced.", "The answer is an expected value."],
+            )
         return (
             "A random variable X has P(X=0)=0.2, P(X=1)=0.5 and P(X=2)=0.3. Find E(X).",
             ["Multiply each value by its probability.", "Add the products.", "Check probabilities add to 1."],
             ["The probabilities add to 0.2 + 0.5 + 0.3 = 1.", "E(X) = 0(0.2) + 1(0.5) + 2(0.3).", "E(X) = 0 + 0.5 + 0.6 = 1.1.", "Answer: E(X) = 1.1."],
             ["Each x-value is weighted by its probability.", "Probabilities sum to 1.", "Expectation is not necessarily a possible value of X."],
         )
+    if "vertical motion under gravity" in text:
+        return (
+            "A ball is thrown vertically upwards at 19.6 m/s. Using g = 9.8 m/s^2, find the time taken to reach its greatest height.",
+            ["Take upwards as positive.", "At greatest height, the velocity is 0.", "Use v = u + at with acceleration -g."],
+            ["Use v = u + at.", "0 = 19.6 - 9.8t.", "9.8t = 19.6.", "Answer: t = 2 s."],
+            ["The acceleration is downwards.", "The sign of g matches the chosen positive direction.", "The velocity at the top is zero."],
+        )
     if has_terms(text, ["displacement", "speed", "velocity", "acceleration", "motion"]) and not has_terms(
         text,
         ["force", "forces", "newton", "momentum", "impulse"],
     ):
+        if has_terms(text, ["difference between displacement", "difference between velocity"]):
+            return (
+                "A runner goes 100 m east then 40 m west in 20 s. Find the distance travelled and displacement.",
+                ["Distance adds the path lengths.", "Displacement uses final position from the start.", "Keep direction for displacement."],
+                ["Distance = 100 + 40 = 140 m.", "Displacement = 100 - 40 = 60 m east.", "Answer: distance 140 m; displacement 60 m east."],
+                ["Distance is scalar.", "Displacement includes direction.", "The two values are not automatically the same."],
+            )
+        if has_terms(text, ["constant acceleration equations"]):
+            return (
+                "A particle starts at 4 m/s and accelerates uniformly at 3 m/s^2 for 5 s. Find its final velocity.",
+                ["Choose the constant-acceleration equation.", "Substitute u=4, a=3, t=5.", "Calculate v."],
+                ["v = u + at.", "v = 4 + 3(5).", "v = 19.", "Answer: 19 m/s."],
+                ["The acceleration is constant.", "Initial velocity is not zero.", "The final velocity has unit m/s."],
+            )
         if has_terms(text, ["average speed"]):
             return (
                 "A particle travels 120 m in 8 s. Find its average speed.",
@@ -233,6 +695,13 @@ def mathematics_specialist_example(
             ["Initial momentum = 0.5 x 6 = 3 kg m/s.", "Final velocity is -4 m/s, so final momentum = 0.5 x (-4) = -2 kg m/s.", "Change in momentum = -2 - 3 = -5 kg m/s.", "Answer: change in momentum = -5 kg m/s."],
             ["The rebound velocity has the opposite sign.", "Change means final minus initial.", "The fixed wall is not assigned a velocity."],
         )
+    if has_terms(text, ["concept of momentum", "momentum = mv"]):
+        return (
+            "A 3 kg particle moves in a straight line at 4 m/s. Find its momentum.",
+            ["Use p = mv.", "Substitute the mass and velocity.", "Give the vector unit."],
+            ["p = mv.", "p = 3 x 4.", "p = 12.", "Answer: momentum = 12 kg m/s in the direction of motion."],
+            ["Mass is in kg.", "Velocity is in m/s.", "Momentum includes direction."],
+        )
     if has_terms(text, ["impulse"]):
         return (
             "A particle has momentum 12 kg m/s before an impact and 5 kg m/s afterwards in the same direction. Find the impulse on the particle.",
@@ -240,12 +709,40 @@ def mathematics_specialist_example(
             ["Impulse = final momentum - initial momentum.", "Impulse = 5 - 12.", "Impulse = -7.", "Answer: impulse = -7 N s."],
             ["The sign shows the impulse acts opposite to the original direction.", "N s is equivalent to kg m/s.", "Use change in momentum, not total momentum."],
         )
-    if has_terms(text, ["concept of momentum", "momentum = mv"]):
+    if has_terms(text, ["force of gravity"]) or "w = mg" in text:
         return (
-            "A 3 kg particle moves in a straight line at 4 m/s. Find its momentum.",
-            ["Use p = mv.", "Substitute the mass and velocity.", "Give the vector unit."],
-            ["p = mv.", "p = 3 x 4.", "p = 12.", "Answer: momentum = 12 kg m/s in the direction of motion."],
-            ["Mass is in kg.", "Velocity is in m/s.", "Momentum includes direction."],
+            "A particle has mass 5 kg. Using g = 9.8 m/s^2, find its weight.",
+            ["Use W = mg.", "Substitute the mass and gravitational field strength.", "Give the force unit."],
+            ["W = mg.", "W = 5 x 9.8.", "W = 49.", "Answer: weight = 49 N."],
+            ["Weight is a force.", "The value of g is included.", "The answer is in newtons."],
+        )
+    if has_terms(text, ["normal reaction", "normal reactions"]):
+        return (
+            "A 6 kg particle rests on a horizontal surface. Using g = 9.8 m/s^2, find the normal reaction.",
+            ["Resolve forces perpendicular to the surface.", "Use equilibrium in the vertical direction.", "Substitute W = mg."],
+            ["The weight is W = 6 x 9.8 = 58.8 N.", "On a horizontal surface with no other vertical forces, R = W.", "Answer: normal reaction R = 58.8 N."],
+            ["The reaction is perpendicular to the surface.", "Vertical equilibrium is used.", "The answer is a force in newtons."],
+        )
+    if has_terms(text, ["tension", "tensions", "thrust", "thrusts"]):
+        return (
+            "A 2 kg particle is pulled horizontally by a light string with tension 10 N on a smooth surface. Find its acceleration.",
+            ["Treat the tension as the resultant horizontal force.", "Use F = ma.", "Solve for acceleration."],
+            ["F = ma gives 10 = 2a.", "a = 5.", "Answer: acceleration = 5 m/s^2."],
+            ["Tension acts along the string.", "The surface is smooth, so no friction force is included.", "The unit is m/s^2."],
+        )
+    if has_terms(text, ["three laws", "newton’ s three laws", "newton's three laws"]):
+        return (
+            "A particle moves with constant velocity in a straight line. State the resultant force and name the Newton's-law idea used.",
+            ["Recognise constant velocity means zero acceleration.", "Use F = ma.", "State the Newton's-law interpretation."],
+            ["If acceleration is 0, F = ma = 0.", "So the resultant force is 0 N.", "Answer: resultant force 0 N; this is Newton's first law/equilibrium idea."],
+            ["Constant velocity is not the same as speeding up.", "Resultant force, not total force, is zero.", "The law is linked to motion."],
+        )
+    if has_terms(text, ["resistive", "friction"]):
+        return (
+            "A 3 kg particle is pulled by a 20 N force against a resistive force of 5 N. Find its acceleration.",
+            ["Find the resultant force in the direction of motion.", "Use F = ma.", "Solve for acceleration."],
+            ["Resultant force = 20 - 5 = 15 N.", "15 = 3a.", "a = 5.", "Answer: acceleration = 5 m/s^2."],
+            ["The resistive force acts opposite motion.", "Only the resultant force is used in F = ma.", "The unit is m/s^2."],
         )
     if has_terms(text, ["force", "forces", "newton", "motion", "velocity", "acceleration", "momentum", "impulse"]):
         return (
@@ -254,11 +751,12 @@ def mathematics_specialist_example(
             ["F = ma.", "F = 4 x 3.", "F = 12.", "Answer: resultant force = 12 N."],
             ["Mass is in kg.", "Acceleration is in m/s^2.", "The force unit is newtons."],
         )
+    focus = _short_focus(text)
     return (
-        "Solve x^2 - 5x + 6 = 0 and check both roots.",
-        ["Factorise the quadratic.", "Set each factor equal to zero.", "Substitute the roots back into the equation."],
-        ["x^2 - 5x + 6 = (x - 2)(x - 3).", "x - 2 = 0 or x - 3 = 0.", "So x = 2 or x = 3.", "Both roots make x^2 - 5x + 6 equal to 0."],
-        ["Both roots are included.", "The signs in the factors are correct.", "Substitution checks the answer."],
+        f"A question asks about {focus}. State the method you would start with and one check before giving the final answer.",
+        ["Identify the exact formula, graph feature, notation, or model named in the question.", "Write the first line of working using that named idea.", "Check that the method belongs to this topic, not a neighbouring one."],
+        [f"For {focus}, start by naming the required method from the syllabus point.", "Then substitute the given quantities or translate the stated condition into algebra.", "Before finalising, check signs, units, interval restrictions, or notation.", "Answer: the first method and check must match the named syllabus point."],
+        ["The worked method is tied to the topic wording.", "No unrelated quadratic or graph template is imported.", "The final check targets the common boundary of the unit."],
     )
 
 
