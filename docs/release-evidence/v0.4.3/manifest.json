@@ -1,0 +1,62 @@
+{
+  "release": "v0.4.3-aqa-as-mathematics-corrective-review",
+  "generated_at": "2026-07-03",
+  "git_revision": "v0.4.3",
+  "overall_status": "final-ready-sample-only",
+  "notes": [
+    "This release records a corrective AQA AS Mathematics sample review after visible handbook defects were found and repaired.",
+    "This does not certify all boards, all subjects, or random-course generation readiness.",
+    "The architecture hot review is documented in docs/PROJECT_HOT_REVIEW_20260703.md."
+  ],
+  "entries": [
+    {
+      "id": "oxfordaqa-as-mathematics-9660-zh-term-support-friendly-final-ready",
+      "status": "final-ready",
+      "provider": "oxfordaqa",
+      "level": "as-level",
+      "subject": "Mathematics",
+      "subject_code": "9660",
+      "language": "zh-CN term-support glossary with English body",
+      "style": "friendly",
+      "output_dir": "outputs/aqa-as-mathematics-9660-zh-glossary-friendly-v20-20260703",
+      "commands": [
+        "python -m pytest -q",
+        "python -m compileall -q src tests scripts",
+        "python -m intl_exam_guide review --out outputs/aqa-as-mathematics-9660-zh-glossary-friendly-v20-20260703",
+        "git diff --check"
+      ],
+      "validation_summary": {
+        "delivery_status": "ready",
+        "product_review_decision": "final-ready",
+        "error_count": 0,
+        "topics": 99,
+        "practice_cards": 99,
+        "visual_assets": 24,
+        "professional_glossary_terms": 46,
+        "pending_concept_explanations": 0,
+        "pending_infographic_assets": 0,
+        "duplicate_concept_text_groups": 0,
+        "duplicate_visual_hash_groups": 0,
+        "pdf_pages": 117,
+        "pdf_blank_text_pages": 0
+      },
+      "final_review": {
+        "agent_self_review_status": "ready",
+        "must_not_present_as_final": false,
+        "product_review_artifact": "agent-product-review.json",
+        "visible_pdf_pages_sampled": [
+          2,
+          47,
+          49,
+          63,
+          65,
+          80,
+          97,
+          99,
+          117
+        ]
+      },
+      "scope_warning": "This evidence covers this sample only. It must not be generalized to all boards or subjects."
+    }
+  ]
+}

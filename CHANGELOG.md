@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.4.3 - 2026-07-03
+
+### Fixed
+
+- Repaired AQA AS Mathematics generation issues found during visible handbook
+  review: repeated mastery explanations, generic exam-logic phrasing, weak
+  topic routing for trigonometry, differentiation, circle geometry, kinematics,
+  and fixed-plane impact, and repeated adjacent SVG visuals.
+- Added focused regression coverage for mathematics concept-writing routes,
+  practice generation, source-point selection, SVG routing, rendering contracts,
+  and validation checks so the same AQA AS Mathematics failures are easier to
+  catch before handoff.
+- Re-rendered and reviewed the local AQA AS Mathematics sample after repairs:
+  99 topic guides, 99 practice items, 24 visual assets, 46 professional glossary
+  terms, 117 PDF pages, zero blank text pages, zero duplicate visual hashes, and
+  `agent-product-review.json` marked `final-ready`.
+
+### Review Notes
+
+- This is a corrective release, not a certification of all exam boards and
+  subjects. The hot review in `docs/PROJECT_HOT_REVIEW_20260703.md` records the
+  remaining product and architecture risks: real multi-agent orchestration is
+  still not enforced by the Python runtime, final review is partly dependent on
+  the active user Agent, subject coverage remains uneven, and the visual routing
+  stack needs a cleaner rebuild before claiming 95%+ student-ready accuracy.
+
 ## 0.4.2 - 2026-07-02
 
 ### Changed
