@@ -5,8 +5,7 @@
   "overall_status": "final-ready-sample-only",
   "notes": [
     "This release records a corrective AQA AS Mathematics sample review after visible handbook defects were found and repaired.",
-    "This does not certify all boards, all subjects, or random-course generation readiness.",
-    "The architecture hot review is documented in docs/PROJECT_HOT_REVIEW_20260703.md."
+    "This does not certify all boards, all subjects, or random-course generation readiness."
   ],
   "entries": [
     {

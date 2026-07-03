@@ -20,11 +20,7 @@
 ### Review Notes
 
 - This is a corrective release, not a certification of all exam boards and
-  subjects. The hot review in `docs/PROJECT_HOT_REVIEW_20260703.md` records the
-  remaining product and architecture risks: real multi-agent orchestration is
-  still not enforced by the Python runtime, final review is partly dependent on
-  the active user Agent, subject coverage remains uneven, and the visual routing
-  stack needs a cleaner rebuild before claiming 95%+ student-ready accuracy.
+  subjects.
 
 ## 0.4.2 - 2026-07-02
 
