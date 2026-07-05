@@ -319,6 +319,10 @@ cards, and the minimum source information needed for review.
 Families should have subject teachers or syllabus-aware adults review deeper
 worked examples before using generated guides as final exam preparation.
 
+## Author
+
+Ethan <ethan.zl@hotmail.com>
+
 ## License
 
 MIT.

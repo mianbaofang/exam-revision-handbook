@@ -248,6 +248,10 @@ tests/            测试与回归样例
 
 给孩子正式备考使用前，建议由老师或熟悉大纲的人复核深度例题和答案。
 
+## 作者
+
+Ethan <ethan.zl@hotmail.com>
+
 ## License
 
 MIT.
