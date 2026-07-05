@@ -56,6 +56,7 @@ def styled_explanation(
         "常见失分点是只背关键词，却没有按题目的指令词行动。看到题目先问自己：它要我算、解释、比较，还是证明？",
     )
 
+
 def styled_explanation_en(
     topic: Topic,
     primary: str,

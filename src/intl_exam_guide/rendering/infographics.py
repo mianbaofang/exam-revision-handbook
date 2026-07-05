@@ -5,10 +5,7 @@ from typing import Any
 from intl_exam_guide.models import VisualBrief
 from intl_exam_guide.rendering.icons import render_icon
 from intl_exam_guide.rendering.text import html_escape
-from intl_exam_guide.rendering.visual_assets import (
-    has_renderable_infographic,
-    has_renderable_svg_fallback,
-)
+from intl_exam_guide.rendering.visual_assets import has_renderable_infographic
 
 
 def render_infographic_required(
@@ -20,8 +17,6 @@ def render_infographic_required(
 ) -> str:
     if asset and has_renderable_infographic(asset):
         return _render_generated_infographic(title, visual, asset, source_label, language)
-    if asset and has_renderable_svg_fallback(asset):
-        return _render_svg_fallback_infographic(title, visual, asset, source_label, language)
     return _render_pending_infographic(title, visual, asset, source_label, language)
 
 
@@ -35,7 +30,11 @@ def _render_generated_infographic(
     filename = str(asset["file"])
     caption = "Generated Infographic" if language == "en" else "已生成信息图"
     source_prefix = "Source anchor" if language == "en" else "来源依据"
-    question = "Use the infographic to explain or apply:" if language == "en" else "用这张信息图解释或应用："
+    question = (
+        "Use the infographic to explain or apply:"
+        if language == "en"
+        else "用这张信息图解释或应用："
+    )
     prompt_label = "Generation prompt" if language == "en" else "生图提示词"
     visual_steps = (
         [
@@ -70,53 +69,6 @@ def _render_generated_infographic(
 """
 
 
-def _render_svg_fallback_infographic(
-    title: str,
-    visual: VisualBrief,
-    asset: dict[str, Any],
-    source_label: str,
-    language: str,
-) -> str:
-    filename = str(asset["file"])
-    caption = "SVG Fallback - Review Needed" if language == "en" else "SVG 兜底图 - 需要复核"
-    source_prefix = "Source anchor" if language == "en" else "来源依据"
-    question = "Use this draft only as a study aid for:" if language == "en" else "这张草图仅用于辅助理解："
-    prompt_label = "External image brief" if language == "en" else "外部生图需求"
-    visual_steps = (
-        [
-            "Check whether the shape, labels, and relationships match the syllabus point.",
-            "Replace this SVG with a reviewed infographic if a suitable image model or designer is available.",
-            "Do not treat this fallback as a factual source.",
-        ]
-        if language == "en"
-        else [
-            "先检查形状、标签和关系是否符合大纲知识点。",
-            "如果有合适的生图模型或人工设计方式，应替换成复核后的信息图。",
-            "不要把这张兜底图当作事实来源。",
-        ]
-    )
-    step_items = "".join(f"<li>{html_escape(step)}</li>" for step in visual_steps)
-    replacement_note = _render_replacement_note(asset, language)
-    return f"""
-<figure class="visual-example svg-fallback" aria-label="SVG fallback for {html_escape(title)}">
-  <figcaption>{render_icon("visual")}<span>{html_escape(caption)}</span></figcaption>
-  <div class="generated-infographic-grid">
-    <img class="infographic-image" src="images/{html_escape(filename)}" alt="{html_escape(title)} SVG fallback for {html_escape(visual.focus_point)}">
-    <div class="visual-notes">
-      <div class="visual-source">{html_escape(source_prefix)}: {html_escape(source_label)}</div>
-      {replacement_note}
-      <p class="visual-question">{html_escape(question)} <strong>{html_escape(visual.focus_point)}</strong>.</p>
-      <ol>{step_items}</ol>
-      <details class="visual-prompt">
-        <summary>{html_escape(prompt_label)}</summary>
-        <p>{html_escape(visual.prompt)}</p>
-      </details>
-    </div>
-  </div>
-</figure>
-"""
-
-
 def _render_pending_infographic(
     title: str,
     visual: VisualBrief,
@@ -127,7 +79,11 @@ def _render_pending_infographic(
     provider = visual.image_provider
     source_prefix = "Source anchor" if language == "en" else "来源依据"
     if provider.startswith("ask-user"):
-        status = "external infographic generation pending" if language == "en" else "复杂信息图待外部生成"
+        status = (
+            "external infographic generation pending"
+            if language == "en"
+            else "复杂信息图待外部生成"
+        )
     else:
         status = (
             f"waiting for reviewed image asset from {provider}"

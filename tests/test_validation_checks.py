@@ -304,16 +304,26 @@ def test_fragment_topic_titles_are_delivery_errors():
         ),
         Topic(
             title="P1.5 - Sequences and series: Arithmetic series,",
-            points=["Arithmetic series, including the formula for the sum of the first n natural numbers."],
+            points=[
+                "Arithmetic series, including the formula for the sum of the first n natural numbers."
+            ],
             source_snippets=[
-                SourceSnippet(page=12, text="Arithmetic series, including the formula", matched_term="P1.5")
+                SourceSnippet(
+                    page=12, text="Arithmetic series, including the formula", matched_term="P1.5"
+                )
             ],
         ),
         Topic(
             title="M1.1 - Motion: Difference bet...",
-            points=["Difference between displacement and distance, and between velocity and speed."],
+            points=[
+                "Difference between displacement and distance, and between velocity and speed."
+            ],
             source_snippets=[
-                SourceSnippet(page=17, text="Difference between displacement and distance", matched_term="M1.1")
+                SourceSnippet(
+                    page=17,
+                    text="Difference between displacement and distance",
+                    matched_term="M1.1",
+                )
             ],
         ),
     ]
@@ -380,7 +390,9 @@ def test_preflight_catches_downloaded_specification_and_custom_provider_edges(mo
         "Downloaded specification fell back to generic Content unit topics; "
         "the syllabus parser needs a more precise provider-specific match."
     ) in messages
-    assert "Cambridge syllabus range is present but selected exam year was not recorded." in messages
+    assert (
+        "Cambridge syllabus range is present but selected exam year was not recorded." in messages
+    )
     assert "No assessment papers were extracted." in messages
 
     plan.run_options.image_model = None
@@ -389,7 +401,9 @@ def test_preflight_catches_downloaded_specification_and_custom_provider_edges(mo
     custom_messages = [issue.message for issue in validate_custom_image_provider(plan.run_options)]
     assert "Custom image provider is missing a model name." in custom_messages
     assert "Custom image provider is missing an endpoint URL." in custom_messages
-    assert "Custom image provider is missing an API-key environment variable name." in custom_messages
+    assert (
+        "Custom image provider is missing an API-key environment variable name." in custom_messages
+    )
 
 
 def test_guide_practice_and_visual_validators_pin_branch_specific_messages():
@@ -443,7 +457,9 @@ def test_checklist_diversity_rejects_exact_duplicate_mastery_text():
     messages = [issue.message for issue in validate_guides(plan)]
 
     assert any(
-        message.startswith("Checklist mastery requirements are duplicated across topics: 2 topics share")
+        message.startswith(
+            "Checklist mastery requirements are duplicated across topics: 2 topics share"
+        )
         for message in messages
     )
 
@@ -460,13 +476,16 @@ def test_term_support_body_text_still_uses_english_ai_style_checks():
 
 def test_topic_guide_rejects_cross_subject_borrowed_templates():
     plan = valid_plan()
-    plan.topic_guides[0].essence = (
-        "This topic is about angles to side ratios and periodic graph values."
-    )
+    plan.topic_guides[
+        0
+    ].essence = "This topic is about angles to side ratios and periodic graph values."
 
     messages = [issue.message for issue in validate_guides(plan)]
 
-    assert "Topic guide appears to borrow a different subject template: 3.1 Source documents" in messages
+    assert (
+        "Topic guide appears to borrow a different subject template: 3.1 Source documents"
+        in messages
+    )
     assert is_cross_subject_borrowed_text(
         "A typical question gives masses and velocities before writing the momentum equation.",
         "Business",
@@ -510,13 +529,18 @@ def test_topic_map_titles_must_not_repeat_across_topics():
     messages = [issue.message for issue in validate_html_topic_map_mastery(html, "zh-CN")]
 
     assert any(
-        message.startswith("Topic map knowledge-unit title is duplicated across topics: 2 rows share")
+        message.startswith(
+            "Topic map knowledge-unit title is duplicated across topics: 2 rows share"
+        )
         for message in messages
     )
 
 
 def test_html_glossary_policy_is_enforced_for_term_support_mode():
-    valid_rows = "".join('<tr class="glossary-term-row"><td>术语</td><td>Term</td><td>Use</td></tr>' for _ in range(30))
+    valid_rows = "".join(
+        '<tr class="glossary-term-row"><td>术语</td><td>Term</td><td>Use</td></tr>'
+        for _ in range(30)
+    )
     valid_html = (
         '<section class="band professional-glossary">'
         "<p>Term support: English with zh-CN glossary</p>"
@@ -529,26 +553,35 @@ def test_html_glossary_policy_is_enforced_for_term_support_mode():
     missing_messages = [issue.message for issue in validate_html_glossary_policy("", "zh-CN")]
     assert "Term-support handbook is missing the professional term glossary." in missing_messages
 
-    short_rows = '<section class="professional-glossary">' + "".join(
-        '<tr class="glossary-term-row"></tr>' for _ in range(12)
-    ) + "</section>"
+    short_rows = (
+        '<section class="professional-glossary">'
+        + "".join('<tr class="glossary-term-row"></tr>' for _ in range(12))
+        + "</section>"
+    )
     short_messages = [issue.message for issue in validate_html_glossary_policy(short_rows, "zh-CN")]
     assert any("30-50 rows" in message for message in short_messages)
 
     english_messages = [issue.message for issue in validate_html_glossary_policy(valid_html, "en")]
-    assert "English-only handbook must not include a professional term glossary." in english_messages
+    assert (
+        "English-only handbook must not include a professional term glossary." in english_messages
+    )
 
 
 def test_visual_prompt_rejects_board_or_course_packaging():
     plan = valid_plan()
-    plan.visual_briefs[0].prompt = "Create an OxfordAQA International GCSE visual with a course badge."
+    plan.visual_briefs[
+        0
+    ].prompt = "Create an OxfordAQA International GCSE visual with a course badge."
 
     visual_messages = [issue.message for issue in validate_visual_briefs(plan)]
 
-    assert "Visual image prompt includes board or course packaging: 3.1 Source documents" in visual_messages
+    assert (
+        "Visual image prompt includes board or course packaging: 3.1 Source documents"
+        in visual_messages
+    )
 
 
-def test_visual_provider_contract_rejects_stale_professional_or_scientific_routes():
+def test_visual_provider_contract_requires_exact_fit_svg_and_rejects_local_rendering():
     plan = valid_plan()
     plan.visual_briefs = [
         VisualBrief(
@@ -571,12 +604,30 @@ def test_visual_provider_contract_rejects_stale_professional_or_scientific_route
             prompt="Draw the graph.",
             source_points=["Sketch quadratic graphs."],
         ),
+        VisualBrief(
+            topic_title="Probability tree",
+            focus_point="independent trials",
+            trigger="tree structure exactly represents the probability calculation",
+            visual_type="probability tree diagram",
+            complexity="svg-basic",
+            image_provider="kroki",
+            prompt="Draw a probability tree.",
+            source_points=["Use independent trial probabilities."],
+            svg_fit="exact",
+        ),
     ]
 
     messages = [issue.message for issue in validate_visual_briefs(plan)]
 
-    assert "Professional diagram visual must use Kroki renderer: Accounting flow" in messages
-    assert "Exact scientific/vector visual should stay local SVG, not Kroki: Function graph" in messages
+    assert any(
+        "svg_fit='exact'" in message and "Accounting flow" in message for message in messages
+    )
+    assert any("Local deterministic SVG rendering" in message for message in messages)
+    assert any(
+        "Professional diagram visual must use Kroki renderer" in message for message in messages
+    )
+    assert any("svg_fit='exact'" in message and "Function graph" in message for message in messages)
+    assert not any("Probability tree" in message for message in messages)
 
 
 def test_qualification_notes_and_output_package_pin_release_quality_edges(tmp_path):
@@ -588,7 +639,10 @@ def test_qualification_notes_and_output_package_pin_release_quality_edges(tmp_pa
     gcse_messages = [issue.message for issue in validate_qualification_notes(plan)]
     assert "Source listing metadata conflicts with International GCSE type." in gcse_messages
     assert "GCSE audience note does not explicitly mention international students." in gcse_messages
-    assert "GCSE audience note does not explain that the course is for use outside the UK." in gcse_messages
+    assert (
+        "GCSE audience note does not explain that the course is for use outside the UK."
+        in gcse_messages
+    )
     assert "GCSE guide does not mention the linear qualification structure." in gcse_messages
 
     plan.qualification.qualification_type = "international_as_a_level"
@@ -603,9 +657,14 @@ def test_qualification_notes_and_output_package_pin_release_quality_edges(tmp_pa
     assert any(message.startswith("Sections directory is missing:") for message in output_messages)
     assert any(message.startswith("Images directory is missing:") for message in output_messages)
     assert "Run options file is missing from output directory." in output_messages
-    assert any(message.startswith("Handbook package manifest is missing:") for message in output_messages)
+    assert any(
+        message.startswith("Handbook package manifest is missing:") for message in output_messages
+    )
     assert any("Concept explanation jobs are missing" in message for message in output_messages)
-    assert any("topic concept explanations still need LLM/Agent review" in message for message in output_messages)
+    assert any(
+        "topic concept explanations still need LLM/Agent review" in message
+        for message in output_messages
+    )
 
     (tmp_path / "sections").mkdir()
     (tmp_path / "images").mkdir()
@@ -731,9 +790,12 @@ def test_html_language_output_assets_and_summary_helpers_have_direct_contracts(t
         "How to Study Study Roadmap One-Sentence Essence Method Worked Example "
         "Solution Check Exam Pitfall Source anchor"
     )
-    language_issues = [issue.message for issue in validate_html_language("zh-CN", required_english_body)]
+    language_issues = [
+        issue.message for issue in validate_html_language("zh-CN", required_english_body)
+    ]
     term_support_body_issues = [
-        issue.message for issue in validate_html_language("zh-CN", required_english_body + "<p>中文正文</p>")
+        issue.message
+        for issue in validate_html_language("zh-CN", required_english_body + "<p>中文正文</p>")
     ]
     image_issues = [issue.message for issue in validate_image_assets(plan, images_dir)]
     summary = review_summary(plan, html_path=html_path, output_dir=tmp_path)
@@ -741,8 +803,14 @@ def test_html_language_output_assets_and_summary_helpers_have_direct_contracts(t
     assert any("bilingual mixed-language label" in message for message in html_issues)
     assert any("English output contains Chinese characters" in message for message in html_issues)
     assert not language_issues
-    assert "English output contains Chinese characters in the student-facing HTML." in term_support_body_issues
-    assert any("infographic briefs are queued for external image generation" in message for message in image_issues)
+    assert (
+        "English output contains Chinese characters in the student-facing HTML."
+        in term_support_body_issues
+    )
+    assert any(
+        "infographic briefs are queued for external image generation" in message
+        for message in image_issues
+    )
     assert summary["topics"] == 1
     assert summary["pending_infographic_assets"] == 1
     assert summary["topic_diagrams_in_html"] == 1
@@ -767,7 +835,9 @@ def test_validation_small_helpers_have_direct_branch_contracts():
     )
     assert duplicate_practice_question_topics(object()) == []
     assert not is_contents_or_index_snippet(
-        SourceSnippet(page=2, text="Students should explain source documents.", matched_term="source")
+        SourceSnippet(
+            page=2, text="Students should explain source documents.", matched_term="source"
+        )
     )
     assert is_contents_or_index_snippet(
         SourceSnippet(page=12, text="Contents Specification at a glance", matched_term="contents")
@@ -799,8 +869,7 @@ def test_html_visual_block_validator_catches_missing_visual_block():
     plan = valid_plan()
 
     messages = [
-        issue.message
-        for issue in validate_html_visual_and_diagram_blocks(plan, "<html></html>")
+        issue.message for issue in validate_html_visual_and_diagram_blocks(plan, "<html></html>")
     ]
 
     assert "HTML missing required visual explanation block." in messages
@@ -845,7 +914,9 @@ def test_validate_html_output_rejects_real_rendered_weak_topic_headings(tmp_path
 
     messages = [issue.message for issue in validate_html_output(plan, html_path)]
 
-    assert "student-facing topic titles are too repetitive: 2 unique titles for 4 topics" in messages
+    assert (
+        "student-facing topic titles are too repetitive: 2 unique titles for 4 topics" in messages
+    )
     assert "Topic missing from HTML: P1 Algebra" in messages
     assert "Topic missing from HTML: PP1 Trigonometry" in messages
     assert "English output contains Chinese characters in the student-facing HTML." in messages
@@ -873,11 +944,14 @@ def test_expected_topic_marker_localizes_all_keyword_fallback_groups():
 
 
 def test_expected_topic_marker_uses_shared_chinese_teachable_title():
-    assert expected_topic_marker(
-        "PP1.2 - Trigonometry: Their graphs, symmetries and periodicity",
-        90,
-        "zh-CN",
-    ) == "PP1.2 三角函数：图像、对称性与周期性"
+    assert (
+        expected_topic_marker(
+            "PP1.2 - Trigonometry: Their graphs, symmetries and periodicity",
+            90,
+            "zh-CN",
+        )
+        == "PP1.2 三角函数：图像、对称性与周期性"
+    )
 
 
 def test_validate_plan_aggregates_html_pdf_and_output_package_checks(tmp_path):
@@ -903,7 +977,8 @@ def test_custom_image_provider_accepts_complete_environment(monkeypatch):
 
     assert validate_custom_image_provider(plan.run_options) == []
     assert not [
-        issue for issue in validate_preflight_and_source(plan)
+        issue
+        for issue in validate_preflight_and_source(plan)
         if issue.message.startswith("Custom image provider")
     ]
 
@@ -913,7 +988,9 @@ def test_chinese_placeholder_checks_cover_guide_practice_and_visual_branches():
     assert has_zh_placeholder_text(["官方大纲要求 知识点 1"])
     assert has_zh_placeholder_text(["官方大纲要求 知识单元 1"])
 
-    messages = [issue.message for issue in validate_html_language("en", "<p>官方大纲要求 知识点 1</p>")]
+    messages = [
+        issue.message for issue in validate_html_language("en", "<p>官方大纲要求 知识点 1</p>")
+    ]
 
     assert "English output contains Chinese characters in the student-facing HTML." in messages
 
@@ -922,7 +999,9 @@ def test_english_syllabus_shell_checks_cover_visible_branches():
     plan = valid_plan()
     plan.topic_guides[0].checklist[0] = "Core content: Candidates should have an understanding of:"
     plan.practice_items[0].question = "a) Explain the purpose of the:"
-    plan.visual_briefs[0].focus_point = "Students must study one breadth study in change from the following:"
+    plan.visual_briefs[
+        0
+    ].focus_point = "Students must study one breadth study in change from the following:"
 
     messages = [
         *[issue.message for issue in validate_guides(plan)],
@@ -939,7 +1018,7 @@ def test_html_output_rejects_student_visible_syllabus_shell_text(tmp_path):
     plan = valid_plan()
     html_path = tmp_path / "guide.html"
     html_path.write_text(
-        "<html lang=\"en\"><body><section><h2>Study Roadmap</h2></section>"
+        '<html lang="en"><body><section><h2>Study Roadmap</h2></section>'
         "<section><h2>T1. 3.1 Source documents</h2>"
         "<p>Students should be able to understand the nature of an economic resource.</p>"
         "</section></body></html>",
@@ -1026,7 +1105,9 @@ def test_pdf_validation_rejects_any_blank_text_page(tmp_path):
 def test_pdf_local_footer_text_detection_covers_file_urls_and_local_guide_paths():
     assert has_pdf_local_footer_text("file:///E:/Object/output/guide.html")
     assert has_pdf_local_footer_text(r"file:\C:\Users\Ethan\Desktop\guide.htm")
-    assert has_pdf_local_footer_text(r"C:\Users\Ethan\Desktop\aqa-as-accounting-revision-guide\guide.htm")
+    assert has_pdf_local_footer_text(
+        r"C:\Users\Ethan\Desktop\aqa-as-accounting-revision-guide\guide.htm"
+    )
     assert not has_pdf_local_footer_text("Source anchor: page 12")
 
 
@@ -1073,9 +1154,11 @@ def test_image_assets_catch_missing_manifest_file_reference_and_svg_shortfall(tm
     images_dir = tmp_path / "images"
     images_dir.mkdir()
     (images_dir / "visual_manifest.json").write_text(
-        json.dumps([
-            {"complexity": "infographic", "asset_status": "generated", "file": "missing.png"},
-        ]),
+        json.dumps(
+            [
+                {"complexity": "infographic", "asset_status": "generated", "file": "missing.png"},
+            ]
+        ),
         encoding="utf-8",
     )
 
@@ -1109,6 +1192,7 @@ def test_image_assets_accept_reviewed_raster_for_svg_safe_visuals(tmp_path):
                 {
                     "complexity": "svg-basic",
                     "asset_status": "reviewed-generated",
+                    "review_status": "reviewed",
                     "file": "visual_001.png",
                 }
             ]
@@ -1121,7 +1205,46 @@ def test_image_assets_accept_reviewed_raster_for_svg_safe_visuals(tmp_path):
     assert not any("SVG-safe visual briefs" in message for message in messages)
 
 
-def test_image_assets_warn_when_svg_titles_and_shapes_are_repetitive(tmp_path):
+def test_image_assets_reject_unreviewed_svg_draft(tmp_path):
+    plan = valid_plan()
+    plan.visual_briefs = [
+        VisualBrief(
+            topic_title="Probability tree",
+            focus_point="independent trials",
+            trigger="tree structure exactly represents the probability calculation",
+            visual_type="probability tree diagram",
+            complexity="svg-basic",
+            image_provider="kroki",
+            prompt="Draw a probability tree.",
+            source_points=["Use independent trial probabilities."],
+            svg_fit="exact",
+        )
+    ]
+    images_dir = tmp_path / "images"
+    images_dir.mkdir()
+    (images_dir / "visual_001.svg").write_text("<svg><title>Draft</title></svg>", encoding="utf-8")
+    (images_dir / "visual_manifest.json").write_text(
+        json.dumps(
+            [
+                {
+                    "id": "visual_001",
+                    "complexity": "svg-basic",
+                    "asset_status": "svg-draft",
+                    "review_status": "draft",
+                    "file": "visual_001.svg",
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    messages = [issue.message for issue in validate_image_assets(plan, images_dir)]
+
+    assert any(
+        "0 renderable assets for 1 SVG-safe visual briefs" in message for message in messages
+    )
+    assert any("SVG asset must be reviewed/approved" in message for message in messages)
+
     plan = valid_plan()
     plan.visual_briefs = [
         VisualBrief(
@@ -1136,7 +1259,7 @@ def test_image_assets_warn_when_svg_titles_and_shapes_are_repetitive(tmp_path):
         )
         for index in range(12)
     ]
-    images_dir = tmp_path / "images"
+    images_dir = tmp_path / "repeated-images"
     images_dir.mkdir()
     for index in range(12):
         (images_dir / f"visual_{index:03}.svg").write_text(
@@ -1246,7 +1369,10 @@ def test_image_assets_error_for_pairwise_scientific_svg_reuse(tmp_path):
 
     messages = [issue.message for issue in validate_image_assets(plan, images_dir)]
 
-    assert any("Different scientific SVG visuals reuse the same structure" in message for message in messages)
+    assert any(
+        "Different scientific SVG visuals reuse the same structure" in message
+        for message in messages
+    )
 
 
 def test_image_assets_report_pending_professional_diagram_jobs(tmp_path):
@@ -1273,7 +1399,9 @@ def test_image_assets_report_pending_professional_diagram_jobs(tmp_path):
 
     messages = [issue.message for issue in validate_image_assets(plan, images_dir)]
 
-    assert any("Professional diagram rendering failed or is pending" in message for message in messages)
+    assert any(
+        "Professional diagram rendering failed or is pending" in message for message in messages
+    )
 
 
 def test_image_assets_warn_for_exact_duplicate_raster_assets(tmp_path):
@@ -1312,7 +1440,11 @@ def test_image_assets_warn_for_exact_duplicate_raster_assets(tmp_path):
     messages = [issue.message for issue in issues]
 
     assert any("Raster infographic assets are reused exactly" in message for message in messages)
-    assert any(issue.severity == "error" and "Raster infographic assets are reused exactly" in issue.message for issue in issues)
+    assert any(
+        issue.severity == "error"
+        and "Raster infographic assets are reused exactly" in issue.message
+        for issue in issues
+    )
 
 
 def test_review_summary_counts_generated_fallback_and_pending_assets(tmp_path):
@@ -1327,10 +1459,16 @@ def test_review_summary_counts_generated_fallback_and_pending_assets(tmp_path):
     (images_dir / "generated.png").write_bytes(b"png")
     (images_dir / "fallback.svg").write_text("<svg></svg>", encoding="utf-8")
     (images_dir / "visual_manifest.json").write_text(
-        json.dumps([
-            {"complexity": "infographic", "asset_status": "generated", "file": "generated.png"},
-            {"complexity": "infographic", "asset_status": "svg-fallback-needs-review", "file": "fallback.svg"},
-        ]),
+        json.dumps(
+            [
+                {"complexity": "infographic", "asset_status": "generated", "file": "generated.png"},
+                {
+                    "complexity": "infographic",
+                    "asset_status": "svg-fallback-needs-review",
+                    "file": "fallback.svg",
+                },
+            ]
+        ),
         encoding="utf-8",
     )
 

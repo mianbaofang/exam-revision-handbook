@@ -69,14 +69,19 @@ def main() -> int:
     manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
     manifest = manifest_entries_from_payload(manifest_payload)
     if manifest is None:
-        print("visual_manifest.json must contain a list or schema_version 2 object", file=sys.stderr)
+        print(
+            "visual_manifest.json must contain a list or schema_version 2 object", file=sys.stderr
+        )
         return 1
 
     source_assets_by_key = load_source_assets_by_key(asset_dir)
     imported = 0
     missing: list[str] = []
     for entry in manifest:
-        if not isinstance(entry, dict) or entry.get("complexity") not in {"infographic", "svg-basic"}:
+        if not isinstance(entry, dict) or entry.get("complexity") not in {
+            "infographic",
+            "svg-basic",
+        }:
             continue
         visual_id = str(entry.get("id") or "")
         if not visual_id:
@@ -94,7 +99,11 @@ def main() -> int:
         if not source:
             missing.append(visual_id)
             continue
-        target_name = source.name if source.stem.startswith(visual_id) else f"{visual_id}{source.suffix.lower()}"
+        target_name = (
+            source.name
+            if source.stem.startswith(visual_id)
+            else f"{visual_id}{source.suffix.lower()}"
+        )
         target = images_dir / target_name
         if source.resolve() != target.resolve():
             shutil.copyfile(source, target)
@@ -124,7 +133,9 @@ def main() -> int:
         return 1
 
     write_manifest_payload(manifest_path, manifest_payload, manifest)
-    rerender_result = rerender_handbook(output_dir) if imported and args.rerender else {"rerendered": False}
+    rerender_result = (
+        rerender_handbook(output_dir) if imported and args.rerender else {"rerendered": False}
+    )
     print(
         json.dumps(
             {

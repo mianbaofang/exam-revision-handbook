@@ -11,14 +11,23 @@ Each generated handbook must include:
 - `guide.html`: one print-friendly UTF-8 HTML file.
 - `guide.pdf`: A4 PDF export when a browser runtime is available.
 - `sections/`: modular source fragments used to assemble the handbook.
-- `images/`: deterministic SVG drafts and reviewed infographic assets.
+- `images/`: reviewed SVG assets and reviewed infographic assets, with pending
+  visual jobs recorded when assets still need generation or review.
 - `concepts/`: source-bound concept-writing jobs and reviewed concept
   explanations imported before final delivery.
 - `guide-plan.json`: structured topic guides, worked examples, and visual briefs.
-- `qualification.json`: source metadata extracted from the official provider.
+- `qualification.json`: source metadata extracted from the official provider,
+  updated after the LLM Analyst outline pass.
+- `syllabus-evidence.json`: page-level evidence gathered from the official
+  source for the LLM syllabus_outline_analyst.
+- `syllabus-outline.json`: authoritative topic titles, exam points, and source
+  snippets written by the LLM syllabus_outline_analyst. Python evidence
+  extraction is **not** allowed as a replacement for this file.
 - `validation.json`: machine-readable quality checks.
-- `final-review-packet.json`: Agent/LLM self-review packet written by the
+- `final-review-packet.json`: independent final-review packet written by the
   `review` command before final presentation.
+- `agent-product-review.json`: active Agent product-review evidence after the
+  rendered handbook has been inspected, repaired where possible, and rerun.
 - `handbook-package.json`: manifest for sections and image assets.
 
 Downloaded specification PDFs and extracted text belong under `source/` and must
@@ -30,8 +39,8 @@ maintenance or release work, use these status words:
 - `candidate`: route evidence exists, but it is not delivery-grade.
 - `draft`: a fresh output exists, but concepts, visuals, PDF/export,
   validation, or Agent self-review still blocks final handoff.
-- `final-ready`: current evidence passes validation, final review, concept
-  status, visual status, and package checks.
+- `final-ready`: current evidence passes validation, independent final review,
+  active product review, concept status, visual status, and package checks.
 - `certified`: final-ready evidence has reviewer approval and a manifest entry
   under `docs/release-evidence/`.
 
@@ -58,9 +67,9 @@ Do not start syllabus download or handbook writing until the user has confirmed:
    image-generation route available for this run. If yes, ask whether it is an
    installed image-generation Skill, a custom API with model name + base
    URL/endpoint + API-key environment variable name, an existing asset
-   directory, or a project script. If no, explain that built-in deterministic
-   SVG/scientific-vector visuals may be incomplete for complex infographics and
-   ask whether to continue with a draft that marks complex visuals as pending.
+   directory, or a project script. If no, explain that complex infographics will
+   remain pending until reviewed assets are generated or imported, and ask whether
+   to continue with a draft package.
 
 Do not force the user to choose a specific image model during preflight. The
 preflight question is whether a callable route exists and whether the user wants
@@ -154,16 +163,18 @@ After the source-bound topic guide and examples are drafted, run a second pass
 to decide which items need visuals:
 
 - `text-ok`: no image needed;
-- `svg-basic`: exact local SVG/scientific-vector output is enough, or a
-  medium-complexity professional diagram can be rendered through built-in Kroki;
+- `svg-basic`: exact SVG is appropriate because labels and geometry fully carry
+  the teaching meaning. The Writer must include `svg_fit: "exact"`, and the SVG
+  asset must be reviewed or approved before final delivery;
 - `infographic`: create a source-bound visual brief and prompt queue entry;
   render it only after a reviewed raster asset exists.
 
 Good SVG cases include number lines, simple graphs, pH scales, particle models,
-energy profiles, and basic geometry. Good Kroki cases include flows,
-hierarchies, timelines, relationship maps, concept maps, and source-to-ledger
-routes. Good infographic cases include lab apparatus, complex geometry,
-circuits, dense economics scenes, and high-design text+diagram charts.
+energy profiles, and basic geometry when the SVG is an exact fit. Good Kroki
+cases include flows, hierarchies, timelines, relationship maps, concept maps,
+and source-to-ledger routes that can be expressed as professional SVG diagrams.
+Good infographic cases include lab apparatus, complex geometry, circuits, dense
+economics scenes, and high-design text+diagram charts.
 
 External infographic prompts should use the default revision-worksheet visual
 style: a landscape educational infographic with a clear topic banner, separated
@@ -173,23 +184,22 @@ style for rich generated PNG/JPG/WebP assets. Do not request board logos,
 school branding, course-cover packaging, decorative watermarks, or unsupported
 facts.
 
-For SVG-safe chart, axis, curve, table, and simple geometry cases, use the
-scientific-vector fallback in `references/scientific_vector_fallback.md`. This
-adapts the `nature-figure` idea of a figure contract to revision guides: state
-the learning claim, evidence/label requirements, and review risk before drawing.
-Keep SVG text editable and record `fallback_route:
-scripted-scientific-vector` in `images/visual_manifest.json`. For Kroki output,
-record `fallback_route: kroki-professional-diagram`. Do not use either route for
-dense educational posters or rich infographics that need a real image model or
-reviewed imported asset.
+For SVG-safe chart, axis, curve, table, and simple geometry cases, use the exact
+SVG review policy in `references/scientific_vector_fallback.md`. This adapts the
+figure-contract idea to revision guides: state the learning claim,
+evidence/label requirements, and review risk before approving the asset. Keep
+SVG text editable, record the selected professional diagram route when Kroki is
+used, and require `review_status: "reviewed"` or `review_status: "approved"`
+before final delivery. Do not use SVG for dense educational posters or rich
+infographics that need a real image model or reviewed imported asset.
 
 If a richer infographic is needed, keep a prompt queue with:
 
 - topic title;
 - focus point;
 - source syllabus points;
-- asset route/status: `deterministic-svg`, `external-generation-required`, or a
-  reviewed generated/imported asset;
+- asset route/status: `external-generation-required`,
+  `professional-diagram-required`, or a reviewed generated/imported asset;
 - prompt;
 - review status.
 

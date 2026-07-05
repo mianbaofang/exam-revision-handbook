@@ -97,7 +97,9 @@ class CambridgeInternationalProvider(ExamBoardProvider):
         if len(candidates) == 1:
             return candidates[0]
         if len(candidates) > 1:
-            raise ValueError(format_candidate_choices("Cambridge International / CAIE", query, candidates))
+            raise ValueError(
+                format_candidate_choices("Cambridge International / CAIE", query, candidates)
+            )
         raise ValueError(
             "Cambridge International / CAIE could not confirm one official subject page from "
             "the subject name alone. Provide a syllabus code such as 0452/9706, the official "
@@ -227,15 +229,15 @@ def cambridge_subject_area(title: str) -> str | None:
 
 
 def cambridge_summary(qtype: str, year_range: str | None, exam_year: str | None) -> list[str]:
-    values = [
-        "Cambridge syllabus year means the year in which the examination will be taken."
-    ]
+    values = ["Cambridge syllabus year means the year in which the examination will be taken."]
     if year_range:
         values.append(f"Syllabus range: {year_range}")
     if exam_year:
         values.append(f"Selected exam year: {exam_year}")
     if qtype == "international_as_a_level":
-        values.append("Cambridge International AS & A Level may include AS and A Level assessment routes.")
+        values.append(
+            "Cambridge International AS & A Level may include AS and A Level assessment routes."
+        )
     else:
         values.append(
             "Cambridge IGCSE is handled as a source-bound linear end-of-course revision route; "

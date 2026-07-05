@@ -94,25 +94,70 @@ def chinese_themed_story_lines(
     escaped_title: str,
     escaped_focus: str,
 ) -> tuple[str, str, str] | None:
-    if any(term in text for term in ["ledger", "invoice", "account", "trial balance", "分类账", "发票", "试算"]):
+    if any(
+        term in text
+        for term in ["ledger", "invoice", "account", "trial balance", "分类账", "发票", "试算"]
+    ):
         return (
             f"把 <strong>{escaped_title}</strong> 想成一家小店在查账：每张凭证都要留下能解释 <strong>{escaped_focus}</strong> 的记录。",
             "像审计一样破案：先追凭证，再查账户，最后看数字能不能对上。",
             "闯关顺序是：原始凭证、正确账簿、最终报表影响。",
         )
-    if any(term in text for term in ["demand", "supply", "market", "scarcity", "production", "需求", "供给", "市场", "生产"]):
+    if any(
+        term in text
+        for term in [
+            "demand",
+            "supply",
+            "market",
+            "scarcity",
+            "production",
+            "需求",
+            "供给",
+            "市场",
+            "生产",
+        ]
+    ):
         return (
             f"把 <strong>{escaped_title}</strong> 放到商店排队、工厂决策或家庭预算里，再说清 <strong>{escaped_focus}</strong>。",
             "像调查动机一样答题：谁受影响，什么改变了，哪条曲线或取舍能证明。",
             "通关句要连成一条链：经济主体、激励变化、结果。",
         )
-    if any(term in text for term in ["gas", "chromatography", "acid", "particle", "bond", "气体", "色谱", "酸", "粒子", "结构"]):
+    if any(
+        term in text
+        for term in [
+            "gas",
+            "chromatography",
+            "acid",
+            "particle",
+            "bond",
+            "气体",
+            "色谱",
+            "酸",
+            "粒子",
+            "结构",
+        ]
+    ):
         return (
             f"先想象 <strong>{escaped_title}</strong> 出现在实验台上：学生先看到、测到或标出什么，再用 <strong>{escaped_focus}</strong> 解释。",
             "像实验侦探一样走：先观察，再判断测试结果，最后写结论。",
             "本关检查三件事：装置或模型、观察结果、大纲结论。",
         )
-    if any(term in text for term in ["triangle", "graph", "set", "venn", "ratio", "probability", "三角", "图像", "集合", "比例", "概率"]):
+    if any(
+        term in text
+        for term in [
+            "triangle",
+            "graph",
+            "set",
+            "venn",
+            "ratio",
+            "probability",
+            "三角",
+            "图像",
+            "集合",
+            "比例",
+            "概率",
+        ]
+    ):
         return (
             f"把 <strong>{escaped_title}</strong> 变成图上的标记：先标已知条件，再使用 <strong>{escaped_focus}</strong>。",
             "把有用线索和装饰数字分开；真正有用的线索一定会改变图形或计算。",

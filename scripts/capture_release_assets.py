@@ -16,7 +16,9 @@ SAMPLES = {
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Capture guide screenshots for README/docs assets.")
+    parser = argparse.ArgumentParser(
+        description="Capture guide screenshots for README/docs assets."
+    )
     parser.add_argument("--outputs-root", default="./outputs")
     parser.add_argument("--docs-assets", default="docs/assets")
     parser.add_argument("--viewport-width", type=int, default=1440)
@@ -31,7 +33,9 @@ def main() -> int:
         from playwright.sync_api import Error as PlaywrightError
         from playwright.sync_api import sync_playwright
     except ImportError:
-        return capture_with_chrome_cli(outputs_root, docs_assets, args.viewport_width, args.viewport_height)
+        return capture_with_chrome_cli(
+            outputs_root, docs_assets, args.viewport_width, args.viewport_height
+        )
 
     with sync_playwright() as p:
         browser = p.chromium.launch()

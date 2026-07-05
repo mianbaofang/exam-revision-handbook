@@ -12,7 +12,6 @@ GENERATED_ASSET_STATUSES = {
     "reviewed-generated",
     "provider-selected-generated",
     "sensenova-generated",
-    "kroki-generated",
 }
 PENDING_ASSET_STATUSES = {
     "external-generation-required",
@@ -58,8 +57,7 @@ def visual_asset_key(
     complexity: str,
 ) -> str:
     return "||".join(
-        normalize_key_part(value)
-        for value in [topic_title, focus_point, visual_type, complexity]
+        normalize_key_part(value) for value in [topic_title, focus_point, visual_type, complexity]
     )
 
 
@@ -137,6 +135,12 @@ def has_renderable_svg_fallback(entry: dict[str, Any], images_dir: Path | None =
     if not is_svg_asset(filename):
         return False
     return images_dir is None or (images_dir / filename).exists()
+
+
+def llm_visual_approved(entry: dict[str, Any]) -> bool:
+    """Return True when an SVG fallback entry is approved by an LLM visual spec."""
+
+    return entry.get("llm_visual_approved") is True
 
 
 def scientific_vector_route(visual_type: str) -> str:

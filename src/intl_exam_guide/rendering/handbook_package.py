@@ -15,7 +15,6 @@ from intl_exam_guide.rendering.html import (
     subject_display_name,
     render_topic_map,
     render_topic_nav,
-    render_topic_visual_svg,
     render_topics,
     stylesheet,
 )
@@ -24,10 +23,13 @@ from intl_exam_guide.rendering.visual_assets import (
     has_renderable_infographic,
     is_raster_asset,
     load_visual_manifest,
-    scientific_vector_route,
     visual_asset_key_from_brief,
 )
-from intl_exam_guide.planning.language_policy import glossary_language, handbook_body_language, with_body_language_options
+from intl_exam_guide.planning.language_policy import (
+    glossary_language,
+    handbook_body_language,
+    with_body_language_options,
+)
 from intl_exam_guide.rendering.kroki import KrokiRenderError, render_kroki_svg_asset
 from intl_exam_guide.visuals import VisualSpec
 from intl_exam_guide.visuals.manifest import build_asset_metadata, build_visual_manifest_entry_v2
@@ -100,7 +102,10 @@ def write_sections(
             render_student_overview(qualification, plan.revision_stages, plan.run_options),
         ),
         ("03_topic_map.txt", render_topic_map(qualification.topics, language, plan.topic_guides)),
-        ("03_topic_navigation.txt", render_topic_nav(qualification.topics, language, plan.topic_guides)),
+        (
+            "03_topic_navigation.txt",
+            render_topic_nav(qualification.topics, language, plan.topic_guides),
+        ),
         (
             "04_topic_guides_and_examples.txt",
             render_topics(
@@ -115,7 +120,8 @@ def write_sections(
         ),
         (
             "05_source_appendix.txt",
-            render_reference_appendix(qualification, len(plan.practice_items), language) + "\n</body></html>",
+            render_reference_appendix(qualification, len(plan.practice_items), language)
+            + "\n</body></html>",
         ),
     ]
     if glossary_content:
@@ -148,39 +154,36 @@ def write_visual_assets(plan: GuidePlan, images_dir: Path) -> list[Path]:
             written.append(images_dir / filename)
             review_status = str(previous.get("review_status") or "reviewed")
         elif brief.complexity == "svg-basic":
-            filename = f"visual_{index:03d}_{slugify(brief.topic_title)}.svg"
-            path = images_dir / filename
-            if brief.image_provider == "kroki":
-                previous_file = str(previous.get("file") or "")
-                previous_status = str(previous.get("asset_status") or "").lower()
-                if (
-                    previous_status in {"kroki-generated", "reviewed-generated", "generated"}
-                    and previous_file.lower().endswith(".svg")
-                    and (images_dir / previous_file).exists()
-                ):
-                    filename = previous_file
-                    written.append(images_dir / filename)
-                    asset_status = str(previous.get("asset_status") or "kroki-generated")
-                    review_status = str(previous.get("review_status") or "draft")
-                else:
-                    try:
-                        render_kroki_svg_asset(brief, path)
-                        written.append(path)
-                        asset_status = "kroki-generated"
-                        review_status = "draft"
-                    except KrokiRenderError as exc:
-                        filename = None
-                        asset_status = "professional-diagram-required"
-                        review_status = "pending"
-                        previous = {**previous, "kroki_error": str(exc)}
+            previous_file = str(previous.get("file") or "")
+            previous_status = str(previous.get("asset_status") or "").lower()
+            previous_review = str(previous.get("review_status") or "").lower()
+            if (
+                previous_status in {"reviewed-generated", "generated"}
+                and previous_review in {"reviewed", "approved"}
+                and previous_file.lower().endswith(".svg")
+                and (images_dir / previous_file).exists()
+            ):
+                filename = previous_file
+                written.append(images_dir / filename)
+                asset_status = str(previous.get("asset_status") or "reviewed-generated")
+                review_status = str(previous.get("review_status") or "reviewed")
+            elif brief.image_provider == "kroki":
+                filename = f"visual_{index:03d}_{slugify(brief.topic_title)}.svg"
+                path = images_dir / filename
+                try:
+                    render_kroki_svg_asset(brief, path)
+                    written.append(path)
+                    asset_status = "svg-fallback-needs-review"
+                    review_status = "pending"
+                except KrokiRenderError as exc:
+                    filename = None
+                    asset_status = "professional-diagram-required"
+                    review_status = "pending"
+                    previous = {**previous, "kroki_error": str(exc)}
             else:
-                path.write_text(
-                    render_topic_visual_svg(brief, index, handbook_body_language(plan.run_options.output_language)).strip(),
-                    encoding="utf-8",
-                )
-                written.append(path)
-                asset_status = "svg-draft"
-                review_status = "draft"
+                filename = None
+                asset_status = "svg-fallback-needs-review"
+                review_status = "pending"
         else:
             filename = None
             asset_status = "external-generation-required"
@@ -200,11 +203,7 @@ def write_visual_assets(plan: GuidePlan, images_dir: Path) -> list[Path]:
         entry["fallback_route"] = (
             "kroki-professional-diagram"
             if brief.image_provider == "kroki"
-            else (
-                scientific_vector_route(brief.visual_type)
-                if brief.complexity == "svg-basic"
-                else "no-svg-complex-infographic"
-            )
+            else "external-infographic-required"
         )
         if previous.get("generated_by"):
             entry["generated_by"] = previous["generated_by"]
@@ -282,18 +281,24 @@ def optimize_raster_assets_for_pdf(
             continue
         try:
             with Image.open(source) as image:
-                image = ImageOps.exif_transpose(image)
-                width, height = image.size
-                if source.stat().st_size < PRINT_RASTER_MIN_BYTES and width <= PRINT_RASTER_MAX_WIDTH:
+                prepared_image = ImageOps.exif_transpose(image)
+                width, height = prepared_image.size
+                if (
+                    source.stat().st_size < PRINT_RASTER_MIN_BYTES
+                    and width <= PRINT_RASTER_MAX_WIDTH
+                ):
                     continue
-                image.thumbnail(
+                prepared_image.thumbnail(
                     (PRINT_RASTER_MAX_WIDTH, PRINT_RASTER_MAX_WIDTH),
                     Image.Resampling.LANCZOS,
                 )
-                if image.mode not in {"RGB", "L"}:
-                    image = image.convert("RGB")
+                output_image = (
+                    prepared_image.convert("RGB")
+                    if prepared_image.mode not in {"RGB", "L"}
+                    else prepared_image
+                )
                 target = unique_print_asset_path(images_dir, source.stem)
-                image.save(
+                output_image.save(
                     target,
                     "JPEG",
                     quality=PRINT_RASTER_JPEG_QUALITY,

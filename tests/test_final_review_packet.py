@@ -78,7 +78,11 @@ def write_review_fixture(output_dir):
 
 def write_recomputable_review_fixture(output_dir):
     snippets = [
-        SourceSnippet(page=10 + index, text=f"Students should understand Topic {index}.", matched_term=f"Topic {index}")
+        SourceSnippet(
+            page=10 + index,
+            text=f"Students should understand Topic {index}.",
+            matched_term=f"Topic {index}",
+        )
         for index in range(12)
     ]
     topics = [
@@ -214,14 +218,18 @@ def test_final_review_packet_includes_user_visible_evidence(tmp_path):
     assert orchestration["final_reviewer_independent"] is True
     assert orchestration["multi_agent_required"] is True
     assert "writer self-approve" in orchestration["agent_runtime_contract"]["automatic_dispatch"]
+    assert roles["quality_inspector"]["status"] == "pending"
     assert roles["final_reviewer"]["status"] == "complete"
     assert roles["final_reviewer"]["independent_from"] == [
         "syllabus_outline_analyst",
         "handbook_writer",
+        "quality_inspector",
     ]
     assert "repair fixable" in " ".join(roles["final_reviewer"]["dispatch_brief"])
     assert packet["agent_self_review"]["status"] == "draft"
     assert packet["agent_self_review"]["must_not_present_as_final"] is True
+    assert packet["quality_inspection"]["present"] is False
+    assert packet["quality_inspection"]["complete"] is False
     assert packet["product_review_evidence"]["present"] is False
     assert packet["product_review_evidence"]["complete"] is False
     assert packet["manual_review_contract"]["required"] is True
@@ -332,10 +340,64 @@ def test_agent_self_review_ready_requires_complete_product_review_evidence():
             "issues": [],
             "review": complete_product_review(),
         },
+        {
+            "required": True,
+            "file": "quality-inspection.json",
+            "present": True,
+            "complete": True,
+            "issues": [],
+            "inspection": {
+                "schema_version": "v0.5-quality-inspection",
+                "inspection_status": "pass",
+                "recommendation": "pass_to_reviewer",
+                "issues": [],
+            },
+        },
     )
 
     assert review["status"] == "ready"
     assert review["must_not_present_as_final"] is False
+
+
+def test_agent_self_review_blocks_failed_quality_inspection():
+    review = build_agent_self_review(
+        {"error_count": 0},
+        {},
+        "Rendered student text",
+        [],
+        {
+            "roles": [
+                {
+                    "role_id": "final_reviewer",
+                    "status": "complete",
+                    "independent_from": [
+                        "syllabus_outline_analyst",
+                        "handbook_writer",
+                        "quality_inspector",
+                    ],
+                }
+            ]
+        },
+        {
+            "required": True,
+            "file": "agent-product-review.json",
+            "present": True,
+            "complete": True,
+            "issues": [],
+            "review": complete_product_review(),
+        },
+        {
+            "required": True,
+            "file": "quality-inspection.json",
+            "present": True,
+            "complete": False,
+            "issues": ["Required file missing: syllabus-outline.json."],
+            "inspection": {"inspection_status": "fail"},
+        },
+    )
+
+    assert review["status"] == "blocked"
+    assert any("Quality inspection failed" in reason for reason in review["reasons"])
 
 
 def test_product_review_evidence_validates_review_and_repair_artifact(tmp_path):
@@ -436,7 +498,9 @@ def test_write_final_review_packet_validates_the_rerendered_html(monkeypatch, tm
     def fake_rerender_html(output_dir):
         html = "How to Study Study Roadmap One-Sentence Essence Method Worked Example Solution Check Exam Pitfall "
         html += "Source anchor Concept Map Visual Worked Example "
-        html += "".join(f'<section class="topic"><h2>Topic {index}</h2></section>' for index in range(12))
+        html += "".join(
+            f'<section class="topic"><h2>Topic {index}</h2></section>' for index in range(12)
+        )
         html += "<p>Students should be able to understand the nature of an economic resource.</p>"
         (output_dir / "guide.html").write_text(html, encoding="utf-8")
 

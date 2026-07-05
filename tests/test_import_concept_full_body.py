@@ -47,15 +47,24 @@ def test_apply_concept_explanations_replaces_full_topic_body():
 
     assert imported == 1
     assert missing == []
-    assert guide.essence == "External costs and benefits are side effects on people outside the transaction."
+    assert (
+        guide.essence
+        == "External costs and benefits are side effects on people outside the transaction."
+    )
     assert guide.analogy == "A noisy party helps the host but keeps the neighbours awake."
-    assert guide.mini_worked_example == "Mark private benefit, then add or subtract the third-party effect."
+    assert (
+        guide.mini_worked_example
+        == "Mark private benefit, then add or subtract the third-party effect."
+    )
     assert guide.worked_solution_steps == [
         "Identify who buys and sells.",
         "Identify the third party.",
         "Decide whether the side effect is a cost or benefit.",
     ]
-    assert guide.pitfall == "Do not call every unfair outcome an externality; a third party must be affected."
+    assert (
+        guide.pitfall
+        == "Do not call every unfair outcome an externality; a third party must be affected."
+    )
     assert guide.checklist == [
         "An external cost is harm to a third party.",
         "An external benefit is a gain to a third party.",

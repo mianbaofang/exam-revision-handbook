@@ -1,5 +1,36 @@
 # Changelog
 
+## 0.4.4 - 2026-07-05
+
+### Changed
+
+- Reframed the Skill as a Python execution framework plus LLM-operated handbook
+  workflow. Python now handles mechanical tasks such as official PDF download,
+  page-text extraction, JSON receipt/validation, HTML rendering, PDF export, and
+  packaging; the host LLM/Agent owns syllabus boundaries, exam-point selection,
+  concept explanations, worked-example judgment, visual needs, and final review.
+- Added the `syllabus-outline`, `visual_spec`, and reviewed concept-explanation
+  handoff path so the LLM's source-bound decisions can populate the guide plan
+  without Python inventing content.
+- Tightened the visual contract around exact SVG. SVG can enter a deliverable
+  only when the LLM marks `svg_fit: "exact"` and the asset is reviewed or
+  approved; non-exact SVG, unreviewed SVG, and legacy `deterministic-svg`
+  provider output are blocked from final delivery.
+
+### Fixed
+
+- Removed local deterministic/scientific-vector SVG generation from the
+  deliverable path. Complex visual needs now remain external infographic jobs
+  until a callable route or reviewed imported raster asset is available.
+- Updated validation, quality inspection, manifest v2, rendering, import, and
+  visual-routing tests so stale SVG fallback assets and unresolved visual jobs
+  fail loudly instead of being presented as finished teaching diagrams.
+
+### Review Notes
+
+- This is a framework release. It is classified as `candidate` release evidence,
+  not a new final-ready sample certification.
+
 ## 0.4.3 - 2026-07-03
 
 ### Fixed

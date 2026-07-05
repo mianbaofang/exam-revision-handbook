@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 import urllib.error
 import urllib.parse
@@ -9,7 +10,13 @@ from datetime import UTC, datetime
 from html.parser import HTMLParser
 from pathlib import Path
 
-from intl_exam_guide.models import AssessmentPaper, Qualification, SourceRecord, SourceSnippet, Topic
+from intl_exam_guide.models import (
+    AssessmentPaper,
+    Qualification,
+    SourceRecord,
+    SourceSnippet,
+    Topic,
+)
 from intl_exam_guide.parsing.pdf_text import extract_pdf_pages, extract_pdf_text
 from intl_exam_guide.providers.base import ExamBoardProvider, Link
 from intl_exam_guide.providers.common import (
@@ -268,7 +275,10 @@ class OxfordAQAProvider(ExamBoardProvider):
                 score += 50
             if level:
                 level_norm = level.lower().replace("_", "-")
-                if level_norm in {"gcse", "igcse", "international-gcse"} and "international gcse" in text:
+                if (
+                    level_norm in {"gcse", "igcse", "international-gcse"}
+                    and "international gcse" in text
+                ):
                     score += 30
                 if level_norm in {
                     "as",
@@ -329,8 +339,12 @@ class OxfordAQAProvider(ExamBoardProvider):
         code = code_from_title(title)
         qtype = qualification_type_from_title(title)
         subject_area = breadcrumb_subject(parser.nodes)
-        summary = section_text(parser.nodes, start_text=title, end_text="Syllabus summary", max_items=8)
-        topics = extract_topics(parser.nodes)
+        summary = section_text(
+            parser.nodes, start_text=title, end_text="Syllabus summary", max_items=8
+        )
+        # Topics are no longer extracted from web page.
+        # The LLM Analyst will read syllabus-evidence.json from the PDF and decide topics.
+        topics: list[Topic] = []
         assessments = extract_assessments(parser.nodes)
         specification_url = find_specification_url(parser.links)
         source = SourceRecord(
@@ -386,9 +400,28 @@ class OxfordAQAProvider(ExamBoardProvider):
         pages = extract_pdf_pages(pdf_path)
         text_path.write_text(extract_pdf_text(pdf_path), encoding="utf-8")
         level_scope = qualification_level_scope(qualification)
-        detailed_topics = extract_detailed_topics_from_pdf(pages, level=level_scope)
-        if detailed_topics:
-            qualification.topics = detailed_topics
+
+        # Write candidate hints (page text only, no topic parsing)
+        # These are optional reference hints for the LLM Analyst.
+        # The LLM must read the evidence and decide topics itself.
+        hints_path = output_dir / f"oxfordaqa-{code}-syllabus-candidate-hints.json"
+        hints_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": "v0.5-evidence-hints",
+                    "status": "evidence-only",
+                    "note": "Python extracted page text only. The LLM syllabus_outline_analyst must read the official evidence and decide topic boundaries.",
+                    "level_scope": level_scope,
+                    "pages": [
+                        {"page": page_num, "text": text[:5000]} for page_num, text in pages[:100]
+                    ],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
         attach_source_snippets(qualification, pages)
         qualification.assessments = filter_assessments_for_level_scope(
             qualification.assessments,
@@ -456,257 +489,21 @@ def section_text(
 
 
 def extract_topics(nodes: list[TextNode]) -> list[Topic]:
-    region = nodes_between_any(
-        nodes,
-        ["Syllabus summary"],
-        ["Teaching resources available", "Teaching resources", "Assessment"],
-    )
-    covers_index = index_containing(region, "covers the following topics")
-    if covers_index is not None:
-        region = region[covers_index + 1 :]
-
-    topics = topics_from_region(region)
-    if not topics:
-        topics = topics_from_named_skill_section(nodes)
-    if not topics:
-        topics = topics_from_assessment(nodes)
-    return clean_topics(topics)
+    """DEPRECATED: Python no longer parses topics. LLM Analyst decides topics from evidence."""
+    return []
 
 
 def topics_from_region(region: list[TextNode], default_title: str | None = None) -> list[Topic]:
-    topics: list[Topic] = []
-    current: Topic | None = None
-    has_headings = any(is_topic_heading(node) for node in region)
-
-    for node in region:
-        if has_headings and is_topic_heading(node):
-            if current:
-                topics.append(current)
-            current = Topic(title=node.text)
-            continue
-        point = topic_point_text(node)
-        if point:
-            if has_headings:
-                if current:
-                    current.points.append(point)
-            else:
-                if default_title:
-                    if current is None:
-                        current = Topic(title=default_title)
-                    current.points.append(point)
-                else:
-                    topics.append(Topic(title=point))
-    if current:
-        topics.append(current)
-
-    return clean_topics(topics)
+    """DEPRECATED: Python no longer parses topics. LLM Analyst decides topics from evidence."""
+    return []
 
 
 def extract_detailed_topics_from_pdf(
     pages: list[tuple[int, str]],
     level: str | None = None,
 ) -> list[Topic]:
-    mathematics_topics = extract_oxfordaqa_mathematics_module_topics(pages, level)
-    if mathematics_topics:
-        return mathematics_topics
-
-    reference_topics: list[Topic] = []
-    numeric_topics: list[Topic] = []
-    numeric_sections: list[NumericContentSection] = []
-    current_ref: str | None = None
-    current_section: str | None = None
-    current_page: int | None = None
-    current_lines: list[str] = []
-    current_numeric_code: str | None = None
-    current_numeric_title: str | None = None
-    current_numeric_page: int | None = None
-    current_numeric_lines: list[str] = []
-    current_section_code: str | None = None
-    current_section_title: str | None = None
-    current_section_page: int | None = None
-    current_section_lines: list[str] = []
-    section_title_may_continue = False
-    in_reference_content = False
-    in_numeric_content = False
-
-    def has_started_detailed_topics() -> bool:
-        return bool(
-            reference_topics
-            or numeric_topics
-            or numeric_sections
-            or current_ref
-            or current_numeric_code
-            or current_section_code
-        )
-
-    def flush_reference() -> None:
-        nonlocal current_ref, current_page, current_lines
-        if not current_ref or current_page is None:
-            current_lines = []
-            return
-        points = dedupe([line for line in current_lines if is_valid_detailed_content_line(line)])
-        if not points:
-            current_ref = None
-            current_page = None
-            current_lines = []
-            return
-        title = f"{current_ref} - {current_section}" if current_section else current_ref
-        snippet = clean_text(" ".join([current_ref, current_section or "", *points[:5]]))
-        reference_topics.append(
-            Topic(
-                title=title,
-                points=points[:8],
-                source_snippets=[
-                    SourceSnippet(
-                        page=current_page,
-                        text=snippet_around(snippet, current_ref, radius=420),
-                        matched_term=current_ref,
-                    )
-                ],
-            )
-        )
-        current_ref = None
-        current_page = None
-        current_lines = []
-
-    def flush_numeric() -> None:
-        nonlocal current_numeric_code, current_numeric_title, current_numeric_page, current_numeric_lines
-        if not current_numeric_code or not current_numeric_title or current_numeric_page is None:
-            current_numeric_lines = []
-            return
-        points = dedupe([line for line in current_numeric_lines if is_valid_detailed_content_line(line)])
-        if not points:
-            current_numeric_code = None
-            current_numeric_title = None
-            current_numeric_page = None
-            current_numeric_lines = []
-            return
-        title = f"{current_numeric_code} - {current_numeric_title}"
-        snippet = clean_text(" ".join([current_numeric_code, current_numeric_title, *points[:5]]))
-        numeric_topics.append(
-            Topic(
-                title=title,
-                points=points[:8],
-                source_snippets=[
-                    SourceSnippet(
-                        page=current_numeric_page,
-                        text=snippet_around(snippet, current_numeric_title, radius=420),
-                        matched_term=current_numeric_code,
-                    )
-                ],
-            )
-        )
-        current_numeric_code = None
-        current_numeric_title = None
-        current_numeric_page = None
-        current_numeric_lines = []
-
-    def flush_section() -> None:
-        nonlocal current_section_code, current_section_title, current_section_page, current_section_lines, section_title_may_continue
-        if not current_section_code or not current_section_title or current_section_page is None:
-            current_section_lines = []
-            return
-        points = dedupe(
-            [line for line in current_section_lines if is_valid_detailed_content_line(line)]
-        )
-        if points:
-            numeric_sections.append(
-                NumericContentSection(
-                    code=current_section_code,
-                    title=current_section_title,
-                    page=current_section_page,
-                    lines=points,
-                )
-            )
-        current_section_code = None
-        current_section_title = None
-        current_section_page = None
-        current_section_lines = []
-        section_title_may_continue = False
-
-    for page_number, page_text in pages:
-        for raw_line in page_text.splitlines():
-            line = clean_text(raw_line)
-            if not line:
-                continue
-            if line.startswith("3 Subject content"):
-                if "The content has been organised" in page_text:
-                    in_reference_content = True
-                continue
-            if (in_reference_content or in_numeric_content) and re.match(r"^4(\.|\s)", line) and has_started_detailed_topics():
-                flush_reference()
-                flush_numeric()
-                flush_section()
-                return choose_detailed_topics(reference_topics, numeric_topics, numeric_sections)
-
-            numeric_match = re.match(r"^(3\.\d+(?:\.\d+){0,4})\s+(.+)$", line)
-            if numeric_match:
-                code = numeric_match.group(1)
-                title = strip_bullet(numeric_match.group(2))
-                if re.search(r"\s+\d{1,3}$", title):
-                    continue
-                in_numeric_content = True
-                code_depth = len(code.split("."))
-                if in_reference_content:
-                    flush_reference()
-                    current_section = title
-                if code_depth == 2:
-                    flush_section()
-                    current_section_code = code
-                    current_section_title = title
-                    current_section_page = page_number
-                    current_section_lines = []
-                    section_title_may_continue = True
-                elif current_section_code:
-                    current_section_lines.append(line)
-                    section_title_may_continue = False
-                if is_numeric_topic_heading(code, title):
-                    flush_numeric()
-                    current_numeric_code = code
-                    current_numeric_title = title
-                    current_numeric_page = page_number
-                    current_numeric_lines = []
-                continue
-
-            if not in_reference_content and not in_numeric_content:
-                continue
-
-            if (
-                current_section_code
-                and current_section_title
-                and section_title_may_continue
-                and not current_section_lines
-                and is_section_title_continuation(line)
-            ):
-                current_section_title = clean_text(f"{current_section_title} {line}")
-                section_title_may_continue = False
-                continue
-            section_title_may_continue = False
-
-            section_match = re.match(r"^3\.\d+(?:\.\d+)?\s+(.+)$", line)
-            if section_match:
-                flush_reference()
-                current_section = strip_bullet(section_match.group(1))
-                continue
-
-            if in_reference_content and is_reference_code(line):
-                flush_reference()
-                current_ref = line
-                current_page = page_number
-                current_lines = []
-                continue
-
-            if current_ref:
-                current_lines.append(line)
-            if current_numeric_code:
-                current_numeric_lines.append(line)
-            if current_section_code:
-                current_section_lines.append(line)
-
-    flush_reference()
-    flush_numeric()
-    flush_section()
-    return choose_detailed_topics(reference_topics, numeric_topics, numeric_sections)
+    """DEPRECATED: Python no longer parses topics. LLM Analyst decides topics from evidence."""
+    return []
 
 
 def extract_oxfordaqa_mathematics_module_topics(
@@ -828,7 +625,9 @@ def expand_numeric_sections(sections: list[NumericContentSection]) -> list[Topic
     topics: list[Topic] = []
     used_titles: set[str] = set()
     for section in sections:
-        for index, (unit_title, unit_points) in enumerate(split_section_units(section.lines), start=1):
+        for index, (unit_title, unit_points) in enumerate(
+            split_section_units(section.lines), start=1
+        ):
             if not unit_points:
                 continue
             title = unique_topic_title(f"{section.code}.{index} - {unit_title}", used_titles)
@@ -1135,8 +934,19 @@ def clean_topics(topics: list[Topic]) -> list[Topic]:
         title = strip_bullet(topic.title)
         if not is_valid_topic_title(title):
             continue
-        points = [point for point in (strip_bullet(point) for point in topic.points) if is_valid_topic_point(point)]
-        cleaned.append(Topic(title=title, points=dedupe(points), level_tags=topic.level_tags, source_snippets=topic.source_snippets))
+        points = [
+            point
+            for point in (strip_bullet(point) for point in topic.points)
+            if is_valid_topic_point(point)
+        ]
+        cleaned.append(
+            Topic(
+                title=title,
+                points=dedupe(points),
+                level_tags=topic.level_tags,
+                source_snippets=topic.source_snippets,
+            )
+        )
     return cleaned
 
 
@@ -1206,14 +1016,18 @@ def is_valid_topic_point(text: str) -> bool:
 
 
 def extract_assessments(nodes: list[TextNode]) -> list[AssessmentPaper]:
-    region = nodes_between_any(nodes, ["Assessment"], ["Thinking about switching", "Course specification"])
+    region = nodes_between_any(
+        nodes, ["Assessment"], ["Thinking about switching", "Course specification"]
+    )
     if not region:
         region = nodes_between(nodes, "Assessment", "Course specification")
 
     papers: list[AssessmentPaper] = []
     current: AssessmentPaper | None = None
     paper_re = re.compile(r"^(Core|Extension|AS|A-level|Paper|Unit|[A-Z].* Paper).*:?$")
-    detail_re = re.compile(r"(marks|hour|%|exam|assessed|calculator|written|on-screen|qualification)", re.I)
+    detail_re = re.compile(
+        r"(marks|hour|%|exam|assessed|calculator|written|on-screen|qualification)", re.I
+    )
 
     for node in region:
         text = node.text.rstrip(":")

@@ -780,7 +780,7 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div>
-          <div class="kicker">三大考试局支持 · v0.4.2</div>
+          <div class="kicker">三大考试局支持 · v0.4.4</div>
           <h1>三大考试局复习手册，一句话生成。</h1>
           <p class="lead">支持 AQA、Edexcel、CAIE。把 Skill 链接交给你的 OpenClaw、Hermes 或其他 Agent，说一句“帮我生成某个科目的复习手册”，确认考试局、科目、语言和讲解风格后，它会生成知识点讲解、例题、图文学习单元和可打印 PDF。</p>
           <div class="action-row">
@@ -894,7 +894,7 @@
       <div class="shell">
         <div class="section-head">
           <h2>当前核心能力，不只是把文字排成 PDF。</h2>
-          <p>v0.4.2 的重点是把生成过程拆成可复查的协作流水线：官方大纲、教学写作、图形处理、例题和最终验收分开做，避免一个模型从头写到尾、错了也没人发现。</p>
+          <p>v0.4.4 的重点是把生成过程拆成可复查的协作流水线：官方大纲、教学写作、图形处理、例题和最终验收分开做，避免一个模型从头写到尾、错了也没人发现。</p>
         </div>
         <div class="flow capability-flow">
           <article class="flow-item">
@@ -1032,7 +1032,7 @@
       <div class="shell">
         <div class="section-head">
           <h2>孩子愿意看的手册，不能只有文字。</h2>
-          <p>流程是：先根据大纲生成基础知识点和例题；再由 AI 判断哪些知识点或例题需要图文结合；简单图走 SVG，复杂信息图先进入待生成队列，有可调用生图能力时由 Agent 自动生成和导入。</p>
+          <p>流程是：先根据大纲生成基础知识点和例题；再由 AI 判断哪些知识点或例题需要图文结合；exact SVG 必须复核通过，复杂信息图先进入待生成队列，有可调用生图能力时由 Agent 自动生成和导入。</p>
         </div>
         <div class="language">
           <article>
@@ -1042,8 +1042,8 @@
           </article>
           <article>
             <h3>模型只是建议</h3>
-            <p>GPT Image 2.0、Qwen Image 2.0 Pro、SenseNova U1 Fast 是推荐外部选项；如果用户有对应 Skill/API，Agent 可以自动调用。没有可调用能力时，只交付配图需求清单和 SVG 草图。</p>
-            <div class="sample">配图需求清单 + SVG 草图</div>
+            <p>GPT Image 2.0、Qwen Image 2.0 Pro、SenseNova U1 Fast 是推荐外部选项；如果用户有对应 Skill/API，Agent 可以自动调用。没有可调用能力时，复杂图只交付配图需求清单；SVG 只用于已复核的 exact-fit 资产。</p>
+            <div class="sample">配图需求清单 + exact SVG 复核</div>
           </article>
           <article>
             <h3>讲解要生动，也要少一点 AI 腔</h3>
@@ -1051,7 +1051,7 @@
             <div class="sample">生活化、侦探推理、反模板腔</div>
           </article>
         </div>
-        <p class="reference-note">设计参考：反模板腔检查借鉴 qiaomu-novel-generator 的 anti-AI language gate 思路；科学矢量 SVG fallback 借鉴 Yuan1z0825/nature-skills 的 nature-figure 思路。两者都已改造成复习手册场景，不作为运行时依赖。</p>
+        <p class="reference-note">设计参考：反模板腔检查借鉴 qiaomu-novel-generator 的 anti-AI language gate 思路；SVG 复核规则采用 figure contract 的原则，先写清楚图要解释的 claim、标签、来源依据和误导风险，再决定是否批准资产。这些都是文档约束，不作为运行时依赖。</p>
       </div>
     </section>
 

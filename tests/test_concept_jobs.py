@@ -17,6 +17,7 @@ SCRIPT_SPEC = spec_from_file_location("import_concept_explanations", SCRIPT_PATH
 assert SCRIPT_SPEC and SCRIPT_SPEC.loader
 SCRIPT_MODULE = module_from_spec(SCRIPT_SPEC)
 SCRIPT_SPEC.loader.exec_module(SCRIPT_MODULE)
+load_concept_explanations = SCRIPT_MODULE.load_concept_explanations
 apply_concept_explanations = SCRIPT_MODULE.apply_concept_explanations
 
 
@@ -96,7 +97,10 @@ def test_concept_jobs_write_review_files_and_read_reviewed_titles(tmp_path):
             [
                 {
                     "topic_title": jobs[0]["topic_title"],
-                    "explanations": ["外部成本是第三方承担的成本。", "外部收益是第三方获得的收益。"],
+                    "explanations": [
+                        "外部成本是第三方承担的成本。",
+                        "外部收益是第三方获得的收益。",
+                    ],
                 }
             ],
             ensure_ascii=False,
@@ -108,6 +112,29 @@ def test_concept_jobs_write_review_files_and_read_reviewed_titles(tmp_path):
     assert "External costs" in (concepts_dir / "concept_jobs.md").read_text(encoding="utf-8")
     assert reviewed_concept_titles(tmp_path) == {jobs[0]["topic_title"]}
     assert "concept_001" in concept_jobs_markdown(jobs)
+
+
+def test_import_concept_explanations_accepts_writer_concepts_schema(tmp_path):
+    path = tmp_path / "concept_explanations.json"
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": "v0.5-concept-explanations",
+                "concepts": [
+                    {
+                        "topic_title": "Topic A",
+                        "explanations": ["Concept A", "Reason A"],
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    entries = load_concept_explanations(path)
+
+    assert entries == [{"topic_title": "Topic A", "explanations": ["Concept A", "Reason A"]}]
 
 
 def test_apply_concept_explanations_replaces_matching_topic():

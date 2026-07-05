@@ -105,15 +105,16 @@ VisualNeed
 The renderer should accept the typed contract, not just a free-text visual
 type.
 
-### 5. SVG is overused as a visual fallback
+### 5. SVG must be exact and reviewed
 
-SVG is suitable for simple, deterministic, source-bound figures. It is not a
-replacement for complex teaching infographics. The project now blocks some
-repeated SVG cases, but it still has a large hand-authored template file and
-fallback SVG behavior.
+SVG is suitable only for simple, source-bound figures whose meaning is fully
+carried by exact geometry, axes, labels, simple tables, or simple flows. It is
+not a replacement for complex teaching infographics. The current framework must
+block non-exact SVG and unreviewed SVG from final delivery.
 
-Required v0.5 change: keep SVG only for safe categories and move complex cases
-to pending infographic jobs or reviewed raster assets.
+Required v0.5 change: keep SVG only for `svg_fit: "exact"` cases with reviewed
+or approved assets, and move complex cases to pending infographic jobs or
+reviewed raster assets.
 
 ### 6. External image generation is a queue/import flow, not a product loop
 
@@ -128,13 +129,13 @@ Required v0.5 change: add a visual orchestration command that reads pending
 jobs, calls the selected external image workflow when available, stores
 metadata, imports assets, and re-runs final review.
 
-## Built-In Visual Types
+## Reviewed Visual Candidates
 
-These are the visual types that the project can currently create internally as
-deterministic SVG. They should be treated as draft-safe only until the v0.5
-typed visual contract is implemented.
+The framework may accept these categories as exact-SVG candidates only when the
+LLM writes `svg_fit: "exact"` and the asset is reviewed or approved. They are not
+local deterministic fallbacks for complex visuals.
 
-| Area | Direct built-in visual types |
+| Area | Exact-SVG candidate categories |
 |---|---|
 | Mathematics | number line, fraction bar, ratio blocks, function/algebra graph, equation balance, statistics chart, probability tree, simple right triangle, Venn diagram |
 | Mechanics / Physics-like math | distance-time graph, force arrows |
@@ -145,8 +146,8 @@ typed visual contract is implemented.
 | History | timeline, cause/consequence chain, source evidence organizer, change/continuity comparison |
 
 These are not enough for "professional image-rich handbook" quality. They cover
-simple reproducible figures. Complex diagrams should not be squeezed into these
-templates.
+simple reproducible figures only after exact-fit review. Complex diagrams should
+not be squeezed into these categories.
 
 ## Visuals That Should Require External Generation Or Reviewed Assets
 

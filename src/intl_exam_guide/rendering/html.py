@@ -21,7 +21,11 @@ from intl_exam_guide.planning.language_policy import (
     language_mode_label,
     with_body_language_options,
 )
-from intl_exam_guide.planning.source_points import clean_source_point, merge_wrapped_source_points, visible_source_points
+from intl_exam_guide.planning.source_points import (
+    clean_source_point,
+    merge_wrapped_source_points,
+    visible_source_points,
+)
 from intl_exam_guide.planning.source_points import is_syllabus_shell
 from intl_exam_guide.rendering.cover import render_cover
 from intl_exam_guide.rendering.delivery_panel import render_delivery_panel
@@ -30,7 +34,6 @@ from intl_exam_guide.rendering.icons import render_icon
 from intl_exam_guide.rendering.infographics import render_infographic_required
 from intl_exam_guide.rendering.styles import stylesheet
 from intl_exam_guide.rendering.story_modes import chinese_story_lines, english_story_lines
-from intl_exam_guide.rendering.svg_templates import render_topic_visual_svg
 from intl_exam_guide.rendering.text import html_escape, subject_display_name
 from intl_exam_guide.rendering.visual_assets import (
     build_visual_asset_lookup,
@@ -59,7 +62,7 @@ def render_html(
         else f"{subject_display_name(qualification)}学习复习手册"
     )
     parts = [
-        f"<!doctype html><html lang=\"{html_lang}\"><head><meta charset=\"utf-8\">",
+        f'<!doctype html><html lang="{html_lang}"><head><meta charset="utf-8">',
         f"<title>{html_escape(page_title)}</title>",
         f"<style>{stylesheet()}</style></head><body>",
         render_cover(qualification, body_options),
@@ -144,20 +147,22 @@ def style_display(style: str, language: str = "en") -> str:
 def image_provider_display(options: GuideRunOptions, language: str = "en") -> str:
     if options.image_provider == "custom":
         model = options.image_model or ("custom model" if language == "en" else "自定义模型")
-        return f"custom illustration model: {model}" if language == "en" else f"自定义插图模型：{model}"
+        return (
+            f"custom illustration model: {model}"
+            if language == "en"
+            else f"自定义插图模型：{model}"
+        )
     if options.image_provider == "prompt-queue":
         return (
             "complex visuals are tracked in the manifest; unfinished items stay in the image job queue"
             if language == "en"
             else "复杂图按清单生成与复核；未完成项会列入配图任务"
         )
-    if options.image_provider == "deterministic-svg":
-        return (
-            "simple diagrams are included; complex infographics need generation or review"
-            if language == "en"
-            else "简单示意图已随手册生成，复杂信息图需要生成或复核后使用"
-        )
-    return options.image_provider
+    return (
+        "visual assets are tracked for review before final delivery"
+        if language == "en"
+        else "配图资产会先进入复核清单，复核后才用于最终交付"
+    )
 
 
 def render_source_note(qualification: Qualification, language: str = "en") -> str:
@@ -165,7 +170,9 @@ def render_source_note(qualification: Qualification, language: str = "en") -> st
     heading = "Audience and Sources" if language == "en" else "适用对象与来源"
     page_label = "Qualification page" if language == "en" else "课程页面"
     spec_label = "Specification PDF" if language == "en" else "考试大纲 PDF"
-    hash_value = qualification.source.specification_sha256 or ("not downloaded" if language == "en" else "未下载")
+    hash_value = qualification.source.specification_sha256 or (
+        "not downloaded" if language == "en" else "未下载"
+    )
     audience_note = (
         qualification.audience_note
         if language == "en"
@@ -212,7 +219,7 @@ def render_listing_note(qualification: Qualification, language: str = "en") -> s
     if source.listing_style_class:
         label = "Detected class" if language == "en" else "Detected class"
         pieces.append(f"{label}: {html_escape(source.listing_style_class)}")
-    return f"<p class=\"listing-note\">{' · '.join(pieces)}</p>"
+    return f'<p class="listing-note">{" · ".join(pieces)}</p>'
 
 
 def render_summary(qualification: Qualification, language: str = "en") -> str:
@@ -247,17 +254,19 @@ def render_assessments(qualification: Qualification, language: str = "en") -> st
                 "结构化输出中保留官方英文考试信息，便于老师或维护者复核。",
             ]
         details = "".join(f"<li>{html_escape(item)}</li>" for item in detail_items)
-        cards.append(f"<article class=\"assessment\"><h3>{html_escape(title)}</h3><ul>{details}</ul></article>")
+        cards.append(
+            f'<article class="assessment"><h3>{html_escape(title)}</h3><ul>{details}</ul></article>'
+        )
     if cards:
         body = "\n".join(cards)
     else:
         body = (
-            "<p class=\"warning\">No assessment structure was extracted. Review the source page manually.</p>"
+            '<p class="warning">No assessment structure was extracted. Review the source page manually.</p>'
             if language == "en"
-            else "<p class=\"warning\">没有抽取到考试结构，需要人工复核来源页面。</p>"
+            else '<p class="warning">没有抽取到考试结构，需要人工复核来源页面。</p>'
         )
     heading = "Assessment Structure" if language == "en" else "考试结构"
-    return f"<section class=\"band\"><h2>{html_escape(heading)}</h2><div class=\"assessment-grid\">{body}</div></section>"
+    return f'<section class="band"><h2>{html_escape(heading)}</h2><div class="assessment-grid">{body}</div></section>'
 
 
 def render_topic_map(
@@ -289,11 +298,7 @@ def render_topic_map(
             else:
                 points = "使用考试大纲抽取结果补全本节细分要求。"
         title_link = f'<a href="#{topic_anchor(index)}">{html_escape(title)}</a>'
-        rows.append(
-            "<tr>"
-            f"<td>{index}</td><td>{title_link}</td><td>{html_escape(points)}</td>"
-            "</tr>"
-        )
+        rows.append(f"<tr><td>{index}</td><td>{title_link}</td><td>{html_escape(points)}</td></tr>")
     if language == "en":
         heading = "Study Roadmap"
         columns = "<tr><th>#</th><th>Knowledge unit</th><th>What to master</th></tr>"
@@ -304,7 +309,7 @@ def render_topic_map(
 <section class="band">
   <h2>{heading}</h2>
   <table><thead>{columns}</thead>
-  <tbody>{''.join(rows)}</tbody></table>
+  <tbody>{"".join(rows)}</tbody></table>
 </section>
 """
 
@@ -313,7 +318,11 @@ def topic_map_mastery_text(guide: TopicGuide, language: str) -> str:
     """Keep the roadmap scan-friendly; full explanations stay in the topic body."""
 
     if not guide.checklist:
-        return "Use the topic guide for the detailed mastery target." if language == "en" else "查看正文中的本节要掌握。"
+        return (
+            "Use the topic guide for the detailed mastery target."
+            if language == "en"
+            else "查看正文中的本节要掌握。"
+        )
     return guide.checklist[0]
 
 
@@ -322,7 +331,9 @@ def display_topic_titles(
     language: str,
     topic_guides: list[TopicGuide] | None = None,
 ) -> list[str]:
-    titles = [display_topic_title(topic, index, language) for index, topic in enumerate(topics, start=1)]
+    titles = [
+        display_topic_title(topic, index, language) for index, topic in enumerate(topics, start=1)
+    ]
     duplicated = {title for title in titles if titles.count(title) > 1}
     if not duplicated:
         return titles
@@ -411,7 +422,7 @@ def render_topic_nav(
     return f"""
 <nav class="band topic-nav" aria-label="{html_escape(heading)}">
   <h2>{html_escape(heading)}</h2>
-  <div class="topic-nav-grid">{''.join(links)}</div>
+  <div class="topic-nav-grid">{"".join(links)}</div>
 </nav>
 """
 
@@ -434,7 +445,7 @@ def topics_with_guides(
 def render_revision_stages(stages: list[str], language: str = "en") -> str:
     items = "".join(f"<li>{html_escape(stage)}</li>" for stage in stages)
     heading = "Three-Stage Revision" if language == "en" else "三阶段复习法"
-    return f"<section class=\"band\"><h2>{html_escape(heading)}</h2><ol class=\"stage-list\">{items}</ol></section>"
+    return f'<section class="band"><h2>{html_escape(heading)}</h2><ol class="stage-list">{items}</ol></section>'
 
 
 def render_topics(
@@ -472,8 +483,7 @@ def render_topics(
                 else "<li>根据官方大纲抽取结果复习本节内容。</li>"
             )
         examples = "\n".join(
-            render_practice(item, language, title)
-            for item in grouped.get(topic.title, [])[:2]
+            render_practice(item, language, title) for item in grouped.get(topic.title, [])[:2]
         )
         guide_block = render_topic_guide(guide, language) if guide else ""
         diagram_block = ""
@@ -565,25 +575,47 @@ def render_exam_logic_goal(focus: str, language: str, source_focus: str | None =
     lower = focus.lower()
     if any(word in lower for word in ["momentum", "impulse", "impact", "collision"]):
         action = "choose a positive direction, write signed momenta, and use the before-and-after relationship."
-    elif any(word in lower for word in ["newton", "force", "friction", "normal reaction", "tension", "thrust"]):
-        action = "start with a force diagram, choose directions, and apply equilibrium or F = ma."
-    elif any(word in lower for word in ["velocity", "speed", "displacement", "acceleration", "kinematic"]) or (
-        "motion" in lower and any(word in lower for word in ["graph", "gradient", "area under"])
+    elif any(
+        word in lower
+        for word in ["newton", "force", "friction", "normal reaction", "tension", "thrust"]
     ):
-        action = "identify the motion quantity or graph type before using formulae, gradients, or areas."
+        action = "start with a force diagram, choose directions, and apply equilibrium or F = ma."
+    elif any(
+        word in lower for word in ["velocity", "speed", "displacement", "acceleration", "kinematic"]
+    ) or ("motion" in lower and any(word in lower for word in ["graph", "gradient", "area under"])):
+        action = (
+            "identify the motion quantity or graph type before using formulae, gradients, or areas."
+        )
     elif any(word in lower for word in ["probability", "random variable", "bernoulli", "binomial"]):
         action = "define the event or distribution first, then calculate the required probability or statistic."
     elif any(word in lower for word in ["sine", "cosine", "trigonometry"]):
         action = "connect the angle range, triangle rule, identity, or graph feature to the values requested."
     elif any(word in lower for word in ["integral", "integration", "area under", "trapezium"]):
-        action = "decide whether the task needs an antiderivative, a definite area, or an approximation."
+        action = (
+            "decide whether the task needs an antiderivative, a definite area, or an approximation."
+        )
     elif any(word in lower for word in ["derivative", "differentiation", "tangent", "stationary"]):
         action = "connect the derivative to gradient, rate of change, tangent, normal, or stationary-point meaning."
-    elif any(word in lower for word in ["circle", "straight line", "coordinate", "gradient", "midpoint"]):
+    elif any(
+        word in lower for word in ["circle", "straight line", "coordinate", "gradient", "midpoint"]
+    ):
         action = "translate the geometry into coordinates, gradients, equations, distances, or intersections."
     elif any(word in lower for word in ["sequence", "series", "progression"]):
-        action = "identify the term, sum, ratio, or convergence condition before choosing a formula."
-    elif any(word in lower for word in ["surd", "indices", "factor", "polynomial", "quadratic", "equation", "inequality"]):
+        action = (
+            "identify the term, sum, ratio, or convergence condition before choosing a formula."
+        )
+    elif any(
+        word in lower
+        for word in [
+            "surd",
+            "indices",
+            "factor",
+            "polynomial",
+            "quadratic",
+            "equation",
+            "inequality",
+        ]
+    ):
         action = "choose the algebraic form that exposes the roots, factors, signs, or exact simplification."
     else:
         action = "match the exact syllabus wording to the mathematical object in the question."
@@ -617,7 +649,7 @@ def render_topic_diagram(topic: Topic, guide: TopicGuide, index: int, language: 
       <strong>{html_escape(title)}</strong>
       <small>{html_escape(source_label)}</small>
     </div>
-    <ol>{''.join(cards)}</ol>
+    <ol>{"".join(cards)}</ol>
   </div>
 </figure>
 """
@@ -640,13 +672,13 @@ def render_visual_example(
 
     source = topic.source_snippets[0] if topic.source_snippets else None
     source_label = format_source_reference(source, language)
-    visual_html = render_manifest_visual_asset(title, visual, asset) or render_topic_visual_svg(visual, index, language)
+    visual_html = render_manifest_visual_asset(title, visual, asset) or render_pending_svg_visual(
+        title, visual, asset, language
+    )
     caption = "Visual Worked Example" if language == "en" else "图形例题"
     source_prefix = "Source anchor" if language == "en" else "来源依据"
     question = (
-        "Use the diagram to explain or apply:"
-        if language == "en"
-        else "用这张图解释或应用："
+        "Use the diagram to explain or apply:" if language == "en" else "用这张图解释或应用："
     )
     visual_steps = (
         [
@@ -688,7 +720,11 @@ def render_manifest_visual_asset(
     if not filename:
         return ""
     status = str(asset.get("asset_status") or "").lower()
-    if visual.image_provider != "kroki" and status not in {"reviewed-generated", "generated", "provider-selected-generated"}:
+    if visual.image_provider != "kroki" and status not in {
+        "reviewed-generated",
+        "generated",
+        "provider-selected-generated",
+    }:
         return ""
     if Path(filename).suffix.lower() not in {".svg", ".png", ".jpg", ".jpeg", ".webp"}:
         return ""
@@ -697,6 +733,29 @@ def render_manifest_visual_asset(
         f'src="images/{html_escape(filename)}" alt="{html_escape(title)} visual">'
     )
 
+
+def render_pending_svg_visual(
+    title: str,
+    visual: VisualBrief,
+    asset: dict[str, Any] | None,
+    language: str,
+) -> str:
+    caption = "Reviewed visual required" if language == "en" else "需要复核后的图形资产"
+    instruction = (
+        "Use SVG only when it exactly fits the teaching idea; otherwise import an external infographic asset."
+        if language == "en"
+        else "只有完全匹配教学含义的图才使用 SVG；否则请导入外部信息图资产。"
+    )
+    visual_id = str((asset or {}).get("id") or "").strip()
+    job_line = f"<p><strong>Visual ID:</strong> {html_escape(visual_id)}</p>" if visual_id else ""
+    return f"""
+<div class="infographic-card" aria-label="Reviewed visual required for {html_escape(title)}">
+  <div class="visual-model">{html_escape(caption)}</div>
+  <p>{html_escape(instruction)}</p>
+  <p><strong>{html_escape("Visual type" if language == "en" else "图形类型")}:</strong> {html_escape(visual.visual_type)}</p>
+  {job_line}
+</div>
+"""
 
 
 def render_story_modes(topic: Topic, guide: TopicGuide, language: str, index: int) -> str:
@@ -788,14 +847,18 @@ def render_practice(item: PracticeItem, language: str, display_title: str | None
 """
 
 
-def render_reference_appendix(qualification: Qualification, practice_count: int, language: str) -> str:
+def render_reference_appendix(
+    qualification: Qualification, practice_count: int, language: str
+) -> str:
     listing_note = render_listing_note(qualification, language)
     assessment = render_assessments(qualification, language)
     heading = "Source Appendix" if language == "en" else "附录：来源与考试信息"
     practice_label = "Generated practice examples" if language == "en" else "生成例题数量"
     page_label = "Qualification page" if language == "en" else "课程页面"
     spec_label = "Specification PDF" if language == "en" else "考试大纲 PDF"
-    hash_value = qualification.source.specification_sha256 or ("not downloaded" if language == "en" else "未下载")
+    hash_value = qualification.source.specification_sha256 or (
+        "not downloaded" if language == "en" else "未下载"
+    )
     audience_note = (
         qualification.audience_note
         if language == "en"
@@ -817,7 +880,9 @@ def render_reference_appendix(qualification: Qualification, practice_count: int,
 """
 
 
-def render_source_snippets(snippets: list[SourceSnippet], compact: bool = False, language: str = "en") -> str:
+def render_source_snippets(
+    snippets: list[SourceSnippet], compact: bool = False, language: str = "en"
+) -> str:
     summary = "Source anchor" if language == "en" else "来源依据"
     if not snippets:
         message = (
@@ -825,10 +890,12 @@ def render_source_snippets(snippets: list[SourceSnippet], compact: bool = False,
             if language == "en"
             else "本节没有匹配到页码级来源片段，需要人工复核。"
         )
-        return f"<details class=\"source-snippets\"><summary>{html_escape(summary)}</summary><p class=\"warning\">{html_escape(message)}</p></details>"
+        return f'<details class="source-snippets"><summary>{html_escape(summary)}</summary><p class="warning">{html_escape(message)}</p></details>'
     css_class = "source-snippets compact" if compact else "source-snippets"
     if language == "zh-CN":
-        review_note = "官方英文来源片段已保存在结构化输出中，供老师或维护者复核；学生正文不混排英文原文。"
+        review_note = (
+            "官方英文来源片段已保存在结构化输出中，供老师或维护者复核；学生正文不混排英文原文。"
+        )
         items = []
         for snippet in snippets:
             items.append(
@@ -837,7 +904,7 @@ def render_source_snippets(snippets: list[SourceSnippet], compact: bool = False,
                 f"<span>{html_escape(review_note)}</span>"
                 "</li>"
             )
-        return f"<details class=\"{css_class}\"><summary>{html_escape(summary)}</summary><ul>{''.join(items)}</ul></details>"
+        return f'<details class="{css_class}"><summary>{html_escape(summary)}</summary><ul>{"".join(items)}</ul></details>'
     items = []
     for snippet in snippets:
         text = source_snippet_display_text(snippet.text)
@@ -850,7 +917,7 @@ def render_source_snippets(snippets: list[SourceSnippet], compact: bool = False,
             f"<blockquote>{html_escape(text)}</blockquote>"
             "</li>"
         )
-    return f"<details class=\"{css_class}\"><summary>{html_escape(summary)}</summary><ul>{''.join(items)}</ul></details>"
+    return f'<details class="{css_class}"><summary>{html_escape(summary)}</summary><ul>{"".join(items)}</ul></details>'
 
 
 def source_snippet_display_text(text: str) -> str:
@@ -858,7 +925,9 @@ def source_snippet_display_text(text: str) -> str:
     parts = re.split(r"\s+(?=[a-z]\)\s+)", source, flags=re.IGNORECASE)
     if len(parts) > 1:
         raw_parts = [clean_source_point(part).strip(" ;:") for part in parts]
-        cleaned_parts = merge_wrapped_source_points([part for part in raw_parts if part and not is_syllabus_shell(part)])
+        cleaned_parts = merge_wrapped_source_points(
+            [part for part in raw_parts if part and not is_syllabus_shell(part)]
+        )
         cleaned = "; ".join(part for part in cleaned_parts if part)
     else:
         cleaned = clean_source_point(source)
@@ -883,8 +952,8 @@ def format_source_reference(
 def link_or_missing(value: str | None, language: str = "en") -> str:
     if not value:
         missing = "missing" if language == "en" else "缺失"
-        return f"<span class=\"warning\">{html_escape(missing)}</span>"
-    return f"<a href=\"{html_escape(value)}\">{html_escape(value)}</a>"
+        return f'<span class="warning">{html_escape(missing)}</span>'
+    return f'<a href="{html_escape(value)}">{html_escape(value)}</a>'
 
 
 def display_topic_title(topic: Topic, index: int, language: str) -> str:

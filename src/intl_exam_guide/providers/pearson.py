@@ -186,7 +186,9 @@ def pearson_is_specification_pdf(url: str) -> bool:
     lower = url.lower()
     if ".pdf" not in lower:
         return False
-    if any(term in lower for term in ["past-paper", "past paper", "mark-scheme", "welcome", "guide"]):
+    if any(
+        term in lower for term in ["past-paper", "past paper", "mark-scheme", "welcome", "guide"]
+    ):
         return False
     return "specification" in lower or "/spec" in lower
 

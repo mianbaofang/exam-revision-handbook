@@ -804,7 +804,7 @@
       background: #d89b33;
     }
 
-    /* v0.4.2 README animation refresh: warmer handbook/worksheet art direction. */
+    /* v0.4.4 README animation refresh: warmer handbook/worksheet art direction. */
     .stage {
       color: #14233b;
       background:
@@ -1772,7 +1772,7 @@ function IntroScene() {
   return (
     <SceneFrame start={0} end={5.2}>
       <div className="orbit" style={{ transform: `rotate(${orbit}deg) scale(${1 + Math.sin(time * 0.7) * 0.025})` }}></div>
-      <div className="kicker">v0.4.2 · Revision Handbook Skill</div>
+      <div className="kicker">v0.4.4 · Revision Handbook Skill</div>
       <h1 className="headline">Turn official syllabuses into revision handbooks students can actually use.</h1>
       <p className="lead">
         For AQA, Edexcel, and CAIE: fetch the official syllabus first, then let agents split writing, visuals, and final review.
@@ -1827,7 +1827,7 @@ function UsageScene() {
   const steps = [
     ["01", "Syllabus analyst agent", "Fetch official pages/PDFs and split CourseSpec into LearningUnits."],
     ["02", "Handbook writer agent", "Write explanations, examples, glossary support, and visual needs."],
-    ["03", "Visual routing agent", "Use local SVG for simple cases, Kroki for structured diagrams, and external jobs for rich infographics."],
+    ["03", "Visual routing agent", "Choose exact SVG, Kroki, or external infographic jobs; complex visuals cannot be replaced by drafts."],
     ["04", "Independent review agent", "Read final pages and sampled PDFs against the outline; fix what can be fixed before handoff."],
   ];
   return (
@@ -2023,13 +2023,13 @@ function VisualRouteScene() {
   const time = useTime();
   const cards = [
     {
-      title: "Simple exact visuals: local SVG",
-      body: "Number lines, axes, simple geometry, and compact tables stay local and deterministic.",
+      title: "Reviewed exact visuals: SVG",
+      body: "Number lines, axes, simple geometry, and compact tables need svg_fit=exact plus review.",
       visual: <div className="svg-diagram"><span></span><span></span><span></span></div>,
     },
     {
       title: "Structured diagrams: Kroki",
-      body: "Flows, hierarchies, timelines, relationship maps, and concept maps use professional diagram rendering.",
+      body: "Flows, hierarchies, timelines, relationship maps, and concept maps need LLM routing and review.",
       visual: (
         <svg className="kroki-preview" viewBox="0 0 360 190" aria-label="Kroki structured diagram preview">
           <defs>
@@ -2061,7 +2061,7 @@ function VisualRouteScene() {
   return (
     <SceneFrame start={32.5} end={38.2}>
       <div className="kicker">Professional Visual Handling</div>
-      <h2 className="headline route-headline">SVG, Kroki, and external infographics each have their own job.</h2>
+      <h2 className="headline route-headline">Exact SVG, Kroki, and external infographics each have their own review boundary.</h2>
       <div className="visual-routing">
         {cards.map((card, index) => {
           const p = clamp((time - 33.0 - index * 0.18) / 0.7, 0, 1);
@@ -2138,7 +2138,7 @@ function ClosingScene() {
 function Footer() {
   return (
     <div className="footer-mark">
-      <span>IGCSE & A-Level AI Revision Handbook Skill · v0.4.2</span>
+      <span>IGCSE & A-Level AI Revision Handbook Skill · v0.4.4</span>
       <span>official syllabus → reviewed handbook</span>
     </div>
   );

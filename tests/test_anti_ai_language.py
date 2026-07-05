@@ -18,7 +18,9 @@ from intl_exam_guide.validation.checks import validate_guides
 def test_polish_removes_safe_english_transition():
     assert polish_ai_language("In conclusion, the answer is 5.", "en") == "the answer is 5."
     assert (
-        polish_ai_language("It's important to note that opportunity cost is the next best choice.", "en")
+        polish_ai_language(
+            "It's important to note that opportunity cost is the next best choice.", "en"
+        )
         == "opportunity cost is the next best choice."
     )
     assert (
@@ -32,8 +34,14 @@ def test_detector_keeps_semantic_contrasts_as_warning_only():
 
 
 def test_polish_removes_safe_chinese_transition():
-    assert polish_ai_language("总之，机会成本是放弃的次优选择。", "zh-CN") == "机会成本是放弃的次优选择。"
-    assert polish_ai_language("在当今社会，稀缺性会迫使人做选择。", "zh-CN") == "稀缺性会迫使人做选择。"
+    assert (
+        polish_ai_language("总之，机会成本是放弃的次优选择。", "zh-CN")
+        == "机会成本是放弃的次优选择。"
+    )
+    assert (
+        polish_ai_language("在当今社会，稀缺性会迫使人做选择。", "zh-CN")
+        == "稀缺性会迫使人做选择。"
+    )
     assert polish_ai_language("让我们一起深入探讨需求变化。", "zh-CN") == "需求变化。"
 
 

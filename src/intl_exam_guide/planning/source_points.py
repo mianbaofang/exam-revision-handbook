@@ -38,7 +38,9 @@ def visible_source_points(topic: Topic, limit: int = 5) -> list[str]:
     """Return source points suitable for student-facing guide text."""
 
     cleaned = [clean_source_point(point) for point in topic.points]
-    visible = merge_wrapped_source_points([point for point in cleaned if point and not is_syllabus_shell(point)])
+    visible = merge_wrapped_source_points(
+        [point for point in cleaned if point and not is_syllabus_shell(point)]
+    )
     if visible:
         return visible[:limit]
     title = clean_topic_title(topic.title)
@@ -118,7 +120,9 @@ def is_incomplete_topic_title(title: str) -> bool:
 def title_focus_from_points(focus: str, points: list[str]) -> str:
     if focus.lower().strip().endswith("remainder theorem and the"):
         return focus.rstrip(" ,;:.") + " Factor Theorem"
-    candidates = merge_wrapped_source_points([clean_source_point(point) for point in points if point])
+    candidates = merge_wrapped_source_points(
+        [clean_source_point(point) for point in points if point]
+    )
     if not candidates:
         return focus
     focus_clean = focus.strip(" ,;:.")
@@ -132,7 +136,9 @@ def title_focus_from_points(focus: str, points: list[str]) -> str:
 
 def compact_title_candidate(value: str) -> str:
     text = clean_math_title_text(value)
-    text = re.split(r"\bTo include\b|\bQuestions will\b|\bStudents are expected\b", text, maxsplit=1)[0]
+    text = re.split(
+        r"\bTo include\b|\bQuestions will\b|\bStudents are expected\b", text, maxsplit=1
+    )[0]
     text = re.split(r"\bwhere the equation\b", text, maxsplit=1)[0]
     text = text.strip(" .;:")
     return text or clean_source_point(value).strip(" .;:")
@@ -195,18 +201,51 @@ def clean_source_point(point: str) -> str:
         return "acceleration = change in velocity / time"
     if text.lower().rstrip(" .").endswith("remainder theorem and the"):
         text = text.rstrip(" .") + " Factor Theorem"
-    action_words = r"(?:understand|identify|explain|describe|state|apply|prepare|calculate|distinguish)"
+    action_words = (
+        r"(?:understand|identify|explain|describe|state|apply|prepare|calculate|distinguish)"
+    )
     text = re.sub(r"^[a-z]\)\s*", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(rf"^{action_words}\s+the\s+significance\s+of\s+the\s+following\s+accounting\s+concepts\s*:?\s*", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(rf"^{action_words}\s+the\s+following\s+accounting\s+concepts\s*:?\s*$", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(rf"^{action_words}\s+the\s+following\s+accounting\s+concepts\s*:?\s*", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(rf"^{action_words}\s+the\s+following\s+accounting\s*$", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(rf"^{action_words}\s+the\s+following\s+accounting\s*:?\s*$", "", text, flags=re.IGNORECASE).strip()
+    text = re.sub(
+        rf"^{action_words}\s+the\s+significance\s+of\s+the\s+following\s+accounting\s+concepts\s*:?\s*",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    ).strip()
+    text = re.sub(
+        rf"^{action_words}\s+the\s+following\s+accounting\s+concepts\s*:?\s*$",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    ).strip()
+    text = re.sub(
+        rf"^{action_words}\s+the\s+following\s+accounting\s+concepts\s*:?\s*",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    ).strip()
+    text = re.sub(
+        rf"^{action_words}\s+the\s+following\s+accounting\s*$", "", text, flags=re.IGNORECASE
+    ).strip()
+    text = re.sub(
+        rf"^{action_words}\s+the\s+following\s+accounting\s*:?\s*$", "", text, flags=re.IGNORECASE
+    ).strip()
     text = re.sub(rf"^{action_words}\s+the\s+terms\s*:?\s*$", "", text, flags=re.IGNORECASE).strip()
     text = re.sub(rf"^{action_words}\s+the\s+terms\s*:?\s*", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(rf"^{action_words}\s+the\s+causes\s+of\s+(.+)$", r"causes of \1", text, flags=re.IGNORECASE).strip()
-    text = re.sub(rf"^{action_words}\s+the\s+(?:purpose|use|uses|characteristics|features|terms|benefits|significance|principles)\s+of(?:\s+the)?\s*:?\s*$", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(rf"^{action_words}\s+the\s+(?:purpose|use|uses|characteristics|features|terms|benefits|significance|principles)\s+of\s+", "", text, flags=re.IGNORECASE).strip()
+    text = re.sub(
+        rf"^{action_words}\s+the\s+causes\s+of\s+(.+)$", r"causes of \1", text, flags=re.IGNORECASE
+    ).strip()
+    text = re.sub(
+        rf"^{action_words}\s+the\s+(?:purpose|use|uses|characteristics|features|terms|benefits|significance|principles)\s+of(?:\s+the)?\s*:?\s*$",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    ).strip()
+    text = re.sub(
+        rf"^{action_words}\s+the\s+(?:purpose|use|uses|characteristics|features|terms|benefits|significance|principles)\s+of\s+",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    ).strip()
     text = re.sub(rf"^{action_words}\s+between\s+", "", text, flags=re.IGNORECASE).strip()
     text = re.sub(rf"^{action_words}\s+", "", text, flags=re.IGNORECASE).strip()
     text = re.sub(
@@ -223,10 +262,14 @@ def clean_source_point(point: str) -> str:
     ).strip()
     text = re.sub(r"\bStudents will be expected to\b[: ]*", "", text, flags=re.IGNORECASE).strip()
     text = re.sub(r"\bStudents may be required to\b[: ]*", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(r"\bStudents should be familiar with\b[: ]*", "", text, flags=re.IGNORECASE).strip()
+    text = re.sub(
+        r"\bStudents should be familiar with\b[: ]*", "", text, flags=re.IGNORECASE
+    ).strip()
     text = re.sub(r"\bStudents should be able to\b[: ]*", "", text, flags=re.IGNORECASE).strip()
     text = re.sub(r"\bLearners should be able to\b[: ]*", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(r"\bCandidates should have an understanding of\b[: ]*", "", text, flags=re.IGNORECASE).strip()
+    text = re.sub(
+        r"\bCandidates should have an understanding of\b[: ]*", "", text, flags=re.IGNORECASE
+    ).strip()
     return text.rstrip(".")
 
 
@@ -288,7 +331,9 @@ def is_syllabus_shell(point: str) -> bool:
     lower = text.lower()
     if any(re.fullmatch(pattern, lower) for pattern in SHELL_PATTERNS):
         return True
-    if any(re.fullmatch(pattern, text, flags=re.IGNORECASE) for pattern in BOILERPLATE_FULL_PATTERNS):
+    if any(
+        re.fullmatch(pattern, text, flags=re.IGNORECASE) for pattern in BOILERPLATE_FULL_PATTERNS
+    ):
         return True
     if lower in {
         "concepts:",

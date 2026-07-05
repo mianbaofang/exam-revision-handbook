@@ -5,7 +5,7 @@
 - [ ] Repository name, description, and topics are set.
 - [ ] `README.md` renders correctly on GitHub.
 - [ ] `README.zh-CN.md` is linked from the English README.
-- [ ] SVG assets render in GitHub Markdown.
+- [ ] Static SVG assets used in README/docs render in GitHub Markdown.
 - [ ] License is visible.
 - [ ] CI is enabled.
 - [ ] Issue templates and PR template are visible.
@@ -49,7 +49,7 @@
 - [ ] Offline demo works:
 
 ```bash
-python -m intl_exam_guide demo --out ./outputs/demo-science --language en --image-provider deterministic-svg --explanation-style friendly --skip-pdf
+python -m intl_exam_guide demo --out ./outputs/demo-science --language en --image-provider prompt-queue --explanation-style friendly --skip-pdf
 ```
 
 - [ ] Subject-page discovery shows qualification metadata:

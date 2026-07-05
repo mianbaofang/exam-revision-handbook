@@ -55,6 +55,7 @@ def build_visual_manifest_entry_v2(
         "complexity": spec.complexity,
         "image_provider": spec.renderer_id,
         "prompt": spec.prompt,
+        "svg_fit": spec.svg_fit,
         "source_points": list(spec.source_points),
         "source_pages": list(spec.source_pages),
     }

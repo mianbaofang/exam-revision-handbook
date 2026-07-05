@@ -11,8 +11,12 @@ def main() -> int:
         description="Import LLM-reviewed concept explanations into a generated guide."
     )
     parser.add_argument("output_dir", help="A generated guide output directory.")
-    parser.add_argument("--concept-file", required=True, help="JSON file with topic_title and explanations.")
-    parser.add_argument("--force", action="store_true", help="Replace existing concept explanations.")
+    parser.add_argument(
+        "--concept-file", required=True, help="JSON file with topic_title and explanations."
+    )
+    parser.add_argument(
+        "--force", action="store_true", help="Replace existing concept explanations."
+    )
     args = parser.parse_args()
 
     output_dir = Path(args.output_dir).resolve()
@@ -26,10 +30,11 @@ def main() -> int:
         return 1
 
     from intl_exam_guide.models import GuidePlan
+    from intl_exam_guide.planning.concept_integration import apply_concept_entries
 
     plan = GuidePlan.from_dict(json.loads(plan_path.read_text(encoding="utf-8")))
     explanations = load_concept_explanations(concept_file)
-    imported, missing = apply_concept_explanations(plan, explanations, force=args.force)
+    imported, missing = apply_concept_entries(plan, explanations, force=args.force)
     if missing:
         print(
             json.dumps(
@@ -68,7 +73,10 @@ def main() -> int:
 
 def load_concept_explanations(path: Path) -> list[dict[str, object]]:
     data = json.loads(path.read_text(encoding="utf-8"))
-    entries = data.get("concept_explanations", data) if isinstance(data, dict) else data
+    if isinstance(data, dict):
+        entries = data.get("concept_explanations") or data.get("concepts") or data
+    else:
+        entries = data
     if isinstance(entries, dict):
         return [
             {"topic_title": title, "explanations": explanations}
@@ -84,35 +92,9 @@ def apply_concept_explanations(
     explanations: list[dict[str, object]],
     force: bool = False,
 ) -> tuple[int, list[str]]:
-    guides = {guide.topic_title: guide for guide in getattr(plan, "topic_guides", [])}
-    imported = 0
-    missing: list[str] = []
-    for entry in explanations:
-        topic_title = str(entry.get("topic_title") or "")
-        values = entry.get("explanations")
-        if not topic_title or not isinstance(values, list):
-            continue
-        clean_values = [str(value).strip() for value in values if str(value).strip()]
-        if len(clean_values) < 2:
-            continue
-        guide = guides.get(topic_title)
-        if not guide:
-            missing.append(topic_title)
-            continue
-        if clean_values:
-            guide.checklist = clean_values[:4]
-        apply_optional_text(entry, guide, "essence")
-        apply_optional_text(entry, guide, "analogy")
-        apply_optional_text(entry, guide, "mini_worked_example")
-        apply_optional_text(entry, guide, "pitfall")
-        guide.diagram_brief = build_clean_diagram_brief(topic_title, clean_values)
-        steps = entry.get("worked_solution_steps")
-        if isinstance(steps, list):
-            clean_steps = [str(value).strip() for value in steps if str(value).strip()]
-            if clean_steps:
-                guide.worked_solution_steps = clean_steps[:5]
-        imported += 1
-    return imported, missing
+    from intl_exam_guide.planning.concept_integration import apply_concept_entries
+
+    return apply_concept_entries(plan, explanations, force=force)
 
 
 def apply_optional_text(entry: dict[str, object], guide: object, field_name: str) -> None:

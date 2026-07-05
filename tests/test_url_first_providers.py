@@ -53,6 +53,9 @@ class FakeParser:
         self.nodes = nodes or []
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_url_first_providers_are_registered():
     assert get_provider("pearson").name == "pearson"
     assert get_provider("edexcel").name == "pearson"
@@ -60,6 +63,9 @@ def test_url_first_providers_are_registered():
     assert get_provider("caie").name == "cambridge"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_common_parser_helpers_normalize_urls_titles_queries_and_candidates():
     assert safe_url("https://example.test/spec folder/数学 syllabus.pdf?q=A level") == (
         "https://example.test/spec%20folder/%E6%95%B0%E5%AD%A6%20syllabus.pdf?q=A%20level"
@@ -80,7 +86,9 @@ def test_common_parser_helpers_normalize_urls_titles_queries_and_candidates():
     assert subject_slug_from_query("Edexcel International GCSE Mathematics A") == "mathematics"
 
     candidates = [
-        Link(text="Accounting - 0452", href="https://example.test/0452", qualification_type="igcse"),
+        Link(
+            text="Accounting - 0452", href="https://example.test/0452", qualification_type="igcse"
+        ),
         Link(text="Accounting", href="https://example.test/no-code"),
     ]
     message = format_candidate_choices("CAIE", "Accounting", candidates)
@@ -90,6 +98,9 @@ def test_common_parser_helpers_normalize_urls_titles_queries_and_candidates():
     assert "no-code, unknown-level" in message
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_common_parser_html_and_metadata_helpers(monkeypatch):
     html = """
     <title>Sample Qualification</title>
@@ -108,15 +119,24 @@ def test_common_parser_html_and_metadata_helpers(monkeypatch):
     assert parser.links[0].href == "https://example.test/spec.pdf"
     assert parser.links[0].text == "Download specification"
     assert parser.links[1].text == "empty.pdf"
-    assert first_teaching_from_nodes(
-        [TextNode("p", "First teaching:"), TextNode("p", "September 2026")]
-    ) == "September 2026"
-    assert first_assessment_from_nodes(
-        [TextNode("p", "First external assessment: June 2028")]
-    ) == "June 2028"
-    assert first_assessment_from_nodes([TextNode("p", "First assessment"), TextNode("p", "")]) is None
+    assert (
+        first_teaching_from_nodes(
+            [TextNode("p", "First teaching:"), TextNode("p", "September 2026")]
+        )
+        == "September 2026"
+    )
+    assert (
+        first_assessment_from_nodes([TextNode("p", "First external assessment: June 2028")])
+        == "June 2028"
+    )
+    assert (
+        first_assessment_from_nodes([TextNode("p", "First assessment"), TextNode("p", "")]) is None
+    )
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_common_link_level_and_family_helpers_cover_fallbacks():
     links = [
         Link(text="A", href="https://example.test/a"),
@@ -141,6 +161,9 @@ def test_common_link_level_and_family_helpers_cover_fallbacks():
     assert qualification_family("oxfordaqa", "international_gcse") == "oxfordaqa"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_common_pdf_overview_chunking_and_dedupe_helpers():
     overview = parse_content_overview_topics(
         [
@@ -188,6 +211,9 @@ def test_common_pdf_overview_chunking_and_dedupe_helpers():
     ]
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_generic_pdf_parser_handles_pearson_split_topic_codes():
     pages = [
         (
@@ -235,6 +261,9 @@ def test_generic_pdf_parser_handles_pearson_split_topic_codes():
     assert all(topic.points for topic in topics)
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_generic_pdf_parser_handles_pearson_learning_tables():
     pages = [
         (
@@ -299,6 +328,9 @@ def test_generic_pdf_parser_handles_pearson_learning_tables():
     assert "a) Explain the purpose of books of original entry." in topics[3].points
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_humanities_parser_handles_cambridge_history_question_headings():
     pages = [
         (
@@ -348,6 +380,9 @@ def test_humanities_parser_handles_cambridge_history_question_headings():
     assert "AO1" not in joined
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_humanities_parser_handles_pearson_history_option_codes():
     pages = [
         (
@@ -388,6 +423,9 @@ def test_humanities_parser_handles_pearson_history_option_codes():
     assert not any(title.startswith("Content unit") for title in titles)
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_humanities_parser_filters_study_option_shell_points():
     pages = [
         (
@@ -420,6 +458,9 @@ def test_humanities_parser_filters_study_option_shell_points():
     assert topics[1].points == ["China: conflict, crisis and change, 1900-89"]
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_pearson_learning_tables_ignore_trailing_front_matter():
     pages = [
         (
@@ -466,6 +507,9 @@ def test_pearson_learning_tables_ignore_trailing_front_matter():
     assert "Pearson Education Limited" not in joined
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_pearson_subsection_parser_rejects_noise_and_long_lines():
     assert parse_pearson_subsection_line("a) Explain the purpose of accounting.") is None
     assert parse_pearson_subsection_line("12") is None
@@ -480,6 +524,9 @@ def test_pearson_subsection_parser_rejects_noise_and_long_lines():
     )
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_pearson_topic_tables_stop_at_appendix_and_administration():
     pages = [
         (
@@ -517,6 +564,9 @@ def test_pearson_topic_tables_stop_at_appendix_and_administration():
     assert "Administration arrangements" not in joined
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_generic_pdf_parser_does_not_treat_assessment_objectives_as_topics():
     pages = [
         (
@@ -560,6 +610,9 @@ def test_generic_pdf_parser_does_not_treat_assessment_objectives_as_topics():
     assert not any(title.startswith("AO") for title in titles)
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_cambridge_content_overview_is_not_mixed_with_detailed_subject_content():
     pages = [
         (
@@ -625,6 +678,9 @@ def test_cambridge_content_overview_is_not_mixed_with_detailed_subject_content()
     assert "7.3 - Technology and sustainability" not in titles
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_cambridge_accounting_parser_filters_understanding_shell_points():
     pages = [
         (
@@ -650,6 +706,9 @@ def test_cambridge_accounting_parser_filters_understanding_shell_points():
     ]
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_cambridge_subject_page_requires_exam_year_when_ranges_are_ambiguous():
     links = [
         Link(
@@ -671,6 +730,9 @@ def test_cambridge_subject_page_requires_exam_year_when_ranges_are_ambiguous():
     assert chosen.selected_exam_year == "2027"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_cambridge_subject_page_rejects_unmatched_exam_year():
     links = [
         Link(
@@ -687,6 +749,9 @@ def test_cambridge_subject_page_rejects_unmatched_exam_year():
         select_syllabus_link(links, "2032")
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_pearson_subject_query_resolves_unique_official_candidate(monkeypatch):
     def fake_parse_page(url):
         if url.endswith("/international-gcse-accounting-2017.html"):
@@ -701,6 +766,9 @@ def test_pearson_subject_query_resolves_unique_official_candidate(monkeypatch):
     assert link.qualification_type == "international_gcse"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_pearson_subject_query_does_not_swallow_code_errors(monkeypatch):
     def fake_parse_page(_url):
         raise RuntimeError("parser bug")
@@ -711,6 +779,9 @@ def test_pearson_subject_query_does_not_swallow_code_errors(monkeypatch):
         PearsonEdexcelProvider().find_qualification("Edexcel Accounting", "igcse")
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_pearson_parse_qualification_extracts_spec_pdf_and_metadata(monkeypatch):
     parser = FakeParser(
         title="Pearson Edexcel International GCSE Accounting (2017)",
@@ -744,6 +815,9 @@ def test_pearson_parse_qualification_extracts_spec_pdf_and_metadata(monkeypatch)
     assert "Pearson Edexcel" in qualification.route_tags
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_pearson_parse_qualification_rejects_page_without_spec_pdf(monkeypatch):
     parser = FakeParser(
         title="Pearson Edexcel International GCSE Accounting (2017)",
@@ -752,9 +826,14 @@ def test_pearson_parse_qualification_rejects_page_without_spec_pdf(monkeypatch):
     monkeypatch.setattr(pearson_module, "parse_page", lambda _url: parser)
 
     with pytest.raises(ValueError, match="No Pearson specification PDF link"):
-        PearsonEdexcelProvider().parse_qualification("https://example.test/accounting.html", "igcse")
+        PearsonEdexcelProvider().parse_qualification(
+            "https://example.test/accounting.html", "igcse"
+        )
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_pearson_rejects_non_specification_pdf_links_even_if_downloadable(monkeypatch):
     parser = FakeParser(
         title="Pearson Edexcel International GCSE Accounting (2017)",
@@ -772,14 +851,22 @@ def test_pearson_rejects_non_specification_pdf_links_even_if_downloadable(monkey
     monkeypatch.setattr(pearson_module, "parse_page", lambda _url: parser)
 
     with pytest.raises(ValueError, match="No Pearson specification PDF link"):
-        PearsonEdexcelProvider().parse_qualification("https://example.test/accounting.html", "igcse")
+        PearsonEdexcelProvider().parse_qualification(
+            "https://example.test/accounting.html", "igcse"
+        )
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_pearson_helper_functions_cover_subject_area_and_route_tags():
-    assert pearson_subject_area(
-        "Pearson Edexcel International GCSE Accounting (2017)",
-        "https://example.test/international-gcse-accounting-2017.html",
-    ) == "Accounting"
+    assert (
+        pearson_subject_area(
+            "Pearson Edexcel International GCSE Accounting (2017)",
+            "https://example.test/international-gcse-accounting-2017.html",
+        )
+        == "Accounting"
+    )
     assert pearson_route_tags(
         "international_as_a_level",
         "https://example.test/biology-2018.html",
@@ -792,6 +879,9 @@ def test_pearson_helper_functions_cover_subject_area_and_route_tags():
     assert not pearson_is_specification_pdf("https://example.test/accounting-past-paper.pdf")
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_find_pdf_link_scores_include_terms_and_excludes_noise():
     parser = FakeParser(
         links=[
@@ -801,13 +891,19 @@ def test_find_pdf_link_scores_include_terms_and_excludes_noise():
         ]
     )
 
-    assert find_pdf_link(
-        parser,
-        include_terms=("specification", "download"),
-        exclude_terms=("past paper", "past-paper", "welcome"),
-    ) == "https://example.test/specification.pdf"
+    assert (
+        find_pdf_link(
+            parser,
+            include_terms=("specification", "download"),
+            exclude_terms=("past paper", "past-paper", "welcome"),
+        )
+        == "https://example.test/specification.pdf"
+    )
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_common_pdf_parser_extracts_assessments_command_words_and_objectives():
     pages = [
         (
@@ -866,6 +962,9 @@ def test_common_pdf_parser_extracts_assessments_command_words_and_objectives():
     ]
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_cambridge_parse_qualification_uses_exam_year_to_choose_syllabus(monkeypatch):
     parser = FakeParser(
         title="Cambridge IGCSE Accounting (0452)",
@@ -900,6 +999,9 @@ def test_cambridge_parse_qualification_uses_exam_year_to_choose_syllabus(monkeyp
     assert qualification.selected_exam_year == "2027"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_cambridge_parse_direct_pdf_validates_exam_year():
     qualification = CambridgeInternationalProvider().parse_qualification(
         "https://www.cambridgeinternational.org/Images/123-2026-2028-syllabus.pdf",
@@ -912,6 +1014,9 @@ def test_cambridge_parse_direct_pdf_validates_exam_year():
     assert qualification.source.specification_url.endswith("123-2026-2028-syllabus.pdf")
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_cambridge_parse_direct_pdf_rejects_exam_year_outside_range():
     with pytest.raises(ValueError, match="does not match syllabus PDF range"):
         CambridgeInternationalProvider().parse_qualification(
@@ -921,17 +1026,26 @@ def test_cambridge_parse_direct_pdf_rejects_exam_year_outside_range():
         )
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_cambridge_parse_exam_year_requires_four_digit_year():
     with pytest.raises(ValueError, match="Invalid Cambridge exam year"):
         parse_exam_year("27")
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_pearson_igcse_subject_slug_preserves_mathematics_a_suffix():
     urls = pearson_candidate_urls("Edexcel Mathematics A", "igcse")
 
     assert any(url.endswith("/international-gcse-mathematics-a-2016.html") for url in urls)
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_pearson_subject_query_lists_multiple_candidates(monkeypatch):
     def fake_parse_page(url):
         if "biology" in url:
@@ -949,6 +1063,9 @@ def test_pearson_subject_query_lists_multiple_candidates(monkeypatch):
     assert "biology-2018.html" in message
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_cambridge_subject_query_lists_ambiguous_level_and_codes(monkeypatch):
     links = [
         Link(
@@ -976,6 +1093,9 @@ def test_cambridge_subject_query_lists_ambiguous_level_and_codes(monkeypatch):
     assert "9706" in message
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_cambridge_subject_query_does_not_swallow_code_errors(monkeypatch):
     def fake_parse_page(_url):
         raise RuntimeError("parser bug")
@@ -986,6 +1106,9 @@ def test_cambridge_subject_query_does_not_swallow_code_errors(monkeypatch):
         CambridgeInternationalProvider().find_qualification("CAIE Accounting", "igcse")
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+)
 def test_cambridge_subject_query_uses_code_to_resolve_unique_candidate(monkeypatch):
     links = [
         Link(

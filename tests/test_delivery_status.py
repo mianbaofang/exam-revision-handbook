@@ -16,7 +16,10 @@ def test_delivery_status_blocks_errors_before_image_warnings():
 
 
 def test_delivery_status_marks_pending_infographics_as_draft():
-    assert delivery_status_from_issues([], {"pending_infographic_assets": 2}) == "draft_needs_image_review"
+    assert (
+        delivery_status_from_issues([], {"pending_infographic_assets": 2})
+        == "draft_needs_image_review"
+    )
 
 
 def test_delivery_status_marks_pending_concepts_before_images():
@@ -93,7 +96,7 @@ def test_validation_json_contains_delivery_status(tmp_path):
             "--out",
             str(output_dir),
             "--image-provider",
-            "deterministic-svg",
+            "prompt-queue",
             "--explanation-style",
             "friendly",
             "--language",
@@ -109,5 +112,10 @@ def test_validation_json_contains_delivery_status(tmp_path):
     contract = json.loads((output_dir / "delivery-contract.json").read_text(encoding="utf-8"))
     assert contract["delivery_state"] == "draft"
     assert len(contract["learning_units"]) == validation["review_summary"]["source_topics"]
-    assert validation["review_summary"]["concept_jobs"] == validation["review_summary"]["topic_guides"]
-    assert validation["review_summary"]["pending_concept_explanations"] == validation["review_summary"]["topic_guides"]
+    assert (
+        validation["review_summary"]["concept_jobs"] == validation["review_summary"]["topic_guides"]
+    )
+    assert (
+        validation["review_summary"]["pending_concept_explanations"]
+        == validation["review_summary"]["topic_guides"]
+    )

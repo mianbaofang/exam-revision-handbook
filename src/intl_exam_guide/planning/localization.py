@@ -136,8 +136,14 @@ ZH_PHRASE_LABELS = [
     (("multiplication law", "conditional probability"), "概率乘法法则与条件概率"),
     (("application", "probability laws"), "概率法则应用"),
     (("number", "possible outcomes", "finite"), "有限可能结果"),
-    (("mean", "variance", "standard deviation", "discrete random variables"), "离散随机变量的均值、方差与标准差"),
-    (("sum or difference", "independent discrete random variables"), "独立离散随机变量和差的均值与方差"),
+    (
+        ("mean", "variance", "standard deviation", "discrete random variables"),
+        "离散随机变量的均值、方差与标准差",
+    ),
+    (
+        ("sum or difference", "independent discrete random variables"),
+        "独立离散随机变量和差的均值与方差",
+    ),
     (("conditions", "bernoulli"), "伯努利分布适用条件"),
     (("mean", "variance", "bernoulli"), "伯努利分布的均值与方差"),
     (("binomial distribution",), "二项分布"),
@@ -285,7 +291,11 @@ def zh_teachable_topic_title(raw_title: str, index: int) -> str:
     if match:
         return f"第 {match.group(1)} 节"
 
-    return zh_phrase_label(raw_title) or zh_topic_keyword_label(raw_title) or zh_point_label(raw_title, index)
+    return (
+        zh_phrase_label(raw_title)
+        or zh_topic_keyword_label(raw_title)
+        or zh_point_label(raw_title, index)
+    )
 
 
 def zh_area_label(area: str) -> str:
@@ -406,12 +416,19 @@ def keyword_group_matches(lowered_text: str, keywords: tuple[str, ...]) -> bool:
         return "venn" in tokens or "sets" in tokens or "set notation" in lowered_text
     return any(keyword_matches(lowered_text, keyword) for keyword in keywords)
 
+
 def zh_point_labels(points: list[str]) -> list[str]:
     return [zh_point_label(point, index) for index, point in enumerate(points)]
 
+
 def zh_visual_type(visual_type: str) -> str:
     text = visual_type.lower()
-    if "source-document" in text or "prime-entry" in text or "ledger" in text or "accounting process" in text:
+    if (
+        "source-document" in text
+        or "prime-entry" in text
+        or "ledger" in text
+        or "accounting process" in text
+    ):
         return "会计记录流程图"
     if "verification" in text or "reconciliation" in text or "trial balance" in text:
         return "核对与调节流程图"
@@ -440,6 +457,7 @@ def zh_visual_type(visual_type: str) -> str:
     if "statistics" in text or "probability" in text:
         return "统计与概率图表"
     return "图文结合学习图"
+
 
 def zh_visual_trigger(trigger: str) -> str:
     text = trigger.lower()

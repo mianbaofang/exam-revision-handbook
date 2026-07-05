@@ -4,6 +4,39 @@
   <img src="docs/assets/hero.svg" alt="IGCSE and A-Level AI Revision Guide Skill hero" width="100%">
 </p>
 
+## What This Project Is
+
+**This is a framework, not a content generator.** The Skill provides the
+scaffolding — syllabus parsing, HTML/PDF rendering, visual asset management,
+multi-role orchestration contracts — but the actual concept explanations and
+worked-example wording are produced by **the LLM that runs this Skill**:
+
+- When the Agent host (OpenClaw / Hermes / Claude / etc.) loads this Skill,
+  the host's LLM plays the **Writer** role: it writes original concept
+  explanations for each topic from its own knowledge, in the requested style.
+- The host's LLM also plays the **Analyst** role: it reads the official
+  syllabus evidence, decides the real topic boundaries and exam points, and
+  writes the authoritative `syllabus-outline.json`. Python only collects page
+  evidence; it does **not** decide topics or exam points on its own.
+- The host's LLM then spawns an **independent subagent** to play the
+  **Reviewer** role: that subagent reads the rendered handbook without any
+  context from writing and checks for teaching effectiveness, blank pages,
+  duplicate mastery text, misused visuals, or gap-to-source issues.
+
+The Python package under `src/intl_exam_guide/` provides:
+
+- Provider adapters that fetch and parse official OxfordAQA / Pearson Edexcel /
+  Cambridge International qualification pages and PDFs.
+- HTML and PDF rendering of the three-role output.
+- Validation and quality gates (`scripts/import_concept_explanations.py`,
+  `scripts/import_infographic_assets.py`).
+- A **CLI-only fallback** (`python -m intl_exam_guide generate …`) that
+  produces an evidence package without the LLM Analyst outline pass. The
+  CLI fallback is for testing or for environments where no Skill host is
+  available. The output stays at `draft/evidence-ready` and cannot be
+  presented as `final-ready`. **Run the Skill through an LLM agent to get a
+  teaching-grade handbook.**
+
 ## Why This Skill Exists
 
 This project began at home. My son is taking his International GCSE exams this
@@ -30,11 +63,11 @@ control.
   ·
   <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/project-intro-animation-en.html">HTML intro</a>
   ·
-  <a href="docs/PROJECT_DETAILS.md">Project details</a>
+  <a href="docs/index.html">Project details</a>
   ·
-  <a href="docs/PROJECT_OPERATIONS.md">Operations guide</a>
+  <a href="docs/release-evidence/README.md">Release evidence</a>
   ·
-  <a href="docs/IMAGE_MODEL_GUIDE.md">Image guidance</a>
+  <a href="skill/references/revision_guide_spec.md">Handbook spec</a>
 </p>
 
 An AI Skill for generating image-rich, printable International GCSE and
@@ -66,11 +99,9 @@ draft, not final-ready. The evidence and dispatch briefs are written to
 Delivery quality claims are tracked in the delivery matrix at
 `tests/fixtures/delivery_matrix.json`. Each route has an explicit claim status
 and a v0.4 release-evidence status. Candidate routes must not be described as
-release-ready until a fresh output passes validation, final review, and
-visual-status checks. The shared workflow is three-board, but the matrix
-evidence defines what is currently deliverable.
-The candid rebuild plan for 95%+ student-usable delivery quality is recorded in
-[`docs/DELIVERY_QUALITY_REBUILD_PLAN.md`](docs/DELIVERY_QUALITY_REBUILD_PLAN.md).
+release-ready until a fresh output passes validation, final review, product
+review, and visual-status checks. The shared workflow is three-board, but the
+matrix evidence defines what is currently deliverable.
 
 v0.4 status words are intentionally conservative:
 
@@ -119,9 +150,9 @@ Before generation starts, the Agent should confirm:
    infographic route for this run. If yes, collect the route type, such as an
    installed image-generation Skill, a custom API endpoint plus environment
    variable name, a project script, or an existing generated-asset directory.
-   If no, explain that simple SVG and Kroki diagrams can still be rendered but
-   dense infographics will remain pending, then ask whether to continue as a
-   draft-with-pending-images run.
+   If no, explain that exact SVG/Kroki assets still require an LLM exact-fit
+   decision and review, while dense infographics will remain pending; then ask
+   whether to continue as a draft-with-pending-images run.
 
 The user should not be forced through a generic image-model menu. The required
 early question is whether a callable image route exists at all. After the base
@@ -136,7 +167,7 @@ outputs/chemistry-9202/
   guide.html                 printable student handbook
   guide.pdf                  PDF export
   sections/                  modular guide sections for review
-  images/                    SVG drafts, infographic assets, and visual manifest
+  images/                    visual manifest, reviewed assets, and pending jobs
   concepts/                  concept-writing jobs and reviewed explanations
   run-options.json           confirmed subject, language, and explanation style
   guide-plan.json            topic, example, and revision-task plan
@@ -154,7 +185,7 @@ The handbook package includes:
 - student-friendly explanations reviewed from per-topic source jobs;
 - original worked examples with steps and answer checkpoints;
 - visual-learning decisions for topics and examples;
-- simple SVG diagrams and pending complex-infographic briefs;
+- reviewed exact-SVG assets where they fit, plus pending complex-infographic briefs;
 - final revision questions;
 - printable HTML/PDF output.
 
@@ -205,18 +236,19 @@ A useful handbook cannot be text-only. The workflow has two passes:
 1. Build topic explanations and worked examples from the official syllabus.
 2. Decide which topics or examples need visual explanation.
 
-Simple reproducible diagrams use SVG. Medium-complexity professional diagrams
-such as flows, hierarchies, timelines, source-to-ledger routes, and relationship
-maps use the built-in Kroki renderer. Richer items become visual briefs: lab
-apparatus, complex geometry, circuits, economics scenes, or text-heavy
+The host LLM/Agent decides whether each topic or worked example needs text only,
+an exact SVG candidate, or a richer infographic. SVG is allowed only when the
+visual meaning is fully carried by exact geometry, axes, labels, simple tables,
+or simple flows; the Writer must mark `svg_fit: "exact"`, and the asset must be
+reviewed or approved before final delivery. Richer items become visual briefs:
+lab apparatus, complex geometry, circuits, economics scenes, or text-heavy
 educational infographics.
 
-When no callable image model is available, chart-like visuals use a scripted
-scientific-vector fallback inspired by `nature-figure`: editable SVG with clear
-axes, labels, source-bound symbols, and review notes. Kroki covers professional
-diagram structures that are more precise than hand-built generic SVG. Neither
-route is a substitute for dense infographics; those remain queued until a
-reviewed image asset is supplied.
+When no callable image model is available, complex visuals remain queued in
+`images/infographic_jobs.json` and `images/infographic_jobs.md`. The Python
+framework does not create local deterministic SVG stand-ins for those briefs.
+Kroki or SVG outputs are treated as reviewed exact-fit assets, not substitutes
+for dense infographics.
 
 Recommended external image models include:
 
@@ -239,11 +271,11 @@ the anti-AI-language ideas in `qiaomu-novel-generator`: it removes safe
 formulaic transitions and warns when a guide still sounds like generic AI prose.
 This is a design inspiration, not a runtime dependency.
 
-Design inspirations: the anti-template wording check is adapted from
-`qiaomu-novel-generator`; the scientific SVG fallback is inspired by the
-`nature-figure` figure-contract idea from
-[`Yuan1z0825/nature-skills`](https://github.com/Yuan1z0825/nature-skills).
-Both have been reshaped for revision handbooks.
+Design inspiration: the anti-template wording check is adapted from
+`qiaomu-novel-generator`. The SVG review contract follows the general idea of a
+figure contract: define the claim, labels, source evidence, and review risk
+before approving an asset. This is documentation guidance, not a runtime
+dependency.
 
 ## Language Policy
 
@@ -269,13 +301,51 @@ does and how users run it.
 
 ## Developer Quick Start
 
-Normal Skill users can skip this section.
+Two operating modes exist. Pick the one that matches your environment.
+
+### Mode 1: Skill host (preferred, for production handbooks)
+
+Point your Agent runtime (OpenClaw, Hermes, Claude with subagents, etc.) at
+the Skill folder:
+
+```text
+https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill
+```
+
+The Agent runtime runs the multi-role orchestration defined in
+`agent-orchestration.json`:
+
+- **project manager** role: confirms preflight inputs, dispatches experts,
+  records handoffs, and keeps delivery state honest.
+- **analyst** role: reads the official syllabus evidence and writes the
+  authoritative `syllabus-outline.json` (topic titles, exam points, source
+  snippets). Python evidence extraction is a hint, not a substitute.
+- **writer** role: the host LLM produces concept explanations, worked examples,
+  study-roadmap text.
+- **quality inspector** role: writes `quality-inspection.json` after fast file,
+  module, placeholder, concept-count, and visual-manifest checks.
+- **final reviewer** role: an independent subagent reads the rendered handbook
+  and produces `final-review-packet.json` plus `agent-product-review.json`.
+
+Re-runs within the same session are idempotent: re-generated topics overwrite
+existing handbook-package.json, validation.json, visual-manifest.json so the
+Skill can keep iterating until `quality_inspector.status == complete` and
+`final_reviewer.status == complete`.
+
+### Mode 2: CLI-only (no Skill host, scaffolding/draft only)
+
+The CLI generates a structurally complete but pedagogically skeletal draft:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -e .
-python -m intl_exam_guide generate --query chemistry --level igcse --language en --explanation-style friendly --out ./outputs/chemistry-9202
+python -m intl_exam_guide generate \
+  --query chemistry \
+  --level igcse \
+  --language en \
+  --explanation-style friendly \
+  --out ./outputs/chemistry-9202
 ```
 
 Windows PowerShell:
@@ -287,6 +357,12 @@ pip install -e .
 python -m intl_exam_guide generate --query chemistry --level igcse --language en --explanation-style friendly --out .\outputs\chemistry-9202
 ```
 
+The CLI is for testing the pipeline, fetching source material, and producing
+structural drafts. Without a Skill host's LLM writing the concepts, the
+content fields default to topic-family templates — useful as scaffolding but
+not suitable for handing straight to students. Always run Mode 1 when
+generating a real teaching handbook.
+
 Checks:
 
 ```bash
@@ -295,6 +371,47 @@ python -m ruff check .
 python -m compileall -q src tests scripts
 python scripts/scan_for_raw_keys.py . ./outputs
 ```
+
+## Quality Metrics
+
+Version 0.4+ includes a quality metrics system that measures **teaching effectiveness** ("孩子可用"), not just format correctness ("格式正确").
+
+### Measuring Quality
+
+```python
+from intl_exam_guide.quality import QualityGate
+
+gate = QualityGate()
+
+# Check handbook quality
+report = gate.check(
+    concepts=[{"topic": "Photosynthesis", "text": "...", "keywords": [...]}],
+    examples=[{"topic": "Photosynthesis", "text": "Step 1: ..."}],
+    visuals=[{"topic": "Photosynthesis", "type": "flowchart", "prompt": "..."}],
+    practice_items=[{"question": "..."}],
+    subject="biology",
+)
+
+print(report.summary())
+
+if report.passed:
+    print("✓ Quality gate passed - ready for students")
+else:
+    print("✗ Quality gate failed")
+    for issue in report.issues:
+        print(f"  - {issue}")
+```
+
+### Quality Metrics Measured
+
+| Metric | Threshold | What It Measures |
+|--------|-----------|------------------|
+| Concept Clarity | 0.85 | Are concepts explained clearly with examples? |
+| Example Relevance | 0.90 | Do examples actually demonstrate the concepts? |
+| Visual Helpfulness | 0.80 | Do visuals aid understanding (not decoration)? |
+| Overall Usability | 0.85 | Can students actually use this to learn? |
+
+See [docs/QUALITY_METRICS.md](docs/QUALITY_METRICS.md) for detailed documentation.
 
 ## Repository Layout
 
@@ -305,6 +422,7 @@ src/intl_exam_guide/
   planning/       topic, example, and visual-brief planning
   rendering/      HTML and PDF rendering
   validation/     completeness checks
+  quality/        teaching effectiveness metrics
 skill/            Agent-facing Skill instructions
 docs/             project details, policies, examples, and preview pages
 tests/            tests and regression samples

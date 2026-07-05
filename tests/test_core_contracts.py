@@ -145,16 +145,27 @@ def test_course_contract_payload_exposes_delivery_state_without_mutating_plan():
     orchestration = payload["agent_orchestration"]
     roles = {role["role_id"]: role for role in orchestration["roles"]}
     runtime_contract = orchestration["agent_runtime_contract"]
+    assert orchestration["schema_version"] == "v0.5-agent-orchestration"
     assert orchestration["multi_agent_required"] is True
+    assert orchestration["required_sequence"] == [
+        "handbook_project_manager",
+        "syllabus_outline_analyst",
+        "handbook_writer",
+        "quality_inspector",
+        "final_reviewer",
+    ]
     assert "subagent support must dispatch" in runtime_contract["automatic_dispatch"]
     assert "do not present it as final-ready" in runtime_contract["fallback_without_subagents"]
     assert orchestration["final_reviewer_independent"] is True
+    assert roles["handbook_project_manager"]["status"] == "complete"
     assert roles["syllabus_outline_analyst"]["status"] == "complete"
     assert roles["handbook_writer"]["status"] == "complete"
+    assert roles["quality_inspector"]["status"] == "pending"
     assert roles["final_reviewer"]["status"] == "pending"
     assert roles["final_reviewer"]["independent_from"] == [
         "syllabus_outline_analyst",
         "handbook_writer",
+        "quality_inspector",
     ]
     assert "fresh Agent/LLM context" in roles["final_reviewer"]["dispatch_brief"][0]
     assert payload["course_spec"]["provider"] == "oxfordaqa"
@@ -165,11 +176,18 @@ def test_course_contract_payload_exposes_delivery_state_without_mutating_plan():
 
 
 def test_course_contract_payload_final_ready_requires_agent_review():
-    payload = course_contract_payload(guide_plan(), delivery_status="ready", agent_review_ready=True)
+    payload = course_contract_payload(
+        guide_plan(),
+        delivery_status="ready",
+        agent_review_ready=True,
+        quality_inspection_complete=True,
+    )
 
     assert payload["delivery_state"] == "final-ready"
     assert payload["pedagogical_units"][0]["delivery_state"] == "final-ready"
     roles = {role["role_id"]: role for role in payload["agent_orchestration"]["roles"]}
+    assert roles["quality_inspector"]["status"] == "complete"
+    assert roles["quality_inspector"]["evidence"] == ["quality-inspection.json"]
     assert roles["final_reviewer"]["status"] == "complete"
     assert roles["final_reviewer"]["evidence"] == ["final-review-packet.json"]
 

@@ -6,13 +6,13 @@ The offline demo uses `src/intl_exam_guide/assets/demo_qualification.json`. It
 does not download OxfordAQA content and does not include copyrighted PDFs.
 
 ```bash
-python -m intl_exam_guide demo --out ./outputs/demo-science --language en --image-provider deterministic-svg --explanation-style friendly --skip-pdf
+python -m intl_exam_guide demo --out ./outputs/demo-science --language en --image-provider prompt-queue --explanation-style friendly --skip-pdf
 ```
 
 With local Chrome/Edge PDF export:
 
 ```bash
-python -m intl_exam_guide demo --out ./outputs/demo-science --language en --image-provider deterministic-svg --explanation-style friendly
+python -m intl_exam_guide demo --out ./outputs/demo-science --language en --image-provider prompt-queue --explanation-style friendly
 ```
 
 Expected files:
@@ -31,9 +31,10 @@ errors, and `review_summary` should show the expected topic count, one diagram
 per topic, practice-card coverage for every topic, and source-snippet coverage
 where the PDF text matched.
 
-The HTML includes one inline concept map per topic. These SVG diagrams are
-generated from extracted or synthetic syllabus points and do not require external
-image files.
+The HTML records visual slots from the manifest. Exact SVG appears only when an
+LLM-authored visual spec marks `svg_fit: "exact"` and the asset has been
+reviewed; complex visuals stay as pending jobs until reviewed raster assets are
+imported.
 
 Each topic also receives practice cards. A card records the command word,
 difficulty, focus point, public solution steps, answer checkpoints, and the
@@ -143,8 +144,7 @@ python scripts/import_infographic_assets.py ./outputs/chemistry-9202 \
 每次生成后都应打开 `validation.json`：`issues` 不能有 error，
 `review_summary` 应显示 topic、diagram、practice card 和 source snippet 覆盖情况。
 
-HTML 会为每个 topic 生成一张 inline concept map。图中的节点来自抽取出的
-或合成的大纲点，不依赖外部图片文件。
+HTML 会记录 manifest 中的视觉槽位。只有 LLM 写明 `svg_fit="exact"` 且资产经过复核时，exact SVG 才能进入手册；复杂视觉内容会保持为待处理任务，直到导入已复核的 raster 图片。
 
 每个 topic 也会生成练习卡片。卡片会记录指令词、难度、
 聚焦知识点、公开解题步骤、答案检查点，以及用于约束题干的
