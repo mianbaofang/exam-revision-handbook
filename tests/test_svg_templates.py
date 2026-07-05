@@ -369,8 +369,16 @@ def test_chinese_math_svg_router_does_not_treat_graph_as_ph():
 def test_chinese_math_svg_router_prefers_specific_routes_before_calculus_words():
     cases = [
         ("直线方程与梯度", "Equation of a straight line and gradient", "y=mx+c"),
-        ("不定积分是微分的反向过程", "Indefinite integration as the reverse of differentiation", "积分是求导的反向"),
-        ("圆的切线与法线方程", "Coordinate geometry of a circle tangent and normal", "(x-a)²+(y-b)²=r²"),
+        (
+            "不定积分是微分的反向过程",
+            "Indefinite integration as the reverse of differentiation",
+            "积分是求导的反向",
+        ),
+        (
+            "圆的切线与法线方程",
+            "Coordinate geometry of a circle tangent and normal",
+            "(x-a)²+(y-b)²=r²",
+        ),
     ]
 
     for index, (focus, source, expected_label) in enumerate(cases, start=1):
@@ -515,8 +523,14 @@ def test_market_curve_svgs_cover_distinct_economics_variants():
 def test_accounting_statement_variant_svgs_use_distinct_professional_layouts():
     variants = [
         ("Partnership accounts", ("Profit share", "Current accounts", "Capital", "Drawings")),
-        ("Manufacturing account", ("Raw materials", "Prime cost", "Factory overheads", "Production cost")),
-        ("Club and non-profit accounts", ("Receipts", "Payments", "Subscriptions", "Accumulated fund")),
+        (
+            "Manufacturing account",
+            ("Raw materials", "Prime cost", "Factory overheads", "Production cost"),
+        ),
+        (
+            "Club and non-profit accounts",
+            ("Receipts", "Payments", "Subscriptions", "Accumulated fund"),
+        ),
         ("Limited company statements", ("Revenue", "Expenses", "Equity", "Retained earnings")),
     ]
 

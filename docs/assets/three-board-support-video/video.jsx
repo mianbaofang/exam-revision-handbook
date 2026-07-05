@@ -98,7 +98,7 @@ function IntroScene() {
   return (
     <SceneFrame start={0} end={5.2}>
       <div className="orbit" style={{ transform: `rotate(${orbit}deg) scale(${1 + Math.sin(time * 0.7) * 0.025})` }}></div>
-      <div className="kicker">v0.4.2 · 复习手册生成 Skill</div>
+      <div className="kicker">v0.4.4 · 复习手册生成 Skill</div>
       <h1 className="headline">把官方大纲，变成孩子看得下去的复习手册。</h1>
       <p className="lead">
         面向 AQA、Edexcel、CAIE：先抓取官方大纲，再由多个 Agent 分工写作、配图和验收。
@@ -153,7 +153,7 @@ function UsageScene() {
   const steps = [
     ["01", "大纲分析 Agent", "抓取官方页面/PDF，拆出 CourseSpec 和 LearningUnit。"],
     ["02", "主编写 Agent", "写讲解、例题、术语表和视觉需求，不直接冒充最终审核。"],
-    ["03", "视觉处理 Agent", "简单 SVG，中等 Kroki，复杂信息图进入外部生成任务。"],
+    ["03", "视觉处理 Agent", "判定 exact SVG、Kroki 或外部信息图任务；复杂图不能用草图冒充完成。"],
     ["04", "独立验收 Agent", "读最终页面和抽样 PDF，对照大纲，能修就修，不能修就标 draft。"],
   ];
   return (
@@ -349,13 +349,13 @@ function VisualRouteScene() {
   const time = useTime();
   const cards = [
     {
-      title: "简单精确图：本地 SVG",
-      body: "数轴、坐标轴、简单几何、基础表格这类可精确绘制的图，直接本地生成。",
+      title: "精确复核图：Exact SVG",
+      body: "数轴、坐标轴、简单几何、基础表格必须标记 svg_fit=exact，并复核通过。",
       visual: <div className="svg-diagram"><span></span><span></span><span></span></div>,
     },
     {
       title: "专业结构图：Kroki",
-      body: "流程、层级、时间线、关系图、概念图等中等复杂图，自动走专业图形渲染。",
+      body: "流程、层级、时间线、关系图、概念图等结构图，需要 LLM 判断并复核。",
       visual: (
         <svg className="kroki-preview" viewBox="0 0 360 190" aria-label="Kroki 结构图示意">
           <defs>
@@ -387,7 +387,7 @@ function VisualRouteScene() {
   return (
     <SceneFrame start={32.5} end={38.2}>
       <div className="kicker">专业图形生成处理</div>
-      <h2 className="headline route-headline">SVG、Kroki、外部信息图各做自己擅长的事。</h2>
+      <h2 className="headline route-headline">Exact SVG、Kroki、外部信息图各有自己的审核边界。</h2>
       <div className="visual-routing">
         {cards.map((card, index) => {
           const p = clamp((time - 33.0 - index * 0.18) / 0.7, 0, 1);
@@ -464,7 +464,7 @@ function ClosingScene() {
 function Footer() {
   return (
     <div className="footer-mark">
-      <span>IGCSE & A-Level AI 复习手册 Skill · v0.4.2</span>
+      <span>IGCSE & A-Level AI 复习手册 Skill · v0.4.4</span>
       <span>official syllabus → reviewed handbook</span>
     </div>
   );

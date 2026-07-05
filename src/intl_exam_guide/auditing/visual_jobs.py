@@ -48,7 +48,7 @@ def visual_jobs_markdown(jobs: list[dict[str, object]]) -> str:
         "Generation choices:",
         "",
         "- Use an external image model or designer with the prompt under each visual ID.",
-        "- Keep the SVG fallback only for draft review, not final delivery.",
+        "- Exact SVG or professional diagram assets must be reviewed before final delivery.",
         "- Name each generated file with the visual ID prefix, for example `visual_001.png` or `visual_001_tangent.png`.",
         "",
         "After generation, import and rebuild the handbook:",
@@ -61,7 +61,9 @@ def visual_jobs_markdown(jobs: list[dict[str, object]]) -> str:
     for job in jobs:
         raw_source_pages = job.get("source_pages", [])
         source_pages = raw_source_pages if isinstance(raw_source_pages, list) else []
-        page_text = ", ".join(str(page) for page in source_pages) if source_pages else "not recorded"
+        page_text = (
+            ", ".join(str(page) for page in source_pages) if source_pages else "not recorded"
+        )
         lines.extend(
             [
                 f"## {job['id']} - {job['topic_title']}",

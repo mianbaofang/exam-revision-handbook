@@ -14,19 +14,21 @@ def render_cover(qualification: Qualification, options: GuideRunOptions) -> str:
     subject = cover_subject_title(qualification, language)
     code = qualification.code or ("Unknown" if language == "en" else "未知")
     version = cover_version_label(qualification, options, language)
-    year = options.exam_year or qualification.selected_exam_year or qualification.source.selected_exam_year
-    scope_note = cover_scope_note(qualification, language)
-    scope_html = (
-        f'<p class="course-scope-note">{html_escape(scope_note)}</p>' if scope_note else ""
+    year = (
+        options.exam_year
+        or qualification.selected_exam_year
+        or qualification.source.selected_exam_year
     )
+    scope_note = cover_scope_note(qualification, language)
+    scope_html = f'<p class="course-scope-note">{html_escape(scope_note)}</p>' if scope_note else ""
     if language == "en":
         return f"""
 <section class="cover">
   <div class="cover-mast">
-    <div class="exam-board-badge {html_escape(board['class_name'])}">{html_escape(board['short'])}</div>
+    <div class="exam-board-badge {html_escape(board["class_name"])}">{html_escape(board["short"])}</div>
     <div class="exam-board-name">
       <span>Official exam board</span>
-      <strong>{html_escape(board['full'])}</strong>
+      <strong>{html_escape(board["full"])}</strong>
     </div>
   </div>
   <div class="cover-title-lockup">
@@ -44,10 +46,10 @@ def render_cover(qualification: Qualification, options: GuideRunOptions) -> str:
     return f"""
 <section class="cover">
   <div class="cover-mast">
-    <div class="exam-board-badge {html_escape(board['class_name'])}">{html_escape(board['short'])}</div>
+    <div class="exam-board-badge {html_escape(board["class_name"])}">{html_escape(board["short"])}</div>
     <div class="exam-board-name">
       <span>官方考试局</span>
-      <strong>{html_escape(board['full'])}</strong>
+      <strong>{html_escape(board["full"])}</strong>
     </div>
   </div>
   <div class="cover-title-lockup">
@@ -201,8 +203,4 @@ def cover_version_label(
     exam_year = options.exam_year or qualification.selected_exam_year or source.selected_exam_year
     if exam_year:
         return f"{exam_year} exams" if language == "en" else f"{exam_year} 考试"
-    return (
-        "See official specification/syllabus PDF"
-        if language == "en"
-        else "见官方考试大纲 PDF"
-    )
+    return "See official specification/syllabus PDF" if language == "en" else "见官方考试大纲 PDF"

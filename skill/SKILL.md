@@ -1,516 +1,769 @@
 ---
 name: igcse-a-level-revision-guide
-description: Use when generating image-rich International GCSE or International AS-A-level revision handbooks from official syllabus/specification sources, with AQA, Edexcel, and CAIE support.
+description: Framework for generating International GCSE and A-Level revision handbooks. Provides presentation templates, workflow guidance, and rendering engine. You fill the content.
 ---
 
-# IGCSE & A-Level AI Revision Guide Skill
+# IGCSE & A-Level Revision Handbook Skill
 
-Use this skill when the user asks for an International GCSE or International
-AS-A-level subject study/revision guide. Treat IGCSE as a user-facing alias for
-International GCSE, but use the full qualification names in generated
-documentation.
+## What This Is
 
-Before generating a guide, read `references/revision_guide_spec.md`. That file
-defines the handbook contract inherited from the original IGCSE revision-guide
-Skill: the output must be a student study/revision handbook with HTML, PDF,
-modular sections, visual assets, worked examples, and validation. Do not turn
-the output into project documentation.
+**This is a presentation framework and workflow guide, not a content generator.**
 
-Current exam-board support:
+You (the LLM agent) are responsible for all content understanding, judgment, creation, and review. This Skill provides:
 
-- AQA: implemented through OxfordAQA / Oxford International AQA public pages,
-  including catalogue discovery. In Chinese user requests, treat "AQA" as this
-  international AQA route unless the user explicitly gives a UK AQA page.
-- Edexcel: subject-name candidate discovery for common official Pearson Edexcel
-  International GCSE / International AS-A-level page patterns, plus official
-  subject-page URL or direct specification PDF URL fallback.
-- CAIE: official Cambridge International subject-index candidate discovery,
-  plus official subject-page URL or direct syllabus PDF URL fallback. If a CAIE
-  page lists multiple syllabus year ranges, ask for `exam_year` and use the
-  range containing that year.
+1. **Visual System** - Three exam board themes (AQA / Edexcel / Cambridge) with brand colors, cover layouts, and logo placement
+2. **HTML/PDF Framework** - 8 module templates with print-friendly layout rules
+3. **Workflow Guide** - Step-by-step instructions for five coordinated roles: Project Manager → Analyst → Writer → Quality Inspector → Reviewer
+4. **Artifact Contracts** - JSON schemas for your outputs (handbook-project-manager.json, syllabus-outline.json, concept_explanations.json, quality-inspection.json, final-review-packet.json)
+5. **Python Execution Engine** - No intelligence. Downloads PDFs, extracts text, receives your JSON, renders HTML, exports PDF
 
-Do not run the AQA/OxfordAQA provider against Edexcel, CAIE, or generic UK AQA
-pages. If the user says only "AQA" with no UK AQA URL, treat it as the
-China-facing International GCSE / International AS-A-level AQA route. Do not
-claim full subject-catalogue crawling for Edexcel. When Edexcel or CAIE cannot
-uniquely identify a subject from exam board, level, subject, and code, return the
-matching official candidates and ask the user to choose one. Do not silently pick
-a likely route.
+**Python does not decide topics, exam points, or visual needs. You do.**
 
-## Operational Gates
+**This Skill does not include a fixed built-in image-generation router.** Visual judgment is your responsibility in Phase 2 (Writer).
 
-- STOP: preflight incomplete. If subject/provider, required exam year, output
-  language, explanation style, or infographic capability choice is missing, ask
-  only for the missing items and do not download or write the handbook yet.
-- CHECKPOINT: official candidate selected. Continue only when discovery returns
-  one official subject route or the user has chosen from the candidate list.
-- STOP: no official candidate. Ask for an official subject-page URL, direct
-  specification/syllabus PDF URL, or subject code. Do not switch boards, use an
-  AQA syllabus, or guess a likely URL.
-- CHECKPOINT: base handbook generated. After `guide-plan.json` and
-  `validation.json` exist, inspect `concepts/concept_jobs.json` and report the
-  pending concept-explanation count before starting image-generation or import
-  workflow.
-- STOP: concept explanations unreviewed. If
-  `validation.json.review_summary.pending_concept_explanations` is nonzero,
-  write source-bound explanations from `concepts/concept_jobs.json`, import them
-  with `scripts/import_concept_explanations.py`, and rerun validation/review
-  before presenting the handbook as final.
-- STOP: no callable image route. If the user names GPT Image, Qwen, SenseNova,
-  or another image model but there is no installed Skill, script, custom
-  provider configuration, or matching asset directory, keep `prompt-queue`,
-  write pending visual jobs, and do not create complex SVG stand-ins.
-- CHECKPOINT: quality passed. Present the guide as usable only after validation
-  has no `error` issues and the output includes detailed units, worked examples,
-  source snippets, visual briefs, `sections/`, and `images/`.
-- STOP: multi-agent workflow not separated. When the Agent runtime supports
-  subagents or fresh child contexts, dispatch the run as three roles:
-  syllabus/outline analyst, handbook writer, and independent final reviewer.
-  Use `agent-orchestration.json` as the required role contract. If no
-  independent Agent/LLM context is available for the final reviewer, keep the
-  output at review-ready or draft and do not present it as final-ready.
-- CHECKPOINT: final Agent review passed. Before presenting a generated handbook
-  as final, run `python -m intl_exam_guide review --out <output-dir>`, read
-  `final-review-packet.json`, and perform an Agent/LLM review over the rendered
-  excerpt, validation issues, source/topic summary, and visual status.
-  Validation is not enough by itself. Obey the packet's
-  `agent_self_review.must_not_present_as_final` flag. If the Agent cannot
-  honestly answer the review questions, present the output as a draft or blocked
-  run, not as final.
-- STOP: final review is only a gate report. The user's active LLM/Agent must
-  read the generated handbook as a final product, compare it against the
-  official syllabus outline, inspect visible HTML/PDF pages and visuals, and
-  repair fixable issues before handoff. Do not treat "the Skill generated it"
-  or "validation returned ready" as proof that the result is student-usable.
-  If the review finds mismatched topic explanations, duplicated mastery text,
-  unsuitable/repeated visuals, missing glossary support, PDF layout issues, or
-  pending concept/image work, fix the content/assets, rerender, and rerun final
-  review before giving the user the file.
-- STOP: product-review evidence missing. After the active LLM/Agent performs
-  that final product review, write `agent-product-review.json` with the
-  inspected PDF pages, syllabus-outline comparison, visual/glossary checks,
-  fixable issues, repairs made, and final decision. Without complete
-  `agent-product-review.json` evidence, the output remains review-ready or
-  draft even when validation and `final-review-packet.json` look clean.
-- STOP: reviewer is not independent. The final reviewer role in
-  `agent-orchestration.json` must be separate from the syllabus/outline analyst
-  and handbook writer roles. A writer self-check can help, but it does not
-  satisfy final review by itself.
-- STOP: self-review found fixable problems. If the Agent/LLM review notices
-  duplicated mastery text, a worked example that answers a different topic,
-  repeated or unsuitable visuals, blank PDF pages, unresolved image jobs, or
-  student-facing language/style mismatch, fix the generation logic or imported
-  assets first, regenerate or rerender the handbook, and run the final review
-  again. Do not hand off a guide merely because validation or a delivery gate
-  says `ready`.
-- CHECKPOINT: release evidence classified. For project maintenance or release
-  tasks, classify claims as `candidate`, `draft`, `final-ready`, or
-  `certified`. Candidate routes are not delivery-grade. Do not call a route
-  certified unless a `docs/release-evidence/` manifest records current evidence
-  and reviewer approval.
+---
 
-When Edexcel or CAIE discovery returns more than one official match, show the
-choices in this shape and wait:
+## What This Skill Provides
 
-```text
-Official candidates found:
-1. board:
-   level:
-   subject:
-   code:
-   official_url:
-   spec_pdf_url:
-   why_matched:
+### 1. Three Exam Board Visual Themes
 
-Please choose a number, or provide the official subject page / syllabus PDF URL.
+Each board has a distinct visual identity applied to covers, headers, and PDF styling:
+
+**AQA (Oxford International AQA)**
+- Primary color: `#0066cc` (deep blue)
+- Cover layout: Centered title, board logo top-right
+- Typography: Clean sans-serif, high contrast
+
+**Edexcel (Pearson Edexcel International)**
+- Primary color: `#ff6600` (orange)
+- Cover layout: Bold title bar, board logo header
+- Typography: Modern sans-serif, dynamic spacing
+
+**Cambridge (Cambridge International / CAIE)**
+- Primary color: `#009639` (green)
+- Cover layout: Traditional academic, crest placement
+- Typography: Serif headings, formal structure
+
+### 2. Handbook Framework (8 Modules)
+
+Every handbook follows this structure:
+
+**Module 1: Cover**
+- Exam board branding
+- `{Board} {Level} {Subject} Revision Handbook`
+- Selected exam year (when applicable)
+
+**Module 2: How to Use This Handbook**
+- Study approach guidance
+- Module overview
+- Revision stage recommendations
+
+**Module 3: Study Roadmap / Topic Map**
+- Visual topic tree or structured table
+- Shows all topics with exam point counts
+- Level tags (foundation/extended, AS/A2)
+
+**Module 4: Term Glossary** (when requested)
+- Professional terms in target language ↔ English
+- 30-50 high-frequency terms from exam points
+- Alphabetically sorted
+
+**Module 5: Topic Guides** (core content)
+- For each topic:
+  - Essence (one-sentence core idea)
+  - Analogy (student-friendly comparison)
+  - Concepts (2-3 paragraphs of explanation)
+  - Worked Examples (problems + solutions + checks)
+  - Visuals (when you judge they're needed)
+
+**Module 6: Practice Workbook**
+- Practice cards for each topic
+- Problem + solution + self-check questions
+- Grid layout for quick reference
+
+**Module 7: Exam Structure**
+- Assessment papers table (duration, marks, weighting)
+- Command words (if available from specification)
+- Assessment objectives (if available)
+
+**Module 8: Revision Checklist**
+- Stage-by-stage review plan
+- Topic mastery checkboxes
+- Suggested timeline (6 weeks, 3 weeks, 1 week before exam)
+
+**PDF Layout Rules**:
+- A4 portrait pages
+- Page breaks: before each topic, before practice workbook
+- Images: max 600px width, centered with captions
+- Print-friendly: no background colors, high contrast text
+
+### 3. Your Workflow (Five Coordinated Roles)
+
+See detailed instructions in the "Your Workflow" section below.
+
+### 4. Artifact Contracts (JSON Schemas)
+
+Python validates your outputs against these schemas. If validation fails, you'll receive error details to fix.
+
+**handbook-project-manager.json** - Python writes this for the Coordinator role
+**syllabus-evidence.json** - Python writes this (you read it)
+**syllabus-outline.json** - Analyst writes this in Phase 1
+**qualification.json** - Python writes this from the Analyst outline
+**concept_jobs.json** - Python writes this (Writer task list)
+**concept_explanations.json** - Writer writes this in Phase 2
+**quality-inspection.json** - Quality Inspector writes/checks this in Phase 3
+**final-review-packet.json** - Reviewer writes/checks this in Phase 4
+**agent-orchestration.json** - Python tracks role completion
+
+### 5. Python Execution Engine (No Intelligence)
+
+Python performs only mechanical tasks:
+- Downloads specification PDFs from official URLs
+- Extracts page text and saves as `syllabus-evidence.json`
+- Receives your JSON outputs
+- Validates JSON schemas
+- Renders HTML using the 8-module framework
+- Exports PDF via headless browser
+- Manages artifact files
+
+Python **does not**:
+- ❌ Decide topic boundaries
+- ❌ Extract exam points
+- ❌ Determine if a topic needs a visual
+- ❌ Write concept explanations
+- ❌ Judge content quality
+
+**You do all of that.**
+
+---
+
+## Your Workflow
+
+### Preflight: Collect Parameters
+
+Before starting, confirm these with the user:
+
+**Required**:
+1. **Exam board**: AQA / Edexcel / Cambridge
+2. **Level**: International GCSE / International AS / International A-Level
+3. **Subject**: Chemistry, Mathematics, Economics, etc.
+4. **Code** (if known): e.g., 9260, 9EB0, 0455
+
+**Optional**:
+5. **Exam year**: When the official page lists multiple syllabus versions (e.g., 2025-2027 vs 2027-2029)
+6. **Term support language**: `en` (no glossary) or `zh-CN`, `zh-TW`, `ja` for bilingual term glossary
+7. **Explanation style**: `formal`, `friendly`, `story`, `detective`, `adventure`, `life` (applies to Module 5 concept writing)
+8. **Image generation method**:
+   - `prompt-queue`: You list visual needs, user generates/imports them later
+   - `custom`: User has configured an external API (you won't call it, Python will)
+
+**Example preflight dialogue**:
+```
+You: I'll help you generate a revision handbook. Let me confirm:
+- Exam board: AQA
+- Level: International GCSE
+- Subject: Chemistry
+- Term support: Chinese (zh-CN) glossary
+- Style: Friendly explanations
+- Visuals: prompt-queue (I'll list what's needed, you provide them)
+
+Proceed?
 ```
 
-Provider resolution commands from a full repository checkout:
+---
 
-```bash
-# AQA has catalogue discovery.
-python -m intl_exam_guide discover --provider oxfordaqa
+### Coordinator: Handbook Project Manager
 
-# Edexcel and CAIE are URL-first / subject-candidate routes, not full crawlers.
-# Use a scratch output directory to verify whether the provider resolves one
-# official route or returns an ambiguity/error message to show the user.
-python -m intl_exam_guide generate --provider pearson --query "Accounting" --level igcse --language en --explanation-style friendly --out ./outputs/_candidate-check-edexcel --skip-pdf
-python -m intl_exam_guide generate --provider cambridge --query "Accounting 0452" --level igcse --exam-year 2027 --language en --explanation-style friendly --out ./outputs/_candidate-check-caie --skip-pdf
+**Your role**: `handbook_project_manager`
+
+Before dispatching specialist work, create or update `handbook-project-manager.json`:
+- Confirm preflight inputs and missing fields
+- Dispatch roles in order: Analyst → Writer → Quality Inspector → Final Reviewer
+- Validate each role's output before the next handoff
+- Send failed artifacts back to the responsible role with exact issues
+- Keep the package labeled `draft`, `review-ready`, or `blocked` until all gates pass
+
+---
+
+### Phase 1: Analyst — Understand the Official Syllabus
+
+**Your role**: `syllabus_outline_analyst`
+
+**Input**: `syllabus-evidence.json` (Python has already downloaded the specification PDF and extracted page text)
+
+**Your task**:
+1. Read `syllabus-evidence.json` carefully. It contains:
+   - `course.title`, `course.code`, `course.qualification_type`
+   - `pages[]`: array of `{ page: number, text: string }` from the official PDF
+   - `specification_url`, `page_url`
+
+2. **Identify topic boundaries**:
+   - Real teaching units like "3.1.8 Prepare accounting records from source documents"
+   - NOT placeholder headings like "Content 1.1" or "Unit A"
+   - Use page numbers, headings, table structures, bullet points to judge boundaries
+
+3. **Extract exam points for each topic**:
+   - Specific learning outcomes like "Use source documents, books of prime entry and ledger accounts"
+   - NOT vague statements like "Students should understand the content"
+
+4. **Record source snippets**:
+   - For each topic, save 1-3 short text snippets from the PDF showing where you found this topic/point
+   - Include page numbers
+
+5. **Output JSON**: `syllabus-outline.json`
+
+**Detailed Prompt Template**:
+
+```
+You are the syllabus_outline_analyst. Your task is to read the official specification PDF evidence and produce an authoritative topic outline.
+
+Input file: syllabus-evidence.json
+
+Instructions:
+1. Read all pages in the evidence file
+2. Identify real teaching topics (not placeholder headings)
+3. For each topic:
+   - Write a clear topic title (e.g., "3.1.8 Prepare accounting records from source documents")
+   - Extract specific exam points (learning outcomes)
+   - Record level_tags if the syllabus distinguishes foundation/extended or AS/A2
+   - Save 1-3 source_snippets with page numbers showing where you found this
+
+Output JSON schema:
+{
+  "schema_version": "v0.5-llm-syllabus-outline",
+  "status": "llm-analyst-approved",
+  "course_spec": {
+    "title": "...",
+    "code": "...",
+    "qualification_type": "...",
+    "subject_area": "...",
+    "provider": "...",
+    "page_url": "...",
+    "specification_url": "..."
+  },
+  "topics": [
+    {
+      "title": "3.1.8 Prepare accounting records from source documents",
+      "exam_points": [
+        "Use source documents",
+        "Prepare books of prime entry",
+        "Prepare ledger accounts"
+      ],
+      "level_tags": ["foundation", "extended"],
+      "source_snippets": [
+        {
+          "page": 12,
+          "text": "Students should be able to use source documents...",
+          "matched_term": "source documents"
+        }
+      ]
+    }
+  ]
+}
+
+Critical rules:
+- Do NOT rely on any *-candidate-hints.json files. Those are optional suggestions only.
+- Do NOT accept "Content 1.1" as a teaching topic. Find the real topic name.
+- Do NOT output exam_points like "Understand the topic". Be specific.
+- Each topic must have at least one exam_point and one source_snippet.
+
+After you output this JSON, call the Python function to import it:
+- Python will validate your JSON
+- Python will write qualification.json and concept_jobs.json
+- You can then proceed to Phase 2
 ```
 
-If those checks create a scratch guide only for route confirmation, do not
-present it as the final handbook. Re-run with the user's confirmed language,
-style, output directory, and PDF setting after the official route is selected.
+**What happens after you output**:
+- Python receives your `syllabus-outline.json`
+- Python validates the schema
+- Python writes `qualification.json` (authoritative topics)
+- Python generates `concept_jobs.json` (your writing task list)
+- You can now start Phase 2
 
-## User-Facing Use
+---
 
-The end user should not need to run Python commands. They can install the skill
-by giving this link to OpenClaw, Hermes, or another Skill-compatible Agent:
+### Phase 2: Writer — Fill the Content Modules
 
-```text
-https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill
+**Your role**: `handbook_writer`
+
+**Input**: `concepts/concept_jobs.json` (Python generated this from your Analyst outline)
+
+**Your task**:
+1. Read `concept_jobs.json`. It lists all topics you need to write, like:
+   ```json
+   {
+     "jobs": [
+       {
+         "topic_title": "3.1.8 Prepare accounting records from source documents",
+         "exam_points": ["Use source documents", "..."],
+         "source_snippets": [...]
+       }
+     ]
+   }
+   ```
+
+2. **For each topic, write**:
+   - `essence`: One-sentence core idea (15-25 words)
+   - `analogy`: Student-friendly comparison to familiar concepts
+   - `concepts`: 2-3 paragraphs explaining the topic in the requested style (friendly/formal/story/etc.)
+   - `worked_examples`: 1-2 problems with full solutions and self-check questions
+   - `mastery_summary`: What a student should be able to do after mastering this topic
+
+3. **Judge visual needs**:
+   - Does this topic benefit from a diagram/infographic/chart?
+   - If no, omit `visual_spec`.
+   - If yes, decide whether an exact SVG can fully and precisely express the concept.
+   - Use `complexity: "svg-basic"` only for exact-fit visuals such as axes, set regions, simple flow, table, tree, timeline, or another structure where labels and geometry fully carry the teaching meaning. Include `svg_fit: "exact"`.
+   - For any visual requiring nuance, realistic setup, multiple linked states, spatial interpretation, rich annotation, or modelling assumptions, use `complexity: "infographic"` for the external infographic model.
+
+4. **If term glossary is requested** (user chose zh-CN, zh-TW, ja):
+   - Extract 30-50 high-frequency professional terms from all exam_points
+   - Translate to target language
+   - Output `glossary_entries[]`
+
+5. **Output JSON**: `concepts/concept_explanations.json`
+
+**Detailed Prompt Template**:
+
+```
+You are the handbook_writer. Your task is to write original teaching content for each topic.
+
+Input file: concepts/concept_jobs.json
+Style: {user_selected_style} (friendly / formal / story / detective / adventure / life)
+Term support: {user_selected_language} (en / zh-CN / zh-TW / ja)
+
+For each topic in concept_jobs.json:
+
+1. Write essence (one sentence, 15-25 words, captures the core idea)
+2. Write analogy (compare to something familiar to students)
+3. Write concepts (2-3 paragraphs):
+   - Explain the topic clearly in {style} voice
+   - Reference the exam_points
+   - Do NOT just copy/paste from source_snippets
+   - Use original teaching language
+4. Write worked_examples (1-2 examples):
+   - Problem statement
+   - Full solution with steps
+   - Check questions (how to verify your answer)
+5. Write mastery_summary (what students should be able to do)
+
+Judge visual needs:
+- Does this topic benefit from a diagram/infographic/chart?
+- If NO: do not output visual_spec.
+- If YES, first decide whether SVG is an exact fit.
+- SVG exact fit: axes, set regions, simple flow, table, tree, timeline, or another structure where labels and geometry fully carry the concept.
+- Any visual that needs nuance, realistic setup, multiple linked states, spatial interpretation, rich annotation, or modelling assumptions must be an external infographic.
+- SVG exact-fit example:
+  {
+    "visual_spec": {
+      "type": "probability tree for independent Bernoulli trials",
+      "complexity": "svg-basic",
+      "svg_fit": "exact",
+      "prompt": "Create a clean probability tree with success p and failure 1-p for repeated independent trials.",
+      "llm_visual_approved": true,
+      "trigger": "A tree structure exactly represents the branching probability calculation."
+    }
+  }
+- External infographic example:
+  {
+    "visual_spec": {
+      "type": "connected-particle forces explanation",
+      "complexity": "infographic",
+      "prompt": "Create a polished teaching infographic explaining the modelling steps, force diagram, assumptions, and F=ma equations for connected particles.",
+      "llm_visual_approved": true,
+      "trigger": "The topic needs modelling assumptions and linked equations that an exact SVG could oversimplify."
+    }
+  }
+
+Output JSON schema:
+{
+  "schema_version": "v0.5-concept-explanations",
+  "concepts": [
+    {
+      "topic_title": "3.1.8 Prepare accounting records from source documents",
+      "essence": "Source documents provide the evidence needed to record transactions in books of prime entry before posting to ledgers.",
+      "analogy": "Source documents are like receipts you collect when shopping—they prove a transaction happened before you write it in your budget notebook.",
+      "concepts": [
+        "Paragraph 1...",
+        "Paragraph 2...",
+        "Paragraph 3..."
+      ],
+      "worked_examples": [
+        {
+          "problem": "A business receives an invoice...",
+          "solution": "Step 1... Step 2...",
+          "check": "Verify that..."
+        }
+      ],
+      "mastery_summary": "You can identify source documents, prepare correct prime entry records, and post to ledger accounts.",
+      "visual_spec": { ... } // optional, only if this topic needs a visual
+    }
+  ],
+  "glossary_entries": [ // only if term_support_language != "en"
+    {
+      "term_english": "Source document",
+      "term_target": "原始凭证",
+      "target_language": "zh-CN"
+    }
+  ]
+}
+
+Critical rules:
+- Write in {style} voice (friendly = conversational, formal = academic, story = narrative framing, etc.)
+- Do NOT output visual_spec for every topic. Only when truly beneficial.
+- SVG visuals require `svg_fit: "exact"`; otherwise choose `complexity: "infographic"`.
+- External infographic specs are written to `images/infographic_jobs.md` and must be generated/imported before final-ready delivery.
+- Glossary entries: 30-50 terms, high-frequency professional vocabulary only.
+
+After you output this JSON, call the Python function to import it:
+- Python will validate your JSON
+- Python will render HTML using the 8-module framework with AQA/Edexcel/Cambridge theme
+- Python will generate guide.html and guide.pdf
+- If you specified visual_spec, Python writes images/infographic_jobs.md
+- You can then proceed to Phase 3 (Quality Inspector)
 ```
 
-After installation, plain-language requests are enough, for example:
+**What happens after you output**:
+- Python receives your `concept_explanations.json`
+- Python validates schema
+- Python imports content to `sections/` directory
+- Python renders `guide.html` and `guide.pdf` using the appropriate board theme
+- If you specified visuals with `prompt-queue`, Python writes `images/infographic_jobs.md`
+- Python generates `validation.json` with preliminary checks
+- Python writes `quality-inspection.json` for the fast Inspector gate
+- You can now start Phase 3 (Quality Inspector)
 
-```text
-帮我生成 AQA Chemistry International GCSE 复习手册，并导出 PDF。
-帮我生成 Edexcel Accounting International GCSE 复习手册，附中文专业词对照表。
-帮我生成 CAIE IGCSE Economics 2027 考试用复习手册，附日语专业词对照表。
+---
+
+### Phase 3: Quality Inspector — Fast Completeness Gate
+
+**Your role**: `quality_inspector`
+
+**Input**:
+- `guide.html`
+- `qualification.json`
+- `syllabus-outline.json`
+- `concepts/concept_jobs.json`
+- `concepts/concept_explanations.json`
+- `images/visual_manifest.json`
+
+**Your task**:
+1. Check required files exist.
+2. Check the visible handbook has cover, how-to-use, topic map, topic guides, practice, exam structure, and revision checklist markers.
+3. Check topic count and concept explanation count match.
+4. Flag visible placeholders such as `[insert ...]`, `undefined`, `null`, or `TODO`.
+5. Check visual specs are explicit and not repeated five or more times.
+6. Output or verify `quality-inspection.json` with `inspection_status: "pass" | "fail"`.
+
+If inspection fails, send exact issues back to the Writer or renderer before Final Reviewer starts. If it passes, proceed to Phase 4.
+
+---
+
+### Phase 4: Reviewer — Independent Quality Audit
+
+**Your role**: `final_reviewer` (independent subagent)
+
+**Critical**: You are a **fresh, independent context**. You cannot see the conversation from Analyst, Writer, or Quality Inspector.
+
+**Input**:
+- `guide.html` (the rendered handbook)
+- `syllabus-evidence.json` (original specification evidence)
+- `validation.json` (preliminary automated checks)
+- `quality-inspection.json` (fast structure/completeness report)
+- `images/visual_manifest.json` (if visuals were generated)
+
+**Your task**:
+1. **Read the rendered handbook** (`guide.html`)
+2. **Compare with original syllabus** (`syllabus-evidence.json`):
+   - Are the topics accurate?
+   - Are the exam points covered?
+   - Are there claims that aren't supported by the specification?
+3. **Check teaching quality**:
+   - Are concept explanations clear?
+   - Are worked examples appropriate?
+   - Are analogies helpful or confusing?
+   - Is the style consistent?
+4. **Check visuals** (if any):
+   - Do visual specs match the topic needs?
+   - Are there missing visuals that should be there?
+   - Are there unnecessary visuals?
+5. **Check PDF rendering** (if available):
+   - Are there blank pages?
+   - Is the page count reasonable?
+   - Are images rendering correctly?
+6. **Check validation.json**:
+   - Are there any errors or warnings?
+
+7. **Output JSON**: `final-review-packet.json`
+
+**Detailed Prompt Template**:
+
+```
+You are the final_reviewer, an independent subagent auditing the handbook.
+
+IMPORTANT: You are NOT the analyst or writer. You did not create this content. You are reviewing it fresh.
+
+Input files:
+- guide.html (the rendered handbook)
+- syllabus-evidence.json (original specification PDF evidence)
+- validation.json (automated checks)
+
+Your audit checklist:
+
+1. syllabus_outline_compared:
+   - Read guide.html Module 3 (Topic Map)
+   - Read syllabus-evidence.json pages
+   - Question: Does the outline match the official specification?
+   - Output: { "status": "approved" | "repair_needed", "notes": "..." }
+
+2. visible_handbook_inspected:
+   - Read guide.html Module 5 (Topic Guides)
+   - Question: Are concept explanations clear, analogies helpful, examples appropriate?
+   - Look for:
+     * Vague explanations
+     * Confusing analogies
+     * Worked examples with errors
+     * Inconsistent style
+   - Output: { "status": "approved" | "repair_needed", "issues": [...] }
+
+3. visuals_inspected:
+   - Read images/visual_manifest.json (if exists)
+   - Read guide.html visual placements
+   - Question: Are visuals appropriate and non-repetitive?
+   - Look for:
+     * Missing visuals where diagrams would help
+     * Unnecessary visuals for text-only topics
+     * Repetitive visual specs (e.g., 5 identical "process flowcharts")
+   - Output: { "status": "approved" | "repair_needed", "issues": [...] }
+
+4. pdf_pages_sampled:
+   - If guide.pdf exists, check:
+     * Blank pages
+     * Broken image links
+     * Page count (should be 15-60 pages for typical IGCSE subject)
+   - Output: { "status": "approved" | "not_checked" | "repair_needed", "notes": "..." }
+
+5. validation_issues_reviewed:
+   - Read validation.json
+   - Are there any severity="error" items?
+   - Output: { "status": "clean" | "has_errors", "summary": "..." }
+
+6. repair_loop_completed:
+   - If you found issues in 1-5:
+     * output "repair_needed" with detailed instructions
+   - If all approved:
+     * output "approved"
+
+Output JSON schema:
+{
+  "schema_version": "v0.5-final-review",
+  "syllabus_outline_compared": {
+    "status": "approved",
+    "notes": "Topic boundaries match the official spec page 12-35. All exam points covered."
+  },
+  "visible_handbook_inspected": {
+    "status": "repair_needed",
+    "issues": [
+      "Topic 3.2 analogy compares journal entries to 'filing taxes' which may confuse international students. Suggest using 'recording daily expenses in a notebook'.",
+      "Worked example 4.1 solution step 2 has calculation error: should be 125 not 120."
+    ]
+  },
+  "visuals_inspected": {
+    "status": "approved",
+    "notes": "5 visual specs are all distinct and appropriate for their topics."
+  },
+  "pdf_pages_sampled": {
+    "status": "approved",
+    "notes": "PDF is 42 pages, no blank pages, all images render correctly."
+  },
+  "validation_issues_reviewed": {
+    "status": "clean",
+    "summary": "No errors. 2 warnings about pending concept imports (expected for prompt-queue workflow)."
+  },
+  "repair_loop_completed": {
+    "status": "repair_needed",
+    "instructions": "Fix the 2 issues in visible_handbook_inspected, then rerender guide.html and resubmit for review."
+  }
+}
+
+After you output this JSON:
+- If repair_needed: the handler will fix issues, rerender, and call you again
+- If approved: Python marks delivery_status = "final-ready"
 ```
 
-Do not start generation immediately after a broad request. Run the preflight
-choice step first.
+**What happens after you output**:
+- Python receives your `final-review-packet.json`
+- If you reported `repair_needed`:
+  - Handler goes back to Phase 2 to fix issues
+  - Python rerenders guide.html
+  - You are called again (fresh review)
+- If you reported all `approved`:
+  - Python writes `agent-product-review.json` (handler's final inspection)
+  - Python marks `delivery_status = "final-ready"`
+  - Handbook is ready for user
 
-## Required Preflight Choices
+---
 
-Before downloading a specification or generating content, ask for and confirm
-these choices if the user did not already provide them:
+## Delivery
 
-1. **Subject choice**: exam board, qualification level, subject, and code if
-   known. The user may only know the exam board and subject. First resolve an
-   official candidate yourself. If the provider finds several matching official
-   routes, show the choices and wait for the user to pick one. Official
-   subject-page URLs and direct specification/syllabus PDF URLs are accepted as
-   precise overrides.
-2. **Exam year when needed**: Cambridge subject pages often expose multiple
-   syllabus ranges. If more than one range is available, ask for the student's
-   exam year before selecting a syllabus.
-3. **Term-support language**: the handbook body, worked examples, labels, and
-   diagram text stay in English because the exam is in English. If the user asks
-   for Chinese, Traditional Chinese, Japanese, or another support language, add
-   a 30-50 item professional glossary mapping that language to the official
-   English terms. Do not generate a fully translated handbook body, and do not
-   render mixed `Chinese / English` labels throughout the guide; the bilingual
-   content belongs in the glossary table.
-4. **Explanation style**: ask how the knowledge points and examples should read:
-   `formal`, `friendly`, `life`, `story`, `detective`, or `adventure`.
-5. **Infographic capability**: ask whether the user has a callable infographic
-   or image-generation route available for this run. This is a required
-   yes/no preflight question, not an image-model menu. If the user says yes,
-   ask which route they want to use: installed image-generation Skill, custom
-   API with model name + base URL/endpoint + API-key environment variable name,
-   existing asset directory, or a project script. If the user says no, explain
-   that built-in deterministic SVG/scientific-vector visuals may be incomplete
-   for complex infographics, then ask whether to continue with a draft that
-   marks complex visuals as pending.
-Do not force the user to choose a specific image model before the base guide is
-generated. Do not show an image-model choice menu that mixes SVG, prompt queue,
-and recommended model names. The required preflight choices are
-subject/provider, required exam year, term-support language, explanation style, and
-infographic capability availability.
-Do not ask the user to choose an image model before the base guide is generated.
+When all five roles are complete and approved, you deliver:
 
-The recommended complex-image models are GPT Image 2.0, Qwen Image 2.0 Pro, and
-SenseNova U1 Fast because they tend to handle text+diagram educational
-infographics better than generic art models. These are recommendations only.
-Do not imply every user can call them by default.
+**Files**:
+- `handbook-project-manager.json` - Coordinator state and handoff log
+- `guide.html` - Full handbook with all 8 modules
+- `guide.pdf` - Print-friendly A4 PDF (if browser runtime available)
+- `qualification.json` - Authoritative topics from your Analyst outline
+- `syllabus-evidence.json` - Original PDF evidence
+- `syllabus-outline.json` - Your Analyst output
+- `concepts/concept_explanations.json` - Your Writer output
+- `quality-inspection.json` - Inspector output
+- `final-review-packet.json` - Your Reviewer output
+- `validation.json` - Automated checks
+- `agent-orchestration.json` - Role completion log
 
-When preparing prompts for external complex infographics, use the project's
-default revision-worksheet art direction: clean landscape layout, large topic
-banner, clear teaching panels, pastel subject colors, readable black English
-labels, accurate diagrams/icons, and a small Quick Q&A or practice box. Do not
-ask for exam-board logos, Oxford/Pearson/Cambridge packaging, school branding,
-course-cover headers, badges, footers, or watermarks.
+**If visuals were requested** (prompt-queue method):
+- `images/infographic_jobs.md` - Markdown list of visual specs you wrote
+- User can generate these visuals externally, then import with `scripts/import_infographic_assets.py`
 
-When no callable image model is available, do not treat every visual as a rough
-generic SVG. The visual stack is automatic: exact simple diagrams use local
-SVG/scientific-vector output; medium-complexity professional diagrams such as
-flows, hierarchies, timelines, concept maps, and relationship diagrams use the
-built-in Kroki professional diagram renderer; high-density text+diagram
-infographics remain external-image jobs. For chart-like or rule-driven visuals, use the internal
-scientific-vector fallback described in
-`references/scientific_vector_fallback.md`: number lines, axes, probability
-trees, function graphs, statistics charts, rate curves, pH scales, energy
-profiles, and simple labelled geometry should be rendered as source-bound,
-editable SVG where possible. This is not a user-facing image model choice.
-Complex infographics still require an external model, script, imported asset, or
-reviewed designer workflow.
+**If term glossary was requested**:
+- Module 4 in guide.html contains the bilingual term table
 
-After the guide plan is built, inspect `validation.json.review_summary` or
-`images/visual_manifest.json` and tell the user how many complex infographic
-briefs were found. Then the user may provide or confirm their own
-image-generation model, API, Skill, script, designer workflow, or generated
-image directory. If a callable route exists, the Agent should run it and then
-import or attach the reviewed outputs automatically; do not make the user move
-files by hand. If they do not provide a callable route or assets, leave complex
-items as pending visual jobs, show the `visual_###` IDs that need generation,
-and present the handbook as draft-with-pending-images rather than final.
+**Message to user**:
+```
+Your {Board} {Subject} {Level} revision handbook is ready:
 
-## Callable Image Capability Gate
+📄 guide.html - Open in browser to view
+📑 guide.pdf - {page_count} pages, print-friendly
 
-Before using any real image model name after the base guide run, verify one of
-these concrete capabilities:
+8 modules included:
+✓ Cover ({Board} branding)
+✓ How to Use This Handbook
+✓ Study Roadmap ({topic_count} topics)
+✓ Term Glossary ({glossary_count} terms in {language})
+✓ Topic Guides (concepts + examples + visuals)
+✓ Practice Workbook ({practice_count} cards)
+✓ Exam Structure
+✓ Revision Checklist
 
-- a named image-generation Skill is installed and the user explicitly asked to
-  use it for this run; the Agent may call that Skill and then import/attach the
-  generated files;
-- a script path exists and is designed to generate or import the pending
-  `visual_manifest.json` entries;
-- an asset directory exists with generated image files matching the visual IDs;
-- `--image-provider custom` has model name, endpoint URL, and API-key
-  environment variable name, and the environment variable is set.
+Quality gates passed:
+✓ Quality Inspector passed format/completeness
+✓ Independent reviewer approved
+✓ Validation checks clean
+✓ PDF rendering verified
 
-If none of those checks passes, do not choose a model. Keep the base guide on
-`prompt-queue`, write `images/infographic_jobs.json` and
-`images/infographic_jobs.md`, and leave complex infographic slots pending until
-reviewed raster assets are imported.
-Never ask the user to paste a raw API key into chat or commit one to the
-repository.
-
-Handle repository setup, CLI execution, validation checks, and PDF export as the
-Agent. Do not ask the user to install dependencies unless the local environment
-is genuinely missing the required runtime and cannot proceed.
-
-## Core Contract
-
-This skill is a cross-subject framework, not a Mathematics, Chemistry, or
-Economics template. Do not hard-code one subject's examples, diagrams, topic
-counts, tone, or revision structure into another subject.
-Within a supported board, do not maintain a per-subject allowlist. If the
-official qualification page and specification PDF can be discovered or supplied,
-run the same source-bound generation pipeline. Specialist subject profiles may
-improve examples and visual decisions; subjects without a specialist profile
-must fall back to generic source-bound examples instead of borrowing another
-subject's template.
-Do not maintain per-subject hard-coded concept-explanation libraries. The base
-generator may write source-bound draft prompts, but final student-facing concept
-explanations must be written in a second LLM/Agent pass from the current
-`topic_title`, `student_title`, and `source_points` in `concepts/concept_jobs.json`.
-
-The end product is a study/revision handbook package. A valid run writes:
-
-- `guide.html`;
-- `guide.pdf` when PDF export is available;
-- `sections/` with modular handbook source fragments;
-- `images/` with deterministic SVG drafts or reviewed infographic assets;
-- `concepts/` with concept-writing jobs and reviewed concept explanations;
-- `guide-plan.json`;
-- `qualification.json`;
-- `validation.json`;
-- `final-review-packet.json` after the review command has run;
-- `handbook-package.json`.
-
-The required generation logic is:
-
-1. Find the public qualification page and course specification PDF.
-2. Use the web page only as discovery metadata; use the downloaded PDF as the
-   source of truth for detailed syllabus content.
-3. Parse the detailed subject content into teachable knowledge units. If the PDF
-   has specification references such as `N1`, `A13`, `G20`, `S18`, or equivalent
-   subject codes, use those references as the unit level. If a subject has no
-   codes, use the lowest reliable section/subsection level available in the PDF.
-4. Generate source-bound study-note drafts and original worked examples for each unit.
-   Each worked example must include a real question prompt, a solve-it-first
-   frame, public solution steps, final answer/checkpoints, and source anchors.
-5. Write one concept-explanation job per topic under `concepts/`. The job must
-   include the current topic title, student-facing title, draft text, source
-   points, source pages, and a constrained task.
-6. Run the LLM/Agent concept-writing pass before finalizing student-facing
-   topic guides. Each topic needs 2-3 direct concept explanations that say what
-   the concept is, what relationship or boundary it describes, and why it is
-   central to this syllabus point. Do not write procedural mastery checklists
-   such as "be able to identify / operate / check".
-7. Run the anti-template language pass before finalizing student-facing
-   explanation and practice text. Remove safe formulaic transitions such as
-   `In conclusion`, `Overall`, `总之`, and `值得注意的是`; if a phrase still reads
-   like generic AI prose, keep it as a validation warning for review instead of
-   hiding it.
-8. Run a second visual-needs pass over each knowledge unit and worked example.
-   Decide whether text is enough, local deterministic SVG is enough, built-in
-   Kroki professional rendering is appropriate, or a richer external
-   infographic/image model is needed. Do not create a visual merely because a
-   topic could be illustrated; create one only when the concept, graph, flow, or
-   worked example becomes materially clearer with that visual.
-9. Render the guide to HTML/PDF only after the content, examples, concept
-   explanations, visual briefs, and source checks are present.
-
-For student-facing guides, do not produce a text-only template. During visual
-planning:
-
-- `prompt-queue` is the default route for complex visuals when no callable image
-  capability exists;
-- `deterministic-svg` for exact editable diagrams such as axes, curves, charts,
-  pH scales, particle layouts, motion graphs, force arrows, and simple geometry;
-- built-in Kroki professional diagrams for medium-complexity flows, hierarchies,
-  timelines, source-to-ledger routes, relationship maps, and concept maps;
-- GPT Image 2.0, Qwen Image 2.0 Pro, and SenseNova U1 Fast are recommended
-  external options for text+diagram educational infographics;
-- `custom` if the user has another provider, URL, model name, and key env var.
-
-These recommended model names are not CLI providers. Do not pass them as
-`--image-provider` values to the base generator. Use `prompt-queue` for the
-guide, then run or import external images only after the callable gate above
-passes.
-
-If the user has not chosen the subject, required exam year, term-support
-language, and explanation style, stop and ask. Ask whether a callable external
-infographic route exists before generation, but do not ask the user to choose
-between local SVG and Kroki; that routing is automatic. Do not claim that complex infographics have been finalized until a
-callable image route has produced reviewed image assets; new outputs must not
-use generic SVG as a substitute for complex infographics.
-
-The public repository does not include a fixed built-in image-generation router.
-That does not mean image work must be manual. If the user has a callable model,
-API, Skill, script, or designer workflow, the Agent should run that capability
-after the base handbook is generated, save the reviewed files, and use
-`scripts/import_infographic_assets.py` when the files need to be copied into the
-guide package before finalizing HTML/PDF.
-
-## Repository Access
-
-This skill may be installed from the repository's `skill/` directory, which
-contains the Agent instructions but not the Python engine. Before running the
-generator, check whether the current workspace has `pyproject.toml` and
-`src/intl_exam_guide`.
-
-If the full repository is not available, clone or otherwise fetch this public
-repository into a workspace directory, then run commands from that checkout:
-
-```text
-https://github.com/mianbaofang/igcse-a-level-revision-guide.git
+{If prompt-queue visuals}
+📸 {visual_count} visual specs listed in images/infographic_jobs.md
+Generate these images and import with scripts/import_infographic_assets.py
 ```
 
-## Maintenance And Audit Closure
+---
 
-Use this section only when the user asks to update, audit, or release the
-generator/Skill itself. Do not run maintenance steps during an ordinary handbook
-generation request.
+## Supported Exam Boards
 
-Final-round P3 closure requires these checks before calling the project ready:
+### AQA (Oxford International AQA)
 
-- `visual_routing.py` has a dedicated test file and direct coverage for
-  `build_visual_brief`, provider selection, subject-specific infographic routes,
-  SVG routes, and text-only fallbacks.
-- `validation/checks.py` branch coverage is above 90% in its dedicated test run,
-  with direct tests for `validate_plan`, custom image-provider success/failure,
-  Chinese placeholder checks, image manifest edge cases, review-summary asset
-  counts, `is_contents_or_index_snippet`, and all localized topic marker groups.
-- `subject_profiles.py` dedicated coverage reaches 100%, including declared
-  subject routing, ambiguous science routing, Mathematics prefix routing, and
-  Economics/Accounting source-text fallbacks. Accounting source-text must be
-  checked before broader Economics text so `bank reconciliation` does not route
-  as Economics.
-- Chinese visual OR aliases are tested as standalone triggers, including
-  `accounting process` and `neutralisation`; weak assertions pin full messages
-  or exact return values, not only severity/truthiness.
-- Public release copy, especially `docs/index.html` detail cards, reflects the
-  actual release changes instead of stale prior-round text.
+**Discovery method**: Subject name + level
+- Python searches public OxfordAQA catalogue
+- Returns candidates with code, URL, PDF
 
-Run at least these focused checks after such maintenance:
+**Example subjects**:
+- Mathematics (9260, 9265)
+- Chemistry (9620)
+- Business (9370)
 
-```bash
-python -m pytest tests/test_visual_routing.py tests/test_visual_routing_benchmark.py -q
-python -m pytest tests/test_subject_profiles.py tests/test_localization.py tests/test_validation_checks.py -q
-python -m pytest tests/test_visual_routing.py tests/test_visual_routing_benchmark.py --cov=intl_exam_guide.planning.visual_routing --cov-report=term-missing -q
-python -m pytest tests/test_subject_profiles.py --cov=intl_exam_guide.planning.subject_profiles --cov-report=term-missing -q
-python -m pytest tests/test_validation_checks.py --cov=intl_exam_guide.validation.checks --cov-report=term-missing -q
-```
+**Coverage**: International GCSE, International AS, International A-Level
 
-Before release or handoff, also run the full project checks from
-`docs/PROJECT_OPERATIONS.md`: `python -m pytest --cov
---cov-report=term-missing -q`, `python -m ruff check .`, `python -m mypy`,
-`python -m compileall -q src tests scripts`, `python scripts/scan_for_raw_keys.py
-. ./outputs`, and `git diff --check`. For functional releases, record fresh demo
-evidence in `CHANGELOG.md` or the GitHub Release notes before publishing. For
-v0.4+ release claims above `candidate`, also record the concise manifest under
-`docs/release-evidence/`; do not commit generated output folders as evidence.
+### Edexcel (Pearson Edexcel International)
 
-## Workflow
+**Discovery method**: Subject name + level
+- Python searches Pearson International subject pages
+- Returns candidates with code, URL, PDF
 
-1. Confirm the required preflight choices: subject/provider, required exam
-   year, term-support language, and explanation style. Do not ask for an image model
-   at this stage.
-2. Read `references/revision_guide_spec.md`.
-3. For AQA, read `references/oxfordaqa.md` because the implemented AQA route is
-   based on OxfordAQA / Oxford International AQA pages.
-4. For Edexcel or CAIE, first try official
-   candidate discovery from the user's subject request. If more than one
-   official candidate matches, return the choices and wait. If none matches,
-   ask for an official subject-page URL, direct specification/syllabus PDF URL,
-   or subject code. Do not silently switch to another board or reuse an AQA
-   syllabus.
-5. Run the generator CLI from the repository root with the confirmed
-   `--language`, `--explanation-style`, optional `--exam-year`, and optional
-   `--image-provider`. Confirm that detailed PDF
-   syllabus units were extracted; do not accept broad web summary topics as the
-   final guide structure when the PDF contains finer subject content.
-6. Check `validation.json` before presenting the guide. A usable student guide
-   needs detailed units, worked examples, source snippets, visual briefs,
-   `sections/`, and `images/`; a guide with only broad topic headings is a
-   failed draft.
-7. If `pending_concept_explanations` is nonzero, use
-   `concepts/concept_jobs.json` as the source-bound brief for the LLM/Agent
-   concept-writing pass, save the reviewed output as
-   `concepts/concept_explanations.json`, import it with
-   `scripts/import_concept_explanations.py`, and rerun validation.
-8. Report how many complex infographic briefs were found. If the user provides
-   a generation/import method, use it after the callable gate passes. If not,
-   report the pending `visual_###` jobs and present the handbook as draft with
-   pending visual assets.
-9. If the guide will be used with children, require subject-specialist review for
-   worked examples before treating it as final exam preparation material.
-10. Preserve the visual and narrative learning layer: after the base topic guide
-   and practice items are generated, analyze which knowledge points or examples
-   need visual explanation. Use deterministic SVG for simple diagrams. For
-   complex infographic needs, create source-bound briefs and pending visual jobs
-   unless a callable route or reviewed raster asset is available.
-   When the visual is an exact chart/axis/curve/simple geometry case, read
-   `references/scientific_vector_fallback.md` and keep the SVG editable,
-   source-bound, and recorded as a scientific-vector fallback in the manifest.
+**Example subjects**:
+- Mathematics (9-1) 4MA1
+- Chemistry 4CH1
+- Economics 4EC1
 
-## Commands
+**Coverage**: International GCSE, International AS, International A-Level
 
-From a full repository checkout, install the package first when possible:
+**Exam year**: Ask user if multiple syllabus ranges found (e.g., 2024-2026 vs 2027-2029)
 
-```bash
-python -m pip install -e .
-python -m intl_exam_guide generate --query chemistry --level igcse --language en --explanation-style friendly --out ./outputs/chemistry-9202
-```
+### Cambridge (Cambridge International / CAIE)
 
-If the package is not installed and the Agent only needs a local run, set
-`PYTHONPATH` for the current shell:
+**Discovery method**: Subject name + level + code (optional)
+- Python searches Cambridge subject index
+- Returns candidates with syllabus code, URL, PDF
 
-```powershell
-$env:PYTHONPATH='src'; python -m intl_exam_guide generate --query chemistry --level igcse --language en --explanation-style friendly --out ./outputs/chemistry-9202
-```
+**Example subjects**:
+- Mathematics 0580 (IGCSE Core and Extended)
+- Chemistry 0620
+- Economics 0455
 
-```bash
-PYTHONPATH=src python -m intl_exam_guide generate --query chemistry --level igcse --language en --explanation-style friendly --out ./outputs/chemistry-9202
-```
+**Coverage**: Cambridge IGCSE, Cambridge International AS & A Level
 
-Use `--skip-pdf` only when no local browser or Playwright runtime is available.
+**Exam year**: REQUIRED when multiple syllabus ranges listed (e.g., "for examination from 2025" vs "for examination from 2027")
 
-## Anti-Patterns
+---
 
-- Do not ask for an image model during preflight.
-- Do not show `gpt-image-2`, `qwen-image-pro`, `sensenova-u1-fast`,
-  `deterministic-svg`, and `prompt-queue` as one user-facing model menu.
-- Do not treat a recommended model name as a callable capability.
-- Do not use AQA syllabus content when the user asked for Edexcel or CAIE.
-- Do not accept a guide with only broad topic headings, missing worked examples,
-  or missing visual briefs.
-- Do not treat draft "what to master" prompts as final concept explanations.
-- Do not add one subject's concept rules to the shared generator to fix another
-  subject's output; fix the source-bound concept job and review flow instead.
-- Do not present generic SVG stand-ins for complex infographics as reviewed
-  teaching diagrams.
-- Do not generate a translated Chinese/Japanese/etc. handbook body. Keep the
-  handbook body English and put user-language support in the professional terms
-  glossary.
-- Do not leave obvious AI-template transitions in student-facing explanations
-  or practice cards when a concrete sentence will do.
+## CLI Fallback (Framework Demo Only)
 
-## Safety Rules
+**Command**: `python -m intl_exam_guide demo {board} {subject}`
 
-- Do not copy official past-paper questions, mark schemes, or large passages of
-  specification/syllabus text into generated public examples.
-- Keep the official page URL, specification URL, and PDF hash in every output.
-- Treat the generated guide as incomplete if topic extraction, assessment
-  extraction, source download, or HTML validation fails.
-- Do not invent exam claims. If a topic needs deeper explanation, keep it inside
-  the extracted syllabus text and mark it for review.
-- Use AI image generation only as an optional illustration layer. Prefer
-  deterministic SVG concept maps for simple structures. If an AI image model is
-  used, record the model, prompt, source topic, caption, and review status; never
-  let an illustration introduce unsupported exam claims.
+**Purpose**: Demonstrates the 8-module framework structure without LLM content
+
+**Output**:
+- `template-demo.html` with all modules present
+- Each content section shows placeholder: `[LLM fills: topic essence]`, `[LLM judges: visual needed?]`
+- Cover and structure are complete
+- Content is skeleton only
+
+**Not for production use**. This is a framework preview. Real handbooks require you (LLM) to run the five-role workflow.
+
+---
+
+## Evidence Extraction Only
+
+**Command**: `python -m intl_exam_guide extract-evidence {board} {subject}`
+
+**Purpose**: Downloads PDF and extracts text evidence without generating handbook
+
+**Output**:
+- `syllabus-evidence.json` (page text from official specification PDF)
+- Message: "Evidence ready. Now run this Skill in your LLM agent to generate the handbook."
+
+**Use case**: Preparing evidence for later handbook generation
+
+---
+
+## Critical Rules
+
+1. **Python has no intelligence**. It does not understand topics, exam points, or teaching needs.
+2. **You own all content decisions**. Topic boundaries, exam points, concept explanations, visual needs, quality judgments.
+3. **Quality Inspector is mandatory before final review**. Do not skip the fast completeness gate.
+4. **Independent reviewer is mandatory**. Do not skip Phase 4. Do not self-review in the same context.
+5. **Repair loops are expected**. If inspector or reviewer finds issues, fix and rerender. Do not deliver `final-ready` with known problems.
+6. **Validation alone is not enough**. Passing automated checks does not mean teaching quality is good.
+7. **Do not reuse syllabus fragments as teaching content**. Write original explanations in the requested style.
+8. **Visual judgment is content work**. Do not auto-generate visuals for every topic. Judge case-by-case.
+9. **Term glossary is professional vocabulary only**. Not every word from the syllabus. 30-50 high-frequency terms.
+
+---
+
+## Reference Files
+
+Before starting, read:
+- `references/revision_guide_spec.md` - Full output contract and artifact details
+- `references/style_guide.md` - Writing style definitions (friendly/formal/story/etc.)
+- `references/visual_routing_guide.md` - When to use infographics vs diagrams vs no visual
+
+---
+
+## Questions?
+
+If you encounter:
+- **Specification PDF not found**: Ask user for direct PDF URL
+- **Subject not uniquely resolved**: Show candidates and ask user to pick
+- **Exam year ambiguous**: Ask user which syllabus range to use
+- **Visual method unclear**: Ask if user has image generation capability or wants prompt-queue
+
+Do not guess. Do not skip steps. Do not deliver draft output as final-ready.

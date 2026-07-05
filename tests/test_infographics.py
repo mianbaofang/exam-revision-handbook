@@ -36,7 +36,7 @@ def test_render_generated_infographic_branch():
     assert "Infographic Queue" not in html
 
 
-def test_render_svg_fallback_branch():
+def test_svg_fallback_stays_pending_until_reviewed_raster_is_imported():
     html = render_infographic_required(
         "Bonding",
         sample_visual(),
@@ -45,18 +45,22 @@ def test_render_svg_fallback_branch():
             "file": "visual_001_bonding.svg",
             "asset_status": "svg-fallback-needs-review",
             "image_provider": "deterministic-svg",
+            "llm_visual_approved": True,
         },
         "page 12",
         "en",
     )
 
-    assert "svg-fallback" in html
-    assert "SVG Fallback - Review Needed" in html
-    assert "visual_001_bonding.svg" in html
-    assert "External image brief" in html
+    assert "infographic-required" in html
+    assert "Infographic Queue" in html
+    assert "visual_001_bonding.svg" not in html
+    assert "Prompt queue" in html
     assert "Visual job:" in html
     assert "visual_001" in html
-    assert "Generate or import a reviewed image for this visual ID to replace it automatically." in html
+    assert (
+        "Generate or import a reviewed image for this visual ID to replace it automatically."
+        in html
+    )
     assert "Generated Infographic" not in html
 
 
@@ -81,7 +85,7 @@ def test_render_pending_infographic_branch():
     assert "visual_001" in html
 
 
-def test_render_svg_fallback_replacement_note_respects_chinese_language():
+def test_svg_fallback_replacement_note_respects_chinese_language():
     html = render_infographic_required(
         "Bonding",
         sample_visual(),
@@ -90,6 +94,7 @@ def test_render_svg_fallback_replacement_note_respects_chinese_language():
             "file": "visual_001_bonding.svg",
             "asset_status": "svg-fallback-needs-review",
             "image_provider": "deterministic-svg",
+            "llm_visual_approved": True,
         },
         "第 12 页",
         "zh-CN",
@@ -97,5 +102,6 @@ def test_render_svg_fallback_replacement_note_respects_chinese_language():
 
     assert "信息图任务：" in html
     assert "visual_001" in html
+    assert "visual_001_bonding.svg" not in html
     assert "导入这个 visual ID 对应的复核图片后，会自动替换当前草图。" in html
     assert "Generate or import" not in html

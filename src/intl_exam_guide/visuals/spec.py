@@ -22,6 +22,7 @@ class VisualSpec:
     source_points: tuple[str, ...] = field(default_factory=tuple)
     source_pages: tuple[int, ...] = field(default_factory=tuple)
     source_terms: tuple[str, ...] = field(default_factory=tuple)
+    svg_fit: str = ""
 
     @classmethod
     def from_brief(cls, brief: VisualBrief, visual_id: str) -> "VisualSpec":
@@ -38,6 +39,7 @@ class VisualSpec:
             source_points=tuple(brief.source_points),
             source_pages=tuple(snippet.page for snippet in snippets),
             source_terms=tuple(snippet.matched_term for snippet in snippets),
+            svg_fit=str(getattr(brief, "svg_fit", "") or ""),
         )
 
     def spec_hash(self) -> str:
@@ -51,6 +53,7 @@ class VisualSpec:
             "visual_type": self.visual_type,
             "complexity": self.complexity,
             "prompt": self.prompt,
+            "svg_fit": self.svg_fit,
             "source_points": list(self.source_points),
             "source_pages": list(self.source_pages),
             "source_terms": list(self.source_terms),

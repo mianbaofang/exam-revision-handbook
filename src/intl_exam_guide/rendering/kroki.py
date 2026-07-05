@@ -144,9 +144,7 @@ def flow_graphviz_source(title: str, labels: list[str]) -> str:
         f'  n{index} [label="{escape_dot_label(label)}"];'
         for index, label in enumerate(labels, start=1)
     )
-    edges = "\n".join(
-        f"  n{index} -> n{index + 1};" for index in range(1, len(labels))
-    )
+    edges = "\n".join(f"  n{index} -> n{index + 1};" for index in range(1, len(labels)))
     return f"{base_graph_header(title)}{nodes}\n{edges}\n}}"
 
 

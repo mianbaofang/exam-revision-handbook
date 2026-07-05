@@ -27,7 +27,11 @@ def main() -> int:
         raise SystemExit("concept_jobs.json must contain a list")
     explanations = [write_entry(job) for job in jobs if isinstance(job, dict)]
     target.write_text(json.dumps(explanations, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({"ok": True, "written": len(explanations), "path": str(target)}, ensure_ascii=False))
+    print(
+        json.dumps(
+            {"ok": True, "written": len(explanations), "path": str(target)}, ensure_ascii=False
+        )
+    )
     return 0
 
 
@@ -99,15 +103,36 @@ def write_zh_entry(
 
 def clean_point(value: str) -> str:
     text = clean_ocr_math_text(re.sub(r"\s+", " ", value).strip())
-    action_words = r"(?:understand|identify|explain|describe|state|apply|prepare|calculate|distinguish)"
+    action_words = (
+        r"(?:understand|identify|explain|describe|state|apply|prepare|calculate|distinguish)"
+    )
     text = re.sub(r"^[a-z]\)\s*", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(rf"^{action_words}\s+the\s+significance\s+of\s+the\s+following\s+accounting\s+concepts\s*:?\s*", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(rf"^{action_words}\s+the\s+following\s+accounting\s+concepts\s*:?\s*$", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(rf"^{action_words}\s+the\s+following\s+accounting\s+concepts\s*:?\s*", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(rf"^{action_words}\s+the\s+following\s+accounting\s*:?\s*$", "", text, flags=re.IGNORECASE).strip()
+    text = re.sub(
+        rf"^{action_words}\s+the\s+significance\s+of\s+the\s+following\s+accounting\s+concepts\s*:?\s*",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    ).strip()
+    text = re.sub(
+        rf"^{action_words}\s+the\s+following\s+accounting\s+concepts\s*:?\s*$",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    ).strip()
+    text = re.sub(
+        rf"^{action_words}\s+the\s+following\s+accounting\s+concepts\s*:?\s*",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    ).strip()
+    text = re.sub(
+        rf"^{action_words}\s+the\s+following\s+accounting\s*:?\s*$", "", text, flags=re.IGNORECASE
+    ).strip()
     text = re.sub(rf"^{action_words}\s+the\s+terms\s*:?\s*$", "", text, flags=re.IGNORECASE).strip()
     text = re.sub(rf"^{action_words}\s+the\s+terms\s*:?\s*", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(rf"^{action_words}\s+the\s+causes\s+of\s+(.+)$", r"causes of \1", text, flags=re.IGNORECASE).strip()
+    text = re.sub(
+        rf"^{action_words}\s+the\s+causes\s+of\s+(.+)$", r"causes of \1", text, flags=re.IGNORECASE
+    ).strip()
     text = re.sub(
         rf"^{action_words}\s+the\s+(?:purpose|use|uses|characteristics|features|terms|benefits|significance|principles)\s+of(?:\s+the)?\s*:?\s*$",
         "",
@@ -124,7 +149,9 @@ def clean_point(value: str) -> str:
     text = re.sub(rf"^{action_words}\s+", "", text, flags=re.IGNORECASE).strip()
     text = re.sub(r"\bStudents will be expected to\b[: ]*", "", text, flags=re.IGNORECASE).strip()
     text = re.sub(r"\bStudents may be required to\b[: ]*", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(r"\bStudents should be familiar with\b[: ]*", "", text, flags=re.IGNORECASE).strip()
+    text = re.sub(
+        r"\bStudents should be familiar with\b[: ]*", "", text, flags=re.IGNORECASE
+    ).strip()
     text = re.sub(r"\bStudents are expected to\b[: ]*", "", text, flags=re.IGNORECASE).strip()
     text = re.sub(
         rf"\bStudents should be able to\s+{action_words}\s*:\s*",
@@ -140,7 +167,9 @@ def clean_point(value: str) -> str:
     ).strip()
     text = re.sub(r"\bStudents should be able to\b[: ]*", "", text, flags=re.IGNORECASE).strip()
     text = re.sub(r"\bLearners should be able to\b[: ]*", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(r"\bCandidates should have an understanding of\b[: ]*", "", text, flags=re.IGNORECASE).strip()
+    text = re.sub(
+        r"\bCandidates should have an understanding of\b[: ]*", "", text, flags=re.IGNORECASE
+    ).strip()
     text = re.sub(r"\bCandidates should\b[: ]*", "", text, flags=re.IGNORECASE).strip()
     text = text.lstrip(":;,- ").strip()
     return text.rstrip(".")
@@ -192,7 +221,19 @@ def should_merge_fragment(previous: str, current: str) -> bool:
         return False
     if prev.endswith((",", ";", ":")):
         return True
-    if prev.split()[-1] in {"and", "or", "for", "of", "the", "in", "to", "with", "capital", "raw", "provision"}:
+    if prev.split()[-1] in {
+        "and",
+        "or",
+        "for",
+        "of",
+        "the",
+        "in",
+        "to",
+        "with",
+        "capital",
+        "raw",
+        "provision",
+    }:
         return True
     if cur and cur[0].islower() and prev.endswith((" other", "non-current", "books", "open")):
         return True
@@ -251,7 +292,12 @@ def en_essence(
         return "Use of factorisation is about turning a product form into solvable zero-factor equations."
     if "discriminant of a quadratic" in lower:
         return "The discriminant is about reading the nature of a quadratic equation from b^2 - 4ac before solving it."
-    if "using algebraic methods" in lower or "equal roots" in lower or "distinct real roots" in lower or "no real roots" in lower:
+    if (
+        "using algebraic methods" in lower
+        or "equal roots" in lower
+        or "distinct real roots" in lower
+        or "no real roots" in lower
+    ):
         return "Using algebraic methods here means turning a graph intersection question into an equation, then using the number of real roots to interpret the geometry."
     if "translation of circles" in lower:
         return "Translation of circles is about moving the centre of a circle while keeping its radius unchanged."
@@ -272,7 +318,10 @@ def en_essence(
         return "Displacement and velocity are vector quantities, while distance and speed are scalar quantities; the difference changes signs and interpretation."
     if is_motion_quantity_overview_topic(lower):
         return "The basic kinematics quantities describe position change and motion rate: displacement, distance, velocity, speed, and acceleration each answer a different question."
-    if "knowledge and use of constant acceleration" in lower or "constant acceleration equation" in lower:
+    if (
+        "knowledge and use of constant acceleration" in lower
+        or "constant acceleration equation" in lower
+    ):
         return "Constant-acceleration equations link displacement, initial velocity, final velocity, acceleration, and time when acceleration is fixed."
     if "vertical motion under gravity" in lower:
         return "Vertical motion under gravity is about using constant acceleration with gravitational acceleration acting downwards."
@@ -301,15 +350,12 @@ def en_essence(
     if intersection_kind:
         return "Intersection points of graphs are about turning the meeting point of two curves into simultaneous equations, then interpreting the coordinates."
     if (
-        (
-            "circle" in lower
-            or "coordinate geometry" in lower
-            or "midpoint" in lower
-            or "perpendicular" in lower
-            or ("straight line" in lower and "motion" not in lower)
-        )
-        and not any(word in lower for word in ["momentum", "impulse", "impact", "collision"])
-    ):
+        "circle" in lower
+        or "coordinate geometry" in lower
+        or "midpoint" in lower
+        or "perpendicular" in lower
+        or ("straight line" in lower and "motion" not in lower)
+    ) and not any(word in lower for word in ["momentum", "impulse", "impact", "collision"]):
         return f"{concept} is about translating geometric facts into coordinates, gradients, equations, or distances."
     trig_kind = trig_topic_kind(lower)
     if trig_kind:
@@ -363,7 +409,12 @@ def en_definition_sentence(
         return "Using factorisation to solve means rewriting an expression as factors and then applying the zero-product rule."
     if "discriminant of a quadratic" in lower:
         return "For ax^2 + bx + c = 0, the discriminant b^2 - 4ac tells whether the quadratic has two distinct real roots, one repeated real root, or no real roots."
-    if "using algebraic methods" in lower or "equal roots" in lower or "distinct real roots" in lower or "no real roots" in lower:
+    if (
+        "using algebraic methods" in lower
+        or "equal roots" in lower
+        or "distinct real roots" in lower
+        or "no real roots" in lower
+    ):
         return "Algebraic methods connect coordinate geometry to equations: equal roots, distinct real roots, or no real roots describe how graphs meet."
     if "translation of circles" in lower:
         return "A translated circle has the same radius but a different centre, so only the centre coordinates change in the completed-square equation."
@@ -386,7 +437,10 @@ def en_definition_sentence(
         return "Distance and speed ignore direction, but displacement and velocity include direction, so signs and chosen axes matter."
     if is_motion_quantity_overview_topic(lower):
         return "Displacement is change in position, speed is distance per time, velocity is displacement per time, and acceleration is change in velocity per time."
-    if "knowledge and use of constant acceleration" in lower or "constant acceleration equation" in lower:
+    if (
+        "knowledge and use of constant acceleration" in lower
+        or "constant acceleration equation" in lower
+    ):
         return "Constant-acceleration equations, often called SUVAT equations, connect s, u, v, a, and t when acceleration is constant, for example v = u + at and s = ut + 1/2 at^2."
     if "average speed" in lower:
         return "Average speed is total distance divided by total time, so it is scalar and does not include direction."
@@ -480,7 +534,9 @@ def source_bound_definition_sentence(
                 "in the question to this exact topic before starting the working."
             )
         return f"{concept} is the exact method, notation, or model for this unit; identify its required form before starting the working."
-    return f"{concept} focuses on {fragment}; keep the working inside that stated form or restriction."
+    return (
+        f"{concept} focuses on {fragment}; keep the working inside that stated form or restriction."
+    )
 
 
 def normalize_concept_text(value: str) -> str:
@@ -512,7 +568,10 @@ def math_topic_family(lower: str) -> str:
         return "kinematics_quantities"
     if kinematics_graph_topic_kind(lower):
         return "kinematics_graph"
-    if "constant acceleration equation" in lower or "knowledge and use of constant acceleration" in lower:
+    if (
+        "constant acceleration equation" in lower
+        or "knowledge and use of constant acceleration" in lower
+    ):
         return "constant_acceleration"
     if "average speed" in lower:
         return "kinematics_quantities"
@@ -522,22 +581,38 @@ def math_topic_family(lower: str) -> str:
         return "momentum"
     if any(word in lower for word in ["bernoulli", "binomial distribution"]):
         return "binomial_probability"
-    if any(word in lower for word in ["probability", "random variable", "variance", "standard deviation"]):
+    if any(
+        word in lower
+        for word in ["probability", "random variable", "variance", "standard deviation"]
+    ):
         return "probability"
-    if is_trig_graph_topic(lower) or any(word in lower for word in ["trigonometry", "sine", "cosine"]):
+    if is_trig_graph_topic(lower) or any(
+        word in lower for word in ["trigonometry", "sine", "cosine"]
+    ):
         return "trigonometry"
     if any(word in lower for word in ["integrat", "area under", "trapezium"]):
         return "integration"
-    if any(word in lower for word in ["differentiat", "derivative", "tangent", "stationary"]) and not (
-        "circle" in lower or "coordinate geometry" in lower
-    ):
+    if any(
+        word in lower for word in ["differentiat", "derivative", "tangent", "stationary"]
+    ) and not ("circle" in lower or "coordinate geometry" in lower):
         return "differentiation"
     if any(
         word in lower
-        for word in ["circle", "straight line", "coordinate", "gradient", "midpoint", "perpendicular", "parallel"]
+        for word in [
+            "circle",
+            "straight line",
+            "coordinate",
+            "gradient",
+            "midpoint",
+            "perpendicular",
+            "parallel",
+        ]
     ):
         return "coordinate_geometry"
-    if any(word in lower for word in ["sequence", "series", "geometric progression", "arithmetic progression"]):
+    if any(
+        word in lower
+        for word in ["sequence", "series", "geometric progression", "arithmetic progression"]
+    ):
         return "sequences"
     if any(
         word in lower
@@ -584,7 +659,8 @@ def trig_topic_kind(lower: str) -> str | None:
 
 def is_kinematics_graph_topic(lower: str) -> bool:
     return any(
-        word in lower for word in ["kinematic", "kinematics", "motion", "displacement", "velocity", "speed"]
+        word in lower
+        for word in ["kinematic", "kinematics", "motion", "displacement", "velocity", "speed"]
     ) and any(phrase in lower for phrase in ["graph", "graphs", "gradient", "area under"])
 
 
@@ -616,7 +692,10 @@ def is_variable_acceleration_topic(lower: str) -> bool:
 
 
 def is_motion_quantity_distinction_topic(lower: str) -> bool:
-    return "difference between displacement and distance" in lower or "difference between velocity and speed" in lower
+    return (
+        "difference between displacement and distance" in lower
+        or "difference between velocity and speed" in lower
+    )
 
 
 def is_motion_quantity_overview_topic(lower: str) -> bool:
@@ -664,18 +743,24 @@ def en_relationship_sentence(
         if len(fragments) >= 2:
             return f"The relationship is between {fragments[0]} and {fragments[1]}, staying inside this accounting unit."
         if fragments:
-            return f"The relationship to track is the accounting purpose named here: {fragments[0]}."
+            return (
+                f"The relationship to track is the accounting purpose named here: {fragments[0]}."
+            )
         return f"The relationship is the accounting record, statement, or control purpose that makes {concept} a separate syllabus point."
     if subject_pack == "economics":
         fragments = usable_source_fragments(source_points)
         if fragments:
             return f"The relationship to track is the economic cause, choice, cost, or consequence named here: {fragments[0]}."
-        return f"The relationship is the economic link that makes {concept} a separate syllabus point."
+        return (
+            f"The relationship is the economic link that makes {concept} a separate syllabus point."
+        )
     if subject_pack == "business":
         fragments = usable_source_fragments(source_points)
         if fragments:
             return f"The relationship to track is the business decision, stakeholder, market, operation, or finance link named here: {fragments[0]}."
-        return f"The relationship is the business link that makes {concept} a separate syllabus point."
+        return (
+            f"The relationship is the business link that makes {concept} a separate syllabus point."
+        )
     if subject_pack == "history":
         fragments = usable_source_fragments(source_points)
         if fragments:
@@ -685,7 +770,12 @@ def en_relationship_sentence(
         return "The relationship is that if (x-a)(x-b)=0, then each factor gives one possible solution."
     if "discriminant of a quadratic" in lower:
         return "The relationship is between the sign of b^2 - 4ac and the number of real roots of a quadratic equation."
-    if "using algebraic methods" in lower or "equal roots" in lower or "distinct real roots" in lower or "no real roots" in lower:
+    if (
+        "using algebraic methods" in lower
+        or "equal roots" in lower
+        or "distinct real roots" in lower
+        or "no real roots" in lower
+    ):
         return "The relationship is between the discriminant/root count of the equation and the number of geometric intersection points."
     if "translation of circles" in lower:
         return "The relationship is between the circle equation `(x-a)^2 + (y-b)^2 = r^2` and the centre `(a,b)` after translation."
@@ -706,7 +796,10 @@ def en_relationship_sentence(
         return "The relationship is that scalar quantities measure size only, while vector quantities also carry direction."
     if is_motion_quantity_overview_topic(lower):
         return "The relationship is speed = distance/time, velocity = displacement/time, and acceleration = change in velocity/time in a straight-line model."
-    if "knowledge and use of constant acceleration" in lower or "constant acceleration equation" in lower:
+    if (
+        "knowledge and use of constant acceleration" in lower
+        or "constant acceleration equation" in lower
+    ):
         return "The relationship is between s, u, v, a, and t in a model where acceleration stays constant."
     if "average speed" in lower:
         return "The relationship is average speed = total distance / total time."
@@ -760,18 +853,24 @@ def en_relationship_sentence(
         if len(fragments) >= 2:
             return f"The relationship is between {fragments[0]} and {fragments[1]}, staying inside this accounting unit."
         if fragments:
-            return f"The relationship to track is the accounting purpose named here: {fragments[0]}."
+            return (
+                f"The relationship to track is the accounting purpose named here: {fragments[0]}."
+            )
         return f"The relationship is the accounting record, statement, or control purpose that makes {concept} a separate syllabus point."
     if subject_pack == "economics":
         fragments = usable_source_fragments(source_points)
         if fragments:
             return f"The relationship to track is the economic cause, choice, cost, or consequence named here: {fragments[0]}."
-        return f"The relationship is the economic link that makes {concept} a separate syllabus point."
+        return (
+            f"The relationship is the economic link that makes {concept} a separate syllabus point."
+        )
     if subject_pack == "business":
         fragments = usable_source_fragments(source_points)
         if fragments:
             return f"The relationship to track is the business decision, stakeholder, market, operation, or finance link named here: {fragments[0]}."
-        return f"The relationship is the business link that makes {concept} a separate syllabus point."
+        return (
+            f"The relationship is the business link that makes {concept} a separate syllabus point."
+        )
     if subject_pack == "history":
         fragments = usable_source_fragments(source_points)
         if fragments:
@@ -788,7 +887,9 @@ def en_relationship_sentence(
         return "The relationship is between the cash book balance, bank statement balance, timing differences, and errors."
     if source_points:
         return f"The relationship to track is: {clean_point(source_points[0])}."
-    return f"The relationship is the boundary or link that makes {concept} a separate syllabus point."
+    return (
+        f"The relationship is the boundary or link that makes {concept} a separate syllabus point."
+    )
 
 
 def en_boundary_sentence(
@@ -801,7 +902,10 @@ def en_boundary_sentence(
         return "The boundary is that the answer should separate short-run effects from long-run benefits instead of repeating a general definition of competition."
     if "competitive market process" in lower or "compete on price" in lower:
         return "The boundary is that this point is not just a supply-and-demand shift; it is about firm behaviour inside competition, especially price and non-price competition."
-    if any(word in lower for word in ["restricted", "only", "will not", "not required", "simple problems"]):
+    if any(
+        word in lower
+        for word in ["restricted", "only", "will not", "not required", "simple problems"]
+    ):
         return "The syllabus boundary matters here: include the stated restriction and do not expand into excluded cases."
     if subject_pack == "mathematics":
         return math_family_boundary(concept, math_topic_family(lower))
@@ -859,7 +963,12 @@ def en_mini_example(concept: str, lower: str, subject_pack: str) -> str:
         return "A typical question asks you to factorise first, set each factor equal to zero, and list all valid solutions."
     if "discriminant of a quadratic" in lower:
         return "A typical question gives a quadratic and asks you to decide the nature of its roots from the sign of b^2 - 4ac."
-    if "using algebraic methods" in lower or "equal roots" in lower or "distinct real roots" in lower or "no real roots" in lower:
+    if (
+        "using algebraic methods" in lower
+        or "equal roots" in lower
+        or "distinct real roots" in lower
+        or "no real roots" in lower
+    ):
         return "A typical question gives an intersection equation and asks you to decide whether the graphs meet once, twice, or not at all."
     if "translation of circles" in lower:
         return "A typical question gives a circle and a translation vector, then asks for the new centre or equation."
@@ -982,7 +1091,12 @@ def en_steps(concept: str, lower: str, subject_pack: str) -> list[str]:
             "Use the sign of the discriminant to classify the roots.",
             "State the root nature clearly without necessarily solving the equation.",
         ]
-    if "using algebraic methods" in lower or "equal roots" in lower or "distinct real roots" in lower or "no real roots" in lower:
+    if (
+        "using algebraic methods" in lower
+        or "equal roots" in lower
+        or "distinct real roots" in lower
+        or "no real roots" in lower
+    ):
         return [
             "Form the equation that represents the intersection or geometric condition.",
             "Calculate or reason about the number of real roots.",
@@ -1158,7 +1272,10 @@ def trig_definition(kind: str) -> str:
         "graphs": "Trigonometric graphs show how sin x, cos x, and tan x repeat over angle intervals, including their period and symmetry.",
         "identities": "The identities tan theta = sin theta / cos theta and sin^2 theta + cos^2 theta = 1 allow expressions to be simplified or transformed.",
     }
-    return values.get(kind, "A trigonometric relationship connects an angle to a side ratio, graph value, or equivalent expression.")
+    return values.get(
+        kind,
+        "A trigonometric relationship connects an angle to a side ratio, graph value, or equivalent expression.",
+    )
 
 
 def trig_relationship(kind: str) -> str:
@@ -1182,7 +1299,10 @@ def trig_mini_example(kind: str) -> str:
         "graphs": "A typical question asks for the period, symmetry, zeros, asymptotes, or a sketch feature of a sine, cosine, or tangent graph.",
         "identities": "A typical question asks you to simplify an expression or prove a statement using tan theta = sin theta / cos theta or sin^2 theta + cos^2 theta = 1.",
     }
-    return values.get(kind, "A typical question gives angle information and asks you to apply the matching trigonometric relationship.")
+    return values.get(
+        kind,
+        "A typical question gives angle information and asks you to apply the matching trigonometric relationship.",
+    )
 
 
 def trig_steps(kind: str) -> list[str]:
@@ -1244,7 +1364,10 @@ def trig_pitfall(kind: str) -> str:
         "graphs": "The common error is treating a trigonometric graph like a quadratic curve instead of using period and symmetry.",
         "identities": "The common error is treating an identity like an equation with only selected solutions, instead of preserving equivalence.",
     }
-    return values.get(kind, "The common error is using a familiar trig fact without checking the angle range or graph feature.")
+    return values.get(
+        kind,
+        "The common error is using a familiar trig fact without checking the angle range or graph feature.",
+    )
 
 
 def math_family_analogy(concept: str, family: str) -> str:
@@ -1464,7 +1587,12 @@ def en_pitfall(concept: str, lower: str, subject_pack: str) -> str:
         return "The common error is finding the factors but not setting each factor equal to zero."
     if "discriminant of a quadratic" in lower:
         return "The common error is treating the discriminant as the root itself instead of using its sign to classify the roots."
-    if "using algebraic methods" in lower or "equal roots" in lower or "distinct real roots" in lower or "no real roots" in lower:
+    if (
+        "using algebraic methods" in lower
+        or "equal roots" in lower
+        or "distinct real roots" in lower
+        or "no real roots" in lower
+    ):
         return "The common error is solving the equation but not translating the number of real roots back into the geometry."
     if "translation of circles" in lower:
         return "The common error is changing the radius or copying the centre signs incorrectly."
@@ -1502,7 +1630,9 @@ def en_pitfall(concept: str, lower: str, subject_pack: str) -> str:
     if is_intersection_graph_topic(lower):
         return "The common error is giving only x-values when the question asks for intersection points as coordinates."
     if "vertical motion under gravity" in lower:
-        return "The common error is using g with the wrong sign after choosing a positive direction."
+        return (
+            "The common error is using g with the wrong sign after choosing a positive direction."
+        )
     if "graph" in lower or "curve" in lower:
         return "Do not plot random points when the mark is for a named graph feature such as a root, gradient, asymptote, vertex, or transformation."
     if "momentum" in lower or "impact" in lower:

@@ -14,7 +14,7 @@ def sample_visual_spec() -> VisualSpec:
         trigger="simple chart",
         visual_type="statistics chart",
         complexity="svg-basic",
-        renderer_id="deterministic-svg",
+        renderer_id="kroki",
         prompt="Draw a simple chart.",
         source_points=("draw a bar chart",),
         source_pages=(8,),
@@ -41,7 +41,7 @@ def test_build_visual_manifest_v2_generates_contract_and_asset_metadata(tmp_path
     assert entry["visual_id"] == "visual_001"
     assert entry["id"] == "visual_001"
     assert entry["spec_hash"] == spec.spec_hash()
-    assert entry["renderer_id"] == "deterministic-svg"
+    assert entry["renderer_id"] == "kroki"
     assert entry["review_status"] == "draft"
     assert entry["asset_status"] == "svg-draft"
     assert entry["file"] == "visual_001.svg"

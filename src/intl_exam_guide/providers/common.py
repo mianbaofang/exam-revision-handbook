@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 import urllib.parse
 import urllib.request
@@ -109,9 +110,8 @@ def clean_text(value: str) -> str:
 def normalize_extracted_symbols(value: str | None) -> str:
     if not value:
         return ""
-    if (
-        "A \u222a B, A \u222a B" in value
-        and any(marker in value for marker in ("n(A)", "A\u2032", "\u03be", "intersection"))
+    if "A \u222a B, A \u222a B" in value and any(
+        marker in value for marker in ("n(A)", "A\u2032", "\u03be", "intersection")
     ):
         return value.replace("A \u222a B, A \u222a B", "A \u222a B, A \u2229 B")
     return value
@@ -219,9 +219,17 @@ def infer_qualification_type(text: str, url: str = "", level: str | None = None)
 
 def qualification_family(provider: str, qtype: str) -> str:
     if provider == "pearson":
-        return "Pearson Edexcel International AS/A Level" if qtype == "international_as_a_level" else "Pearson Edexcel International GCSE"
+        return (
+            "Pearson Edexcel International AS/A Level"
+            if qtype == "international_as_a_level"
+            else "Pearson Edexcel International GCSE"
+        )
     if provider == "cambridge":
-        return "Cambridge International AS & A Level" if qtype == "international_as_a_level" else "Cambridge IGCSE"
+        return (
+            "Cambridge International AS & A Level"
+            if qtype == "international_as_a_level"
+            else "Cambridge IGCSE"
+        )
     return provider
 
 
@@ -256,9 +264,8 @@ def first_teaching_from_nodes(nodes: list[TextNode]) -> str | None:
 
 
 def first_assessment_from_nodes(nodes: list[TextNode]) -> str | None:
-    return (
-        first_value_after_label(nodes, "First external assessment")
-        or first_value_after_label(nodes, "First assessment")
+    return first_value_after_label(nodes, "First external assessment") or first_value_after_label(
+        nodes, "First assessment"
     )
 
 
@@ -295,10 +302,28 @@ def attach_pdf_content(
 
     pages = extract_pdf_pages(pdf_path)
     text_path.write_text(extract_pdf_text(pdf_path), encoding="utf-8")
-    topics = parse_generic_topics_from_pdf(pages)
+
+    # Write candidate hints (page text only, no topic parsing)
+    # These are optional reference hints for the LLM Analyst.
+    # The LLM must read the evidence and decide topics itself.
+    hints_path = output_dir / f"{provider_prefix}-{code}-syllabus-candidate-hints.json"
+    hints_path.write_text(
+        json.dumps(
+            {
+                "schema_version": "v0.5-evidence-hints",
+                "status": "evidence-only",
+                "note": "Python extracted page text only. The LLM syllabus_outline_analyst must read the official evidence and decide topic boundaries.",
+                "pages": [
+                    {"page": page_num, "text": text[:5000]} for page_num, text in pages[:100]
+                ],
+            },
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
     assessments = parse_assessments_from_pdf(pages)
-    if topics:
-        qualification.topics = topics
     if assessments:
         qualification.assessments = assessments
     qualification.command_words = parse_command_words_from_pdf(pages)
@@ -316,115 +341,20 @@ def attach_pdf_content(
 
 
 def parse_generic_topics_from_pdf(pages: list[tuple[int, str]]) -> list[Topic]:
-    pearson_topics = parse_pearson_topic_tables(pages)
-    if len(pearson_topics) >= 6:
-        return pearson_topics
-    humanities_topics = parse_humanities_topics(pages)
-    if len(humanities_topics) >= 6:
-        return humanities_topics
-    content_pages = select_content_pages(pages)
-    topics = parse_numbered_topics(content_pages)
-    if len(topics) >= 6:
-        return topics
-    overview = parse_content_overview_topics(pages)
-    if len(overview) >= 6:
-        return overview
-    return topics or chunk_informative_lines(content_pages)
+    """
+    DEPRECATED: Python no longer attempts to parse topics automatically.
+
+    The LLM syllabus_outline_analyst must read syllabus-evidence.json and decide
+    topic boundaries. This function now returns empty list.
+
+    Use build_syllabus_evidence() + write_syllabus_evidence() instead.
+    """
+    return []
 
 
 def parse_pearson_topic_tables(pages: list[tuple[int, str]]) -> list[Topic]:
-    topics: list[Topic] = []
-    current_topic_number: str | None = None
-    current_code: str | None = None
-    current_title_parts: list[str] = []
-    current_points: list[str] = []
-    current_page: int | None = None
-    in_learning_table = False
-    stopped = False
-
-    def flush() -> None:
-        nonlocal current_code, current_title_parts, current_points, current_page
-        if not current_code or not current_title_parts or current_page is None:
-            current_code = None
-            current_title_parts = []
-            current_points = []
-            current_page = None
-            return
-        title = clean_text(" ".join(current_title_parts))
-        points = dedupe([point for point in current_points if is_topic_point(point)])
-        if title and points:
-            snippet = clean_text(" ".join([current_code, title, *points[:5]]))
-            topics.append(
-                Topic(
-                    title=f"{current_code} - {title}",
-                    points=points[:10],
-                    source_snippets=[
-                        SourceSnippet(
-                            page=current_page,
-                            text=snippet[:900],
-                            matched_term=current_code,
-                        )
-                    ],
-                )
-            )
-        current_code = None
-        current_title_parts = []
-        current_points = []
-        current_page = None
-
-    for page_number, page_text in pages:
-        if stopped:
-            break
-        for raw_line in page_text.splitlines():
-            if stopped:
-                break
-            line = clean_topic_line(raw_line)
-            if not line or is_noise_line(line):
-                continue
-            topic_match = re.match(r"^Topic\s+(\d+):\s+(.{3,120})$", line, re.I)
-            if topic_match:
-                flush()
-                current_topic_number = topic_match.group(1)
-                in_learning_table = False
-                continue
-            if current_topic_number is None:
-                continue
-            lower = line.lower()
-            if is_pearson_front_matter_line(line):
-                flush()
-                in_learning_table = False
-                current_topic_number = None
-                continue
-            if lower.startswith(("paper ", "assessment ", "appendix ", "administration ")):
-                flush()
-                in_learning_table = False
-                if lower.startswith(("appendix ", "administration ")):
-                    current_topic_number = None
-                    stopped = True
-                continue
-            if "what students need to learn" in lower:
-                in_learning_table = True
-                continue
-            if not in_learning_table:
-                continue
-
-            subsection = parse_pearson_subsection_line(line)
-            if subsection:
-                flush()
-                number, title, point = subsection
-                current_code = f"{current_topic_number}.{number}"
-                current_title_parts = [title]
-                current_points = [point] if point else []
-                current_page = page_number
-                continue
-
-            if current_code and not current_points and is_pearson_title_continuation(line):
-                current_title_parts.append(line)
-                continue
-            if current_code and is_topic_point(line):
-                current_points.append(line)
-    flush()
-    return dedupe_topics(topics)
+    """DEPRECATED: See parse_generic_topics_from_pdf"""
+    return []
 
 
 def parse_pearson_subsection_line(line: str) -> tuple[str, str, str | None] | None:
@@ -488,9 +418,13 @@ def select_content_pages(pages: list[tuple[int, str]]) -> list[tuple[int, str]]:
     for page_number, page_text in pages:
         lines = [clean_text(line) for line in page_text.splitlines() if clean_text(line)]
         page_lower = "\n".join(lines).lower()
-        if not started and page_number > 3 and re.search(
-            r"\b(subject content|syllabus content|course content|content guidance|detailed content)\b",
-            page_lower,
+        if (
+            not started
+            and page_number > 3
+            and re.search(
+                r"\b(subject content|syllabus content|course content|content guidance|detailed content)\b",
+                page_lower,
+            )
         ):
             started = True
         if not started:
@@ -527,78 +461,8 @@ def first_detailed_topic_page(pages: list[tuple[int, str]]) -> int | None:
 
 
 def parse_numbered_topics(pages: list[tuple[int, str]]) -> list[Topic]:
-    topics: list[Topic] = []
-    current_code: str | None = None
-    current_title: str | None = None
-    current_page: int | None = None
-    current_lines: list[str] = []
-    pending_code: str | None = None
-    pending_page: int | None = None
-
-    def flush() -> None:
-        nonlocal current_code, current_title, current_page, current_lines
-        if not current_code or not current_title or current_page is None:
-            current_lines = []
-            return
-        points = dedupe([line for line in current_lines if is_topic_point(line)])
-        if points:
-            snippet = clean_text(" ".join([current_code, current_title, *points[:5]]))
-            topics.append(
-                Topic(
-                    title=f"{current_code} - {current_title}",
-                    points=points[:10],
-                    source_snippets=[
-                        SourceSnippet(
-                            page=current_page,
-                            text=snippet[:900],
-                            matched_term=current_code,
-                        )
-                    ],
-                )
-            )
-        current_code = None
-        current_title = None
-        current_page = None
-        current_lines = []
-
-    for page_number, page_text in pages:
-        for raw_line in page_text.splitlines():
-            line = clean_topic_line(raw_line)
-            if not line or is_noise_line(line):
-                continue
-            code_only = parse_standalone_topic_code(line)
-            if code_only:
-                flush()
-                pending_code = code_only
-                pending_page = page_number
-                continue
-            if pending_code and is_standalone_topic_title(line):
-                flush()
-                current_code = pending_code
-                current_title = line
-                current_page = pending_page or page_number
-                current_lines = []
-                pending_code = None
-                pending_page = None
-                continue
-            if pending_code and not is_topic_point(line):
-                pending_code = None
-                pending_page = None
-            heading = parse_topic_heading(line)
-            if heading:
-                code, title = heading
-                if is_admin_heading(title):
-                    continue
-                flush()
-                current_code = code
-                current_title = title
-                current_page = page_number
-                current_lines = []
-                continue
-            if current_code:
-                current_lines.append(line)
-    flush()
-    return dedupe_topics(topics)
+    """DEPRECATED: See parse_generic_topics_from_pdf"""
+    return []
 
 
 def parse_topic_heading(line: str) -> tuple[str, str] | None:
@@ -644,120 +508,13 @@ def is_standalone_topic_title(line: str) -> bool:
 
 
 def parse_content_overview_topics(pages: list[tuple[int, str]]) -> list[Topic]:
-    topics: list[Topic] = []
-    for page_number, page_text in pages:
-        if "candidates study the following topics" not in page_text.lower():
-            continue
-        for raw_line in page_text.splitlines():
-            line = clean_topic_line(raw_line)
-            heading = parse_topic_heading(line)
-            if not heading:
-                continue
-            code, title = heading
-            topics.append(
-                Topic(
-                    title=f"{code} - {title}",
-                    points=[title],
-                    source_snippets=[
-                        SourceSnippet(page=page_number, text=clean_text(line), matched_term=code)
-                    ],
-                )
-            )
-    return dedupe_topics(topics)
+    """DEPRECATED: See parse_generic_topics_from_pdf"""
+    return []
 
 
 def parse_humanities_topics(pages: list[tuple[int, str]]) -> list[Topic]:
-    topics: list[Topic] = []
-    current_code: str | None = None
-    current_title: str | None = None
-    current_page: int | None = None
-    current_points: list[str] = []
-    in_relevant_section = False
-    in_detail_block = False
-
-    def flush() -> None:
-        nonlocal current_code, current_title, current_page, current_points
-        if not current_code or not current_title or current_page is None:
-            current_code = None
-            current_title = None
-            current_page = None
-            current_points = []
-            return
-        points = dedupe([point for point in current_points if is_humanities_topic_point(point)])
-        if not points:
-            points = [current_title]
-        snippet = clean_text(" ".join([current_code, current_title, *points[:6]]))
-        topics.append(
-            Topic(
-                title=f"{current_code} - {current_title}",
-                points=points[:10],
-                source_snippets=[
-                    SourceSnippet(
-                        page=current_page,
-                        text=snippet[:900],
-                        matched_term=current_code,
-                    )
-                ],
-            )
-        )
-        current_code = None
-        current_title = None
-        current_page = None
-        current_points = []
-
-    for page_number, page_text in pages:
-        page_lower = page_text.lower()
-        if any(
-            marker in page_lower
-            for marker in (
-                "depth studies",
-                "depth study",
-                "breadth study",
-                "historical investigation",
-                "core content",
-                "focus points",
-                "specified content",
-                "what students need to study",
-                "students must study",
-            )
-        ):
-            in_relevant_section = True
-        if not in_relevant_section:
-            continue
-        if topics and re.search(
-            r"\b(assessment information|details of assessment|appendix|appendices|command words|administration)\b",
-            page_lower,
-        ):
-            break
-        for raw_line in page_text.splitlines():
-            line = clean_topic_line(raw_line)
-            if not line or is_noise_line(line):
-                continue
-            lower = line.lower()
-            if lower in {
-                "focus points",
-                "specified content",
-                "what students need to study",
-                "content overview",
-            }:
-                in_detail_block = True
-                continue
-            if lower.startswith(("paper ", "assessment ", "appendix ", "administration ")):
-                flush()
-                in_detail_block = False
-                continue
-            heading = parse_humanities_heading(line)
-            if heading:
-                flush()
-                current_code, current_title = heading
-                current_page = page_number
-                current_points = []
-                in_detail_block = False
-                continue
-            if current_code and (in_detail_block or is_humanities_topic_point(line)):
-                current_points.append(line)
-    flush()
-    return dedupe_topics(topics)
+    """DEPRECATED: See parse_generic_topics_from_pdf"""
+    return []
 
 
 def parse_humanities_heading(line: str) -> tuple[str, str] | None:
@@ -785,9 +542,19 @@ def is_humanities_option_title(title: str) -> bool:
 
 def is_humanities_question_title(title: str) -> bool:
     lower = title.lower()
-    if lower.startswith(("paper ", "assessment ", "content overview", "students must study", "why choose this syllabus")):
+    if lower.startswith(
+        (
+            "paper ",
+            "assessment ",
+            "content overview",
+            "students must study",
+            "why choose this syllabus",
+        )
+    ):
         return False
-    if title.endswith("?") and re.match(r"^(?:why|how|what|were|was|did|to what extent|who)\b", lower):
+    if title.endswith("?") and re.match(
+        r"^(?:why|how|what|were|was|did|to what extent|who)\b", lower
+    ):
         return True
     return any(
         marker in lower
@@ -821,7 +588,9 @@ def is_humanities_topic_point(line: str) -> bool:
     if not is_topic_point(line):
         return False
     lower = line.lower()
-    if lower.startswith(("ao1", "ao2", "ao3", "paper ", "component ", "students must study", "students will")):
+    if lower.startswith(
+        ("ao1", "ao2", "ao3", "paper ", "component ", "students must study", "students will")
+    ):
         return False
     return not any(
         marker in lower
@@ -837,34 +606,8 @@ def is_humanities_topic_point(line: str) -> bool:
 
 
 def chunk_informative_lines(pages: list[tuple[int, str]]) -> list[Topic]:
-    lines: list[tuple[int, str]] = []
-    for page_number, page_text in pages:
-        for raw_line in page_text.splitlines():
-            line = clean_topic_line(raw_line)
-            if is_topic_point(line):
-                lines.append((page_number, line))
-    topics: list[Topic] = []
-    for index in range(0, min(len(lines), 60), 5):
-        chunk = lines[index : index + 5]
-        if len(chunk) < 2:
-            continue
-        page_number = chunk[0][0]
-        title = concise_title(chunk[0][1])
-        points = [line for _, line in chunk]
-        topics.append(
-            Topic(
-                title=f"Content unit {len(topics) + 1} - {title}",
-                points=points,
-                source_snippets=[
-                    SourceSnippet(
-                        page=page_number,
-                        text=clean_text(" ".join(points))[:900],
-                        matched_term=title,
-                    )
-                ],
-            )
-        )
-    return topics
+    """DEPRECATED: See parse_generic_topics_from_pdf"""
+    return []
 
 
 def parse_assessments_from_pdf(pages: list[tuple[int, str]]) -> list[AssessmentPaper]:
@@ -872,7 +615,9 @@ def parse_assessments_from_pdf(pages: list[tuple[int, str]]) -> list[AssessmentP
     seen: set[str] = set()
     for page_number, page_text in pages:
         lower = page_text.lower()
-        if not re.search(r"\b(paper|unit|component)\s+\d|^[a-z]{1,3}\d\.\d\s+assessment information", lower, re.M):
+        if not re.search(
+            r"\b(paper|unit|component)\s+\d|^[a-z]{1,3}\d\.\d\s+assessment information", lower, re.M
+        ):
             continue
         lines = [clean_text(line) for line in page_text.splitlines() if clean_text(line)]
         for index, line in enumerate(lines):
@@ -898,7 +643,9 @@ def parse_assessments_from_pdf(pages: list[tuple[int, str]]) -> list[AssessmentP
                             )
                         ],
                         code=unit_code,
-                        duration=extract_first(r"\b\d+\s*(?:hours?|minutes)(?:\s+(?:and\s+)?\d+\s*minutes)?\b", context),
+                        duration=extract_first(
+                            r"\b\d+\s*(?:hours?|minutes)(?:\s+(?:and\s+)?\d+\s*minutes)?\b", context
+                        ),
                         marks=extract_first(r"\b\d+\s*marks?\b", context),
                         weighting=extract_first(r"\b\d+(?:\.\d+)?%", context),
                         route_tags=route_tags_from_context(context),
@@ -923,7 +670,9 @@ def parse_assessments_from_pdf(pages: list[tuple[int, str]]) -> list[AssessmentP
                         )
                     ],
                     code=extract_component_code(" ".join(context)),
-                    duration=extract_first(r"\b\d+\s*(?:hours?|minutes)(?:\s+(?:and\s+)?\d+\s*minutes)?\b", context),
+                    duration=extract_first(
+                        r"\b\d+\s*(?:hours?|minutes)(?:\s+(?:and\s+)?\d+\s*minutes)?\b", context
+                    ),
                     marks=extract_first(r"\b\d+\s*marks?\b", context),
                     weighting=extract_first(r"\b\d+(?:\.\d+)?%", context),
                     route_tags=route_tags_from_context(context),
@@ -941,7 +690,12 @@ def paper_titles_from_line(line: str) -> list[str]:
     for match in pattern.finditer(line):
         title = clean_text(match.group(0)).strip(" .")
         title = re.sub(r"\s{2,}", " ", title)
-        title = re.sub(r"\b(?:\d+\s*marks?|\d+(?:\.\d+)?%|\d+\s*(?:hour|hours|minutes)).*$", "", title, flags=re.I).strip(" -:")
+        title = re.sub(
+            r"\b(?:\d+\s*marks?|\d+(?:\.\d+)?%|\d+\s*(?:hour|hours|minutes)).*$",
+            "",
+            title,
+            flags=re.I,
+        ).strip(" -:")
         if len(title) >= 7:
             titles.append(title[:120])
     return titles
@@ -995,7 +749,10 @@ def is_topic_point(line: str) -> bool:
     if parse_topic_heading(line):
         return False
     lower = line.lower()
-    if re.match(r"^\d+\s+(details of the assessment|assessment information|appendix|appendices|command words)\b", lower):
+    if re.match(
+        r"^\d+\s+(details of the assessment|assessment information|appendix|appendices|command words)\b",
+        lower,
+    ):
         return False
     bad_prefixes = (
         "back to contents",

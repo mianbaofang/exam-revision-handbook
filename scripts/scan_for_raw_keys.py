@@ -32,13 +32,22 @@ def main() -> int:
     for root_value in args.roots:
         root = Path(root_value).resolve()
         for path in iter_scan_files(root, args.max_bytes):
-            for line_number, line in enumerate(path.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
+            for line_number, line in enumerate(
+                path.read_text(encoding="utf-8", errors="replace").splitlines(), 1
+            ):
                 if RAW_KEY_PATTERN.search(line):
                     matches.append({"file": str(path), "line": line_number})
 
-    print(json.dumps({"raw_key_matches": len(matches), "matches": matches}, ensure_ascii=False, indent=2))
+    print(
+        json.dumps(
+            {"raw_key_matches": len(matches), "matches": matches}, ensure_ascii=False, indent=2
+        )
+    )
     if matches:
-        print("Raw API-key-like value(s) found. Values are redacted; inspect listed files locally.", file=sys.stderr)
+        print(
+            "Raw API-key-like value(s) found. Values are redacted; inspect listed files locally.",
+            file=sys.stderr,
+        )
         return 1
     return 0
 

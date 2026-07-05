@@ -53,7 +53,6 @@ STYLE_LABELS = {
 
 IMAGE_PROVIDERS = {
     "prompt-queue",
-    "deterministic-svg",
     "custom",
 }
 RECOMMENDED_IMAGE_MODEL_LABELS = {
@@ -126,7 +125,9 @@ def build_guide_plan(
         for topic in qualification.topics
     ]
     qualification = replace(qualification, topics=prepared_topics)
-    handbook_topics = [topic for topic in qualification.topics if not is_scope_exclusion_topic(topic)]
+    handbook_topics = [
+        topic for topic in qualification.topics if not is_scope_exclusion_topic(topic)
+    ]
 
     for topic_index, topic in enumerate(handbook_topics):
         points = visible_source_points(topic, limit=4)
@@ -170,6 +171,7 @@ def build_guide_plan(
         revision_stages=revision_stages,
     )
 
+
 def is_scope_exclusion_topic(topic: Topic) -> bool:
     """Return True when a source point is only an exam-scope exclusion note."""
 
@@ -202,6 +204,7 @@ def is_scope_exclusion_topic(topic: Topic) -> bool:
     ]
     return not any(term in text for term in learning_terms)
 
+
 def build_run_options(
     qualification: Qualification,
     requested_subject: str | None,
@@ -213,7 +216,9 @@ def build_run_options(
     image_endpoint_url: str | None,
     image_api_key_env: str | None,
 ) -> GuideRunOptions:
-    provider = normalize_image_provider(image_provider, image_model, image_endpoint_url, image_api_key_env)
+    provider = normalize_image_provider(
+        image_provider, image_model, image_endpoint_url, image_api_key_env
+    )
     style = explanation_style if explanation_style in STYLE_LABELS else "friendly"
     language = output_language if output_language in LANGUAGE_CHOICES else "en"
     return GuideRunOptions(
@@ -226,6 +231,7 @@ def build_run_options(
         image_endpoint_url=image_endpoint_url,
         image_api_key_env=image_api_key_env,
     )
+
 
 def normalize_image_provider(
     image_provider: str | None,
@@ -251,6 +257,7 @@ def normalize_image_provider(
         return provider
     return "prompt-queue"
 
+
 def build_topic_guide(
     topic: Topic,
     qualification_type: str,
@@ -265,12 +272,18 @@ def build_topic_guide(
         visible_points = [label for label in labels if not is_generic_zh_label(label)]
         if not visible_points:
             fallback = zh_point_label(topic.title, 0)
-            visible_points = [fallback if not is_generic_zh_label(fallback) else zh_topic_reference(topic)]
+            visible_points = [
+                fallback if not is_generic_zh_label(fallback) else zh_topic_reference(topic)
+            ]
     primary = visible_points[0]
     if output_language == "en":
-        level_hint = "AS-A-level unit" if qualification_type == "international_as_a_level" else "GCSE topic"
+        level_hint = (
+            "AS-A-level unit" if qualification_type == "international_as_a_level" else "GCSE topic"
+        )
     else:
-        level_hint = "AS-A-level 单元" if qualification_type == "international_as_a_level" else "GCSE 知识点"
+        level_hint = (
+            "AS-A-level 单元" if qualification_type == "international_as_a_level" else "GCSE 知识点"
+        )
     essence, analogy, mini_worked_example, pitfall = styled_explanation(
         topic=topic,
         primary=primary,
@@ -325,6 +338,7 @@ def build_topic_guide(
         diagram_brief=polish_ai_language(diagram_brief, output_language),
         source_snippets=topic.source_snippets[:3],
     )
+
 
 def build_revision_stages(qualification_type: str, output_language: str = "en") -> list[str]:
     if output_language == "zh-CN":

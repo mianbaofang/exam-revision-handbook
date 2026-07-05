@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import html
 import re
@@ -11,7 +11,10 @@ def render_topic_visual_svg(visual: VisualBrief, index: int, language: str = "en
         return render_zh_visual_svg(visual, index)
     text = " ".join([visual.visual_type, visual.focus_point, *visual.source_points]).lower()
     tokens = set(re.findall(r"[a-z0-9]+", text))
-    if any(word in text for word in ["ledger", "book-of-prime-entry", "source-document", "accounting process"]):
+    if any(
+        word in text
+        for word in ["ledger", "book-of-prime-entry", "source-document", "accounting process"]
+    ):
         return render_accounting_flow_svg(index, "en")
     if "trial balance" in text:
         return render_trial_balance_svg(index, "en")
@@ -22,16 +25,40 @@ def render_topic_visual_svg(visual: VisualBrief, index: int, language: str = "en
     if "incomplete records" in text:
         return render_incomplete_records_svg(index, "en")
     if "partnership appropriation" in text or "partnership accounts" in text:
-        return render_accounting_statement_variant_svg(index, "Partnership accounts", ("Profit share", "Current accounts", "Capital", "Drawings"))
+        return render_accounting_statement_variant_svg(
+            index,
+            "Partnership accounts",
+            ("Profit share", "Current accounts", "Capital", "Drawings"),
+        )
     if "manufacturing account" in text or "manufacturing accounts" in text:
-        return render_accounting_statement_variant_svg(index, "Manufacturing account", ("Raw materials", "Prime cost", "Factory overheads", "Production cost"))
+        return render_accounting_statement_variant_svg(
+            index,
+            "Manufacturing account",
+            ("Raw materials", "Prime cost", "Factory overheads", "Production cost"),
+        )
     if "club receipts" in text or "non-profit" in text or "clubs" in text:
-        return render_accounting_statement_variant_svg(index, "Club and non-profit accounts", ("Receipts", "Payments", "Subscriptions", "Accumulated fund"))
+        return render_accounting_statement_variant_svg(
+            index,
+            "Club and non-profit accounts",
+            ("Receipts", "Payments", "Subscriptions", "Accumulated fund"),
+        )
     if "limited company" in text or "limited companies" in text:
-        return render_accounting_statement_variant_svg(index, "Limited company statements", ("Revenue", "Expenses", "Equity", "Retained earnings"))
+        return render_accounting_statement_variant_svg(
+            index,
+            "Limited company statements",
+            ("Revenue", "Expenses", "Equity", "Retained earnings"),
+        )
     if any(word in text for word in ["bank reconciliation", "reconciliation", "verification"]):
         return render_reconciliation_svg(index, "en")
-    if any(word in text for word in ["financial-statement", "financial statement", "ratio-analysis", "ratio analysis"]):
+    if any(
+        word in text
+        for word in [
+            "financial-statement",
+            "financial statement",
+            "ratio-analysis",
+            "ratio analysis",
+        ]
+    ):
         return render_financial_statement_svg(index, "en")
     if any(word in text for word in ["demand-supply", "demand supply", "market scenario"]):
         return render_market_svg(index, "en", market_variant_from_text(text))
@@ -63,7 +90,15 @@ def render_topic_visual_svg(visual: VisualBrief, index: int, language: str = "en
         return render_history_source_svg(index, "en")
     if any(word in text for word in ["change and continuity"]):
         return render_history_comparison_svg(index, "en")
-    if any(word in text for word in ["factors of production", "production-chain", "opportunity-cost", "opportunity cost"]):
+    if any(
+        word in text
+        for word in [
+            "factors of production",
+            "production-chain",
+            "opportunity-cost",
+            "opportunity cost",
+        ]
+    ):
         return render_economic_flow_svg(index, "en")
     if any(word in text for word in ["force and motion", "force arrows"]):
         return render_force_svg(index, "en")
@@ -73,11 +108,26 @@ def render_topic_visual_svg(visual: VisualBrief, index: int, language: str = "en
         return render_motion_svg(index)
     if any(word in text for word in ["function graph", "equation-balance"]):
         if any(word in text for word in ["kinematic", "motion graph", "velocity", "acceleration"]):
-            return render_math_topic_svg(index, "Kinematics visual", visual.focus_point, "mechanics:kinematics")
-        if any(word in text for word in ["straight line", "gradient", "mid-point", "midpoint", "distance between two points"]):
-            return render_math_topic_svg(index, "Coordinate geometry visual", visual.focus_point, "coordinate:line")
+            return render_math_topic_svg(
+                index, "Kinematics visual", visual.focus_point, "mechanics:kinematics"
+            )
+        if any(
+            word in text
+            for word in [
+                "straight line",
+                "gradient",
+                "mid-point",
+                "midpoint",
+                "distance between two points",
+            ]
+        ):
+            return render_math_topic_svg(
+                index, "Coordinate geometry visual", visual.focus_point, "coordinate:line"
+            )
         if any(word in text for word in ["intersection", "solution of equations", "simultaneous"]):
-            return render_math_topic_svg(index, "Intersection visual", visual.focus_point, "algebra:simultaneous")
+            return render_math_topic_svg(
+                index, "Intersection visual", visual.focus_point, "algebra:simultaneous"
+            )
         return render_math_topic_svg(
             index,
             "Function graph and equation balance",
@@ -85,9 +135,13 @@ def render_topic_visual_svg(visual: VisualBrief, index: int, language: str = "en
             zh_math_variant("algebra", text),
         )
     if any(word in text for word in ["binomial distribution", "bernoulli"]):
-        return render_math_topic_svg(index, "Binomial distribution visual", visual.focus_point, "probability:binomial")
+        return render_math_topic_svg(
+            index, "Binomial distribution visual", visual.focus_point, "probability:binomial"
+        )
     if any(word in text for word in ["random variable", "variance", "standard deviation"]):
-        return render_math_topic_svg(index, "Discrete random variable visual", visual.focus_point, "probability:table")
+        return render_math_topic_svg(
+            index, "Discrete random variable visual", visual.focus_point, "probability:table"
+        )
     if "statistics chart" in text:
         return render_statistics_svg(index)
     if any(word in text for word in ["set notation", "venn"]):
@@ -98,43 +152,136 @@ def render_topic_visual_svg(visual: VisualBrief, index: int, language: str = "en
         and "tangent functions" not in text
         and any(word in text for word in ["radius", "tangent", "normal", "coordinate geometry"])
     ):
-        return render_math_topic_svg(index, "Circle and coordinate visual", visual.focus_point, zh_math_variant("coordinate", text))
-    if any(word in text for word in ["derivative", "differentiation", "gradient of the tangent", "stationary"]):
-        return render_math_topic_svg(index, "Differentiation visual", visual.focus_point, zh_math_variant("calculus", text))
+        return render_math_topic_svg(
+            index,
+            "Circle and coordinate visual",
+            visual.focus_point,
+            zh_math_variant("coordinate", text),
+        )
+    if any(
+        word in text
+        for word in ["derivative", "differentiation", "gradient of the tangent", "stationary"]
+    ):
+        return render_math_topic_svg(
+            index, "Differentiation visual", visual.focus_point, zh_math_variant("calculus", text)
+        )
     if any(word in text for word in ["sine", "cosine", "trigonometry", "trigonometric", "radian"]):
         focus_text = " ".join([visual.focus_point, *visual.source_points]).lower()
-        return render_math_topic_svg(index, "Trigonometry visual", visual.focus_point, zh_math_variant("trig", focus_text))
+        return render_math_topic_svg(
+            index, "Trigonometry visual", visual.focus_point, zh_math_variant("trig", focus_text)
+        )
     mechanics_text = " ".join([visual.focus_point, *visual.source_points]).lower()
-    if any(word in text for word in ["momentum", "impulse", "impact", "collision", "newton", "force", "tension", "connected particle"]):
-        if any(word in mechanics_text for word in ["fixed surface", "smooth surface", "perpendicular to a fixed"]):
-            return render_math_topic_svg(index, "Mechanics visual", visual.focus_point, "mechanics:fixed-impact")
-        if any(word in mechanics_text for word in ["connected particle", "pulley", "string", "trailer"]):
-            return render_math_topic_svg(index, "Mechanics visual", visual.focus_point, "mechanics:connected")
+    if any(
+        word in text
+        for word in [
+            "momentum",
+            "impulse",
+            "impact",
+            "collision",
+            "newton",
+            "force",
+            "tension",
+            "connected particle",
+        ]
+    ):
+        if any(
+            word in mechanics_text
+            for word in ["fixed surface", "smooth surface", "perpendicular to a fixed"]
+        ):
+            return render_math_topic_svg(
+                index, "Mechanics visual", visual.focus_point, "mechanics:fixed-impact"
+            )
+        if any(
+            word in mechanics_text for word in ["connected particle", "pulley", "string", "trailer"]
+        ):
+            return render_math_topic_svg(
+                index, "Mechanics visual", visual.focus_point, "mechanics:connected"
+            )
         if any(word in mechanics_text for word in ["momentum", "impulse", "impact", "collision"]):
-            return render_math_topic_svg(index, "Mechanics visual", visual.focus_point, "mechanics:momentum")
-        return render_math_topic_svg(index, "Mechanics visual", visual.focus_point, "mechanics:newton")
-    if any(word in text for word in ["velocity", "acceleration", "kinematic", "motion graph", "distance-time"]):
-        return render_math_topic_svg(index, "Kinematics visual", visual.focus_point, "mechanics:kinematics")
+            return render_math_topic_svg(
+                index, "Mechanics visual", visual.focus_point, "mechanics:momentum"
+            )
+        return render_math_topic_svg(
+            index, "Mechanics visual", visual.focus_point, "mechanics:newton"
+        )
+    if any(
+        word in text
+        for word in ["velocity", "acceleration", "kinematic", "motion graph", "distance-time"]
+    ):
+        return render_math_topic_svg(
+            index, "Kinematics visual", visual.focus_point, "mechanics:kinematics"
+        )
     if any(word in text for word in ["circle", "radius"]):
-        return render_math_topic_svg(index, "Circle and coordinate visual", visual.focus_point, zh_math_variant("coordinate", text))
-    if any(word in text for word in ["intersection", "equal roots", "distinct real roots", "no real roots"]):
-        return render_math_topic_svg(index, "Intersection visual", visual.focus_point, "coordinate:intersection")
-    if any(word in text for word in ["straight line", "gradient", "mid-point", "midpoint", "distance between two points"]):
-        return render_math_topic_svg(index, "Coordinate geometry visual", visual.focus_point, "coordinate:line")
+        return render_math_topic_svg(
+            index,
+            "Circle and coordinate visual",
+            visual.focus_point,
+            zh_math_variant("coordinate", text),
+        )
+    if any(
+        word in text
+        for word in ["intersection", "equal roots", "distinct real roots", "no real roots"]
+    ):
+        return render_math_topic_svg(
+            index, "Intersection visual", visual.focus_point, "coordinate:intersection"
+        )
+    if any(
+        word in text
+        for word in [
+            "straight line",
+            "gradient",
+            "mid-point",
+            "midpoint",
+            "distance between two points",
+        ]
+    ):
+        return render_math_topic_svg(
+            index, "Coordinate geometry visual", visual.focus_point, "coordinate:line"
+        )
     if any(word in text for word in ["trapezium"]):
-        return render_math_topic_svg(index, "Trapezium-rule visual", visual.focus_point, "integral:trapezium")
+        return render_math_topic_svg(
+            index, "Trapezium-rule visual", visual.focus_point, "integral:trapezium"
+        )
     if any(word in text for word in ["integral", "integration", "area under", "area of a region"]):
-        return render_math_topic_svg(index, "Integration visual", visual.focus_point, zh_math_variant("integral", text))
-    if any(word in text for word in ["derivative", "differentiation", "stationary", "gradient of the tangent"]):
-        return render_math_topic_svg(index, "Differentiation visual", visual.focus_point, zh_math_variant("calculus", text))
+        return render_math_topic_svg(
+            index, "Integration visual", visual.focus_point, zh_math_variant("integral", text)
+        )
+    if any(
+        word in text
+        for word in ["derivative", "differentiation", "stationary", "gradient of the tangent"]
+    ):
+        return render_math_topic_svg(
+            index, "Differentiation visual", visual.focus_point, zh_math_variant("calculus", text)
+        )
     if any(word in text for word in ["binomial distribution", "bernoulli"]):
-        return render_math_topic_svg(index, "Binomial distribution visual", visual.focus_point, "probability:binomial")
+        return render_math_topic_svg(
+            index, "Binomial distribution visual", visual.focus_point, "probability:binomial"
+        )
     if any(word in text for word in ["random variable", "variance", "standard deviation"]):
-        return render_math_topic_svg(index, "Discrete random variable visual", visual.focus_point, "probability:table")
+        return render_math_topic_svg(
+            index, "Discrete random variable visual", visual.focus_point, "probability:table"
+        )
     if any(word in text for word in ["probability", "relative frequency", "equally likely"]):
-        return render_math_topic_svg(index, "Probability visual", visual.focus_point, "probability:bars")
-    if any(word in text for word in ["surd", "indices", "exponent", "quadratic", "factorisation", "completing the square", "discriminant", "polynomial", "inequality"]):
-        return render_math_topic_svg(index, "Algebra visual", visual.focus_point, zh_math_variant("algebra", text))
+        return render_math_topic_svg(
+            index, "Probability visual", visual.focus_point, "probability:bars"
+        )
+    if any(
+        word in text
+        for word in [
+            "surd",
+            "indices",
+            "exponent",
+            "quadratic",
+            "factorisation",
+            "completing the square",
+            "discriminant",
+            "polynomial",
+            "inequality",
+        ]
+    ):
+        return render_math_topic_svg(
+            index, "Algebra visual", visual.focus_point, zh_math_variant("algebra", text)
+        )
     if any(word in text for word in ["gas tests", "common gas"]):
         return render_gas_tests_svg(index, "en")
     if any(word in tokens for word in ["acid", "acids", "base", "bases", "salt", "salts", "ph"]):
@@ -147,7 +294,12 @@ def render_topic_visual_svg(visual: VisualBrief, index: int, language: str = "en
         return render_organic_svg(index)
     if any(
         word in text
-        for word in ["chemical analysis", "chromatography", "identification of common gases", "identification of ions"]
+        for word in [
+            "chemical analysis",
+            "chromatography",
+            "identification of common gases",
+            "identification of ions",
+        ]
     ):
         return render_analysis_svg(index)
     if any(word in text for word in ["rate", "equilibrium"]):
@@ -157,9 +309,13 @@ def render_topic_visual_svg(visual: VisualBrief, index: int, language: str = "en
     if any(word in text for word in ["number line", "fraction", "ratio"]):
         return render_number_svg(index)
     if "algebra" in text:
-        return render_math_topic_svg(index, "Algebra visual", visual.focus_point, zh_math_variant("algebra", text))
+        return render_math_topic_svg(
+            index, "Algebra visual", visual.focus_point, zh_math_variant("algebra", text)
+        )
     if "probability" in text:
-        return render_math_topic_svg(index, "Statistics visual", visual.focus_point, "probability:bars")
+        return render_math_topic_svg(
+            index, "Statistics visual", visual.focus_point, "probability:bars"
+        )
     if any(
         word in text
         for word in ["geometry diagram", "triangle", "trigonometry", "pythagoras", "transformation"]
@@ -192,15 +348,15 @@ def render_number_svg(index: int) -> str:
   <text x="52" y="70" fill="#1354a5" font-size="23" font-weight="800">Number sense</text>
   <path d="M88 178h368" stroke="#172033" stroke-width="4" marker-end="url(#numarrow-{index})"/>
   <defs><marker id="numarrow-{index}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#172033"/></marker></defs>
-  {''.join(ticks)}
-  {''.join(labels)}
+  {"".join(ticks)}
+  {"".join(labels)}
   <circle cx="328" cy="178" r="10" fill="#b83246"/>
   <text x="92" y="238" font-size="15" fill="#5b677a">
     <tspan x="92" dy="0">compare positions</tspan>
     <tspan x="92" dy="20">then check decimals and bounds</tspan>
   </text>
   <text x="454" y="94" font-size="19" font-weight="800" fill="#b83246">3 / 4</text>
-  {''.join(fraction_segments)}
+  {"".join(fraction_segments)}
   <text x="454" y="198" font-size="16" fill="#5b677a">fraction bar: part-whole</text>
   <rect x="456" y="238" width="58" height="40" rx="8" fill="#ecf8f3" stroke="#1f7a5b" stroke-width="3"/>
   <rect x="522" y="238" width="58" height="40" rx="8" fill="#ecf8f3" stroke="#1f7a5b" stroke-width="3"/>
@@ -270,7 +426,9 @@ def render_particles_svg(index: int) -> str:
     dots = []
     for row in range(3):
         for col in range(4):
-            dots.append(f'<circle cx="{92 + col * 22}" cy="{102 + row * 22}" r="7" fill="#1354a5"/>')
+            dots.append(
+                f'<circle cx="{92 + col * 22}" cy="{102 + row * 22}" r="7" fill="#1354a5"/>'
+            )
     liquid = [
         '<circle cx="330" cy="118" r="8" fill="#1f7a5b"/>',
         '<circle cx="356" cy="132" r="8" fill="#1f7a5b"/>',
@@ -291,9 +449,9 @@ def render_particles_svg(index: int) -> str:
   <rect x="70" y="82" width="130" height="130" rx="14" fill="#edf4ff" stroke="#9cbce8"/>
   <rect x="290" y="82" width="130" height="130" rx="14" fill="#ecf8f3" stroke="#a7d5c3"/>
   <rect x="510" y="82" width="130" height="130" rx="14" fill="#fff1f3" stroke="#e5aab4"/>
-  {''.join(dots)}
-  {''.join(liquid)}
-  {''.join(gas)}
+  {"".join(dots)}
+  {"".join(liquid)}
+  {"".join(gas)}
   <path d="M220 146h48" stroke="#d99a24" stroke-width="4" marker-end="url(#arrow-{index})"/>
   <path d="M440 146h48" stroke="#d99a24" stroke-width="4" marker-end="url(#arrow-{index})"/>
   <defs><marker id="arrow-{index}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#d99a24"/></marker></defs>
@@ -418,7 +576,7 @@ def render_ph_svg(index: int) -> str:
   <title id="visual-title-{index}">pH scale and salt preparation</title>
   <rect x="20" y="20" width="680" height="320" rx="20" fill="#ffffff" stroke="#d7deea"/>
   <text x="70" y="88" font-size="24" font-weight="800" fill="#1354a5">pH scale</text>
-  {''.join(segments)}
+  {"".join(segments)}
   <text x="86" y="226" font-size="18" font-weight="800">0</text>
   <text x="300" y="226" font-size="18" font-weight="800">7</text>
   <text x="590" y="226" font-size="18" font-weight="800">14</text>
@@ -488,6 +646,7 @@ def render_bonding_svg(index: int) -> str:
 </svg>
 """
 
+
 def render_accounting_flow_svg(index: int, language: str) -> str:
     zh = language == "zh-CN"
     labels = (
@@ -518,10 +677,18 @@ def render_trial_balance_svg(index: int, language: str) -> str:
     body = []
     for row_index, row in enumerate(rows):
         y = 132 + row_index * 50
-        body.append(f'<rect x="116" y="{y - 30}" width="488" height="46" fill="#fbfcff" stroke="#d7deea"/>')
-        body.append(f'<text x="142" y="{y}" font-size="17" font-weight="800" fill="#1354a5">{html_escape(row[0])}</text>')
-        body.append(f'<text x="344" y="{y}" font-size="17" font-weight="800" fill="#172033">{html_escape(row[1])}</text>')
-        body.append(f'<text x="502" y="{y}" font-size="17" font-weight="800" fill="#172033">{html_escape(row[2])}</text>')
+        body.append(
+            f'<rect x="116" y="{y - 30}" width="488" height="46" fill="#fbfcff" stroke="#d7deea"/>'
+        )
+        body.append(
+            f'<text x="142" y="{y}" font-size="17" font-weight="800" fill="#1354a5">{html_escape(row[0])}</text>'
+        )
+        body.append(
+            f'<text x="344" y="{y}" font-size="17" font-weight="800" fill="#172033">{html_escape(row[1])}</text>'
+        )
+        body.append(
+            f'<text x="502" y="{y}" font-size="17" font-weight="800" fill="#172033">{html_escape(row[2])}</text>'
+        )
     return f"""
 <svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
   <title id="visual-title-{index}">{html_escape(title)}</title>
@@ -529,7 +696,7 @@ def render_trial_balance_svg(index: int, language: str) -> str:
   <text x="58" y="72" fill="#1354a5" font-size="24" font-weight="800">{html_escape(title)}</text>
   <text x="340" y="96" font-size="15" font-weight="800" fill="#b83246">{html_escape(headers[0])}</text>
   <text x="494" y="96" font-size="15" font-weight="800" fill="#b83246">{html_escape(headers[1])}</text>
-  {''.join(body)}
+  {"".join(body)}
   <text x="142" y="304" font-size="16" fill="#5b677a">equal totals reveal arithmetical balance, not every error</text>
 </svg>
 """
@@ -595,7 +762,9 @@ def render_financial_statement_svg(index: int, language: str) -> str:
 """
 
 
-def render_accounting_statement_variant_svg(index: int, title: str, labels: tuple[str, str, str, str]) -> str:
+def render_accounting_statement_variant_svg(
+    index: int, title: str, labels: tuple[str, str, str, str]
+) -> str:
     lower = title.lower()
     safe_title = html_escape(title)
     safe_labels = tuple(html_escape(label) for label in labels)
@@ -625,14 +794,18 @@ def render_accounting_statement_variant_svg(index: int, title: str, labels: tupl
         nodes = []
         for pos, label in enumerate(safe_labels):
             y = 92 + pos * 58
-            nodes.append(f'<rect x="230" y="{y}" width="260" height="40" rx="10" fill="#f7fbff" stroke="#1354a5" stroke-width="3"/>')
-            nodes.append(f'<text x="360" y="{y + 26}" text-anchor="middle" font-size="16" font-weight="800" fill="#172033">{label}</text>')
+            nodes.append(
+                f'<rect x="230" y="{y}" width="260" height="40" rx="10" fill="#f7fbff" stroke="#1354a5" stroke-width="3"/>'
+            )
+            nodes.append(
+                f'<text x="360" y="{y + 26}" text-anchor="middle" font-size="16" font-weight="800" fill="#172033">{label}</text>'
+            )
         return f"""
 <svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
   <title id="visual-title-{index}">{safe_title}</title>
   <rect x="20" y="20" width="680" height="320" rx="20" fill="#ffffff" stroke="#d7deea"/>
   <text x="58" y="70" fill="#1354a5" font-size="24" font-weight="800">{safe_title}</text>
-  {''.join(nodes)}
+  {"".join(nodes)}
   <path d="M360 132v18M360 190v18M360 248v18" stroke="#d99a24" stroke-width="5" marker-end="url(#acct-mfg-{index})"/>
   <path d="M104 164h92v94h92" fill="none" stroke="#1f7a5b" stroke-width="4"/>
   <text x="76" y="156" font-size="15" font-weight="800" fill="#1f7a5b">add overheads</text>
@@ -666,16 +839,22 @@ def render_accounting_statement_variant_svg(index: int, title: str, labels: tupl
         y = 118 + pos * 48
         fill = "#edf4ff" if pos % 2 == 0 else "#ecf8f3"
         stroke = "#1354a5" if pos % 2 == 0 else "#1f7a5b"
-        rows.append(f'<rect x="92" y="{y}" width="254" height="36" rx="10" fill="{fill}" stroke="{stroke}" stroke-width="3"/>')
-        rows.append(f'<text x="116" y="{y + 24}" font-size="16" font-weight="800" fill="#172033">{label}</text>')
-        rows.append(f'<rect x="420" y="{y}" width="180" height="36" rx="10" fill="#ffffff" stroke="#d7deea" stroke-width="3"/>')
+        rows.append(
+            f'<rect x="92" y="{y}" width="254" height="36" rx="10" fill="{fill}" stroke="{stroke}" stroke-width="3"/>'
+        )
+        rows.append(
+            f'<text x="116" y="{y + 24}" font-size="16" font-weight="800" fill="#172033">{label}</text>'
+        )
+        rows.append(
+            f'<rect x="420" y="{y}" width="180" height="36" rx="10" fill="#ffffff" stroke="#d7deea" stroke-width="3"/>'
+        )
     return f"""
 <svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
   <title id="visual-title-{index}">{safe_title}</title>
   <rect x="20" y="20" width="680" height="320" rx="20" fill="#ffffff" stroke="#d7deea"/>
   <text x="58" y="72" fill="#1354a5" font-size="24" font-weight="800">{safe_title}</text>
   <text x="420" y="102" font-size="15" font-weight="800" fill="#b83246">amount / movement</text>
-  {''.join(rows)}
+  {"".join(rows)}
   <path d="M346 136h58M346 184h58M346 232h58M346 280h58" stroke="#d99a24" stroke-width="4" marker-end="url(#acct-var-{index})"/>
   <defs><marker id="acct-var-{index}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#d99a24"/></marker></defs>
 </svg>
@@ -841,9 +1020,15 @@ def render_stakeholder_svg(index: int, language: str) -> str:
     positions = [(350, 102), (188, 166), (512, 166), (246, 266), (454, 266)]
     nodes = []
     for label, (x, y) in zip(labels, positions, strict=True):
-        nodes.append(f'<circle cx="{x}" cy="{y}" r="48" fill="#f7fbff" stroke="#1354a5" stroke-width="3"/>')
-        nodes.append(f'<text x="{x}" y="{y + 5}" font-size="15" font-weight="800" fill="#1354a5" text-anchor="middle">{html_escape(label)}</text>')
-        nodes.append(f'<path d="M{x} {y + (40 if y < 190 else -40)}L350 190" stroke="#d99a24" stroke-width="3" stroke-dasharray="6 6"/>')
+        nodes.append(
+            f'<circle cx="{x}" cy="{y}" r="48" fill="#f7fbff" stroke="#1354a5" stroke-width="3"/>'
+        )
+        nodes.append(
+            f'<text x="{x}" y="{y + 5}" font-size="15" font-weight="800" fill="#1354a5" text-anchor="middle">{html_escape(label)}</text>'
+        )
+        nodes.append(
+            f'<path d="M{x} {y + (40 if y < 190 else -40)}L350 190" stroke="#d99a24" stroke-width="3" stroke-dasharray="6 6"/>'
+        )
     return f"""
 <svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
   <title id="visual-title-{index}">{html_escape(title)}</title>
@@ -851,7 +1036,7 @@ def render_stakeholder_svg(index: int, language: str) -> str:
   <text x="58" y="70" fill="#1354a5" font-size="24" font-weight="800">{html_escape(title)}</text>
   <rect x="270" y="156" width="160" height="70" rx="16" fill="#ecf8f3" stroke="#1f7a5b" stroke-width="4"/>
   <text x="350" y="198" font-size="18" font-weight="800" fill="#1f7a5b" text-anchor="middle">{html_escape(center)}</text>
-  {''.join(nodes)}
+  {"".join(nodes)}
 </svg>
 """
 
@@ -861,22 +1046,30 @@ def render_business_comparison_svg(index: int, language: str) -> str:
     title = "Business ownership comparison" if not zh else "企业所有制比较"
     headers = ("Control", "Risk", "Finance") if not zh else ("控制权", "风险", "资金")
     rows = (
-        ("Sole trader", "High", "Unlimited", "Owner savings"),
-        ("Partnership", "Shared", "Unlimited", "Partners"),
-        ("Ltd company", "Directors", "Limited", "Shares"),
-    ) if not zh else (
-        ("个体经营", "高", "无限", "自有资金"),
-        ("合伙", "共享", "无限", "合伙人"),
-        ("有限公司", "董事", "有限", "股份"),
+        (
+            ("Sole trader", "High", "Unlimited", "Owner savings"),
+            ("Partnership", "Shared", "Unlimited", "Partners"),
+            ("Ltd company", "Directors", "Limited", "Shares"),
+        )
+        if not zh
+        else (
+            ("个体经营", "高", "无限", "自有资金"),
+            ("合伙", "共享", "无限", "合伙人"),
+            ("有限公司", "董事", "有限", "股份"),
+        )
     )
     row_svg = []
     for row_index, row in enumerate(rows):
         y = 132 + row_index * 58
-        row_svg.append(f'<rect x="58" y="{y - 28}" width="604" height="50" fill="#fbfcff" stroke="#d7deea"/>')
+        row_svg.append(
+            f'<rect x="58" y="{y - 28}" width="604" height="50" fill="#fbfcff" stroke="#d7deea"/>'
+        )
         for col, value in enumerate(row):
             x = 76 + col * 150
             fill = "#1354a5" if col == 0 else "#172033"
-            row_svg.append(f'<text x="{x}" y="{y}" font-size="16" font-weight="800" fill="{fill}">{html_escape(value)}</text>')
+            row_svg.append(
+                f'<text x="{x}" y="{y}" font-size="16" font-weight="800" fill="{fill}">{html_escape(value)}</text>'
+            )
     header_svg = "".join(
         f'<text x="{226 + idx * 150}" y="96" font-size="14" font-weight="800" fill="#b83246">{html_escape(label)}</text>'
         for idx, label in enumerate(headers)
@@ -887,7 +1080,7 @@ def render_business_comparison_svg(index: int, language: str) -> str:
   <rect x="20" y="20" width="680" height="320" rx="20" fill="#ffffff" stroke="#d7deea"/>
   <text x="58" y="70" fill="#1354a5" font-size="24" font-weight="800">{html_escape(title)}</text>
   {header_svg}
-  {''.join(row_svg)}
+  {"".join(row_svg)}
 </svg>
 """
 
@@ -895,22 +1088,32 @@ def render_business_comparison_svg(index: int, language: str) -> str:
 def render_cash_flow_svg(index: int, language: str) -> str:
     zh = language == "zh-CN"
     title = "Cash-flow timeline" if not zh else "现金流时间线"
-    labels = ("Opening", "Inflows", "Outflows", "Closing") if not zh else ("期初", "流入", "流出", "期末")
+    labels = (
+        ("Opening", "Inflows", "Outflows", "Closing")
+        if not zh
+        else ("期初", "流入", "流出", "期末")
+    )
     nodes = []
     for pos, label in enumerate(labels):
         x = 92 + pos * 158
-        nodes.append(f'<rect x="{x}" y="142" width="110" height="70" rx="14" fill="#ffffff" stroke="#1354a5" stroke-width="4"/>')
-        nodes.append(f'<text x="{x + 55}" y="183" font-size="16" font-weight="800" fill="#1354a5" text-anchor="middle">{html_escape(label)}</text>')
+        nodes.append(
+            f'<rect x="{x}" y="142" width="110" height="70" rx="14" fill="#ffffff" stroke="#1354a5" stroke-width="4"/>'
+        )
+        nodes.append(
+            f'<text x="{x + 55}" y="183" font-size="16" font-weight="800" fill="#1354a5" text-anchor="middle">{html_escape(label)}</text>'
+        )
         if pos < 3:
-            nodes.append(f'<path d="M{x + 118} 176h42" stroke="#172033" stroke-width="4" marker-end="url(#cash-arrow-{index})"/>')
+            nodes.append(
+                f'<path d="M{x + 118} 176h42" stroke="#172033" stroke-width="4" marker-end="url(#cash-arrow-{index})"/>'
+            )
     return f"""
 <svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
   <title id="visual-title-{index}">{html_escape(title)}</title>
   <rect x="20" y="20" width="680" height="320" rx="20" fill="#ffffff" stroke="#d7deea"/>
   <text x="58" y="72" fill="#1354a5" font-size="24" font-weight="800">{html_escape(title)}</text>
   <defs><marker id="cash-arrow-{index}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#172033"/></marker></defs>
-  {''.join(nodes)}
-  <text x="94" y="260" font-size="17" fill="#5b677a">{html_escape('closing balance = opening + inflows - outflows' if not zh else '期末余额 = 期初 + 流入 - 流出')}</text>
+  {"".join(nodes)}
+  <text x="94" y="260" font-size="17" fill="#5b677a">{html_escape("closing balance = opening + inflows - outflows" if not zh else "期末余额 = 期初 + 流入 - 流出")}</text>
 </svg>
 """
 
@@ -942,41 +1145,57 @@ def render_break_even_svg(index: int, language: str) -> str:
 def render_marketing_mix_svg(index: int, language: str) -> str:
     zh = language == "zh-CN"
     title = "Marketing mix" if not zh else "营销组合"
-    labels = ("Product", "Price", "Place", "Promotion") if not zh else ("产品", "价格", "渠道", "促销")
+    labels = (
+        ("Product", "Price", "Place", "Promotion") if not zh else ("产品", "价格", "渠道", "促销")
+    )
     colors = ("#1354a5", "#1f7a5b", "#d99a24", "#b83246")
     cells = []
     for i, label in enumerate(labels):
         x = 136 + (i % 2) * 230
         y = 112 + (i // 2) * 104
-        cells.append(f'<rect x="{x}" y="{y}" width="194" height="78" rx="16" fill="#ffffff" stroke="{colors[i]}" stroke-width="4"/>')
-        cells.append(f'<text x="{x + 97}" y="{y + 48}" font-size="21" font-weight="800" fill="{colors[i]}" text-anchor="middle">{html_escape(label)}</text>')
+        cells.append(
+            f'<rect x="{x}" y="{y}" width="194" height="78" rx="16" fill="#ffffff" stroke="{colors[i]}" stroke-width="4"/>'
+        )
+        cells.append(
+            f'<text x="{x + 97}" y="{y + 48}" font-size="21" font-weight="800" fill="{colors[i]}" text-anchor="middle">{html_escape(label)}</text>'
+        )
     return f"""
 <svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
   <title id="visual-title-{index}">{html_escape(title)}</title>
   <rect x="20" y="20" width="680" height="320" rx="20" fill="#ffffff" stroke="#d7deea"/>
   <text x="58" y="72" fill="#1354a5" font-size="24" font-weight="800">{html_escape(title)}</text>
-  {''.join(cells)}
+  {"".join(cells)}
 </svg>
 """
 
 
 def render_business_process_svg(index: int, language: str) -> str:
     zh = language == "zh-CN"
-    labels = ("Context", "Options", "Decision", "Outcome") if not zh else ("情境", "选择", "决策", "结果")
+    labels = (
+        ("Context", "Options", "Decision", "Outcome")
+        if not zh
+        else ("情境", "选择", "决策", "结果")
+    )
     title = "Business decision flow" if not zh else "商业决策流程"
     return render_flow_svg(index, title, labels, "#1354a5", "#b83246")
 
 
 def render_operations_flow_svg(index: int, language: str) -> str:
     zh = language == "zh-CN"
-    labels = ("Input", "Process", "Output", "Efficiency") if not zh else ("投入", "流程", "产出", "效率")
+    labels = (
+        ("Input", "Process", "Output", "Efficiency") if not zh else ("投入", "流程", "产出", "效率")
+    )
     title = "Operations flow and checkpoints" if not zh else "运营流程与检查点"
     return render_flow_svg(index, title, labels, "#1354a5", "#1f7a5b")
 
 
 def render_quality_checkpoint_svg(index: int, language: str) -> str:
     zh = language == "zh-CN"
-    labels = ("Standard", "Inspect", "Feedback", "Improve") if not zh else ("标准", "检查", "反馈", "改进")
+    labels = (
+        ("Standard", "Inspect", "Feedback", "Improve")
+        if not zh
+        else ("标准", "检查", "反馈", "改进")
+    )
     title = "Quality assurance checkpoint loop" if not zh else "质量保证循环"
     return render_flow_svg(index, title, labels, "#1f7a5b", "#d99a24")
 
@@ -984,7 +1203,11 @@ def render_quality_checkpoint_svg(index: int, language: str) -> str:
 def render_organisation_structure_svg(index: int, language: str) -> str:
     zh = language == "zh-CN"
     title = "Organisation structure hierarchy" if not zh else "组织结构层级图"
-    labels = ("Director", "Manager A", "Manager B", "Team") if not zh else ("负责人", "经理A", "经理B", "团队")
+    labels = (
+        ("Director", "Manager A", "Manager B", "Team")
+        if not zh
+        else ("负责人", "经理A", "经理B", "团队")
+    )
     return f"""
 <svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
   <title id="visual-title-{index}">{html_escape(title)}</title>
@@ -1012,27 +1235,37 @@ def render_customer_segmentation_svg(index: int, language: str) -> str:
 def render_history_timeline_svg(index: int, language: str) -> str:
     zh = language == "zh-CN"
     title = "Historical timeline" if not zh else "历史时间线"
-    labels = ("Context", "Trigger", "Turning point", "Outcome") if not zh else ("背景", "导火索", "转折", "结果")
+    labels = (
+        ("Context", "Trigger", "Turning point", "Outcome")
+        if not zh
+        else ("背景", "导火索", "转折", "结果")
+    )
     ticks = []
     for pos, label in enumerate(labels):
         x = 110 + pos * 160
         ticks.append(f'<circle cx="{x}" cy="184" r="13" fill="#1354a5"/>')
         ticks.append(f'<path d="M{x} 184v48" stroke="#1354a5" stroke-width="3"/>')
-        ticks.append(f'<text x="{x}" y="260" font-size="16" font-weight="800" fill="#172033" text-anchor="middle">{html_escape(label)}</text>')
+        ticks.append(
+            f'<text x="{x}" y="260" font-size="16" font-weight="800" fill="#172033" text-anchor="middle">{html_escape(label)}</text>'
+        )
     return f"""
 <svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
   <title id="visual-title-{index}">{html_escape(title)}</title>
   <rect x="20" y="20" width="680" height="320" rx="20" fill="#ffffff" stroke="#d7deea"/>
   <text x="58" y="72" fill="#1354a5" font-size="24" font-weight="800">{html_escape(title)}</text>
   <path d="M88 184h548" stroke="#172033" stroke-width="5"/>
-  {''.join(ticks)}
+  {"".join(ticks)}
 </svg>
 """
 
 
 def render_history_cause_svg(index: int, language: str) -> str:
     zh = language == "zh-CN"
-    labels = ("Long-term cause", "Short-term trigger", "Event", "Consequence") if not zh else ("长期原因", "短期触发", "事件", "后果")
+    labels = (
+        ("Long-term cause", "Short-term trigger", "Event", "Consequence")
+        if not zh
+        else ("长期原因", "短期触发", "事件", "后果")
+    )
     title = "Cause and consequence chain" if not zh else "原因与后果链"
     return render_flow_svg(index, title, labels, "#b83246", "#1354a5")
 
@@ -1040,7 +1273,11 @@ def render_history_cause_svg(index: int, language: str) -> str:
 def render_history_source_svg(index: int, language: str) -> str:
     zh = language == "zh-CN"
     title = "Source evidence comparison" if not zh else "史料证据比较"
-    labels = ("Provenance", "Content", "Inference", "Limit") if not zh else ("出处", "内容", "推论", "局限")
+    labels = (
+        ("Provenance", "Content", "Inference", "Limit")
+        if not zh
+        else ("出处", "内容", "推论", "局限")
+    )
     return render_flow_svg(index, title, labels, "#1f7a5b", "#d99a24")
 
 
@@ -1134,23 +1371,35 @@ def render_force_svg(index: int, language: str) -> str:
 def render_gas_tests_svg(index: int, language: str) -> str:
     zh = language == "zh-CN"
     title = "气体检验观察图" if zh else "Common gas tests observation chart"
-    headers = (
-        ("气体", "检验", "观察")
-        if zh
-        else ("Gas", "Test", "Observation")
-    )
+    headers = ("气体", "检验", "观察") if zh else ("Gas", "Test", "Observation")
     rows = (
-        (("氧气", "带火星木条", "复燃"), ("氢气", "燃着木条", "爆鸣"), ("二氧化碳", "石灰水", "变浑浊"))
+        (
+            ("氧气", "带火星木条", "复燃"),
+            ("氢气", "燃着木条", "爆鸣"),
+            ("二氧化碳", "石灰水", "变浑浊"),
+        )
         if zh
-        else (("Oxygen", "glowing splint", "relights"), ("Hydrogen", "lit splint", "squeaky pop"), ("CO₂", "limewater", "turns cloudy"))
+        else (
+            ("Oxygen", "glowing splint", "relights"),
+            ("Hydrogen", "lit splint", "squeaky pop"),
+            ("CO₂", "limewater", "turns cloudy"),
+        )
     )
     row_svg = []
     for row_index, row in enumerate(rows):
         y = 130 + row_index * 56
-        row_svg.append(f'<rect x="70" y="{y - 30}" width="580" height="48" fill="#fbfcff" stroke="#d7deea"/>')
-        row_svg.append(f'<text x="92" y="{y}" font-size="17" font-weight="800" fill="#1354a5">{html_escape(row[0])}</text>')
-        row_svg.append(f'<text x="258" y="{y}" font-size="17" fill="#172033">{html_escape(row[1])}</text>')
-        row_svg.append(f'<text x="486" y="{y}" font-size="17" fill="#1f7a5b">{html_escape(row[2])}</text>')
+        row_svg.append(
+            f'<rect x="70" y="{y - 30}" width="580" height="48" fill="#fbfcff" stroke="#d7deea"/>'
+        )
+        row_svg.append(
+            f'<text x="92" y="{y}" font-size="17" font-weight="800" fill="#1354a5">{html_escape(row[0])}</text>'
+        )
+        row_svg.append(
+            f'<text x="258" y="{y}" font-size="17" fill="#172033">{html_escape(row[1])}</text>'
+        )
+        row_svg.append(
+            f'<text x="486" y="{y}" font-size="17" fill="#1f7a5b">{html_escape(row[2])}</text>'
+        )
     return f"""
 <svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
   <title id="visual-title-{index}">{html_escape(title)}</title>
@@ -1159,7 +1408,7 @@ def render_gas_tests_svg(index: int, language: str) -> str:
   <text x="92" y="100" font-size="15" font-weight="800" fill="#b83246">{html_escape(headers[0])}</text>
   <text x="258" y="100" font-size="15" font-weight="800" fill="#b83246">{html_escape(headers[1])}</text>
   <text x="486" y="100" font-size="15" font-weight="800" fill="#b83246">{html_escape(headers[2])}</text>
-  {''.join(row_svg)}
+  {"".join(row_svg)}
 </svg>
 """
 
@@ -1190,7 +1439,7 @@ def render_flow_svg(
   <rect x="20" y="20" width="680" height="320" rx="20" fill="#ffffff" stroke="#d7deea"/>
   <text x="58" y="78" fill="#1354a5" font-size="24" font-weight="800">{html_escape(title)}</text>
   <defs><marker id="flow-arrow-{index}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#172033"/></marker></defs>
-  {''.join(cards)}
+  {"".join(cards)}
 </svg>
 """
 
@@ -1246,7 +1495,7 @@ def render_zh_math_topic_svg(index: int, title: str, focus: str, variant: str) -
   <text x="30" y="52" fill="#1354a5" font-size="26" font-weight="800">{html_escape(display_title)}</text>
   <g transform="translate(-28 -14) scale(1.15)">{render_zh_math_motif(index, variant, focus)}</g>
   <rect x="436" y="72" width="270" height="244" rx="16" fill="#f7fbff" stroke="#9cbce8" stroke-width="3"/>
-  {''.join(cards)}
+  {"".join(cards)}
 </svg>
 """
 
@@ -1282,7 +1531,7 @@ def render_math_topic_svg(index: int, title: str, focus: str, variant: str) -> s
   <text x="30" y="52" fill="#1354a5" font-size="26" font-weight="800">{html_escape(display_title)}</text>
   <g transform="translate(-28 -14) scale(1.15)">{render_math_motif(index, variant, focus)}</g>
   <rect x="436" y="72" width="270" height="244" rx="16" fill="#f7fbff" stroke="#9cbce8" stroke-width="3"/>
-  {''.join(cards)}
+  {"".join(cards)}
 </svg>
 """
 
@@ -1382,7 +1631,10 @@ def zh_math_variant(base: str, text: str) -> str:
             return "integral:power-rule"
         if any(word in text for word in ["梯形", "trapezium"]):
             return "integral:trapezium"
-        if any(word in text for word in ["x-axis", "x axis", "below", "negative value", "signed", "region between"]):
+        if any(
+            word in text
+            for word in ["x-axis", "x axis", "below", "negative value", "signed", "region between"]
+        ):
             return "integral:signed-area"
         if any(word in text for word in ["定积分", "definite"]):
             return "integral:definite"
@@ -1400,13 +1652,21 @@ def zh_math_variant(base: str, text: str) -> str:
     if base == "probability":
         if any(word in text for word in ["二项分布", "伯努利", "binomial", "bernoulli"]):
             return "probability:binomial"
-        if any(word in text for word in ["随机变量", "均值", "方差", "标准差", "random variable", "variance"]):
+        if any(
+            word in text
+            for word in ["随机变量", "均值", "方差", "标准差", "random variable", "variance"]
+        ):
             return "probability:table"
-        if any(word in text for word in ["条件", "乘法", "加法", "conditional", "multiplication", "addition"]):
+        if any(
+            word in text
+            for word in ["条件", "乘法", "加法", "conditional", "multiplication", "addition"]
+        ):
             return "probability:tree"
         return "probability:bars"
     if base == "trig":
-        if any(word in text for word in ["sine rule", "cosine rule", "area of a triangle", "triangle"]):
+        if any(
+            word in text for word in ["sine rule", "cosine rule", "area of a triangle", "triangle"]
+        ):
             return "trig:triangle"
         if any(word in text for word in ["graph", "graphs", "symmetries", "periodicity"]):
             return "trig:graph"
@@ -1414,7 +1674,10 @@ def zh_math_variant(base: str, text: str) -> str:
             return "trig:identity"
         return "trig:unit-circle"
     if base == "mechanics":
-        if any(word in text for word in ["速度", "位移", "加速度", "运动学", "velocity", "acceleration"]):
+        if any(
+            word in text
+            for word in ["速度", "位移", "加速度", "运动学", "velocity", "acceleration"]
+        ):
             return "mechanics:kinematics"
         if any(word in text for word in ["牛顿", "newton"]):
             return "mechanics:newton"
@@ -1481,7 +1744,10 @@ def render_zh_math_motif(index: int, variant: str, focus: str = "") -> str:
   <defs><marker id="factor-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#172033"/></marker></defs>
 """
     if variant == "algebra:inequality":
-        ticks = "".join(f'<path d="M{x} 202v18" stroke="#172033" stroke-width="3"/>' for x in [94, 142, 190, 238, 286, 334])
+        ticks = "".join(
+            f'<path d="M{x} 202v18" stroke="#172033" stroke-width="3"/>'
+            for x in [94, 142, 190, 238, 286, 334]
+        )
         return f"""
   <path d="M76 211h288" stroke="#172033" stroke-width="4" marker-end="url(#ineq-arrow)"/>
   {ticks}
@@ -1636,13 +1902,17 @@ def render_zh_math_motif(index: int, variant: str, focus: str = "") -> str:
         rows = []
         for row, values in enumerate([("x", "0", "1", "2"), ("P", ".2", ".5", ".3")]):
             y = 150 + row * 50
-            rows.append(f'<text x="96" y="{y}" font-size="20" font-weight="800" fill="#1354a5">{values[0]}</text>')
+            rows.append(
+                f'<text x="96" y="{y}" font-size="20" font-weight="800" fill="#1354a5">{values[0]}</text>'
+            )
             for col, value in enumerate(values[1:]):
-                rows.append(f'<text x="{158 + col * 62}" y="{y}" font-size="20" font-weight="800">{value}</text>')
+                rows.append(
+                    f'<text x="{158 + col * 62}" y="{y}" font-size="20" font-weight="800">{value}</text>'
+                )
         return f"""
   <rect x="72" y="112" width="270" height="122" rx="14" fill="#ffffff" stroke="#d7deea" stroke-width="4"/>
   <path d="M72 170h270M134 112v122" stroke="#d7deea" stroke-width="3"/>
-  {''.join(rows)}
+  {"".join(rows)}
   <text x="96" y="286" font-size="21" font-weight="800" fill="#b83246">E(X), Var(X)</text>
 """
     if variant == "probability:tree":
@@ -1657,10 +1927,12 @@ def render_zh_math_motif(index: int, variant: str, focus: str = "") -> str:
         bars = []
         for pos, height in enumerate([36, 76, 112, 76, 36]):
             x = 86 + pos * 48
-            bars.append(f'<rect x="{x}" y="{254 - height}" width="28" height="{height}" fill="#1354a5"/>')
+            bars.append(
+                f'<rect x="{x}" y="{254 - height}" width="28" height="{height}" fill="#1354a5"/>'
+            )
         return f"""
   <path d="M72 270V118M72 270h292" stroke="#172033" stroke-width="4"/>
-  {''.join(bars)}
+  {"".join(bars)}
   <text x="96" y="104" font-size="23" font-weight="800" fill="#b83246">X ~ B(n,p)</text>
   <text x="112" y="306" font-size="19" font-weight="800" fill="#1f7a5b">公式或表格求概率</text>
 """
@@ -1790,10 +2062,12 @@ def render_zh_math_motif(index: int, variant: str, focus: str = "") -> str:
         bars = []
         for pos, height in enumerate([52, 74, 96, 118]):
             x = 88 + pos * 58
-            bars.append(f'<rect x="{x}" y="{258 - height}" width="34" height="{height}" fill="#1354a5"/>')
+            bars.append(
+                f'<rect x="{x}" y="{258 - height}" width="34" height="{height}" fill="#1354a5"/>'
+            )
         return f"""
   <path d="M70 274h286" stroke="#172033" stroke-width="4"/>
-  {''.join(bars)}
+  {"".join(bars)}
   <path d="M284 136h52" stroke="#b83246" stroke-width="5" marker-end="url(#series-arrow-{index})"/>
   <defs><marker id="series-arrow-{index}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#b83246"/></marker></defs>
   <text x="92" y="120" font-size="22" font-weight="800" fill="#b83246">a, r</text>
@@ -1897,42 +2171,196 @@ def render_zh_visual_svg(visual: VisualBrief, index: int) -> str:
         return render_venn_svg(index, "zh-CN")
     if any(word in text for word in ["力与运动", "合力"]):
         return render_force_svg(index, "zh-CN")
-    if any(word in text for word in ["色谱", "层析", "分离", "纯度", "chromatography", "separation", "purity"]):
+    if any(
+        word in text
+        for word in ["色谱", "层析", "分离", "纯度", "chromatography", "separation", "purity"]
+    ):
         return render_analysis_svg(index)
-    if any(word in text for word in ["有机", "烃", "原油", "聚合物", "organic", "hydrocarbon", "crude", "polymer"]):
+    if any(
+        word in text
+        for word in ["有机", "烃", "原油", "聚合物", "organic", "hydrocarbon", "crude", "polymer"]
+    ):
         return render_organic_svg(index)
-    if any(word in text for word in ["键", "离子", "共价", "金属键", "结构", "bond", "bonding", "ionic", "covalent", "metallic", "structure"]):
+    if any(
+        word in text
+        for word in [
+            "键",
+            "离子",
+            "共价",
+            "金属键",
+            "结构",
+            "bond",
+            "bonding",
+            "ionic",
+            "covalent",
+            "metallic",
+            "structure",
+        ]
+    ):
         return render_bonding_svg(index)
-    if any(word in text for word in ["粒子", "固体", "液体", "气态", "solid", "liquid", "particles", "states of matter"]):
+    if any(
+        word in text
+        for word in [
+            "粒子",
+            "固体",
+            "液体",
+            "气态",
+            "solid",
+            "liquid",
+            "particles",
+            "states of matter",
+        ]
+    ):
         return render_particles_svg(index)
     if (
         "气体检验" in text
         or "gas test" in text
-        or any(word in text for word in ["limewater", "splint", "hydrogen", "oxygen", "carbon dioxide", "chlorine"])
+        or any(
+            word in text
+            for word in ["limewater", "splint", "hydrogen", "oxygen", "carbon dioxide", "chlorine"]
+        )
     ):
         return render_gas_tests_svg(index, "zh-CN")
     if "酸碱" in text or re.search(r"\bph\b", text):
         return render_ph_svg(index)
     if any(word in text for word in ["速率", "平衡", "rate", "equilibrium", "haber"]):
         return render_rate_svg(index)
-    if any(word in text for word in ["放热", "吸热", "能量", "exothermic", "endothermic", "energy"]):
+    if any(
+        word in text for word in ["放热", "吸热", "能量", "exothermic", "endothermic", "energy"]
+    ):
         return render_energy_svg(index)
-    if any(word in text for word in ["三角函数", "正弦", "余弦", "正切", "弧度", "周期", "sine", "cosine", "trigonometric"]):
+    if any(
+        word in text
+        for word in [
+            "三角函数",
+            "正弦",
+            "余弦",
+            "正切",
+            "弧度",
+            "周期",
+            "sine",
+            "cosine",
+            "trigonometric",
+        ]
+    ):
         return render_zh_math_topic_svg(index, "三角函数图", focus, "trig")
-    if any(word in text for word in ["牛顿", "力学", "重力", "速度", "位移", "加速度", "动量", "冲量", "碰撞", "张力", "法向", "阻力", "运动学", "newton", "velocity", "acceleration", "momentum", "impulse"]):
-        return render_zh_math_topic_svg(index, "力学关系图", focus, zh_math_variant("mechanics", text))
-    if any(word in text for word in ["坐标", "直线", "圆", "斜率", "交点", "coordinate", "straight line", "circle"]):
-        return render_zh_math_topic_svg(index, "坐标几何图", focus, zh_math_variant("coordinate", text))
-    if any(word in text for word in ["积分", "面积", "梯形", "integral", "integration", "area", "trapezium"]):
-        return render_zh_math_topic_svg(index, "积分面积图", focus, zh_math_variant("integral", text))
-    if any(word in text for word in ["导数", "微分", "切线", "法线", "驻点", "derivative", "differentiation", "tangent", "gradient"]):
-        return render_zh_math_topic_svg(index, "微分与切线图", focus, zh_math_variant("calculus", text))
-    if any(word in text for word in ["数列", "级数", "等差", "等比", "二项式", "sequence", "series", "binomial expansion"]):
-        return render_zh_math_topic_svg(index, "数列与级数图", focus, zh_math_variant("series", text))
-    if any(word in text for word in ["概率", "随机变量", "二项分布", "伯努利", "均值", "方差", "标准差", "统计", "probability", "distribution", "variance"]):
-        return render_zh_math_topic_svg(index, "概率与分布图", focus, zh_math_variant("probability", text))
-    if any(word in text for word in ["代数", "二次", "方程", "不等式", "多项式", "函数", "根式", "指数", "因式", "余式", "配方", "algebra", "quadratic", "equation", "function", "polynomial", "surd"]):
-        return render_zh_math_topic_svg(index, "代数关系图", focus, zh_math_variant("algebra", text))
+    if any(
+        word in text
+        for word in [
+            "牛顿",
+            "力学",
+            "重力",
+            "速度",
+            "位移",
+            "加速度",
+            "动量",
+            "冲量",
+            "碰撞",
+            "张力",
+            "法向",
+            "阻力",
+            "运动学",
+            "newton",
+            "velocity",
+            "acceleration",
+            "momentum",
+            "impulse",
+        ]
+    ):
+        return render_zh_math_topic_svg(
+            index, "力学关系图", focus, zh_math_variant("mechanics", text)
+        )
+    if any(
+        word in text
+        for word in ["坐标", "直线", "圆", "斜率", "交点", "coordinate", "straight line", "circle"]
+    ):
+        return render_zh_math_topic_svg(
+            index, "坐标几何图", focus, zh_math_variant("coordinate", text)
+        )
+    if any(
+        word in text
+        for word in ["积分", "面积", "梯形", "integral", "integration", "area", "trapezium"]
+    ):
+        return render_zh_math_topic_svg(
+            index, "积分面积图", focus, zh_math_variant("integral", text)
+        )
+    if any(
+        word in text
+        for word in [
+            "导数",
+            "微分",
+            "切线",
+            "法线",
+            "驻点",
+            "derivative",
+            "differentiation",
+            "tangent",
+            "gradient",
+        ]
+    ):
+        return render_zh_math_topic_svg(
+            index, "微分与切线图", focus, zh_math_variant("calculus", text)
+        )
+    if any(
+        word in text
+        for word in [
+            "数列",
+            "级数",
+            "等差",
+            "等比",
+            "二项式",
+            "sequence",
+            "series",
+            "binomial expansion",
+        ]
+    ):
+        return render_zh_math_topic_svg(
+            index, "数列与级数图", focus, zh_math_variant("series", text)
+        )
+    if any(
+        word in text
+        for word in [
+            "概率",
+            "随机变量",
+            "二项分布",
+            "伯努利",
+            "均值",
+            "方差",
+            "标准差",
+            "统计",
+            "probability",
+            "distribution",
+            "variance",
+        ]
+    ):
+        return render_zh_math_topic_svg(
+            index, "概率与分布图", focus, zh_math_variant("probability", text)
+        )
+    if any(
+        word in text
+        for word in [
+            "代数",
+            "二次",
+            "方程",
+            "不等式",
+            "多项式",
+            "函数",
+            "根式",
+            "指数",
+            "因式",
+            "余式",
+            "配方",
+            "algebra",
+            "quadratic",
+            "equation",
+            "function",
+            "polynomial",
+            "surd",
+        ]
+    ):
+        return render_zh_math_topic_svg(
+            index, "代数关系图", focus, zh_math_variant("algebra", text)
+        )
     if any(word in text for word in ["几何"]):
         return render_triangle_svg(index)
     fallback_title = title if title != "图文结合学习图" else focus
@@ -1995,6 +2423,7 @@ def wrap_words(value: str, max_chars: int) -> list[str]:
     if current:
         lines.append(current)
     return lines or [value[:max_chars]]
+
 
 def html_escape(value: str) -> str:
     return html.escape(value, quote=True)

@@ -15,8 +15,9 @@ with progressive disclosure:
 - `skill/references/oxfordaqa.md` stores AQA-specific provider notes; Edexcel
   and CAIE use the shared provider workflow and candidate-selection gates.
 - The Python package performs deterministic work: discovery, PDF download,
-  parsing, guide planning, visual-brief planning, rendering, packaging, and
-  validation.
+  page-text extraction, JSON/schema validation, artifact management, rendering,
+  packaging, and review checks. The host LLM/Agent writes the syllabus outline,
+  concept explanations, practice judgment, visual specs, and final review.
 
 This keeps the agent from re-writing fragile scraping or rendering code every
 time. The agent reads the skill, runs the CLI, and inspects `validation.json`
@@ -58,7 +59,7 @@ The skill treats a guide as incomplete unless all of these are true:
 For installation checks or CI demonstrations, run:
 
 ```bash
-python -m intl_exam_guide demo --out ./outputs/demo-science --language en --image-provider deterministic-svg --explanation-style friendly --skip-pdf
+python -m intl_exam_guide demo --out ./outputs/demo-science --language en --image-provider prompt-queue --explanation-style friendly --skip-pdf
 ```
 
 ## 中文
@@ -73,8 +74,7 @@ python -m intl_exam_guide demo --out ./outputs/demo-science --language en --imag
 - Python 包负责稳定且容易出错的部分：发现页面、下载 PDF、解析、规划、
   图文需求分析、渲染、打包、校验。
 
-这样做的好处是：agent 不需要每次重新写爬取和渲染代码，而是读取 skill、
-运行 CLI、检查 `validation.json`，再决定能否交付。
+这样做的好处是：agent 不需要每次重新写爬取和渲染代码；Python 只做下载、文本抽取、JSON/schema 校验、渲染、打包和复查检查。大纲 outline、概念解释、例题判断、视觉 spec 和最终产品复查都由宿主 LLM/Agent 完成。
 
 ## Skill 执行流程
 

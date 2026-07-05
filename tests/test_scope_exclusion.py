@@ -18,16 +18,18 @@ def sample_math_qualification() -> Qualification:
             ),
             Topic(
                 title="P1.4 - Integration: Questions involving regions partially above and below the x-axis will not be set",
-                points=["Questions involving regions partially above and below the x-axis will not be set."],
+                points=[
+                    "Questions involving regions partially above and below the x-axis will not be set."
+                ],
             ),
-        Topic(
-            title="M1.4 - Momentum: Knowledge of Newton's law of restitution is not required",
-            points=["Knowledge of Newton's law of restitution is not required."],
-        ),
-        Topic(
-            title="M1.4 - Momentum and impulse (Restricted to motion in a straight line): Knowledge of Newton's law of restitution is not required",
-            points=["Knowledge of Newton's law of restitution is not required."],
-        ),
+            Topic(
+                title="M1.4 - Momentum: Knowledge of Newton's law of restitution is not required",
+                points=["Knowledge of Newton's law of restitution is not required."],
+            ),
+            Topic(
+                title="M1.4 - Momentum and impulse (Restricted to motion in a straight line): Knowledge of Newton's law of restitution is not required",
+                points=["Knowledge of Newton's law of restitution is not required."],
+            ),
         ],
         assessments=[AssessmentPaper(title="Paper 1")],
         source=SourceRecord(

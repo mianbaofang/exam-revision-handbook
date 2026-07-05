@@ -91,7 +91,11 @@ def verify_legacy_outputs(outputs_root: Path, allow_pending: bool) -> int:
         rows.append(row)
         failures.extend(sample_failures)
 
-    print(json.dumps({"outputs_root": str(outputs_root), "samples": rows}, ensure_ascii=False, indent=2))
+    print(
+        json.dumps(
+            {"outputs_root": str(outputs_root), "samples": rows}, ensure_ascii=False, indent=2
+        )
+    )
     if failures:
         print("\nRelease sample verification failed:", file=sys.stderr)
         for item in failures:
@@ -114,10 +118,16 @@ def verify_release_evidence(manifest_path: Path) -> int:
     if not release.startswith("v0.4"):
         failures.append(f"{manifest_path}: release must start with v0.4")
     if str(manifest.get("overall_status") or "") not in RELEASE_STATUSES:
-        failures.append(f"{manifest_path}: overall_status must be one of {sorted(RELEASE_STATUSES)}")
+        failures.append(
+            f"{manifest_path}: overall_status must be one of {sorted(RELEASE_STATUSES)}"
+        )
     linked_report = manifest.get("linked_report")
     repo_root = manifest_path.parents[3]
-    if isinstance(linked_report, str) and linked_report and not (repo_root / linked_report).exists():
+    if (
+        isinstance(linked_report, str)
+        and linked_report
+        and not (repo_root / linked_report).exists()
+    ):
         failures.append(f"{manifest_path}: linked_report does not exist: {linked_report}")
 
     rows = []
@@ -129,7 +139,11 @@ def verify_release_evidence(manifest_path: Path) -> int:
         rows.append(row)
         failures.extend(entry_failures)
 
-    print(json.dumps({"evidence_manifest": str(manifest_path), "entries": rows}, ensure_ascii=False, indent=2))
+    print(
+        json.dumps(
+            {"evidence_manifest": str(manifest_path), "entries": rows}, ensure_ascii=False, indent=2
+        )
+    )
     if failures:
         print("\nRelease evidence verification failed:", file=sys.stderr)
         for item in failures:
@@ -168,17 +182,25 @@ def verify_evidence_entry(entry: dict[str, object]) -> tuple[dict[str, object], 
     pending_images = int(summary.get("pending_infographic_assets") or 0)
     if status in {"final-ready", "certified"}:
         if pending_concepts or pending_images:
-            failures.append(f"{entry_id}: final-ready/certified entries cannot have pending concept or image work")
+            failures.append(
+                f"{entry_id}: final-ready/certified entries cannot have pending concept or image work"
+            )
         if must_not_present is not False:
-            failures.append(f"{entry_id}: final-ready/certified entry must allow final presentation")
+            failures.append(
+                f"{entry_id}: final-ready/certified entry must allow final presentation"
+            )
         product_review = entry.get("product_review")
         if not isinstance(product_review, dict):
-            failures.append(f"{entry_id}: final-ready/certified entry must include product_review evidence")
+            failures.append(
+                f"{entry_id}: final-ready/certified entry must include product_review evidence"
+            )
         else:
             if product_review.get("complete") is not True:
                 failures.append(f"{entry_id}: product_review.complete must be true")
             if product_review.get("artifact") != "agent-product-review.json":
-                failures.append(f"{entry_id}: product_review.artifact must be agent-product-review.json")
+                failures.append(
+                    f"{entry_id}: product_review.artifact must be agent-product-review.json"
+                )
             if product_review.get("decision") != "final-ready":
                 failures.append(f"{entry_id}: product_review.decision must be final-ready")
     elif must_not_present is not True:
@@ -221,7 +243,9 @@ def verify_sample(
 
     required_files = [validation_path, run_options_path, manifest_path, html_path]
     if not allow_pending:
-        required_files.extend([pdf_path, final_review_path, delivery_contract_path, product_review_path])
+        required_files.extend(
+            [pdf_path, final_review_path, delivery_contract_path, product_review_path]
+        )
     for path in required_files:
         if not path.exists():
             failures.append(f"{sample}: missing {path.name}")
@@ -234,7 +258,9 @@ def verify_sample(
     raw_manifest = read_json(manifest_path, [])
     manifest = manifest_entries_from_payload(raw_manifest)
     if manifest is None:
-        failures.append(f"{sample}: visual_manifest.json is not a legacy list or schema_version 2 object")
+        failures.append(
+            f"{sample}: visual_manifest.json is not a legacy list or schema_version 2 object"
+        )
         manifest = []
     html = html_path.read_text(encoding="utf-8", errors="replace") if html_path.exists() else ""
     review = validation.get("review_summary", {}) if isinstance(validation, dict) else {}
@@ -253,7 +279,9 @@ def verify_sample(
         failures.extend(final_failures)
 
     if review.get("topics") != expected["topics"]:
-        failures.append(f"{sample}: expected {expected['topics']} topics, got {review.get('topics')}")
+        failures.append(
+            f"{sample}: expected {expected['topics']} topics, got {review.get('topics')}"
+        )
     if review.get("practice_cards") != expected["practice_cards"]:
         failures.append(
             f"{sample}: expected {expected['practice_cards']} practice cards, got {review.get('practice_cards')}"
@@ -300,8 +328,12 @@ def verify_sample(
         "has_final_review": final_review_path.exists(),
         "has_delivery_contract": delivery_contract_path.exists(),
         "has_product_review": product_review_path.exists(),
-        "delivery_status": validation.get("delivery_status") if isinstance(validation, dict) else None,
-        "delivery_state": validation.get("delivery_state") if isinstance(validation, dict) else None,
+        "delivery_status": validation.get("delivery_status")
+        if isinstance(validation, dict)
+        else None,
+        "delivery_state": validation.get("delivery_state")
+        if isinstance(validation, dict)
+        else None,
         "validation_errors": len(issue_errors),
     }
     return row, failures
@@ -376,10 +408,16 @@ def final_delivery_failures(
     agent_review = final_review.get("agent_self_review")
     if not isinstance(machine, dict) or machine.get("delivery_status") != "ready":
         failures.append(f"{sample}: final review delivery_status is not ready")
-    if not isinstance(agent_review, dict) or agent_review.get("must_not_present_as_final") is not False:
+    if (
+        not isinstance(agent_review, dict)
+        or agent_review.get("must_not_present_as_final") is not False
+    ):
         failures.append(f"{sample}: final review does not allow final presentation")
     product_review_evidence = final_review.get("product_review_evidence")
-    if not isinstance(product_review_evidence, dict) or product_review_evidence.get("complete") is not True:
+    if (
+        not isinstance(product_review_evidence, dict)
+        or product_review_evidence.get("complete") is not True
+    ):
         failures.append(f"{sample}: final review is missing complete product-review evidence")
     if not isinstance(product_review, dict):
         failures.append(f"{sample}: agent-product-review.json is not an object")

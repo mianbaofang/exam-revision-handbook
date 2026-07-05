@@ -143,7 +143,9 @@ def delivery_detail_items(summary: dict[str, object], language: str) -> list[str
         return [
             f"Pending concept explanation reviews: {pending_concepts}",
             f"Pending complex image assets: {pending_images}",
-            "Final review packet: present" if has_final_review else "Final review packet: not yet run",
+            "Final review packet: present"
+            if has_final_review
+            else "Final review packet: not yet run",
         ]
     return [
         f"待复查概念讲解：{pending_concepts}",

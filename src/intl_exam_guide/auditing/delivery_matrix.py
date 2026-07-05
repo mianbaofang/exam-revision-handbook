@@ -71,17 +71,16 @@ def evaluate_case_summary(case: DeliveryCase, summary: dict[str, object]) -> lis
         failures.append(
             f"{case.id}: pending concept explanations are not allowed for verified delivery"
         )
-    if (
-        not case.expected.allow_pending_infographics
-        and summary_int(summary, "pending_infographic_assets")
+    if not case.expected.allow_pending_infographics and summary_int(
+        summary, "pending_infographic_assets"
     ):
-        failures.append(
-            f"{case.id}: pending infographic assets are not allowed for final samples"
-        )
+        failures.append(f"{case.id}: pending infographic assets are not allowed for final samples")
     if case.claim_status == "verified":
         delivery_status = str(summary.get("delivery_status") or "")
         if delivery_status and delivery_status != "ready":
-            failures.append(f"{case.id}: verified delivery must have ready status, got {delivery_status}")
+            failures.append(
+                f"{case.id}: verified delivery must have ready status, got {delivery_status}"
+            )
     if case.claim_status == "verified" and not case.expected.allow_repetitive_svg:
         svg_total = summary_int(summary, "svg_files")
         title_problem = False

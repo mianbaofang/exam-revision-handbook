@@ -163,7 +163,8 @@ def pedagogical_units_from_plan(
     visual_ids_by_topic = _visual_ids_by_topic(plan)
     practice_counts = _practice_counts_by_topic(plan)
     learning_unit_ids = {
-        unit.title: unit.id for unit in learning_units_from_qualification(getattr(plan, "qualification"))
+        unit.title: unit.id
+        for unit in learning_units_from_qualification(getattr(plan, "qualification"))
     }
     units: list[PedagogicalUnit] = []
     for index, guide in enumerate(getattr(plan, "topic_guides", []) or [], start=1):
@@ -174,7 +175,9 @@ def pedagogical_units_from_plan(
                 topic_title=topic_title,
                 writing_job_id=f"concept_{index:03d}",
                 review_job_id=f"concept_review_{index:03d}",
-                concept_explanations=[str(item) for item in (getattr(guide, "checklist", []) or [])],
+                concept_explanations=[
+                    str(item) for item in (getattr(guide, "checklist", []) or [])
+                ],
                 practice_count=practice_counts.get(topic_title, 0),
                 visual_spec_ids=visual_ids_by_topic.get(topic_title, []),
                 delivery_state=delivery_state,
@@ -205,6 +208,7 @@ def course_contract_payload(
     *,
     agent_review_ready: bool = False,
     final_review_complete: bool | None = None,
+    quality_inspection_complete: bool = False,
 ) -> dict[str, Any]:
     """Build a serializable v0.4 contract packet while preserving v0.3 plan data."""
 
@@ -213,15 +217,20 @@ def course_contract_payload(
         delivery_status,
         agent_review_ready=agent_review_ready,
     )
-    reviewer_complete = agent_review_ready if final_review_complete is None else final_review_complete
+    reviewer_complete = (
+        agent_review_ready if final_review_complete is None else final_review_complete
+    )
     return {
         "schema_version": "v0.4-core-mvp",
         "delivery_state": delivery_state.value,
         "agent_orchestration": agent_orchestration_payload(
-            final_review_complete=reviewer_complete
+            final_review_complete=reviewer_complete,
+            quality_inspection_complete=quality_inspection_complete,
         ),
         "course_spec": course_spec_from_qualification(qualification).to_dict(),
-        "learning_units": [unit.to_dict() for unit in learning_units_from_qualification(qualification)],
+        "learning_units": [
+            unit.to_dict() for unit in learning_units_from_qualification(qualification)
+        ],
         "pedagogical_units": [
             unit.to_dict() for unit in pedagogical_units_from_plan(plan, delivery_state)
         ],

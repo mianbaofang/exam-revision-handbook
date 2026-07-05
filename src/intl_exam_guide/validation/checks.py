@@ -34,6 +34,7 @@ from intl_exam_guide.rendering.visual_assets import (
     has_renderable_infographic,
     has_renderable_svg_fallback,
     is_raster_asset,
+    is_svg_asset,
     load_visual_manifest,
 )
 
@@ -237,11 +238,22 @@ def validate_preflight_and_source(plan: GuidePlan) -> list[ValidationIssue]:
 
     if not options.requested_subject.strip():
         issues.append(ValidationIssue("error", "Missing preflight subject selection."))
-    if options.explanation_style not in {"formal", "friendly", "life", "story", "detective", "adventure"}:
-        issues.append(ValidationIssue("error", "Missing or unsupported explanation style selection."))
+    if options.explanation_style not in {
+        "formal",
+        "friendly",
+        "life",
+        "story",
+        "detective",
+        "adventure",
+    }:
+        issues.append(
+            ValidationIssue("error", "Missing or unsupported explanation style selection.")
+        )
     if options.output_language not in LANGUAGE_CHOICES:
-        issues.append(ValidationIssue("error", "Missing or unsupported term-support language selection."))
-    if options.image_provider not in {"prompt-queue", "deterministic-svg", "custom"}:
+        issues.append(
+            ValidationIssue("error", "Missing or unsupported term-support language selection.")
+        )
+    if options.image_provider not in {"prompt-queue", "custom"}:
         issues.append(ValidationIssue("error", "Missing or unsupported image-provider selection."))
     if options.image_provider == "custom":
         issues.extend(validate_custom_image_provider(options))
@@ -355,13 +367,25 @@ def validate_topic_coverage(plan: GuidePlan) -> list[ValidationIssue]:
                 )
             )
         if topic.title not in guide_topics:
-            issues.append(ValidationIssue("error", f"Missing authored guide block for topic: {topic.title}"))
+            issues.append(
+                ValidationIssue("error", f"Missing authored guide block for topic: {topic.title}")
+            )
         if topic.title not in practice_topics:
-            issues.append(ValidationIssue("error", f"Missing practice item for topic: {topic.title}"))
+            issues.append(
+                ValidationIssue("error", f"Missing practice item for topic: {topic.title}")
+            )
         if not topic.points:
-            issues.append(ValidationIssue("error", f"Syllabus topic has no extracted body points: {topic.title}"))
+            issues.append(
+                ValidationIssue(
+                    "error", f"Syllabus topic has no extracted body points: {topic.title}"
+                )
+            )
         if not topic.source_snippets:
-            issues.append(ValidationIssue("warning", f"No PDF source snippet matched for topic: {topic.title}"))
+            issues.append(
+                ValidationIssue(
+                    "warning", f"No PDF source snippet matched for topic: {topic.title}"
+                )
+            )
         elif all(is_contents_or_index_snippet(snippet) for snippet in topic.source_snippets):
             issues.append(
                 ValidationIssue(
@@ -393,7 +417,9 @@ def validate_guides(plan: GuidePlan) -> list[ValidationIssue]:
             *guide.checklist,
         ]
         if any(not value.strip() for value in required):
-            issues.append(ValidationIssue("error", f"Incomplete topic guide block: {guide.topic_title}"))
+            issues.append(
+                ValidationIssue("error", f"Incomplete topic guide block: {guide.topic_title}")
+            )
         if len(guide.worked_solution_steps) < 4:
             issues.append(
                 ValidationIssue(
@@ -402,7 +428,9 @@ def validate_guides(plan: GuidePlan) -> list[ValidationIssue]:
                 )
             )
         if len(guide.checklist) < 3:
-            issues.append(ValidationIssue("warning", f"Checklist is too short: {guide.topic_title}"))
+            issues.append(
+                ValidationIssue("warning", f"Checklist is too short: {guide.topic_title}")
+            )
         if has_ai_language_smell(
             body_values,
             body_language,
@@ -461,9 +489,7 @@ def validate_checklist_diversity(plan: GuidePlan) -> list[ValidationIssue]:
             topics_by_combo.setdefault(combo, []).append(guide.topic_title)
 
     exact_duplicates = [
-        (combo, titles)
-        for combo, titles in topics_by_combo.items()
-        if len(titles) > 1
+        (combo, titles) for combo, titles in topics_by_combo.items() if len(titles) > 1
     ]
     if exact_duplicates:
         combo, titles = max(exact_duplicates, key=lambda item: len(item[1]))
@@ -525,17 +551,29 @@ def validate_practice_item(plan: GuidePlan, item: PracticeItem) -> list[Validati
         *item.answer_checkpoints,
     ]
     if not item.command_word.strip():
-        issues.append(ValidationIssue("error", f"Practice item is missing a command word: {topic_title}"))
+        issues.append(
+            ValidationIssue("error", f"Practice item is missing a command word: {topic_title}")
+        )
     if not item.difficulty.strip():
-        issues.append(ValidationIssue("error", f"Practice item is missing a difficulty: {topic_title}"))
+        issues.append(
+            ValidationIssue("error", f"Practice item is missing a difficulty: {topic_title}")
+        )
     if not item.focus_point.strip():
-        issues.append(ValidationIssue("error", f"Practice item is missing a focus point: {topic_title}"))
+        issues.append(
+            ValidationIssue("error", f"Practice item is missing a focus point: {topic_title}")
+        )
     if len(item.public_solution_steps) < 4:
-        issues.append(ValidationIssue("error", f"Practice item has too few solution steps: {topic_title}"))
+        issues.append(
+            ValidationIssue("error", f"Practice item has too few solution steps: {topic_title}")
+        )
     if len(item.answer_checkpoints) < 3:
-        issues.append(ValidationIssue("error", f"Practice item has too few answer checkpoints: {topic_title}"))
+        issues.append(
+            ValidationIssue("error", f"Practice item has too few answer checkpoints: {topic_title}")
+        )
     if not item.source_points:
-        issues.append(ValidationIssue("error", f"Practice item has no source points: {topic_title}"))
+        issues.append(
+            ValidationIssue("error", f"Practice item has no source points: {topic_title}")
+        )
     if is_placeholder_practice_question(item.question):
         issues.append(
             ValidationIssue(
@@ -625,15 +663,35 @@ def validate_visual_briefs(plan: GuidePlan) -> list[ValidationIssue]:
     for brief in plan.visual_briefs:
         body_values = [brief.focus_point, brief.visual_type, brief.trigger, brief.prompt]
         if not brief.focus_point.strip():
-            issues.append(ValidationIssue("error", f"Visual brief is missing a focus point: {brief.topic_title}"))
+            issues.append(
+                ValidationIssue(
+                    "error", f"Visual brief is missing a focus point: {brief.topic_title}"
+                )
+            )
         if not brief.visual_type.strip():
-            issues.append(ValidationIssue("error", f"Visual brief is missing a visual type: {brief.topic_title}"))
+            issues.append(
+                ValidationIssue(
+                    "error", f"Visual brief is missing a visual type: {brief.topic_title}"
+                )
+            )
         if not brief.trigger.strip():
-            issues.append(ValidationIssue("error", f"Visual brief is missing the selection reason: {brief.topic_title}"))
+            issues.append(
+                ValidationIssue(
+                    "error", f"Visual brief is missing the selection reason: {brief.topic_title}"
+                )
+            )
         if not brief.image_provider.strip():
-            issues.append(ValidationIssue("error", f"Visual brief is missing an image provider: {brief.topic_title}"))
+            issues.append(
+                ValidationIssue(
+                    "error", f"Visual brief is missing an image provider: {brief.topic_title}"
+                )
+            )
         if not brief.prompt.strip():
-            issues.append(ValidationIssue("error", f"Visual brief is missing an image prompt: {brief.topic_title}"))
+            issues.append(
+                ValidationIssue(
+                    "error", f"Visual brief is missing an image prompt: {brief.topic_title}"
+                )
+            )
         elif has_image_prompt_course_packaging(brief.prompt):
             issues.append(
                 ValidationIssue(
@@ -669,35 +727,56 @@ def validate_visual_briefs(plan: GuidePlan) -> list[ValidationIssue]:
                     f"Visual brief contains encoding replacement artifacts: {brief.topic_title}",
                 )
             )
-        if brief.complexity == "svg-basic" and not is_svg_safe_visual_brief(brief):
-            issues.append(
-                ValidationIssue(
-                    "error",
-                    f"SVG visual brief is not in the SVG-safe scope: {brief.topic_title}",
-                )
+        if brief.complexity == "svg-basic" or brief.image_provider in {
+            "deterministic-svg",
+            "kroki",
+        }:
+            llm_required = (
+                "outline-source:llm-analyst" in plan.qualification.route_tags
+                and not getattr(brief, "llm_visual_spec", False)
             )
-        if (
-            brief.complexity == "svg-basic"
-            and is_professional_diagram_visual(brief.visual_type)
-            and brief.image_provider != "kroki"
-        ):
-            issues.append(
-                ValidationIssue(
-                    "error",
-                    f"Professional diagram visual must use Kroki renderer: {brief.topic_title}",
+            if llm_required:
+                issues.append(
+                    ValidationIssue(
+                        "error",
+                        f"SVG/Kroki visual requires an explicit LLM visual specification before generation: {brief.topic_title}",
+                    )
                 )
-            )
-        if (
-            brief.complexity == "svg-basic"
-            and not is_professional_diagram_visual(brief.visual_type)
-            and brief.image_provider == "kroki"
-        ):
-            issues.append(
-                ValidationIssue(
-                    "error",
-                    f"Exact scientific/vector visual should stay local SVG, not Kroki: {brief.topic_title}",
+            if (
+                brief.complexity == "svg-basic"
+                and str(getattr(brief, "svg_fit", "") or "").lower() != "exact"
+            ):
+                issues.append(
+                    ValidationIssue(
+                        "error",
+                        f"SVG visual must be marked svg_fit='exact' by the LLM Writer; otherwise route it to an external infographic model: {brief.topic_title}",
+                    )
                 )
-            )
+            if brief.complexity == "svg-basic" and not is_svg_safe_visual_brief(brief):
+                issues.append(
+                    ValidationIssue(
+                        "error",
+                        f"SVG visual brief is not in the SVG-safe scope: {brief.topic_title}",
+                    )
+                )
+            if brief.image_provider == "deterministic-svg":
+                issues.append(
+                    ValidationIssue(
+                        "error",
+                        f"Local deterministic SVG rendering is not allowed for deliverable visuals: {brief.topic_title}",
+                    )
+                )
+            if (
+                brief.complexity == "svg-basic"
+                and is_professional_diagram_visual(brief.visual_type)
+                and brief.image_provider != "kroki"
+            ):
+                issues.append(
+                    ValidationIssue(
+                        "error",
+                        f"Professional diagram visual must use Kroki renderer: {brief.topic_title}",
+                    )
+                )
     return issues
 
 
@@ -736,7 +815,11 @@ def validate_qualification_notes(plan: GuidePlan) -> list[ValidationIssue]:
             qualification.source.listing_qualification_type
             and qualification.source.listing_qualification_type != "international_gcse"
         ):
-            issues.append(ValidationIssue("error", "Source listing metadata conflicts with International GCSE type."))
+            issues.append(
+                ValidationIssue(
+                    "error", "Source listing metadata conflicts with International GCSE type."
+                )
+            )
         if "international students" not in qualification.audience_note.lower():
             issues.append(
                 ValidationIssue(
@@ -756,18 +839,23 @@ def validate_qualification_notes(plan: GuidePlan) -> list[ValidationIssue]:
             )
         if "linear" not in " ".join([qualification.audience_note, *qualification.summary]).lower():
             issues.append(
-                ValidationIssue("warning", "GCSE guide does not mention the linear qualification structure.")
+                ValidationIssue(
+                    "warning", "GCSE guide does not mention the linear qualification structure."
+                )
             )
     if qualification.qualification_type == "international_as_a_level":
         if (
             qualification.source.listing_qualification_type
             and qualification.source.listing_qualification_type != "international_as_a_level"
         ):
-            issues.append(ValidationIssue("error", "Source listing metadata conflicts with AS-A-level type."))
+            issues.append(
+                ValidationIssue("error", "Source listing metadata conflicts with AS-A-level type.")
+            )
         if (
-            (qualification.provider or qualification.source.provider) != "cambridge"
-            and "modular" not in " ".join([qualification.audience_note, *qualification.summary]).lower()
-        ):
+            qualification.provider or qualification.source.provider
+        ) != "cambridge" and "modular" not in " ".join(
+            [qualification.audience_note, *qualification.summary]
+        ).lower():
             issues.append(
                 ValidationIssue(
                     "warning",
@@ -787,13 +875,23 @@ def validate_html_output(plan: GuidePlan, html_path: Path) -> list[ValidationIss
     html_body = strip_allowed_glossary_html(html)
     issues: list[ValidationIssue] = []
     if has_encoding_artifacts([html]):
-        issues.append(ValidationIssue("error", "HTML output contains encoding replacement artifacts."))
+        issues.append(
+            ValidationIssue("error", "HTML output contains encoding replacement artifacts.")
+        )
     for message in student_visible_text_issues(html_body, body_language):
         issues.append(ValidationIssue("error", message))
     if has_syllabus_shell_text([html_body]):
-        issues.append(ValidationIssue("error", "HTML output contains syllabus shell text in student-facing content."))
+        issues.append(
+            ValidationIssue(
+                "error", "HTML output contains syllabus shell text in student-facing content."
+            )
+        )
     if has_source_boilerplate_text(html_body):
-        issues.append(ValidationIssue("error", "HTML output contains source boilerplate in student-facing content."))
+        issues.append(
+            ValidationIssue(
+                "error", "HTML output contains source boilerplate in student-facing content."
+            )
+        )
     for term in INTERNAL_VISUAL_STATUS_TERMS:
         if term in html_body:
             issues.append(
@@ -834,10 +932,18 @@ def validate_html_glossary_policy(html: str, selected_language: str) -> list[Val
     issues: list[ValidationIssue] = []
     if support_language is None:
         if has_glossary or row_count:
-            issues.append(ValidationIssue("error", "English-only handbook must not include a professional term glossary."))
+            issues.append(
+                ValidationIssue(
+                    "error", "English-only handbook must not include a professional term glossary."
+                )
+            )
         return issues
     if not has_glossary:
-        issues.append(ValidationIssue("error", "Term-support handbook is missing the professional term glossary."))
+        issues.append(
+            ValidationIssue(
+                "error", "Term-support handbook is missing the professional term glossary."
+            )
+        )
         return issues
     if row_count < 30 or row_count > 50:
         issues.append(
@@ -855,7 +961,11 @@ def validate_html_glossary_policy(html: str, selected_language: str) -> list[Val
             )
         )
     if "English exam term" not in html:
-        issues.append(ValidationIssue("error", "Professional term glossary is missing English exam term column."))
+        issues.append(
+            ValidationIssue(
+                "error", "Professional term glossary is missing English exam term column."
+            )
+        )
     return issues
 
 
@@ -899,9 +1009,7 @@ def validate_html_topic_map_mastery(html: str, language: str) -> list[Validation
             )
         )
     duplicated = [
-        (mastery, titles)
-        for mastery, titles in cells_by_mastery.items()
-        if len(titles) > 1
+        (mastery, titles) for mastery, titles in cells_by_mastery.items() if len(titles) > 1
     ]
     if not duplicated:
         return issues
@@ -984,7 +1092,9 @@ def validate_html_language(output_language: str, html: str) -> list[ValidationIs
         ]
     for phrase in required_phrases:
         if phrase not in html:
-            issues.append(ValidationIssue("error", f"HTML missing required section phrase: {phrase}"))
+            issues.append(
+                ValidationIssue("error", f"HTML missing required section phrase: {phrase}")
+            )
     return issues
 
 
@@ -1003,7 +1113,9 @@ def validate_html_visual_and_diagram_blocks(plan: GuidePlan, html: str) -> list[
             else ["图形例题", "信息图生成队列", "已生成信息图", "SVG 兜底图 - 需要复核"]
         )
         if not any(marker in html for marker in visual_markers):
-            issues.append(ValidationIssue("error", "HTML missing required visual explanation block."))
+            issues.append(
+                ValidationIssue("error", "HTML missing required visual explanation block.")
+            )
     return issues
 
 
@@ -1029,9 +1141,36 @@ def validate_output_package(plan: GuidePlan, output_dir: Path) -> list[Validatio
     elif plan.visual_briefs:
         issues.extend(validate_image_assets(plan, images_dir))
     if not (output_dir / "run-options.json").exists():
-        issues.append(ValidationIssue("error", "Run options file is missing from output directory."))
+        issues.append(
+            ValidationIssue("error", "Run options file is missing from output directory.")
+        )
+    is_cli_fallback = "outline-source:cli-fallback" in plan.qualification.route_tags
+    if not (output_dir / "syllabus-evidence.json").exists():
+        severity = "warning" if is_cli_fallback else "error"
+        issues.append(
+            ValidationIssue(
+                severity,
+                "Syllabus evidence file is missing from output directory.",
+            )
+        )
+    if not (output_dir / "syllabus-outline.json").exists():
+        issues.append(
+            ValidationIssue(
+                "error" if not is_cli_fallback else "warning",
+                "LLM Analyst syllabus outline is missing. Python evidence extraction cannot be treated as final topic/exam-point analysis.",
+            )
+        )
+    if "outline-source:llm-analyst" not in plan.qualification.route_tags:
+        issues.append(
+            ValidationIssue(
+                "error" if not is_cli_fallback else "warning",
+                "Qualification topics and exam points must come from the LLM syllabus_outline_analyst before final delivery.",
+            )
+        )
     if not package_manifest.exists():
-        issues.append(ValidationIssue("error", f"Handbook package manifest is missing: {package_manifest}"))
+        issues.append(
+            ValidationIssue("error", f"Handbook package manifest is missing: {package_manifest}")
+        )
     review_path = concepts_dir / CONCEPT_REVIEW_FILE
     _concept_jobs, _reviewed_concepts, pending_concepts = concept_review_counts(plan, output_dir)
     if plan.topic_guides and not (concepts_dir / "concept_jobs.json").exists():
@@ -1135,9 +1274,7 @@ def pdf_quality_summary(plan: GuidePlan, pdf_path: Path) -> dict[str, object]:
         "pdf_max_recommended_mib": round(max_mib, 2),
         "pdf_blank_text_pages": blank_text_pages,
         "pdf_file_uri_footer_pages": file_uri_footer_pages,
-        "pdf_average_text_chars": (
-            int(sum(page_text_lengths) / page_count) if page_count else 0
-        ),
+        "pdf_average_text_chars": (int(sum(page_text_lengths) / page_count) if page_count else 0),
     }
 
 
@@ -1156,7 +1293,9 @@ def pdf_recommended_max_mib(plan: GuidePlan) -> float:
 def validate_image_assets(plan: GuidePlan, images_dir: Path) -> list[ValidationIssue]:
     issues: list[ValidationIssue] = []
     svg_briefs = [brief for brief in plan.visual_briefs if brief.complexity == "svg-basic"]
-    infographic_briefs = [brief for brief in plan.visual_briefs if brief.complexity == "infographic"]
+    infographic_briefs = [
+        brief for brief in plan.visual_briefs if brief.complexity == "infographic"
+    ]
     manifest_path = images_dir / "visual_manifest.json"
     manifest_entries = load_visual_manifest(images_dir)
     svg_safe_asset_count = count_renderable_svg_safe_assets(manifest_entries, images_dir)
@@ -1180,6 +1319,26 @@ def validate_image_assets(plan: GuidePlan, images_dir: Path) -> list[ValidationI
                     f"Visual manifest references a missing image file: {filename}",
                 )
             )
+        if (
+            str(entry.get("image_provider") or entry.get("renderer_id") or "").lower()
+            == "deterministic-svg"
+        ):
+            issues.append(
+                ValidationIssue(
+                    "error",
+                    f"Local deterministic SVG asset is not allowed for deliverable visuals: {entry.get('id') or filename or 'unknown'}",
+                )
+            )
+        if str(entry.get("complexity")) == "svg-basic":
+            status = str(entry.get("asset_status", "")).lower()
+            review_status = str(entry.get("review_status", "")).lower()
+            if status == "svg-draft" or review_status not in {"reviewed", "approved"}:
+                issues.append(
+                    ValidationIssue(
+                        "error",
+                        f"SVG asset must be reviewed/approved or routed to an external infographic model: {entry.get('id') or filename or 'unknown'}",
+                    )
+                )
     if infographic_briefs:
         issues.extend(validate_infographic_assets(infographic_briefs, manifest_entries, images_dir))
     issues.extend(validate_pending_professional_diagram_jobs(manifest_entries))
@@ -1241,7 +1400,9 @@ def validate_pairwise_svg_reuse(
             for visual_id in visual_ids
         }
         source_values = {
-            normalize_reuse_text(" ".join(getattr(briefs_by_id.get(visual_id), "source_points", []) or []))
+            normalize_reuse_text(
+                " ".join(getattr(briefs_by_id.get(visual_id), "source_points", []) or [])
+            )
             for visual_id in visual_ids
         }
         if len(focus_values) > 1 or len(source_values) > 1:
@@ -1309,7 +1470,12 @@ def count_renderable_svg_safe_assets(
         filename = str(entry.get("file") or "")
         if not filename or not (images_dir / filename).exists():
             continue
-        if filename.lower().endswith(".svg") or has_renderable_infographic(entry, images_dir):
+        if filename.lower().endswith(".svg") and str(entry.get("review_status", "")).lower() in {
+            "reviewed",
+            "approved",
+        }:
+            count += 1
+        elif has_renderable_infographic(entry, images_dir):
             count += 1
     return count
 
@@ -1336,12 +1502,14 @@ def validate_infographic_assets(
     generated = sum(
         1
         for entry in manifest_entries
-        if entry.get("complexity") == "infographic" and has_renderable_infographic(entry, images_dir)
+        if entry.get("complexity") == "infographic"
+        and has_renderable_infographic(entry, images_dir)
     )
     svg_fallbacks = sum(
         1
         for entry in manifest_entries
-        if entry.get("complexity") == "infographic" and has_renderable_svg_fallback(entry, images_dir)
+        if entry.get("complexity") == "infographic"
+        and has_renderable_svg_fallback(entry, images_dir)
     )
     pending_external_generation = sum(
         1
@@ -1549,11 +1717,7 @@ def has_zh_placeholder_text(values: list[str]) -> bool:
         r"知识单元\s*\d+",
         r"知识点\s*\d+",
     ]
-    return any(
-        re.search(pattern, value)
-        for value in values
-        for pattern in placeholder_patterns
-    )
+    return any(re.search(pattern, value) for value in values for pattern in placeholder_patterns)
 
 
 def has_cjk_text(values: Sequence[str]) -> bool:
@@ -1656,7 +1820,9 @@ def is_cross_subject_borrowed_text(text: str, subject_area: str | None) -> bool:
     ]
     if not is_math and any(marker in text_lower for marker in borrowed_math_markers):
         return True
-    if not (is_math or is_physics) and any(marker in text_lower for marker in borrowed_physics_markers):
+    if not (is_math or is_physics) and any(
+        marker in text_lower for marker in borrowed_physics_markers
+    ):
         return True
     return False
 
@@ -1671,7 +1837,9 @@ def has_source_boilerplate_text(text: str) -> bool:
     ]
     if any(marker in lower for marker in markers):
         return True
-    return bool(re.search(r"\bCambridge\s+IGCSE\b.+?\bSubject content\b", text, flags=re.IGNORECASE))
+    return bool(
+        re.search(r"\bCambridge\s+IGCSE\b.+?\bSubject content\b", text, flags=re.IGNORECASE)
+    )
 
 
 def mixed_language_label_matches(html: str) -> list[str]:
@@ -1782,7 +1950,9 @@ def review_summary(
     topics_with_source = sum(1 for topic in qualification.topics if topic.source_snippets)
     teachable_topics_with_source = sum(1 for topic in teachable_topics if topic.source_snippets)
     svg_safe_visuals = sum(1 for brief in plan.visual_briefs if brief.complexity == "svg-basic")
-    infographic_visuals = sum(1 for brief in plan.visual_briefs if brief.complexity == "infographic")
+    infographic_visuals = sum(
+        1 for brief in plan.visual_briefs if brief.complexity == "infographic"
+    )
     html = ""
     if html_path and html_path.exists():
         html = html_path.read_text(encoding="utf-8", errors="replace")
@@ -1837,7 +2007,9 @@ def review_summary(
                 1
                 for entry in manifest_entries
                 if entry.get("complexity") == "infographic"
-                and has_renderable_svg_fallback(entry, images_dir)
+                and str(entry.get("asset_status", "")).lower() == "svg-fallback-needs-review"
+                and is_svg_asset(str(entry.get("file") or ""))
+                and (images_dir / str(entry.get("file") or "")).exists()
             )
             pending_infographic_assets = sum(
                 1
@@ -1847,9 +2019,11 @@ def review_summary(
             )
         has_visual_manifest = (images_dir / "visual_manifest.json").exists()
         has_package_manifest = (output_dir / "handbook-package.json").exists()
-        concept_jobs, reviewed_concept_explanations, pending_concept_explanations = concept_review_counts(
-            plan,
-            output_dir,
+        concept_jobs, reviewed_concept_explanations, pending_concept_explanations = (
+            concept_review_counts(
+                plan,
+                output_dir,
+            )
         )
     if pdf_path and pdf_path.exists():
         pdf_summary = {**pdf_summary, **pdf_quality_summary(plan, pdf_path)}
@@ -1857,10 +2031,12 @@ def review_summary(
         "requested_subject": plan.run_options.requested_subject,
         "provider": qualification.provider or qualification.source.provider,
         "source_provider": qualification.source.provider,
-        "qualification_family": qualification.qualification_family or qualification.source.qualification_family,
+        "qualification_family": qualification.qualification_family
+        or qualification.source.qualification_family,
         "specification_sha256": qualification.source.specification_sha256,
         "syllabus_year_range": qualification.source.syllabus_year_range,
-        "selected_exam_year": qualification.selected_exam_year or qualification.source.selected_exam_year,
+        "selected_exam_year": qualification.selected_exam_year
+        or qualification.source.selected_exam_year,
         "image_provider": plan.run_options.image_provider,
         "explanation_style": plan.run_options.explanation_style,
         "output_language": plan.run_options.output_language,

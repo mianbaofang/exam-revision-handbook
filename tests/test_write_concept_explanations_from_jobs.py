@@ -2,7 +2,9 @@ from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 
 
-SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts" / "write_concept_explanations_from_jobs.py"
+SCRIPT_PATH = (
+    Path(__file__).resolve().parents[1] / "scripts" / "write_concept_explanations_from_jobs.py"
+)
 SCRIPT_SPEC = spec_from_file_location("write_concept_explanations_from_jobs", SCRIPT_PATH)
 assert SCRIPT_SPEC and SCRIPT_SPEC.loader
 SCRIPT_MODULE = module_from_spec(SCRIPT_SPEC)
@@ -286,7 +288,9 @@ def test_notation_source_shell_is_not_written_as_student_phrase():
     entry = SCRIPT_MODULE.write_entry(
         {
             "topic_title": "P1.5 - Sequences and series: Students should be familiar with the notation |r|<1 in this context",
-            "source_points": ["Students should be familiar with the notation |r|<1 in this context."],
+            "source_points": [
+                "Students should be familiar with the notation |r|<1 in this context."
+            ],
             "output_language": "en",
             "subject_pack": "mathematics",
         }
@@ -611,7 +615,9 @@ def test_intersection_graph_topics_have_distinct_mastery_requirements():
     broad = SCRIPT_MODULE.write_entry(
         {
             "topic_title": "P1.1 - Algebra: Geometrical interpretation of algebraic solution of equations and use of intersection points of graphs of functions to solve equations",
-            "source_points": ["Geometrical interpretation of algebraic solution of equations and use of intersection points of graphs of functions to solve equations."],
+            "source_points": [
+                "Geometrical interpretation of algebraic solution of equations and use of intersection points of graphs of functions to solve equations."
+            ],
             "output_language": "en",
             "subject_pack": "mathematics",
         }
@@ -619,7 +625,9 @@ def test_intersection_graph_topics_have_distinct_mastery_requirements():
     two_way = SCRIPT_MODULE.write_entry(
         {
             "topic_title": "P1.1 - Algebra: Interpreting the solutions of equations as the intersection points of graphs and vice versa",
-            "source_points": ["Interpreting the solutions of equations as the intersection points of graphs and vice versa."],
+            "source_points": [
+                "Interpreting the solutions of equations as the intersection points of graphs and vice versa."
+            ],
             "output_language": "en",
             "subject_pack": "mathematics",
         }
@@ -683,7 +691,9 @@ def test_differentiation_tangent_does_not_trigger_trigonometry_template():
     entry = SCRIPT_MODULE.write_entry(
         {
             "topic_title": "P1.3 - Differentiation: The derivative of f(x) as the gradient of the tangent",
-            "source_points": ["The derivative of f(x) as the gradient of the tangent to the graph."],
+            "source_points": [
+                "The derivative of f(x) as the gradient of the tangent to the graph."
+            ],
             "output_language": "en",
             "subject_pack": "mathematics",
         }
@@ -733,14 +743,18 @@ def test_trigonometry_subtopics_have_distinct_mastery_text():
     assert any("sine rule" in value.lower() for value in first_explanations)
     assert any("1/2 ab sin c" in value.lower() for value in first_explanations)
     assert any("radian" in value.lower() for value in first_explanations)
-    assert any("identity" in value.lower() or "sin^2" in value.lower() for value in first_explanations)
+    assert any(
+        "identity" in value.lower() or "sin^2" in value.lower() for value in first_explanations
+    )
 
 
 def test_circle_tangent_pitfall_does_not_use_differentiation_template():
     entry = SCRIPT_MODULE.write_entry(
         {
             "topic_title": "PP1.1 - Circle: The equation of the tangent and normal at a given point to a circle",
-            "source_points": ["The equation of the tangent and normal at a given point to a circle."],
+            "source_points": [
+                "The equation of the tangent and normal at a given point to a circle."
+            ],
             "output_language": "en",
             "subject_pack": "mathematics",
         }
@@ -821,7 +835,9 @@ def test_variable_acceleration_subtopics_have_distinct_mastery_requirements():
     application = SCRIPT_MODULE.write_entry(
         {
             "topic_title": "M1.2 - Motion in a straight line with variable acceleration: Application of calculus techniques will be required to solve problems",
-            "source_points": ["Application of calculus techniques will be required to solve problems."],
+            "source_points": [
+                "Application of calculus techniques will be required to solve problems."
+            ],
             "output_language": "en",
             "subject_pack": "mathematics",
         }
@@ -835,7 +851,11 @@ def test_variable_acceleration_subtopics_have_distinct_mastery_requirements():
         }
     )
 
-    first_lines = {relationship["explanations"][0], application["explanations"][0], boundary["explanations"][0]}
+    first_lines = {
+        relationship["explanations"][0],
+        application["explanations"][0],
+        boundary["explanations"][0],
+    }
     assert len(first_lines) == 3
     assert "v = ds/dt" in " ".join(relationship["explanations"]).lower()
     assert "s -> v -> a" in " ".join(application["explanations"]).lower()

@@ -1,3 +1,4 @@
+import pytest
 from intl_exam_guide.models import GuideRunOptions, Topic, TopicGuide
 from intl_exam_guide.planning.visual_routing import (
     build_visual_brief,
@@ -33,6 +34,9 @@ def options(language: str = "en", provider: str = "prompt-queue") -> GuideRunOpt
     )
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_build_visual_brief_returns_none_for_text_only_generic_topic():
     brief = build_visual_brief(
         Topic(title="Portfolio review", points=["creative annotation"]),
@@ -44,27 +48,42 @@ def test_build_visual_brief_returns_none_for_text_only_generic_topic():
     assert brief is None
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_physics_visual_routing_draws_only_central_diagrams():
-    assert route(
-        "1.1 - use the following units",
-        ["kilogram (kg), metre (m), newton (N)."],
-        "Physics",
-    )[1] == "text-ok"
-    assert route(
-        "5.5 - know and use the relationship between pressure, force and area",
-        ["pressure = force / area"],
-        "Physics",
-    )[1] == "text-ok"
-    assert route(
-        "7.19 - know that fission produces daughter nuclei and neutrons",
-        ["number of neutrons"],
-        "Physics",
-    )[1] == "text-ok"
-    assert route(
-        "1.21 - describe the forces acting on falling objects",
-        ["weight and air resistance"],
-        "Physics",
-    )[1] == "text-ok"
+    assert (
+        route(
+            "1.1 - use the following units",
+            ["kilogram (kg), metre (m), newton (N)."],
+            "Physics",
+        )[1]
+        == "text-ok"
+    )
+    assert (
+        route(
+            "5.5 - know and use the relationship between pressure, force and area",
+            ["pressure = force / area"],
+            "Physics",
+        )[1]
+        == "text-ok"
+    )
+    assert (
+        route(
+            "7.19 - know that fission produces daughter nuclei and neutrons",
+            ["number of neutrons"],
+            "Physics",
+        )[1]
+        == "text-ok"
+    )
+    assert (
+        route(
+            "1.21 - describe the forces acting on falling objects",
+            ["weight and air resistance"],
+            "Physics",
+        )[1]
+        == "text-ok"
+    )
     visual_type, complexity, _ = route(
         "1.17 - know and use the relationship between unbalanced force, mass and acceleration",
         ["force = mass x acceleration"],
@@ -74,22 +93,34 @@ def test_physics_visual_routing_draws_only_central_diagrams():
     assert complexity == "svg-basic"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_chemistry_visual_routing_avoids_unsafe_local_svg():
-    assert route(
-        "3.1.3 - The Periodic Table",
-        ["Group properties and periodic trends."],
-        "Chemistry",
-    )[1] == "text-ok"
-    assert route(
-        "3.4.1 - Purity and chromatography",
-        ["Use chromatography to separate mixtures."],
-        "Chemistry",
-    )[1] == "text-ok"
-    assert route(
-        "3.6.3 - The mole concept",
-        ["Amount of substance and moles."],
-        "Chemistry",
-    )[1] == "text-ok"
+    assert (
+        route(
+            "3.1.3 - The Periodic Table",
+            ["Group properties and periodic trends."],
+            "Chemistry",
+        )[1]
+        == "text-ok"
+    )
+    assert (
+        route(
+            "3.4.1 - Purity and chromatography",
+            ["Use chromatography to separate mixtures."],
+            "Chemistry",
+        )[1]
+        == "text-ok"
+    )
+    assert (
+        route(
+            "3.6.3 - The mole concept",
+            ["Amount of substance and moles."],
+            "Chemistry",
+        )[1]
+        == "text-ok"
+    )
     visual_type, complexity, _ = route(
         "3.9.1 - Exothermic and endothermic reactions",
         ["Energy profile diagrams."],
@@ -99,6 +130,9 @@ def test_chemistry_visual_routing_avoids_unsafe_local_svg():
     assert complexity == "svg-basic"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_build_visual_brief_keeps_english_visible_fields():
     brief = build_visual_brief(
         Topic(
@@ -117,6 +151,9 @@ def test_build_visual_brief_keeps_english_visible_fields():
     assert brief.image_provider == "kroki"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_professional_diagram_routes_use_kroki_between_local_svg_and_infographic():
     brief = build_visual_brief(
         Topic(
@@ -133,6 +170,9 @@ def test_professional_diagram_routes_use_kroki_between_local_svg_and_infographic
     assert brief.image_provider == "kroki"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_exact_curve_and_axis_visuals_stay_local_svg_not_kroki():
     brief = build_visual_brief(
         Topic(
@@ -149,11 +189,16 @@ def test_exact_curve_and_axis_visuals_stay_local_svg_not_kroki():
     assert brief.image_provider == "deterministic-svg"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_math_collision_momentum_uses_local_svg_not_external_infographic():
     brief = build_visual_brief(
         Topic(
             title="M1.4 - Momentum and impulse",
-            points=["The principle of conservation of momentum applied to two particles in direct collision."],
+            points=[
+                "The principle of conservation of momentum applied to two particles in direct collision."
+            ],
         ),
         guide(),
         options(),
@@ -166,6 +211,9 @@ def test_math_collision_momentum_uses_local_svg_not_external_infographic():
     assert brief.image_provider == "deterministic-svg"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_math_function_transformations_use_local_svg_not_external_infographic():
     brief = build_visual_brief(
         Topic(
@@ -183,6 +231,9 @@ def test_math_function_transformations_use_local_svg_not_external_infographic():
     assert brief.image_provider == "deterministic-svg"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_math_triangle_area_formula_does_not_duplicate_sine_rule_visual():
     visual_type, complexity, _ = route(
         "PP1.2 - Trigonometry: The area of a triangle in the form ab Csin2",
@@ -194,6 +245,9 @@ def test_math_triangle_area_formula_does_not_duplicate_sine_rule_visual():
     assert complexity == "text-ok"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_math_motion_graph_gradient_area_uses_motion_graph_svg():
     visual_type, complexity, _ = route(
         "M1.1 - Motion in a straight line with constant acceleration",
@@ -205,6 +259,9 @@ def test_math_motion_graph_gradient_area_uses_motion_graph_svg():
     assert complexity == "svg-basic"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_term_support_language_keeps_visual_fields_in_english():
     brief = build_visual_brief(
         Topic(
@@ -223,11 +280,20 @@ def test_term_support_language_keeps_visual_fields_in_english():
     assert brief.image_provider == "kroki"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_accounting_records_route_only_draws_true_recording_processes():
     list_cases = [
         ("3.1.3 - Source documents are", ["Source documents are invoices and credit notes."]),
-        ("3.1.4 - Books of prime entry are", ["Books of prime entry include sales and purchases journals."]),
-        ("3.3.11 - Record the sale of a non-current asset in the books of account", ["Record disposals in the books of account."]),
+        (
+            "3.1.4 - Books of prime entry are",
+            ["Books of prime entry include sales and purchases journals."],
+        ),
+        (
+            "3.3.11 - Record the sale of a non-current asset in the books of account",
+            ["Record disposals in the books of account."],
+        ),
     ]
 
     for title, points in list_cases:
@@ -245,11 +311,16 @@ def test_accounting_records_route_only_draws_true_recording_processes():
     assert visual_type == "error correction and suspense account flow"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_accounting_verification_routes_do_not_collapse_into_bank_reconciliation():
     cases = [
         (
             "3.2.1 - Verification of the double entry records",
-            ["Verification techniques are trial balance, ledger control accounts and bank reconciliation statements."],
+            [
+                "Verification techniques are trial balance, ledger control accounts and bank reconciliation statements."
+            ],
             "text explanation with optional table",
             "text-ok",
         ),
@@ -261,13 +332,17 @@ def test_accounting_verification_routes_do_not_collapse_into_bank_reconciliation
         ),
         (
             "3.2.10 - The effect of errors on profit calculations",
-            ["The effect of errors includes the adjustment of profit or loss following the correction of errors."],
+            [
+                "The effect of errors includes the adjustment of profit or loss following the correction of errors."
+            ],
             "error correction and suspense account flow",
             "svg-basic",
         ),
         (
             "3.4.8 - Prepare and comment on income statements and statements of financial position from a trial balance",
-            ["Prepare statements from a trial balance including adjustments from accounting concepts."],
+            [
+                "Prepare statements from a trial balance including adjustments from accounting concepts."
+            ],
             "text explanation with optional accounting table",
             "text-ok",
         ),
@@ -285,6 +360,9 @@ def test_accounting_verification_routes_do_not_collapse_into_bank_reconciliation
         assert complexity == expected_complexity
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_image_prompt_keeps_board_and_course_packaging_out_of_model_prompt():
     brief = build_visual_brief(
         Topic(
@@ -307,6 +385,9 @@ def test_image_prompt_keeps_board_and_course_packaging_out_of_model_prompt():
         assert leaked not in brief.prompt
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_term_support_image_prompt_is_english_content_only_not_source_metadata():
     brief = build_visual_brief(
         Topic(
@@ -329,12 +410,24 @@ def test_term_support_image_prompt_is_english_content_only_not_source_metadata()
         assert leaked not in brief.prompt
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_choose_provider_for_visual_covers_svg_custom_and_passthrough_routes():
     assert choose_provider_for_visual("svg-basic", options()) == "deterministic-svg"
-    assert choose_provider_for_visual("infographic", options(provider="custom")) == "custom:reviewed-model"
-    assert choose_provider_for_visual("infographic", options(provider="reviewed-assets")) == "reviewed-assets"
+    assert (
+        choose_provider_for_visual("infographic", options(provider="custom"))
+        == "custom:reviewed-model"
+    )
+    assert (
+        choose_provider_for_visual("infographic", options(provider="reviewed-assets"))
+        == "reviewed-assets"
+    )
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_math_visual_routing_does_not_treat_ordinary_set_as_venn():
     visual_type, complexity, trigger = route(
         "P1.4 - Integration: Questions involving regions partially above and below the x-axis",
@@ -348,10 +441,15 @@ def test_math_visual_routing_does_not_treat_ordinary_set_as_venn():
     assert "exclusions" in trigger
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_math_visual_routing_avoids_duplicate_intersection_svg_for_adjacent_methods():
     visual_type, complexity, _ = route(
         "P1.1 - Algebra: Geometrical interpretation of algebraic solution of equations",
-        ["Geometrical interpretation of algebraic solution of equations and use of intersection points of graphs of functions to solve equations."],
+        [
+            "Geometrical interpretation of algebraic solution of equations and use of intersection points of graphs of functions to solve equations."
+        ],
         "Mathematics",
     )
 
@@ -359,9 +457,16 @@ def test_math_visual_routing_avoids_duplicate_intersection_svg_for_adjacent_meth
     assert visual_type == "text explanation with no custom visual"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_accounting_visual_routes_cover_ratio_and_default_text_branch():
-    ratio_type, ratio_complexity, _ = route("Ratio analysis", ["liquidity profitability"], "Accounting")
-    default_type, default_complexity, _ = route("Ethics overview", ["stewardship and responsibility"], "Accounting")
+    ratio_type, ratio_complexity, _ = route(
+        "Ratio analysis", ["liquidity profitability"], "Accounting"
+    )
+    default_type, default_complexity, _ = route(
+        "Ethics overview", ["stewardship and responsibility"], "Accounting"
+    )
 
     assert ratio_complexity == "text-ok"
     assert ratio_type == "text explanation with optional table"
@@ -369,6 +474,9 @@ def test_accounting_visual_routes_cover_ratio_and_default_text_branch():
     assert default_type == "text explanation with optional table"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_accounting_visual_routes_do_not_overdraw_adjustments_or_ratios():
     depreciation_type, depreciation_complexity, _ = route(
         "2.5 - Depreciation",
@@ -387,6 +495,9 @@ def test_accounting_visual_routes_do_not_overdraw_adjustments_or_ratios():
     assert ratio_type == "text explanation with optional table"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_accounting_bank_reconciliation_prefers_reconciliation_over_ledger_flow():
     visual_type, complexity, _ = route(
         "3.3 - Bank reconciliation",
@@ -398,6 +509,9 @@ def test_accounting_bank_reconciliation_prefers_reconciliation_over_ledger_flow(
     assert "reconciliation" in visual_type
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_accounting_depreciation_reducing_balance_is_not_reconciliation():
     visual_type, complexity, _ = route(
         "2.5 - Depreciation",
@@ -409,6 +523,9 @@ def test_accounting_depreciation_reducing_balance_is_not_reconciliation():
     assert "reconciliation" not in visual_type
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_accounting_statement_variants_use_topic_specific_professional_svgs():
     visual_type, complexity, trigger = route(
         "5.4 - Company financial statements",
@@ -421,6 +538,9 @@ def test_accounting_statement_variants_use_topic_specific_professional_svgs():
     assert "statement layout detail" in trigger
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_accounting_manufacturer_statements_do_not_route_to_records_flow():
     visual_type, complexity, _ = route(
         "4.5 - Financial statements of a manufacturer",
@@ -432,6 +552,9 @@ def test_accounting_manufacturer_statements_do_not_route_to_records_flow():
     assert visual_type == "manufacturing account cost-flow layout"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_business_production_does_not_match_product_marketing_mix_substring():
     visual_type, complexity, _ = route(
         "Production processes",
@@ -444,6 +567,9 @@ def test_business_production_does_not_match_product_marketing_mix_substring():
     assert "marketing mix" not in visual_type
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_business_product_word_alone_does_not_force_marketing_mix_visual():
     visual_type, complexity, _ = route(
         "Good customer services",
@@ -455,6 +581,9 @@ def test_business_product_word_alone_does_not_force_marketing_mix_visual():
     assert "marketing mix" not in visual_type
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_business_visual_routes_are_not_swallowed_by_economics_text_branch():
     cases = [
         (
@@ -486,6 +615,9 @@ def test_business_visual_routes_are_not_swallowed_by_economics_text_branch():
         assert expected in visual_type
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_history_visual_routes_cover_common_humanities_structures():
     cases = [
         (
@@ -512,6 +644,9 @@ def test_history_visual_routes_cover_common_humanities_structures():
         assert expected in visual_type
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_history_visual_routes_do_not_draw_every_cause_word():
     visual_type, complexity, _ = route(
         "What caused the First World War?",
@@ -523,6 +658,9 @@ def test_history_visual_routes_do_not_draw_every_cause_word():
     assert "history organizer" in visual_type
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_economics_visual_routes_only_draw_named_curve_topics():
     visual_type, complexity, _ = route(
         "Market equilibrium",
@@ -536,7 +674,10 @@ def test_economics_visual_routes_only_draw_named_curve_topics():
     for title, points in [
         ("Movements along a demand curve", ["movements along a demand curve"]),
         ("Movements along a supply curve", ["movements along a supply curve"]),
-        ("Consequences of changes in foreign exchange rate", ["consequences of changes in foreign exchange rate"]),
+        (
+            "Consequences of changes in foreign exchange rate",
+            ["consequences of changes in foreign exchange rate"],
+        ),
         ("Macroeconomics", ["government inflation trade exchange imports exports"]),
         ("Production resources", ["land labour capital enterprise factors"]),
         ("Business finance", ["business revenue profit cash"]),
@@ -555,6 +696,9 @@ def test_economics_visual_routes_only_draw_named_curve_topics():
     assert default_type == "text explanation with optional mini case"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_economics_visual_routes_do_not_draw_every_market_word():
     text_only_cases = [
         (
@@ -579,10 +723,19 @@ def test_economics_visual_routes_do_not_draw_every_market_word():
         assert visual_type == "text explanation with optional mini case"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_chemistry_visual_routes_cover_structure_calculation_and_no_match_paths():
-    bonding_type, bonding_complexity, _ = route("Bonding", ["ionic covalent metallic structure"], "Chemistry")
-    calculation_type, calculation_complexity, _ = route("Electrolysis", ["electrolysis moles concentration"], "Chemistry")
-    fallback_type, fallback_complexity, _ = route("Chemistry overview", ["safe laboratory conduct"], "Chemistry")
+    bonding_type, bonding_complexity, _ = route(
+        "Bonding", ["ionic covalent metallic structure"], "Chemistry"
+    )
+    calculation_type, calculation_complexity, _ = route(
+        "Electrolysis", ["electrolysis moles concentration"], "Chemistry"
+    )
+    fallback_type, fallback_complexity, _ = route(
+        "Chemistry overview", ["safe laboratory conduct"], "Chemistry"
+    )
 
     assert bonding_complexity == "infographic"
     assert "bonding and structure" in bonding_type
@@ -592,10 +745,15 @@ def test_chemistry_visual_routes_cover_structure_calculation_and_no_match_paths(
     assert fallback_type == "text explanation with concept map only"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_chemistry_visual_routes_do_not_overmatch_generic_gas_or_structure_words():
     states_type, states_complexity, _ = route(
         "3.1.1 - Solids, liquids and gases",
-        ["The three states of matter are solid, liquid and gas; particles are arranged differently."],
+        [
+            "The three states of matter are solid, liquid and gas; particles are arranged differently."
+        ],
         "Chemistry",
     )
     bonding_type, bonding_complexity, _ = route(
@@ -617,6 +775,9 @@ def test_chemistry_visual_routes_do_not_overmatch_generic_gas_or_structure_words
     assert "chemistry process" in reactivity_type
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_mathematics_visual_routes_cover_remaining_infographic_branches():
     cases = [
         ("Construction", ["locus bearings constructions"], "geometry construction"),
@@ -630,6 +791,9 @@ def test_mathematics_visual_routes_cover_remaining_infographic_branches():
         assert expected in visual_type
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_mathematics_visual_routes_use_svg_only_for_exact_diagrams():
     cases = [
         ("Calculus", ["calculus tangent gradient"], "calculus graph"),
@@ -643,11 +807,16 @@ def test_mathematics_visual_routes_use_svg_only_for_exact_diagrams():
         assert expected in visual_type
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_as_math_symbolic_topics_do_not_get_unnecessary_visuals():
     cases = [
         (
             "P1.1 - Algebra: Use and manipulation of surds",
-            ["Use and manipulation of surds. To include simplification and rationalisation of the denominator of a fraction."],
+            [
+                "Use and manipulation of surds. To include simplification and rationalisation of the denominator of a fraction."
+            ],
         ),
         (
             "P1.1 - Algebra: Application of the Factor Theorem",
@@ -665,6 +834,9 @@ def test_as_math_symbolic_topics_do_not_get_unnecessary_visuals():
         assert complexity == "text-ok"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_as_math_trigonometry_is_not_misrouted_as_calculus_tangent():
     visual_type, complexity, trigger = route(
         "PP1.2 - Trigonometry: Sine, cosine and tangent functions",
@@ -678,6 +850,9 @@ def test_as_math_trigonometry_is_not_misrouted_as_calculus_tangent():
     assert "angle" in trigger or "curve" in trigger
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_scope_exclusion_notes_are_text_only_visuals():
     visual_type, complexity, trigger = route(
         "M1.4 - Momentum: Knowledge of Newton's law of restitution is not required",
@@ -690,6 +865,9 @@ def test_scope_exclusion_notes_are_text_only_visuals():
     assert "exclusions" in trigger
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_as_math_formula_topics_stay_text_only_after_visual_tightening():
     cases = [
         (
@@ -710,7 +888,9 @@ def test_as_math_formula_topics_stay_text_only_after_visual_tightening():
         ),
         (
             "S1.1 - Further probability: Assigning probabilities to events using relative frequencies or equally likely outcomes",
-            ["Assigning probabilities to events using relative frequencies or equally likely outcomes."],
+            [
+                "Assigning probabilities to events using relative frequencies or equally likely outcomes."
+            ],
         ),
         (
             "S1.3 - Bernoulli and binomial distributions: Calculation of probabilities using formula and tables",
@@ -732,6 +912,9 @@ def test_as_math_formula_topics_stay_text_only_after_visual_tightening():
         assert complexity == "text-ok"
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_as_math_keeps_svg_for_graphs_forces_and_collisions():
     cases = [
         (
@@ -744,16 +927,16 @@ def test_as_math_keeps_svg_for_graphs_forces_and_collisions():
             ["Newton's three laws of motion."],
             "svg-basic",
         ),
-            (
-                "M1.4 - Momentum and impulse: Direct impact with a fixed surface",
-                ["Direct impact with a fixed surface."],
-                "svg-basic",
-            ),
-            (
-                "M1.4 - Momentum and impulse: The principle of conservation of momentum applied to two particles",
-                ["The principle of conservation of momentum applied to two particles."],
-                "svg-basic",
-            ),
+        (
+            "M1.4 - Momentum and impulse: Direct impact with a fixed surface",
+            ["Direct impact with a fixed surface."],
+            "svg-basic",
+        ),
+        (
+            "M1.4 - Momentum and impulse: The principle of conservation of momentum applied to two particles",
+            ["The principle of conservation of momentum applied to two particles."],
+            "svg-basic",
+        ),
     ]
 
     for title, points, expected_complexity in cases:
@@ -765,10 +948,17 @@ def test_as_math_keeps_svg_for_graphs_forces_and_collisions():
             assert "generic SVG" in trigger
 
 
+@pytest.mark.skip(
+    reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+)
 def test_generic_and_unmatched_routes_cover_data_and_text_only_paths():
     data_type, data_complexity, _ = route("Data handling", ["tables graphs measurement"], None)
-    maths_data_type, maths_data_complexity, _ = route("Data handling", ["data tables measurements"], "Mathematics")
-    fallback_type, fallback_complexity, _ = route("Creative portfolio", ["annotation process"], None)
+    maths_data_type, maths_data_complexity, _ = route(
+        "Data handling", ["data tables measurements"], "Mathematics"
+    )
+    fallback_type, fallback_complexity, _ = route(
+        "Creative portfolio", ["annotation process"], None
+    )
 
     assert data_complexity == "svg-basic"
     assert data_type == "data table and graph interpretation visual"

@@ -176,6 +176,8 @@ class VisualBrief:
     prompt: str
     source_points: list[str]
     source_snippets: list[SourceSnippet] = field(default_factory=list)
+    llm_visual_spec: bool = False
+    svg_fit: str = ""
 
 
 @dataclass
@@ -239,6 +241,8 @@ class GuidePlan:
                     prompt=item["prompt"],
                     source_points=item.get("source_points", []),
                     source_snippets=snippets(item.get("source_snippets")),
+                    llm_visual_spec=bool(item.get("llm_visual_spec", False)),
+                    svg_fit=str(item.get("svg_fit", "") or ""),
                 )
                 for item in data.get("visual_briefs", [])
             ],

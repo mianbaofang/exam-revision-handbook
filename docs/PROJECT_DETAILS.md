@@ -18,10 +18,9 @@ then turn the official syllabus into a reusable revision-handbook framework.
 6. generate student-facing explanations and original worked examples in the
    chosen style;
 7. run a second pass to decide which knowledge points and examples need visuals;
-8. use deterministic SVG for simple exact diagrams, built-in Kroki rendering
-   for medium-complexity professional diagrams, and source-bound infographic
-   briefs for high-density visual explanations until the user provides a
-   callable image route or reviewed assets;
+8. let the host LLM/Agent decide whether each item is text-only, an exact SVG
+   candidate, or an external infographic brief; Python records the manifest and
+   renders only reviewed or approved visual assets;
 9. render the handbook package: HTML, PDF, `sections/`, `images/`, manifests,
    source metadata, and validation;
 10. validate that the output is complete enough for final review;
@@ -45,12 +44,11 @@ then turn the official syllabus into a reusable revision-handbook framework.
   whole handbook body.
 - **Visual learning layer**: the generator first builds source-bound knowledge
   points and practice examples, then analyzes which items need visual
-  explanation. Simple exact visuals use deterministic SVG; medium-complexity
-  flows, hierarchies, relationship maps, timelines, and source-to-ledger routes
-  use built-in Kroki rendering; complex lab, geometry, circuit, economics, or
-  text-heavy infographic needs are routed to source-bound visual briefs and
-  prompt queues unless a callable image route or imported asset directory is
-  available.
+  explanation. Exact SVG is allowed only when the LLM marks `svg_fit: "exact"`
+  and the asset is reviewed or approved; complex lab, geometry, circuit,
+  economics, or text-heavy infographic needs are routed to source-bound visual
+  briefs and prompt queues unless a callable image route or imported asset
+  directory is available.
 - **Narrative explanation modes**: topic blocks can be explained as life
   scenes, detective reasoning, or anime-quest style study missions while
   avoiding protected-IP copying by default.
@@ -103,11 +101,11 @@ recorded in `docs/DELIVERY_QUALITY_REBUILD_PLAN.md`.
 
 - Offline synthetic demo: no network, no copyrighted PDF, handbook package
   output, validation issues: none.
-- International GCSE Mathematics (9260): detailed PDF extraction produces 90
-  syllabus units, 180 worked/practice cards, 43 SVG-safe visuals, and 39
+- International GCSE Mathematics (9260): historical PDF extraction sample with
+  90 syllabus units, 180 worked/practice cards, exact-SVG candidates, and 39
   complex infographic briefs.
-- International GCSE Chemistry (9202): detailed PDF extraction produces 35
-  syllabus units, 70 worked/practice cards, 14 SVG-safe visuals, and 18 complex
+- International GCSE Chemistry (9202): historical PDF extraction sample with 35
+  syllabus units, 70 worked/practice cards, exact-SVG candidates, and 18 complex
   infographic briefs.
 - International AS and A-level Chemistry (9620): 3 topic groups, 6 assessment
   entries, HTML/PDF output, no validation issues.
@@ -165,7 +163,8 @@ They are useful positioning context, but they are not official provider facts.
    assessment objectives, appendices, and version history.
 2. Add provider fixtures with synthetic test PDFs.
 3. Add a reviewed authoring adapter for deeper worked examples.
-4. Add richer subject-specific SVG diagram templates for common question types.
+4. Add stricter exact-SVG review fixtures for common chart, axis, and simple
+   geometry cases.
 5. Add configurable explanation-style presets for different student audiences.
 6. Add an optional image-provider adapter for reviewed educational
    illustrations, with model/prompt/source metadata recorded for every asset.
@@ -188,8 +187,8 @@ GCSE 与 International AS-A-level 学科生成可追溯来源的复习指南。�
 5. 给每个知识单元匹配页码级 source snippets；
 6. 按用户选择的风格生成学生能读懂的讲解和原创例题；
 7. 二次分析哪些知识点和例题需要图文结合；
-8. 简单图用确定性 SVG；复杂图文讲解先生成可追溯的 infographic brief，
-   等用户提供可调用生图路线或已审核图片资产后，由 Agent 自动生成、导入或挂接；
+8. 由宿主 LLM/Agent 判断每个条目是纯文字、exact-SVG 候选，还是外部信息图 brief；
+   Python 只记录 manifest，并只渲染 reviewed/approved 的视觉资产；
 9. 渲染完整交付包：HTML、PDF、`sections/`、`images/`、manifest、source metadata
    和 validation；
 10. 校验输出是否完整到足以交付用户或进入人工复核。
@@ -201,7 +200,7 @@ GCSE 与 International AS-A-level 学科生成可追溯来源的复习指南。�
 - **页码级追溯**：topic block 可以显示匹配到的 source snippets。
 - **明确语言策略**：学生手册正文保持英文；用户选择的辅助语言只用于 30-50 个专业词对照表。
 - **图文学习层**：先生成可追溯的基础知识点和例题，再由 AI 判断哪些条目需要图文
-  结合讲解。简单精确图用确定性 SVG；流程、层级、时间线、关系图等中等复杂专业图走内置 Kroki；复杂实验装置、几何、电路、经济学场景或密集文字信息图
+  结合讲解。只有 LLM 写明 `svg_fit="exact"` 且资产 reviewed/approved 的场景才能使用 SVG；复杂实验装置、几何、电路、经济学场景或密集文字信息图
   先进入 source-bound visual brief 和 prompt queue，只有用户提供可调用路线或已审核图片资产时才生成、导入或挂接；如果路线可调用，应由 Agent 自动执行，并记录 prompt/source metadata。
 - **叙事讲解模式**：topic block 可以切换成生活场景、侦探推理、动漫闯关感等讲法，
   默认不复刻受保护 IP。
@@ -232,10 +231,10 @@ v0.3 的 ready 证据是历史发布事实，不等于 v0.4 长期认证。
 
 - Offline synthetic demo：无网络、无版权 PDF，能生成完整 handbook package，
   validation 无问题。
-- International GCSE Mathematics (9260)：PDF 详细抽取 90 个 syllabus units，
-  生成 180 张例题/练习卡、43 个 SVG-safe visuals 和 39 个复杂信息图 briefs。
-- International GCSE Chemistry (9202)：PDF 详细抽取 35 个 syllabus units，
-  生成 70 张例题/练习卡、14 个 SVG-safe visuals 和 18 个复杂信息图 briefs。
+- International GCSE Mathematics (9260)：历史 PDF 抽取样例，包含 90 个 syllabus units、
+  180 张例题/练习卡、exact-SVG 候选和 39 个复杂信息图 briefs。
+- International GCSE Chemistry (9202)：历史 PDF 抽取样例，包含 35 个 syllabus units、
+  70 张例题/练习卡、exact-SVG 候选和 18 个复杂信息图 briefs。
 - International AS and A-level Chemistry (9620)：3 个 topic groups、6 个
   assessment entries、HTML/PDF 输出、validation 无问题。
 - International GCSE Economics (9214)：PDF 详细抽取 38 个 syllabus units，

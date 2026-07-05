@@ -44,7 +44,9 @@ def topic_title_quality_issues(titles: Sequence[str], language: str) -> list[str
     if language == "zh-CN":
         for title in sorted(set(title_list)):
             if re.fullmatch(r"第\s+[A-Z]{1,3}\d+\s+节", title):
-                issues.append(f"student-facing topic title is module-only and not teachable: {title}")
+                issues.append(
+                    f"student-facing topic title is module-only and not teachable: {title}"
+                )
     for title, count in Counter(title_list).items():
         if count >= 5:
             issues.append(f"student-facing topic title repeats {count} times: {title}")

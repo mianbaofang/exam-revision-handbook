@@ -1,10 +1,12 @@
-﻿# Image Model Guide / 生图模型建议
+# Image Model Guide / 生图模型建议
 
 ## English
 
-The guide generator should not depend on image generation for its core factual
-output. The current release uses deterministic SVG concept maps because they are
-easy to trace back to syllabus points.
+The handbook's factual content must not depend on image generation. In the
+current framework, Python performs mechanical execution only: it downloads the
+official source, extracts page text, receives LLM-authored JSON, renders HTML,
+exports PDF, and validates artifacts. The host LLM/Agent decides what the visual
+should explain.
 
 For many subjects, richer illustrations are still useful:
 
@@ -17,54 +19,46 @@ For many subjects, richer illustrations are still useful:
 - text-heavy infographics in English, with official formulae and syllabus terms
   preserved when needed.
 
-Use image generation as a user-selected illustration adapter, not as the source
-of truth. The generator should first create source-bound knowledge points and
-practice examples, then analyze which items need visual explanation. Simple
-exact visuals can use local SVG; medium-complexity professional diagrams should
-use built-in Kroki; complex infographics should become source-bound visual
-briefs and prompt-queue entries unless the user has supplied a callable image
-route.
+Use image generation as an optional illustration adapter, not as the source of
+truth. The LLM/Agent should first write source-bound knowledge points and
+practice examples, then decide which items need visual explanation. The outcome
+is one of three routes:
 
-The base handbook pipeline does not require an image model. Supported visual
-routes are:
+- `text-ok`: no visual is needed.
+- `svg-basic`: an SVG is acceptable only when the Writer marks `svg_fit:
+  "exact"` and the asset is reviewed or approved before delivery.
+- `infographic`: the visual becomes a source-bound external infographic job
+  until a callable route or reviewed imported asset exists.
 
-- external GPT Image 2.0 workflows
-- external Qwen Image 2.0 Pro workflows
-- external SenseNova U1 Fast workflows
-- `custom`
-- `deterministic-svg` for SVG-safe visuals only
-- `prompt-queue` as the default route with prompts but no final complex
-  infographics
+The base handbook pipeline does not require an image model. Do not ask users to
+choose an image model before the base guide exists. After the guide has a visual
+manifest, report the complex visual IDs and use only a route the user actually
+has:
 
-Only run real image generation when the user supplies a callable skill, API,
-script, generated asset directory, or custom provider configuration. For
-`custom`, collect only:
-
-- model name;
-- endpoint URL;
-- API-key environment variable name.
+- installed image-generation Skill;
+- project script;
+- reviewed generated-asset directory;
+- `custom` provider configuration with model name, endpoint URL, and API-key
+  environment variable name.
 
 Never collect the raw key in chat, docs, screenshots, or committed files.
 
-The guide should also support lively explanation styles. A model-generated
-visual can be paired with a life-scene story, detective-style reasoning, or an
-anime-quest style mission. These modes should use original framing by default
-and should not copy protected characters, dialogue, or fictional worlds.
+## Exact SVG Review Policy
 
-## Scripted Scientific-Vector Fallback
+Exact SVG is a reviewed exception, not a local fallback for unfinished images.
+Use it only for visuals whose teaching meaning is fully carried by exact axes,
+geometry, labels, simple tables, simple trees, or simple flows.
 
-The project can borrow the useful part of
-[`nature-figure`](https://github.com/Yuan1z0825/nature-skills/tree/main/skills/nature-figure)
-without depending on that repository at runtime. When no callable image model is
-available, exact chart-like visuals should be treated as scientific vector
-figures: define the learning claim, required labels, source-bound symbols, and
-review risk before drawing, then output editable SVG.
-
-Use this for number lines, axes, probability trees, statistics charts,
+Good candidates include number lines, probability trees, statistics charts,
 distance-time graphs, rate curves, pH scales, energy profiles, and simple
-labelled geometry. Do not use it for rich educational posters, dense lab
+labelled geometry. Do not use SVG for rich educational posters, dense lab
 apparatus, complex economics scenarios, or text-heavy infographics; those remain
-prompt-queue items until a reviewed asset is supplied.
+external jobs until a reviewed raster asset is supplied.
+
+Before approving an SVG asset, record the learning claim, required labels,
+source-bound symbols or values, and review risk. The manifest entry must include
+`svg_fit: "exact"` and `review_status: "reviewed"` or `"approved"` before the
+asset can be treated as deliverable.
 
 ## Recommended Providers
 
@@ -84,13 +78,12 @@ Use this as the integration flow:
 
 ```text
 official specification
-  -> extracted syllabus points
-  -> deterministic guide plan
-  -> visual-need analysis
-  -> SVG if simple, or prompt queue if complex
-  -> visual_brief prompt queue
-  -> reviewed illustration asset when a callable route or imported asset exists
-  -> HTML/PDF guide
+  -> Python extracts source evidence
+  -> LLM writes syllabus outline and concept/practice content
+  -> LLM decides text-ok / exact SVG / external infographic
+  -> Python records visual manifest and pending jobs
+  -> reviewed exact SVG or reviewed raster asset is imported
+  -> Python renders HTML/PDF guide
 ```
 
 Recommended interface:
@@ -131,15 +124,15 @@ visual_002_market-equilibrium.png
 visual_003.webp
 ```
 
-When the base handbook package is written, the `images/` directory now includes:
+When the base handbook package is written, the `images/` directory includes:
 
 - `visual_manifest.json`: every visual entry and its current file/status
-- `infographic_jobs.json`: only pending complex infographic replacement jobs
+- `infographic_jobs.json`: pending external infographic replacement jobs
 - `infographic_jobs.md`: the same pending jobs in a review-friendly checklist
 
 Each pending job records the visual ID, prompt, replacement target, source
-pages, and the import hint. Pending or SVG-fallback handbook blocks also show
-the visual job ID so the reviewed raster file can replace that slot by name.
+pages, and the import hint. Pending handbook blocks show the visual job ID so
+the reviewed raster file can replace that slot by name.
 
 Generate complex images with whatever callable workflow the user actually has:
 an image Skill, API, script, design tool, or designer review process. If the
@@ -154,9 +147,9 @@ python scripts/import_infographic_assets.py ./outputs/chemistry-9202 \
 ```
 
 The script copies matching raster images into `images/`, updates
-`images/visual_manifest.json`, replaces pending or SVG-fallback infographic
-slots that share the same visual ID, and marks imported entries as generated.
-After a successful import it prints the exact handbook review command to run:
+`images/visual_manifest.json`, replaces pending infographic slots that share the
+same visual ID, and marks imported entries as generated. After a successful
+import it prints the exact handbook review command to run:
 
 ```bash
 python -m intl_exam_guide review --out ./outputs/chemistry-9202
@@ -164,12 +157,14 @@ python -m intl_exam_guide review --out ./outputs/chemistry-9202
 
 ## Routing Rules
 
-- Use deterministic SVG for knowledge maps, topic dependency diagrams, and
-  source-bound structure.
+- Let the LLM/Agent decide whether a visual is needed; Python must not infer the
+  teaching need from keywords.
+- Use exact SVG only for `svg_fit: "exact"` cases with reviewed or approved
+  status.
 - Use GPT Image 2.0 when the user wants polished guide illustrations and a
   callable OpenAI-compatible image route is available.
-- Use Qwen-Image-2.0 or Qwen Image 2.0 Pro when Chinese typography or
-  text-heavy infographic layout is the main evaluation point.
+- Use Qwen-Image-2.0 or Qwen Image 2.0 Pro when text-heavy infographic layout is
+  the main evaluation point.
 - Use SenseNova U1 Fast for fast infographic drafts, local experiments, or
   low-latency provider tests.
 - Do not recreate official exam paper diagrams, mark scheme diagrams, or
@@ -202,10 +197,9 @@ examples, equations, or exam claims beyond the source point.
 
 ## 中文
 
-复习手册的核心事实不应该依赖生图模型。当前版本使用确定性 SVG 知识地图，是因为
-它们更容易追溯到官方大纲点。
+复习手册的核心事实不应该依赖生图模型。当前框架中，Python 只负责机械执行：下载官方来源、抽取页面文本、接收 LLM 写好的 JSON、渲染 HTML、导出 PDF 和校验产物。视觉内容要解释什么，由宿主 LLM/Agent 判断。
 
-但很多知识点确实需要更好的视觉解释，例如：
+很多知识点确实需要更好的视觉解释，例如：
 
 - Science 实验装置和安全布局；
 - Biology 结构图和过程图；
@@ -214,32 +208,21 @@ examples, equations, or exam claims beyond the source point.
 - Economics 曲线图、流程图、场景信息图；
 - 英文文字信息图，必要时保留公式、符号和经复核的官方术语；用户语言支持放在专业词对照表中。
 
-生图应该是可选插图层，不是事实来源。生成器应先根据大纲生成基础知识点和
-例题，再分析哪些知识点或例题需要图文结合讲解。简单精确图用本地 SVG；流程、层级、
-时间线、关系图等中等复杂专业图自动走 Kroki；复杂信息图默认进入 source-bound
-visual brief 和 prompt queue。
+生图应该是可选插图层，不是事实来源。LLM/Agent 应先写出 source-bound 知识点和例题，再判断视觉路线：
 
-基础手册生成不要求用户先提供生图服务。不要把下面这些选项做成生成前的
-用户菜单；它们只是基础手册完成后、发现复杂信息图需求时可考虑的外部路线：
+- `text-ok`：不需要图。
+- `svg-basic`：只有 Writer 写明 `svg_fit="exact"` 且资产 reviewed/approved 后，SVG 才能交付。
+- `infographic`：进入外部信息图任务，直到有可调用路线或已复核导入资产。
 
-- GPT Image 2.0 外部工作流
-- Qwen Image 2.0 Pro 外部工作流
-- SenseNova U1 Fast 外部工作流
-- `custom`
-- `deterministic-svg`：只用于 SVG 安全图
-- `prompt-queue`：默认路线，生成提示词队列，不代表复杂信息图已经完成
+基础手册生成不要求用户先提供生图服务。不要把模型列表做成生成前菜单。基础手册有 visual manifest 后，再报告复杂视觉 ID，并只使用用户真实拥有的路线：已安装生图 Skill、项目脚本、已复核图片目录，或带模型名、接口 URL、API key 环境变量名的 `custom` 配置。不要在聊天、文档、截图或仓库里暴露真实 key。
 
-外部复杂信息图的默认美术方向应接近复习 worksheet / 教学海报：横向版式、清晰标题横幅、
-分区面板、柔和学科配色、可读英文标签、准确图标或示意图，并保留小型 Quick Q&A /
-practice 区域。不要让模型自动添加 AQA、Oxford、Pearson、Cambridge、学校 logo、
-封面式课程包装或水印。
+## Exact SVG 复核规则
 
-只有用户提供可调用的生图 Skill、API、脚本、生成后的图片目录或 custom provider
-配置时，才进行真实图片生成或导入。这里的“外部”不是要求用户手动搬文件；如果路线可调用，
-Agent 应该自动调用生成，并在需要时自动导入到手册目录。
+Exact SVG 是经过复核的例外，不是未完成图片的本地 fallback。只有坐标轴、几何、标签、简单表格、简单树或简单流程能完整承载教学含义时，才可以使用。
 
-如果选择 `custom`，只记录模型名、接口 URL、API key 所在的环境变量名。不要让用户
-在聊天、文档、截图或仓库里暴露真实 key。
+适合场景包括 number line、probability tree、statistics chart、distance-time graph、rate curve、pH scale、energy profile 和简单 labelled geometry。复杂实验装置、经济学场景、密集文字信息图或教学海报必须保持为外部任务，直到有已复核 raster 资产。
+
+批准 SVG 前，要记录学习 claim、必要标签、来源绑定的符号或数值，以及误导风险。manifest 条目必须包含 `svg_fit="exact"`，并且 `review_status` 为 `reviewed` 或 `approved`，才能作为可交付资产。
 
 ## 推荐模型
 
@@ -249,14 +232,14 @@ Agent 应该自动调用生成，并在需要时自动导入到手册目录。
 | Qwen-Image-2.0 / Qwen Image 2.0 Pro | 英文文字较多的信息图、海报式解释、PPT 风格知识图、国内场景实验。 | API、服务商、许可和部署限制应做成配置，不要写死。 |
 | SenseNova U1 Fast | 快速信息图草稿、本地或自定义 provider 实验、密集图文表达测试。 | 在本项目建立自己的视觉基准前，建议作为实验性 provider。 |
 
-不要把项目绑定到单一 provider。更好的做法是设计一个 provider interface，让学校、
-老师、家长或 agent 按可用性、成本、隐私和所选语言的排版质量来选择。
+不要把项目绑定到单一 provider。更好的做法是设计 provider interface，让学校、老师、家长或 agent 按可用性、成本、隐私和所选语言的排版质量来选择。
 
 ## 生成边界
 
-- 知识地图、topic 依赖关系和 source-bound 结构优先用确定性 SVG。
+- 由 LLM/Agent 判断是否需要图，Python 不根据关键词自动决定教学视觉需求。
+- SVG 只用于 `svg_fit="exact"` 且 reviewed/approved 的场景。
 - 需要精美插图且用户有可调用 OpenAI-compatible 图像路线时，可以评估 GPT Image 2.0。
-- 需要中文排版或文字密集型信息图时，可以评估 Qwen-Image-2.0 / Qwen Image 2.0 Pro。
+- 需要文字密集型信息图时，可以评估 Qwen-Image-2.0 / Qwen Image 2.0 Pro。
 - 需要快速信息图草稿、本地实验或低延迟 provider 测试时，可以评估 SenseNova U1 Fast。
 - 不要复刻官方真题图、mark scheme 图或教材版权插图。
 - 不要让图片添加 specification 中没有的标签、机制、公式或考试结论，除非经过学科老师复核。

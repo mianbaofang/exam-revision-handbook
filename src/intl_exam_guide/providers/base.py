@@ -68,9 +68,7 @@ class ExamBoardProvider(ABC):
             f"{self.name or type(self).__name__} does not implement qualification listing."
         )
 
-    def apply_listing_metadata(
-        self, qualification: Qualification, link: Link
-    ) -> Qualification:
+    def apply_listing_metadata(self, qualification: Qualification, link: Link) -> Qualification:
         return qualification
 
 
@@ -115,6 +113,5 @@ def get_provider(name: str) -> ExamBoardProvider:
 
         return CambridgeInternationalProvider()
     raise ValueError(
-        f"Unknown provider: {name!r}. Implemented providers: "
-        f"{', '.join(PROVIDER_NAMES)}."
+        f"Unknown provider: {name!r}. Implemented providers: {', '.join(PROVIDER_NAMES)}."
     )

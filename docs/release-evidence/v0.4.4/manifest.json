@@ -1,0 +1,60 @@
+{
+  "release": "v0.4.4-llm-framework",
+  "generated_at": "2026-07-05",
+  "git_revision": "v0.4.4",
+  "overall_status": "candidate",
+  "notes": [
+    "This release packages the LLM-operated framework refactor: Python executes mechanical steps while the host LLM/Agent owns syllabus outline, concept writing, visual decisions, and final product review.",
+    "This is not a new final-ready handbook sample certification. Existing sample evidence remains scoped to its recorded release manifest.",
+    "Exact SVG is allowed only when svg_fit is exact and the asset is reviewed or approved; complex visuals remain external infographic jobs until reviewed raster assets are imported."
+  ],
+  "entries": [
+    {
+      "id": "framework-llm-boundary-exact-svg-policy",
+      "status": "candidate",
+      "scope": "framework-release",
+      "supported_boards": [
+        "OxfordAQA / Oxford International AQA",
+        "Pearson Edexcel",
+        "Cambridge International / CAIE"
+      ],
+      "commands": [
+        "python -m pytest -q",
+        "python -m pytest tests/test_concept_jobs.py tests/test_guide_plan_llm_integration.py tests/test_visual_manifest_v2.py tests/test_validation_checks.py tests/test_quality_inspector.py tests/test_final_review_packet.py tests/test_core_contracts.py tests/test_handbook_project_manager.py tests/test_infographics.py tests/test_rendering_contracts.py -q",
+        "python -m pytest tests/test_release_scripts.py -q",
+        "python -m ruff check .",
+        "python -m ruff format --check .",
+        "python -m compileall -q src tests scripts",
+        "python scripts/scan_for_raw_keys.py . ./outputs"
+      ],
+      "validation_summary": {
+        "focused_pytest_status": "124 passed, 1 skipped",
+        "full_pytest_status": "437 passed, 167 skipped",
+        "release_script_pytest_status": "20 passed, 2 skipped",
+        "ruff_check_status": "passed",
+        "ruff_format_status": "passed",
+        "compileall_status": "passed",
+        "raw_key_scan_status": "raw_key_matches=0"
+      },
+      "release_changes": {
+        "python_role": "mechanical execution only: source download, page-text extraction, JSON receipt/validation, rendering, PDF export, packaging",
+        "llm_role": "syllabus boundaries, exam points, concept explanations, worked examples, visual needs, quality inspection, final review",
+        "visual_policy": "svg_fit must be exact and reviewed/approved for SVG delivery; non-exact SVG and legacy deterministic-svg output are blocked from final delivery",
+        "complex_visuals": "external infographic jobs until callable generation/import and review are available"
+      },
+      "evidence_files": [
+        "CHANGELOG.md",
+        "README.md",
+        "README.zh-CN.md",
+        "docs/IMAGE_MODEL_GUIDE.md",
+        "docs/PROJECT_DETAILS.md",
+        "docs/EXAMPLES.md",
+        "docs/SKILL_EXPLAINED.md",
+        "skill/SKILL.md",
+        "skill/references/revision_guide_spec.md",
+        "skill/references/scientific_vector_fallback.md"
+      ],
+      "scope_warning": "Candidate framework evidence only. Do not generalize this manifest into certified subject output quality."
+    }
+  ]
+}

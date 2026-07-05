@@ -118,7 +118,9 @@ def test_physics_examples_route_to_physics_not_math_fallbacks():
     ]
 
     for title, focus, expected_terms in cases:
-        text = combined_text(concrete_example(Topic(title=title, points=[focus]), focus, 0, "Physics"))
+        text = combined_text(
+            concrete_example(Topic(title=title, points=[focus]), focus, 0, "Physics")
+        )
         assert "right-angled triangle" not in text
         assert "drink is mixed" not in text
         for expected in expected_terms:
@@ -197,7 +199,9 @@ def test_mathematics_trigonometric_equation_example_solves_interval():
     question, frame, steps, checkpoints = concrete_example(
         Topic(
             title="PP1.2 - Trigonometry: Solution of simple trigonometric equations in a given interval",
-            points=["Solution of simple trigonometric equations in a given interval of degrees or radians."],
+            points=[
+                "Solution of simple trigonometric equations in a given interval of degrees or radians."
+            ],
         ),
         "Solution of simple trigonometric equations in a given interval of degrees or radians.",
         0,
@@ -320,7 +324,9 @@ def test_mathematics_variable_acceleration_example_uses_calculus_not_suvat():
     question, frame, steps, checkpoints = concrete_example(
         Topic(
             title="M1.2 - Motion in a straight line with variable acceleration",
-            points=["Use differentiation and integration with displacement, velocity and acceleration."],
+            points=[
+                "Use differentiation and integration with displacement, velocity and acceleration."
+            ],
         ),
         "Use differentiation and integration with displacement, velocity and acceleration.",
         0,
@@ -421,7 +427,9 @@ def test_mathematics_examples_cover_major_strands():
     ]
 
     for title, focus, number, expected_terms in cases:
-        text = combined_text(concrete_example(Topic(title=title, points=[focus]), focus, number, "Mathematics"))
+        text = combined_text(
+            concrete_example(Topic(title=title, points=[focus]), focus, number, "Mathematics")
+        )
         for expected in expected_terms:
             assert expected in text
 
@@ -430,7 +438,11 @@ def test_mathematics_specialist_fallbacks_stay_concrete_for_as_topics():
     cases = [
         ("P1.3 - Differentiation", "The derivative as the gradient of the tangent.", "切线"),
         ("PP1.3 - Exponential and logarithms", "Logarithms and the laws of logarithms.", "log"),
-        ("S1.2 - Discrete random variables", "Mean and variance of a discrete random variable.", "概率"),
+        (
+            "S1.2 - Discrete random variables",
+            "Mean and variance of a discrete random variable.",
+            "概率",
+        ),
         ("M1.3 - Forces and Newton's Laws", "Newton's Second Law F = ma.", "力"),
     ]
 
@@ -455,7 +467,9 @@ def test_a_level_math_momentum_examples_do_not_route_to_newton_force_template():
     )
     direct_impact_topic = Topic(
         title="M1.4 - Momentum and impulse (Restricted to motion in a straight line): Direct impact with a fixed surface",
-        points=["Direct impact with a fixed surface. Restricted to particles which are moving perpendicular to a fixed smooth surface."],
+        points=[
+            "Direct impact with a fixed surface. Restricted to particles which are moving perpendicular to a fixed smooth surface."
+        ],
     )
     impulse_topic = Topic(
         title="M1.4 - Momentum and impulse (Restricted to motion in a straight line): Impulse",
@@ -468,7 +482,9 @@ def test_a_level_math_momentum_examples_do_not_route_to_newton_force_template():
     zh_direct_impact = combined_text(
         concrete_example_zh(direct_impact_topic, direct_impact_topic.points[0], 0, "Mathematics")
     )
-    en_impulse = combined_text(concrete_example(impulse_topic, impulse_topic.points[0], 0, "Mathematics"))
+    en_impulse = combined_text(
+        concrete_example(impulse_topic, impulse_topic.points[0], 0, "Mathematics")
+    )
 
     assert "合力" not in zh_momentum
     assert "牛顿第二定律" not in zh_momentum
@@ -492,9 +508,7 @@ def test_a_level_math_rational_terms_do_not_misroute_to_ratio_examples():
         points=["Laws of indices for all rational exponents."],
     )
 
-    zh_surd = combined_text(
-        concrete_example_zh(surd_topic, surd_topic.points[0], 0, "Mathematics")
-    )
+    zh_surd = combined_text(concrete_example_zh(surd_topic, surd_topic.points[0], 0, "Mathematics"))
     zh_indices = combined_text(
         concrete_example_zh(index_topic, index_topic.points[0], 0, "Mathematics")
     )
@@ -533,7 +547,9 @@ def test_a_level_math_pure_algebra_examples_match_focus():
     ]
 
     for title, focus, expected_terms in cases:
-        text = combined_text(concrete_example_zh(Topic(title=title, points=[focus]), focus, 0, "Mathematics"))
+        text = combined_text(
+            concrete_example_zh(Topic(title=title, points=[focus]), focus, 0, "Mathematics")
+        )
         assert "果汁" not in text
         for expected in expected_terms:
             assert expected in text
@@ -541,59 +557,140 @@ def test_a_level_math_pure_algebra_examples_match_focus():
 
 def test_chemistry_examples_cover_visual_and_calculation_branches():
     cases = [
-        ("Nanoparticles", "Nanoparticles and surface area.", 0, ["surface area to volume ratio", "catalyst"]),
-        ("Carbon structures", "Diamond graphite graphene structure and bonding of carbon.", 1, ["graphite", "conduct electricity"]),
+        (
+            "Nanoparticles",
+            "Nanoparticles and surface area.",
+            0,
+            ["surface area to volume ratio", "catalyst"],
+        ),
+        (
+            "Carbon structures",
+            "Diamond graphite graphene structure and bonding of carbon.",
+            1,
+            ["graphite", "conduct electricity"],
+        ),
         ("States", "States of matter and diffusion.", 1, ["melting", "liquid water"]),
         ("Atomic particles", "Atomic proton neutron electron.", 1, ["2+ charge", "electrons"]),
         ("Moles", "Moles mass conservation.", 0, ["magnesium oxide", "4.0 g"]),
         ("Analysis", "Gas tests.", 1, ["limewater", "carbon dioxide"]),
         ("Acids", "Acid base alkali salt pH.", 1, ["neutralises", "pH rises"]),
-        ("Rates", "Rate equilibrium reversible reaction.", 0, ["collision theory", "reaction rate"]),
+        (
+            "Rates",
+            "Rate equilibrium reversible reaction.",
+            0,
+            ["collision theory", "reaction rate"],
+        ),
         ("Energy", "Exothermic endothermic energy.", 1, ["endothermic", "absorbed"]),
         ("Carbonates", "Carbonates decompose.", 1, ["thermal decomposition", "copper oxide"]),
         ("Organic", "Hydrocarbon polymer crude.", 1, ["poly(ethene)", "polymerisation"]),
     ]
 
     for title, focus, number, expected_terms in cases:
-        text = combined_text(concrete_example(Topic(title=title, points=[focus]), focus, number, "Chemistry"))
+        text = combined_text(
+            concrete_example(Topic(title=title, points=[focus]), focus, number, "Chemistry")
+        )
         for expected in expected_terms:
             assert expected.lower() in text
 
 
 def test_accounting_examples_cover_statement_and_verification_branches():
     cases = [
-        ("Verification", "Trial balance and bank reconciliation.", 1, ["bank reconciliation", "external bank evidence"]),
-        ("Errors", "Trial balance correction of errors.", 0, ["trial balance", "error of principle"]),
-        ("Adjustments", "Depreciation and irrecoverable receivables.", 1, ["annual depreciation", "$1,000"]),
+        (
+            "Verification",
+            "Trial balance and bank reconciliation.",
+            1,
+            ["bank reconciliation", "external bank evidence"],
+        ),
+        (
+            "Errors",
+            "Trial balance correction of errors.",
+            0,
+            ["trial balance", "error of principle"],
+        ),
+        (
+            "Adjustments",
+            "Depreciation and irrecoverable receivables.",
+            1,
+            ["annual depreciation", "$1,000"],
+        ),
         ("Statements", "Financial statements income statement.", 1, ["gross profit", "$3,800"]),
-        ("Partnership", "Partnership financial statements.", 0, ["appropriation account", "profit sharing"]),
+        (
+            "Partnership",
+            "Partnership financial statements.",
+            0,
+            ["appropriation account", "profit sharing"],
+        ),
         ("Ratios", "Ratio profitability liquidity.", 1, ["current ratio", "1.5 : 1"]),
         ("Fallback", "Accounting ethics note.", 0, ["accounting idea", "business scenario"]),
     ]
 
     for title, focus, number, expected_terms in cases:
-        text = combined_text(concrete_example(Topic(title=title, points=[focus]), focus, number, "Accounting"))
+        text = combined_text(
+            concrete_example(Topic(title=title, points=[focus]), focus, number, "Accounting")
+        )
         for expected in expected_terms:
             assert expected.lower() in text
 
 
 def test_economics_examples_cover_core_topic_branches():
     cases = [
-        ("Specialisation", "Specialisation and division of labour.", 1, ["specialisation", "factory"]),
-        ("Factors", "Factors of production land capital enterprise.", 1, ["vans are capital", "founder is enterprise"]),
-        ("Opportunity cost", "Opportunity cost and resource allocation.", 1, ["clinic", "sports centre"]),
+        (
+            "Specialisation",
+            "Specialisation and division of labour.",
+            1,
+            ["specialisation", "factory"],
+        ),
+        (
+            "Factors",
+            "Factors of production land capital enterprise.",
+            1,
+            ["vans are capital", "founder is enterprise"],
+        ),
+        (
+            "Opportunity cost",
+            "Opportunity cost and resource allocation.",
+            1,
+            ["clinic", "sports centre"],
+        ),
         ("Sectors", "Primary secondary tertiary sectors.", 0, ["wheat farm", "service"]),
-        ("Market", "Demand supply price equilibrium.", 1, ["supply curve shifts left", "quantity is likely to fall"]),
+        (
+            "Market",
+            "Demand supply price equilibrium.",
+            1,
+            ["supply curve shifts left", "quantity is likely to fall"],
+        ),
         ("Elasticity", "Elasticity calculation.", 1, ["ped = 40% / -20%", "price elastic"]),
-        ("Costs", "Cost revenue profit production.", 0, ["total revenue = $8 x 200", "profit = $500"]),
-        ("Policy", "Government inflation growth employment.", 1, ["taxes", "inflationary pressure"]),
-        ("International trade", "Import export globalisation.", 0, ["appreciation", "imports become cheaper"]),
-        ("Banking", "Money bank financial interest.", 1, ["interest rates", "borrowing becomes more expensive"]),
+        (
+            "Costs",
+            "Cost revenue profit production.",
+            0,
+            ["total revenue = $8 x 200", "profit = $500"],
+        ),
+        (
+            "Policy",
+            "Government inflation growth employment.",
+            1,
+            ["taxes", "inflationary pressure"],
+        ),
+        (
+            "International trade",
+            "Import export globalisation.",
+            0,
+            ["appreciation", "imports become cheaper"],
+        ),
+        (
+            "Banking",
+            "Money bank financial interest.",
+            1,
+            ["interest rates", "borrowing becomes more expensive"],
+        ),
         ("Fallback", "Consumer behaviour.", 0, ["economic agent", "likely outcome"]),
     ]
 
     for title, focus, number, expected_terms in cases:
-        text = combined_text(concrete_example(Topic(title=title, points=[focus]), focus, number, "Economics"))
+        text = combined_text(
+            concrete_example(Topic(title=title, points=[focus]), focus, number, "Economics")
+        )
         for expected in expected_terms:
             assert expected.lower() in text
 
@@ -623,8 +720,7 @@ def test_contextualize_question_does_not_expose_incomplete_syllabus_fragments():
     question = "Two cafes compete through faster service and a loyalty app."
 
     assert (
-        contextualize_question(question, "Firms do not just compete on price but", "en")
-        == question
+        contextualize_question(question, "Firms do not just compete on price but", "en") == question
     )
 
 
@@ -674,7 +770,11 @@ def test_history_question_topics_use_history_structure_not_generic_template():
     combined = " ".join([question, *frame, *steps, *checkpoints]).lower()
 
     assert "first world war" in combined
-    assert "short-term cause" in combined or "longer-term cause" in combined or "two causes" in combined
+    assert (
+        "short-term cause" in combined
+        or "longer-term cause" in combined
+        or "two causes" in combined
+    )
     assert "definition, one application, and one check" not in combined
 
 
@@ -695,26 +795,73 @@ def test_business_examples_are_business_specific_not_generic_template():
 def test_biology_examples_cover_molecule_and_genetics_branches():
     cases = [
         ("Water", "Water solvent dipole transport.", 0, ["polar solvent", "transport"]),
-        ("Carbohydrate", "Carbohydrate starch glucose.", 0, ["glucose is a monosaccharide", "starch is a polysaccharide"]),
-        ("Lipid", "Lipid triglyceride ester fatty acid glycerol.", 0, ["triglyceride", "ester bonds"]),
-        ("DNA", "DNA RNA replication nucleotide gene genetic.", 0, ["complementary base", "genetic information"]),
+        (
+            "Carbohydrate",
+            "Carbohydrate starch glucose.",
+            0,
+            ["glucose is a monosaccharide", "starch is a polysaccharide"],
+        ),
+        (
+            "Lipid",
+            "Lipid triglyceride ester fatty acid glycerol.",
+            0,
+            ["triglyceride", "ester bonds"],
+        ),
+        (
+            "DNA",
+            "DNA RNA replication nucleotide gene genetic.",
+            0,
+            ["complementary base", "genetic information"],
+        ),
         ("Fallback", "Ecology adaptation.", 0, ["cause-and-effect", "biological structure"]),
     ]
 
     for title, focus, number, expected_terms in cases:
-        text = combined_text(concrete_example(Topic(title=title, points=[focus]), focus, number, "Biology"))
+        text = combined_text(
+            concrete_example(Topic(title=title, points=[focus]), focus, number, "Biology")
+        )
         for expected in expected_terms:
             assert expected.lower() in text
 
 
 def test_chinese_examples_cover_subject_specific_branches():
     cases = [
-        ("Chemistry", Topic(title="Atomic structure", points=["atomic proton neutron electron"]), "atomic proton neutron electron", ["原子序数", "质量数"]),
-        ("Chemistry", Topic(title="Acid base", points=["acid base alkali salt pH"]), "acid base alkali salt pH", ["化学解释题", "结论"]),
-        ("Economics", Topic(title="Demand and supply", points=["demand supply market price"]), "demand supply market price", ["需求曲线", "均衡"]),
-        ("Accounting", Topic(title="Bank reconciliation", points=["trial balance bank reconciliation"]), "trial balance bank reconciliation", ["银行调节表", "现金簿"]),
-        ("Mathematics", Topic(title="G1 - Geometry", points=["triangle geometry"]), "triangle geometry", ["直角三角形", "斜边"]),
-        ("Unmapped", Topic(title="Unknown", points=["source detail"]), "source detail", ["只围绕", "来源点"]),
+        (
+            "Chemistry",
+            Topic(title="Atomic structure", points=["atomic proton neutron electron"]),
+            "atomic proton neutron electron",
+            ["原子序数", "质量数"],
+        ),
+        (
+            "Chemistry",
+            Topic(title="Acid base", points=["acid base alkali salt pH"]),
+            "acid base alkali salt pH",
+            ["化学解释题", "结论"],
+        ),
+        (
+            "Economics",
+            Topic(title="Demand and supply", points=["demand supply market price"]),
+            "demand supply market price",
+            ["需求曲线", "均衡"],
+        ),
+        (
+            "Accounting",
+            Topic(title="Bank reconciliation", points=["trial balance bank reconciliation"]),
+            "trial balance bank reconciliation",
+            ["银行调节表", "现金簿"],
+        ),
+        (
+            "Mathematics",
+            Topic(title="G1 - Geometry", points=["triangle geometry"]),
+            "triangle geometry",
+            ["直角三角形", "斜边"],
+        ),
+        (
+            "Unmapped",
+            Topic(title="Unknown", points=["source detail"]),
+            "source detail",
+            ["只围绕", "来源点"],
+        ),
     ]
 
     for subject, topic, focus, expected_terms in cases:
@@ -763,14 +910,54 @@ def test_command_words_and_difficulty_rotate_by_level_and_language():
 
 def test_major_example_branches_have_distinct_even_and_odd_variants():
     cases = [
-        ("Mathematics", Topic(title="N1 - Ratio", points=["Ratio and percentage calculations."]), "ratio", ["350 ml", "1.5 km"]),
-        ("Mathematics", Topic(title="A3 - Functions", points=["Functions and graphs."]), "function graph", ["x = -3 or x = 3", "y = 11"]),
-        ("Mathematics", Topic(title="A4 - Sequences", points=["Sequences and nth term."]), "sequence nth term", ["4n + 1", "31 is in the sequence"]),
-        ("Mathematics", Topic(title="G1 - Angles", points=["Angles around a point."]), "angles", ["112 degrees", "135 degrees"]),
-        ("Mathematics", Topic(title="S1 - Probability", points=["Probability outcomes."]), "probability", ["blue counters", "even outcomes"]),
-        ("Chemistry", Topic(title="Organic", points=["Hydrocarbon polymer crude."]), "hydrocarbon polymer crude", ["co2 and h2o", "poly(ethene)"]),
-        ("Accounting", Topic(title="Ratios", points=["Ratio profitability liquidity."]), "ratio profitability liquidity", ["gross profit margin", "current ratio"]),
-        ("Economics", Topic(title="Market", points=["Demand supply price equilibrium."]), "demand supply price equilibrium", ["demand shifts to the right", "supply curve shifts left"]),
+        (
+            "Mathematics",
+            Topic(title="N1 - Ratio", points=["Ratio and percentage calculations."]),
+            "ratio",
+            ["350 ml", "1.5 km"],
+        ),
+        (
+            "Mathematics",
+            Topic(title="A3 - Functions", points=["Functions and graphs."]),
+            "function graph",
+            ["x = -3 or x = 3", "y = 11"],
+        ),
+        (
+            "Mathematics",
+            Topic(title="A4 - Sequences", points=["Sequences and nth term."]),
+            "sequence nth term",
+            ["4n + 1", "31 is in the sequence"],
+        ),
+        (
+            "Mathematics",
+            Topic(title="G1 - Angles", points=["Angles around a point."]),
+            "angles",
+            ["112 degrees", "135 degrees"],
+        ),
+        (
+            "Mathematics",
+            Topic(title="S1 - Probability", points=["Probability outcomes."]),
+            "probability",
+            ["blue counters", "even outcomes"],
+        ),
+        (
+            "Chemistry",
+            Topic(title="Organic", points=["Hydrocarbon polymer crude."]),
+            "hydrocarbon polymer crude",
+            ["co2 and h2o", "poly(ethene)"],
+        ),
+        (
+            "Accounting",
+            Topic(title="Ratios", points=["Ratio profitability liquidity."]),
+            "ratio profitability liquidity",
+            ["gross profit margin", "current ratio"],
+        ),
+        (
+            "Economics",
+            Topic(title="Market", points=["Demand supply price equilibrium."]),
+            "demand supply price equilibrium",
+            ["demand shifts to the right", "supply curve shifts left"],
+        ),
     ]
 
     for subject, topic, focus, expected_terms in cases:

@@ -135,7 +135,7 @@ folder ignored and untracked.
 
 v0.2.21 closed the eighth-round testing-coverage gap by adding direct renderer
 contract tests for cover identity, stylesheet/print layout, visual manifests,
-generated raster reuse, SVG fallback assets, modular handbook packaging, and the
+generated raster reuse, legacy SVG replacement counters, modular handbook packaging, and the
 Playwright Chrome-to-Edge PDF fallback route. Future rendering changes should
 update these contract tests instead of relying only on end-to-end demo coverage.
 
@@ -183,8 +183,8 @@ For every release sample or user-facing final guide, inspect the rendered
 roadmap for duplicate knowledge-unit titles and duplicate mastery targets,
 verify `final-review-packet.json` reports `delivery_status: ready`, and make
 sure complex infographic assets are either reviewed/imported or clearly left as
-non-final image jobs. SVG is appropriate only for SVG-safe simple diagrams; it
-must not be used as a blanket substitute for complex instructional
+non-final image jobs. SVG is appropriate only for reviewed `svg_fit: "exact"`
+cases; it must not be used as a blanket substitute for complex instructional
 infographics.
 
 v0.4 documents the release-evidence layer rather than changing the v0.3 facts.
@@ -322,8 +322,9 @@ Current public logic:
 - "external" does not mean manual user file-moving. If the route is callable,
   the Agent should run it after the base handbook exists and import or attach
   the reviewed assets automatically;
-- SVG is only a fallback for simple diagrams and must carry review warnings when
-  used for complex visuals.
+- exact SVG is a reviewed exception for `svg_fit: "exact"` cases, not a
+  fallback for complex visuals; unreviewed or non-exact SVG must block final
+  delivery.
 
 External complex-infographic prompts should preserve the revision-worksheet
 look that has tested well: landscape layout, large topic banner, clear teaching
@@ -381,7 +382,8 @@ For concept-output audits, read these counters together:
 For visual-output audits, read the three counters together:
 
 - `generated_infographic_assets`: reviewed/generated raster infographic files;
-- `svg_fallback_assets`: legacy SVG fallback files detected for replacement;
+- `svg_fallback_assets`: legacy SVG fallback files detected for replacement or
+  explicit review under the exact-SVG policy;
 - `pending_infographic_assets`: complex briefs still waiting for external
   image generation or human review.
 
