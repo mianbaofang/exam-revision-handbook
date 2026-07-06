@@ -36,10 +36,11 @@
 </p>
 
 **这个项目是框架，不是离线内容生成器。** `skill/` 里的 Skill 说明会让
-OpenClaw、Hermes 或其它 Agent 的宿主 LLM 扮演 Writer：根据当前官方大纲和
-`concepts/concept_jobs.json` 即时写概念解释、例题和学习路线；宿主还必须开启独立
-Reviewer 子 Agent 复查渲染后的手册。Python 包只负责抓取官方来源、规划结构、导出
-HTML/PDF、登记图片资产、写入 concept/image jobs 和执行验证门槛。
+OpenClaw、Hermes 或其它 Agent 的宿主 LLM 按 Analyst、Writer、Reviewer 三个轻量角色工作：
+根据当前官方大纲即时判断 topic 边界、写概念解释、例题、学习路线和每个 topic 的
+`visual_decision`，再单独复查渲染后的手册。Reviewer 可以是用户明确要求时的独立 Agent，
+但不是强制子 Agent。Python 包只负责抓取官方来源、规划结构、导出 HTML/PDF、登记图片资产、
+写入 concept/image jobs 和执行机械验证。
 
 CLI 只是框架调试和草稿 fallback。直接运行 `python -m intl_exam_guide generate ...`
 会得到结构完整但教学内容偏骨架化的 draft，不能当成已经可交给学生的最终手册。
@@ -109,7 +110,7 @@ outputs/chemistry-9202/
   qualification.json         课程与来源信息
   validation.json            完整性检查结果
   handbook-package.json      最终交付清单
-  final-review-packet.json   独立 reviewer 最终复查证据
+  final-review-packet.json   reviewer 最终复查证据
   agent-product-review.json  当前 Agent 读成品、修复并兜底后的产品复查证据
 ```
 
@@ -118,8 +119,8 @@ outputs/chemistry-9202/
 - 官方大纲整理出的知识点结构；
 - 从每个 topic/source job 复查后的学生友好概念解释；
 - 原创例题、步骤和答案检查点；
-- 适合图文讲解的知识点与例题；
-- 已复核的 exact-SVG 资产和复杂信息图需求清单；
+- 每个 topic 的 `visual_decision`，包括不需要单独图片时的 `text-ok` 理由；
+- 已复核的 exact-SVG/Kroki/图片资产和复杂信息图需求清单；
 - 最终备考复习题；
 - 可打印 HTML/PDF。
 
@@ -154,11 +155,11 @@ review-ready 或 draft，不能标 final-ready。
 以后可以继续扩展，但不会把未支持的考试局写成已经支持。
 
 交付质量以 `tests/fixtures/delivery_matrix.json` 里的交付矩阵为准。每条路线都有明确的
-claim status 和 v0.4 release-evidence status；三大考试局共享同一套生成流程，但不等于所有科目、
+claim status 和 v0.5 release-evidence status；三大考试局共享同一套生成流程，但不等于所有科目、
 所有级别都已经验证。候选路线不能说成交付级，只有在新的输出同时通过 validation、
 最终 Agent 复查和视觉状态检查，并写入 release-evidence manifest 后，才能升级为可交付样例。
 
-v0.4 使用四个状态词：
+v0.5 使用四个状态词：
 
 - `candidate`：有路线或样例证据，但不是交付级。
 - `draft`：有当前输出，但概念、图片、PDF、validation 或自查仍有阻塞。
@@ -172,7 +173,7 @@ v0.4 使用四个状态词：
 1. 先根据官方大纲生成知识点、讲解和例题。
 2. 再判断哪些知识点或例题需要图文结合讲解。
 
-宿主 LLM/Agent 判断每个 topic 或例题到底需要纯文字、exact-SVG 候选，还是更复杂的信息图。SVG 只允许用于几何、坐标轴、标签、简单表格或简单流程能完整表达含义的场景；Writer 必须写明 `svg_fit="exact"`，并且资产经过 reviewed 或 approved 后才能进入最终交付。
+宿主 LLM/Agent 判断每个 topic 到底需要纯文字、exact-SVG、Kroki 专业图，还是更复杂的信息图。这个判断适用于所有科目：任何科目都可能需要图，任何 topic 也都可以在理由充分时选择 `text-ok`。Writer 必须为每个 topic 写 `visual_decision`；如果选择 `text-ok`，必须写 `no_visual_reason` 说明为什么单独图片不会增加学习价值。SVG 只允许用于几何、坐标轴、标签、简单表格或简单流程能完整表达含义的场景；Writer 必须写明 `svg_fit="exact"`，并且资产经过 reviewed 或 approved 后才能进入最终交付。
 
 如果用户没有可调用的生图模型，复杂视觉内容会保留在 `images/infographic_jobs.json` 和 `images/infographic_jobs.md` 中。Python 框架不会用本地 deterministic SVG 冒充复杂信息图。Kroki 或 SVG 输出只能作为已复核的 exact-fit 资产，不能替代高密度信息图。
 

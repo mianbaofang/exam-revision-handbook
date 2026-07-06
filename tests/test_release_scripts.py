@@ -92,7 +92,7 @@ def test_verify_release_samples_rejects_mixed_language_slash_labels(tmp_path):
     assert "mixed-language label remains" in result.stderr
 
 
-def test_verify_release_samples_defaults_to_lightweight_v04_evidence():
+def test_verify_release_samples_defaults_to_lightweight_v05_evidence():
     script = Path(__file__).resolve().parents[1] / "scripts" / "verify_release_samples.py"
 
     result = subprocess.run(
@@ -105,8 +105,8 @@ def test_verify_release_samples_defaults_to_lightweight_v04_evidence():
     assert result.returncode == 0
     payload = json.loads(result.stdout)
     assert payload["evidence_manifest"].endswith(
-        "docs\\release-evidence\\v0.4\\manifest.json"
-    ) or payload["evidence_manifest"].endswith("docs/release-evidence/v0.4/manifest.json")
+        "docs\\release-evidence\\v0.5\\manifest.json"
+    ) or payload["evidence_manifest"].endswith("docs/release-evidence/v0.5/manifest.json")
     assert payload["entries"]
     assert all(
         entry["status"] in {"candidate", "draft", "final-ready", "certified"}
@@ -119,7 +119,7 @@ def test_verify_release_evidence_requires_product_review_for_final_ready(tmp_pat
     manifest.write_text(
         json.dumps(
             {
-                "release": "v0.4.2",
+                "release": "v0.5.0",
                 "overall_status": "final-ready",
                 "entries": [
                     {
@@ -702,7 +702,7 @@ def write_sample_outputs(outputs: Path, completed: bool) -> None:
             (sample_dir / "agent-product-review.json").write_text(
                 json.dumps(
                     {
-                        "schema_version": "v0.4-agent-product-review",
+                        "schema_version": "v0.5-visible-handbook-review",
                         "visible_handbook_inspected": True,
                         "syllabus_outline_compared": True,
                         "pdf_pages_sampled": [1],

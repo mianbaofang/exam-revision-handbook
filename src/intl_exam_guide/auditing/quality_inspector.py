@@ -8,7 +8,12 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
+from intl_exam_guide.planning.concept_integration import (
+    FALLBACK_VISUAL_DECISION_STATE,
+    VISUAL_DECISION_ROUTES,
+)
 from intl_exam_guide.rendering.output_names import find_handbook_html
+from intl_exam_guide.visuals.manifest import PENDING_WORKFLOW_STATUSES, sync_visual_manifest_entry
 
 QUALITY_INSPECTION_FILE = "quality-inspection.json"
 QUALITY_INSPECTION_PROMPT_FILE = "quality-inspection-prompt.md"
@@ -122,6 +127,72 @@ def inspect_handbook_output(output_dir: Path) -> QualityInspectionResult:
                 f"concept_explanations.json covers {concept_checks['entry_count']} of {topic_count} topic(s).",
             )
         )
+    missing_visual_decisions = concept_checks.get("missing_visual_decisions", [])
+    if missing_visual_decisions:
+        sample = ", ".join(str(item) for item in missing_visual_decisions[:5])
+        issues.append(
+            InspectionIssue(
+                "error",
+                "visuals",
+                "concept_explanations.json must record visual_decision for every topic; "
+                f"missing: {sample}.",
+            )
+        )
+    invalid_visual_routes = concept_checks.get("invalid_visual_routes", [])
+    if invalid_visual_routes:
+        sample = ", ".join(str(item) for item in invalid_visual_routes[:5])
+        issues.append(
+            InspectionIssue(
+                "error",
+                "visuals",
+                "visual_decision.recommended_route must be one of "
+                f"{sorted(VISUAL_DECISION_ROUTES)}; invalid: {sample}.",
+            )
+        )
+    fallback_visual_decisions = concept_checks.get("fallback_visual_decisions", [])
+    if fallback_visual_decisions:
+        sample = ", ".join(str(item) for item in fallback_visual_decisions[:5])
+        issues.append(
+            InspectionIssue(
+                "error",
+                "visuals",
+                "visual_decision must be written by the Writer, not inserted by Python as a draft fallback; "
+                f"fallback: {sample}.",
+            )
+        )
+    missing_no_visual_reasons = concept_checks.get("missing_no_visual_reasons", [])
+    if missing_no_visual_reasons:
+        sample = ", ".join(str(item) for item in missing_no_visual_reasons[:5])
+        issues.append(
+            InspectionIssue(
+                "error",
+                "visuals",
+                "text-ok visual_decision entries must explain why no visual helps learning; "
+                f"missing reason: {sample}.",
+            )
+        )
+    text_ok_with_visual_specs = concept_checks.get("text_ok_with_visual_specs", [])
+    if text_ok_with_visual_specs:
+        sample = ", ".join(str(item) for item in text_ok_with_visual_specs[:5])
+        issues.append(
+            InspectionIssue(
+                "error",
+                "visuals",
+                "text-ok visual_decision entries must not include visual_spec; "
+                f"contradictory entries: {sample}.",
+            )
+        )
+    missing_visual_specs = concept_checks.get("missing_visual_specs", [])
+    if missing_visual_specs:
+        sample = ", ".join(str(item) for item in missing_visual_specs[:5])
+        issues.append(
+            InspectionIssue(
+                "error",
+                "visuals",
+                "non-text visual_decision routes must include visual_spec; "
+                f"missing visual_spec: {sample}.",
+            )
+        )
 
     visual_checks = check_visual_manifest(output_dir)
     checks["visuals"] = visual_checks
@@ -186,9 +257,9 @@ def build_quality_inspector_prompt(output_dir: Path) -> str:
             "A. Files: named handbook HTML, qualification.json, syllabus-outline.json, guide-plan.json, validation.json, concept_jobs.json.",
             "B. Module structure: cover, how-to-use, topic map, glossary when applicable, topic guides, practice, exam structure, revision checklist.",
             "C. Topic completeness: topic count matches qualification.json and each topic has visible teaching content.",
-            "D. Concept import: concept_explanations.json exists when the package is being considered complete.",
+            "D. Concept import: concept_explanations.json exists when the package is being considered complete; every topic records visual_decision, and text-ok decisions include no_visual_reason.",
             "E. Formatting: no visible [insert ...], [LLM fills ...], undefined, null, or TODO text.",
-            "F. Visuals: manifest exists, visual prompts are not repeated five or more times, pending complex assets are explicit.",
+            "F. Visuals: manifest exists, visual prompts are not repeated five or more times, pending complex assets are explicit, and the recommended route is distinct from the rendered asset state.",
             "",
             "## 4. Decision",
             "",
@@ -256,15 +327,57 @@ def check_concept_explanations(output_dir: Path, topic_count: int) -> dict[str, 
     else:
         entries = data
     if isinstance(entries, dict):
+        concept_entries = [entry for entry in entries.values() if isinstance(entry, dict)]
         entry_count = len(entries)
     elif isinstance(entries, list):
-        entry_count = len([entry for entry in entries if isinstance(entry, dict)])
+        concept_entries = [entry for entry in entries if isinstance(entry, dict)]
+        entry_count = len(concept_entries)
     else:
+        concept_entries = []
         entry_count = 0
+    missing_visual_decisions = []
+    invalid_visual_routes = []
+    fallback_visual_decisions = []
+    missing_no_visual_reasons = []
+    text_ok_with_visual_specs = []
+    missing_visual_specs = []
+    visual_decision_count = 0
+    for index, entry in enumerate(concept_entries, start=1):
+        title = str(entry.get("topic_title") or entry.get("concept_term") or f"entry {index}")
+        visual_decision = entry.get("visual_decision")
+        has_visual_decision = isinstance(visual_decision, dict)
+        if not has_visual_decision:
+            missing_visual_decisions.append(title)
+            continue
+        visual_decision_count += 1
+        route = str(visual_decision.get("recommended_route") or "").strip().lower()
+        if route not in VISUAL_DECISION_ROUTES:
+            invalid_visual_routes.append(f"{title} ({route or 'missing route'})")
+            continue
+        workflow_state = str(visual_decision.get("workflow_state") or "").strip()
+        source = str(visual_decision.get("source") or "").strip()
+        if workflow_state == FALLBACK_VISUAL_DECISION_STATE or source == "python-draft-fallback":
+            fallback_visual_decisions.append(title)
+        has_visual_spec = isinstance(entry.get("visual_spec"), dict)
+        reason = str(visual_decision.get("no_visual_reason") or "").strip()
+        if route == "text-ok":
+            if len(reason) < 12:
+                missing_no_visual_reasons.append(title)
+            if has_visual_spec:
+                text_ok_with_visual_specs.append(title)
+        elif not has_visual_spec:
+            missing_visual_specs.append(f"{title} ({route})")
     return {
         "present": path.exists(),
         "entry_count": entry_count,
         "expected_topics": topic_count,
+        "visual_decision_count": visual_decision_count,
+        "missing_visual_decisions": missing_visual_decisions,
+        "invalid_visual_routes": invalid_visual_routes,
+        "fallback_visual_decisions": fallback_visual_decisions,
+        "missing_visual_specs": missing_visual_specs,
+        "missing_no_visual_reasons": missing_no_visual_reasons,
+        "text_ok_with_visual_specs": text_ok_with_visual_specs,
     }
 
 
@@ -278,31 +391,31 @@ def check_visual_manifest(output_dir: Path) -> dict[str, object]:
     prompts: dict[str, int] = {}
     pending_complex = []
     issues = []
-    for entry in entries:
+    for raw_entry in entries:
+        entry = sync_visual_manifest_entry(raw_entry)
         prompt = str(entry.get("prompt") or "").strip()
         if prompt:
             prompts[prompt] = prompts.get(prompt, 0) + 1
-        status = str(entry.get("asset_status") or "").lower()
-        review_status = str(entry.get("review_status") or "").lower()
-        complexity = str(entry.get("complexity") or "").lower()
-        provider = str(entry.get("image_provider") or entry.get("renderer_id") or "").lower()
+        legacy_status = str(entry.get("asset_status") or "").lower()
+        route = entry.get("recommended_route") if isinstance(entry.get("recommended_route"), dict) else {}
+        asset = entry.get("rendered_asset") if isinstance(entry.get("rendered_asset"), dict) else {}
+        review_status = str(asset.get("review_status") or entry.get("review_status") or "").lower()
+        complexity = str(route.get("legacy_complexity") or entry.get("complexity") or "").lower()
+        route_name = str(route.get("route") or "").lower()
+        provider = str(route.get("renderer_id") or entry.get("image_provider") or entry.get("renderer_id") or "").lower()
         visual_id = entry.get("id") or entry.get("visual_id") or "unknown"
         if provider == "deterministic-svg":
             issues.append(
                 f"{visual_id} uses local deterministic SVG instead of an LLM-approved exact SVG or external infographic asset."
             )
-        if complexity == "svg-basic":
-            if str(entry.get("svg_fit") or "").lower() != "exact":
-                issues.append(f"{visual_id} is SVG but is not marked svg_fit=exact.")
-            if status == "svg-draft" or review_status not in {"reviewed", "approved"}:
-                issues.append(f"{visual_id} SVG asset has not been reviewed or approved.")
-        if complexity == "infographic" and status in {
-            "external-generation-required",
-            "infographic-provider-required",
-            "provider-selected-pending-generation",
-            "llm-svg-required",
-            "svg-fallback-needs-review",
-        }:
+        if complexity == "svg-basic" or route_name in {"exact-svg", "kroki-diagram"}:
+            if str(route.get("svg_fit") or entry.get("svg_fit") or "").lower() != "exact":
+                issues.append(f"{visual_id} recommended_route is SVG but is not marked svg_fit=exact.")
+            if (
+                legacy_status == "svg-draft" or str(asset.get("asset_route") or "").endswith("svg")
+            ) and review_status not in {"reviewed", "approved"}:
+                issues.append(f"{visual_id} rendered SVG asset has not been reviewed or approved.")
+        if legacy_status in PENDING_WORKFLOW_STATUSES:
             pending_complex.append(entry.get("id"))
     repeated = [prompt for prompt, count in prompts.items() if count >= 5]
     if repeated:

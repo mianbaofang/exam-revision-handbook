@@ -35,6 +35,7 @@ def test_build_visual_manifest_v2_generates_contract_and_asset_metadata(tmp_path
     )
 
     assert manifest["schema_version"] == 2
+    assert manifest["visual_contract"] == "v0.5-visual-route-asset-split"
     assert len(manifest["visuals"]) == 1
 
     entry = manifest["visuals"][0]
@@ -55,6 +56,19 @@ def test_build_visual_manifest_v2_generates_contract_and_asset_metadata(tmp_path
         "width": 640,
         "height": 360,
     }
+    assert entry["recommended_route"] == {
+        "route": "kroki-diagram",
+        "legacy_complexity": "svg-basic",
+        "renderer_id": "kroki",
+        "svg_fit": "",
+        "route_status": "recommended",
+        "reason": "simple chart",
+    }
+    assert entry["rendered_asset"]["file"] == "visual_001.svg"
+    assert entry["rendered_asset"]["asset_route"] == "kroki-svg"
+    assert entry["rendered_asset"]["asset_status"] == "draft"
+    assert entry["rendered_asset"]["renders_in_html"] is False
+    assert entry["visual_need"]["visual_teaching_value"] == "student-preview"
 
 
 def test_load_visual_manifest_accepts_v2_and_legacy_list(tmp_path):

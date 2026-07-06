@@ -1,5 +1,13 @@
 # Multi-Agent Expert Team Methodology
 
+> Historical / optional methodology note: this document describes a general
+> coordinator-style multi-agent pattern. It is **not** the mandatory workflow for
+> the IGCSE/A-Level Revision Guide Skill v0.5. The current Skill uses lightweight
+> Analyst, Writer, and Reviewer role labels; one host LLM may run them step by
+> step, and explicit multi-agent delegation is optional. Do not read the
+> Coordinator pattern below as a requirement for Project Manager approval,
+> mandatory `agent-orchestration.json`, or release certification.
+
 ## 核心理念
 
 **专家 = 普通 Agent + 领域方法论 + 交付模版 + 工作流约束**

@@ -19,11 +19,11 @@ def test_project_state_tracks_missing_preflight_and_handoffs():
     assert payload["project_status"] == "blocked"
     assert payload["required_sequence"] == REQUIRED_SEQUENCE
     assert "level" in payload["missing_preflight"]
-    assert "handbook_project_manager" == payload["handoffs"][0]["from_role"]
-    assert payload["handoffs"][2]["to_role"] == "quality_inspector"
+    assert "host_llm" == payload["handoffs"][0]["from_role"]
+    assert payload["handoffs"][2]["to_role"] == "final_reviewer"
 
 
-def test_coordinator_prompt_exposes_five_role_workflow():
+def test_coordinator_prompt_exposes_lightweight_workflow():
     prompt = build_coordinator_prompt(
         HandbookProjectParameters(
             exam_board="Cambridge",
@@ -36,8 +36,9 @@ def test_coordinator_prompt_exposes_five_role_workflow():
         )
     )
 
-    assert "Handbook Project Manager" in prompt
-    assert "Analyst -> Writer -> Quality Inspector -> Final Reviewer" in prompt
+    assert "Lightweight Handbook Workflow Coordinator" in prompt
+    assert "Analyst -> Writer -> Reviewer" in prompt
+    assert "not mandatory separate agents" in prompt
     assert "missing_preflight" in prompt
     assert "handbook-project-manager.json" in prompt
 

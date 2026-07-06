@@ -1,6 +1,6 @@
 # Release Evidence Manifests
 
-This directory documents the lightweight evidence manifest expected for v0.4+
+This directory documents the lightweight evidence manifest expected for v0.5+
 release claims. It is documentation only; generated handbook outputs, PDFs,
 screenshots, downloaded specifications, and local review scratch folders must
 stay out of Git unless a separate release task explicitly promotes a small
@@ -24,16 +24,16 @@ asset.
   the evidence was captured.
 
 No route is certified by default. A v0.3 `delivery_status: ready` packet is a
-historical fact, not a standing v0.4 certification.
+historical fact, not a standing v0.5 certification.
 
 ## Manifest Shape
 
 For each release that claims draft, final-ready, or certified evidence, add a
-small manifest such as `docs/release-evidence/v0.4/manifest.json`.
+small manifest such as `docs/release-evidence/v0.5/manifest.json`.
 
 ```json
 {
-  "release": "v0.4",
+  "release": "v0.5",
   "generated_at": "YYYY-MM-DD",
   "git_revision": "<commit sha>",
   "overall_status": "candidate",

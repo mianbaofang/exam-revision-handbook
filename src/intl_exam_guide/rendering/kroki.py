@@ -254,22 +254,18 @@ def cause_graphviz_source(title: str, labels: list[str]) -> str:
 
 def kroki_diagram_family(brief: VisualBrief) -> str:
     text = " ".join([brief.visual_type, brief.focus_point, *brief.source_points]).lower()
-    if "bank reconciliation" in text or "reconciliation" in text:
-        return "reconciliation"
-    if "organisation structure" in text or "organization structure" in text or "hierarchy" in text:
+    if "hierarchy" in text or "structure" in text:
         return "hierarchy"
-    if "stakeholder" in text:
+    if "star" in text or "influence map" in text:
         return "stakeholder"
-    if "operations flow" in text or "production process" in text:
-        return "flow"
-    if "quality" in text or "checkpoint" in text:
+    if "checkpoint" in text or "loop" in text:
         return "checkpoint"
-    if "segmentation" in text or "customer" in text:
-        return "segmentation"
-    if "timeline" in text:
+    if "timeline" in text or "chronology" in text:
         return "timeline"
     if "comparison" in text or "compare" in text:
         return "comparison"
+    if "reconciliation" in text or "match" in text or "verify" in text:
+        return "reconciliation"
     if "cause and consequence" in text or ("cause" in text and "consequence" in text):
         return "cause"
     return "flow"
@@ -284,26 +280,10 @@ def pad_labels(labels: list[str], minimum: int) -> list[str]:
 
 
 def professional_diagram_title(brief: VisualBrief) -> str:
-    text = " ".join([brief.visual_type, brief.focus_point, *brief.source_points]).lower()
-    if "source-document" in text or "book-of-prime-entry" in text or "ledger" in text:
-        return "Accounting Records Flow"
-    if "bank reconciliation" in text:
-        return "Bank Reconciliation Workflow"
-    if "organisation structure" in text or "hierarchy" in text:
-        return "Organisation Structure"
-    if "stakeholder" in text:
-        return "Stakeholder Influence Map"
-    if "operations flow" in text or "production process" in text:
-        return "Operations Flow"
-    if "quality" in text or "checkpoint" in text:
-        return "Quality Checkpoint Loop"
-    if "segmentation" in text or "customer" in text:
-        return "Customer Segmentation Map"
-    if "timeline" in text:
-        return "Timeline"
-    if "cause and consequence" in text:
-        return "Cause And Consequence Chain"
-    return brief.visual_type or "Professional Diagram"
+    title = split_visual_labels(brief.visual_type)
+    if title:
+        return title[0]
+    return brief.focus_point or brief.topic_title or "Professional Diagram"
 
 
 def topic_specific_diagram_title(brief: VisualBrief) -> str:
@@ -315,29 +295,8 @@ def topic_specific_diagram_title(brief: VisualBrief) -> str:
 
 
 def professional_diagram_labels(brief: VisualBrief) -> list[str]:
-    text = " ".join([brief.visual_type, brief.focus_point, *brief.source_points]).lower()
-    if "source-document" in text or "book-of-prime-entry" in text or "ledger" in text:
-        return ["Source document", "Book of prime entry", "Ledger account", "Trial balance"]
-    if "bank reconciliation" in text:
-        return ["Cash book", "Bank statement", "Timing difference", "Adjusted balance"]
-    if "error correction" in text or "suspense account" in text:
-        return ["Detect error", "Journal correction", "Suspense account", "Check balance"]
-    if "organisation structure" in text or "hierarchy" in text:
-        return ["Director", "Managers", "Teams", "Reporting line"]
-    if "stakeholder" in text:
-        return ["Decision", "Owners", "Employees", "Customers", "Community"]
-    if "operations flow" in text or "production process" in text:
-        return ["Inputs", "Production", "Quality check", "Output"]
-    if "quality" in text or "checkpoint" in text:
-        return ["Standard", "Check", "Defect found", "Improve process"]
-    if "segmentation" in text or "customer" in text:
-        return ["Customers", "Needs", "Segments", "Target offer"]
-    if "timeline" in text:
-        return ["Context", "Trigger", "Turning point", "Outcome"]
-    if "cause and consequence" in text:
-        return ["Long-term cause", "Short-term trigger", "Event", "Consequence"]
-    labels = split_visual_labels(brief.visual_type)
-    return labels[:5] if len(labels) >= 3 else ["Key idea", "Relationship", "Exam answer"]
+    labels = split_visual_labels("; ".join([brief.visual_type, brief.focus_point, *brief.source_points]))
+    return labels[:5] if len(labels) >= 3 else ["Key idea", "Relationship", "Evidence", "Exam answer"]
 
 
 def split_visual_labels(value: str) -> list[str]:

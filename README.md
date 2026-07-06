@@ -18,10 +18,12 @@ worked-example wording are produced by **the LLM that runs this Skill**:
   syllabus evidence, decides the real topic boundaries and exam points, and
   writes the authoritative `syllabus-outline.json`. Python only collects page
   evidence; it does **not** decide topics or exam points on its own.
-- The host's LLM then spawns an **independent subagent** to play the
-  **Reviewer** role: that subagent reads the rendered handbook without any
-  context from writing and checks for teaching effectiveness, blank pages,
-  duplicate mastery text, misused visuals, or gap-to-source issues.
+- The host's LLM then performs the **Reviewer** role as a separate review pass:
+  the Reviewer reads the rendered handbook/PDF and source evidence without
+  treating the Writer's validation as approval, then checks for teaching
+  effectiveness, blank pages, duplicate mastery text, misused visuals, or
+  gap-to-source issues. This may be a separate Agent if the user requests
+  multi-agent delegation, but it is not mandatory.
 
 The Python package under `src/intl_exam_guide/` provides:
 
@@ -87,23 +89,21 @@ syllabus, expand it into teachable topic units, write reviewed concept
 explanations from the current topic/source points, create worked examples,
 decide which points need visuals, and deliver HTML/PDF output.
 
-The workflow is a minimum three-role agent process. In Agent runtimes with
-subagent support, the Skill must dispatch the syllabus/outline analyst,
-handbook writer, and independent final reviewer as separate roles. The final
-reviewer cannot be the same writing context approving its own output; if no
-independent Agent/LLM context is available, the handbook stays review-ready or
-draft, not final-ready. The evidence and dispatch briefs are written to
-`agent-orchestration.json`, `delivery-contract.json`, and
-`final-review-packet.json`.
+The workflow is a lightweight three-role process: Analyst, Writer, and Reviewer.
+Those names are operating roles, not mandatory separate agents; one host LLM can
+run them step by step unless the user explicitly chooses multi-agent delegation.
+The Reviewer still has to open the visible handbook/PDF and cannot treat machine
+validation as approval. Supporting evidence is written to `delivery-contract.json`
+and `final-review-packet.json`.
 
 Delivery quality claims are tracked in the delivery matrix at
 `tests/fixtures/delivery_matrix.json`. Each route has an explicit claim status
-and a v0.4 release-evidence status. Candidate routes must not be described as
+and a v0.5 release-evidence status. Candidate routes must not be described as
 release-ready until a fresh output passes validation, final review, product
 review, and visual-status checks. The shared workflow is three-board, but the
 matrix evidence defines what is currently deliverable.
 
-v0.4 status words are intentionally conservative:
+v0.5 status words are intentionally conservative:
 
 - `candidate`: route evidence exists, but it is not delivery-grade.
 - `draft`: a fresh output exists, but concepts, visuals, PDF, validation, or
@@ -173,8 +173,7 @@ outputs/chemistry-9202/
   guide-plan.json            topic, example, and revision-task plan
   qualification.json         qualification and source metadata
   validation.json            quality-check report
-  agent-orchestration.json   syllabus/writer/reviewer role evidence
-  final-review-packet.json   Agent/LLM final self-review evidence
+  final-review-packet.json   Agent/LLM final review evidence
   agent-product-review.json  active Agent product-review and repair evidence
   handbook-package.json      final delivery manifest
 ```
@@ -184,8 +183,8 @@ The handbook package includes:
 - syllabus-based topic structure;
 - student-friendly explanations reviewed from per-topic source jobs;
 - original worked examples with steps and answer checkpoints;
-- visual-learning decisions for topics and examples;
-- reviewed exact-SVG assets where they fit, plus pending complex-infographic briefs;
+- per-topic `visual_decision` records, including `text-ok` reasons when a separate visual would not add learning value;
+- reviewed exact-SVG/Kroki/image assets where they fit, plus pending complex-infographic briefs;
 - final revision questions;
 - printable HTML/PDF output.
 
@@ -312,25 +311,24 @@ the Skill folder:
 https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill
 ```
 
-The Agent runtime runs the multi-role orchestration defined in
-`agent-orchestration.json`:
+The Agent runtime follows the lightweight Skill workflow:
 
-- **project manager** role: confirms preflight inputs, dispatches experts,
-  records handoffs, and keeps delivery state honest.
-- **analyst** role: reads the official syllabus evidence and writes the
+- **Analyst role**: reads the official syllabus evidence and writes the
   authoritative `syllabus-outline.json` (topic titles, exam points, source
   snippets). Python evidence extraction is a hint, not a substitute.
-- **writer** role: the host LLM produces concept explanations, worked examples,
-  study-roadmap text.
-- **quality inspector** role: writes `quality-inspection.json` after fast file,
-  module, placeholder, concept-count, and visual-manifest checks.
-- **final reviewer** role: an independent subagent reads the rendered handbook
-  and produces `final-review-packet.json` plus `agent-product-review.json`.
+- **Writer role**: writes concept explanations, worked examples,
+  study-roadmap text, and per-topic `visual_decision` records.
+- **Reviewer role**: reads the rendered handbook/PDF, compares it with the
+  source evidence and outline, and produces `final-review-packet.json` plus
+  `agent-product-review.json`.
+
+These are role labels. They may be separate agents in a runtime that supports
+that, but the Skill does not require a project-manager agent, a mandatory
+quality-inspector agent, or a release-certification workflow.
 
 Re-runs within the same session are idempotent: re-generated topics overwrite
-existing handbook-package.json, validation.json, visual-manifest.json so the
-Skill can keep iterating until `quality_inspector.status == complete` and
-`final_reviewer.status == complete`.
+existing handbook-package.json, validation.json, and visual-manifest.json so the
+Skill can keep iterating until the Reviewer has inspected the visible handbook.
 
 ### Mode 2: CLI-only (no Skill host, evidence package only)
 
@@ -355,7 +353,7 @@ pip install -e .
 python -m intl_exam_guide generate --query chemistry --level igcse --out .\outputs\chemistry-9202
 ```
 
-The CLI is for fetching official source material and writing `qualification.json`, `syllabus-evidence.json`, and `source/`. A real teaching handbook still requires Mode 1: an LLM Analyst outline, Writer-authored concepts/visual decisions, rendered HTML/PDF, Quality Inspector checks, and independent visible-handbook review.
+The CLI is for fetching official source material and writing `qualification.json`, `syllabus-evidence.json`, and `source/`. A real teaching handbook still requires Mode 1: an LLM Analyst outline, Writer-authored concepts/visual decisions, rendered HTML/PDF, mechanical checks, and visible-handbook review.
 
 Checks:
 

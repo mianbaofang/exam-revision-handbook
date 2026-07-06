@@ -9,6 +9,7 @@ import pytest
 from intl_exam_guide.llm.provider import ConceptExplanation, ConceptJob
 from intl_exam_guide.models import Qualification, SourceRecord, Topic
 from intl_exam_guide.planning.concept_integration import (
+    VisualDecisionContractError,
     apply_concept_entries,
     apply_concept_explanations,
     collect_concept_jobs,
@@ -166,6 +167,9 @@ class TestCanonicalConceptEntries:
         assert imported == 2
         assert missing == []
         assert entries[0]["topic_title"] == "Newton's Laws of Motion"
+        assert entries[0]["visual_decision"]["recommended_route"] == "text-ok"
+        assert entries[0]["visual_decision"]["source"] == "python-draft-fallback"
+        assert "no_visual_reason" in entries[0]["visual_decision"]
         assert len(entries[0]["explanations"]) >= 2
         assert "resultant external force" in plan.topic_guides[0].checklist[0]
 
@@ -183,6 +187,11 @@ class TestCanonicalConceptEntries:
                         "Newton's laws describe how resultant force changes motion.",
                         "They matter because force questions first require a correct motion model.",
                     ],
+                    "visual_decision": {
+                        "recommended_route": "exact-svg",
+                        "learning_claim": "Force-arrow geometry carries this relationship more clearly than text alone.",
+                        "visual_teaching_value": "Students can see the resultant direction and label positions."
+                    },
                     "visual_spec": {
                         "type": "force arrows on a particle",
                         "complexity": "svg-basic",
@@ -204,6 +213,81 @@ class TestCanonicalConceptEntries:
         assert visual.image_provider == "llm-svg"
         assert visual.llm_visual_spec is True
         assert visual.svg_fit == "exact"
+
+    def test_apply_concept_entries_preserves_kroki_visual_route(self, sample_qualification):
+        plan = build_guide_plan(sample_qualification, questions_per_topic=1)
+        topic_title = plan.topic_guides[0].topic_title
+
+        imported, missing = apply_concept_entries(
+            plan,
+            [
+                {
+                    "topic_title": topic_title,
+                    "concept_term": "Newton's Laws of Motion",
+                    "explanations": [
+                        "Newton's laws describe how resultant force changes motion.",
+                        "They matter because force questions first require a correct motion model.",
+                    ],
+                    "visual_decision": {
+                        "recommended_route": "kroki-diagram",
+                        "learning_claim": "A formal force relation diagram clarifies the model.",
+                        "visual_teaching_value": "Students can read the relation as a structured diagram.",
+                    },
+                    "visual_spec": {
+                        "type": "force relationship graph",
+                        "focus_point": "resultant force direction",
+                        "trigger": "Kroki can express the formal relationship exactly.",
+                        "prompt": "Create a Kroki diagram showing resultant force and acceleration direction.",
+                    },
+                }
+            ],
+        )
+
+        assert imported == 1
+        assert missing == []
+        assert len(plan.visual_briefs) == 1
+        visual = plan.visual_briefs[0]
+        assert visual.complexity == "svg-basic"
+        assert visual.image_provider == "kroki"
+
+    def test_apply_concept_entries_rejects_unknown_visual_route(self, sample_qualification):
+        plan = build_guide_plan(sample_qualification, questions_per_topic=1)
+        topic_title = plan.topic_guides[0].topic_title
+
+        with pytest.raises(VisualDecisionContractError, match="recommended_route"):
+            apply_concept_entries(
+                plan,
+                [
+                    {
+                        "topic_title": topic_title,
+                        "explanations": ["One useful explanation.", "A second useful explanation."],
+                        "visual_decision": {"recommended_route": "auto-diagram"},
+                    }
+                ],
+            )
+
+    def test_apply_concept_entries_rejects_text_ok_with_visual_spec(self, sample_qualification):
+        plan = build_guide_plan(sample_qualification, questions_per_topic=1)
+        topic_title = plan.topic_guides[0].topic_title
+
+        with pytest.raises(VisualDecisionContractError, match="must not include visual_spec"):
+            apply_concept_entries(
+                plan,
+                [
+                    {
+                        "topic_title": topic_title,
+                        "explanations": ["One useful explanation.", "A second useful explanation."],
+                        "visual_decision": {
+                            "recommended_route": "text-ok",
+                            "no_visual_reason": "The worked example already carries the learning clearly.",
+                        },
+                        "visual_spec": {
+                            "type": "diagram",
+                            "prompt": "Draw a diagram that contradicts text-ok.",
+                        },
+                    }
+                ],
+            )
 
     def test_build_guide_plan_stays_planning_only(self, sample_qualification):
         with pytest.raises(TypeError):
@@ -244,3 +328,6 @@ class TestSkillHostConceptFlow:
         entries = json.loads(concepts_path.read_text(encoding="utf-8"))
         assert len(entries) == 2
         assert entries[0]["topic_title"] == "Newton's Laws of Motion"
+        assert entries[0]["visual_decision"]["recommended_route"] == "text-ok"
+        assert entries[0]["visual_decision"]["source"] == "python-draft-fallback"
+        assert "no_visual_reason" in entries[0]["visual_decision"]

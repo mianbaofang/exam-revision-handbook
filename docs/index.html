@@ -780,7 +780,7 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div>
-          <div class="kicker">三大考试局支持 · v0.4.5</div>
+          <div class="kicker">三大考试局支持 · v0.5</div>
           <h1>三大考试局复习手册，一句话生成。</h1>
           <p class="lead">支持 AQA、Edexcel、CAIE。把 Skill 链接交给你的 OpenClaw、Hermes 或其他 Agent，说一句“帮我生成某个科目的复习手册”，确认考试局、科目、语言和讲解风格后，它会生成知识点讲解、例题、图文学习单元和可打印 PDF。</p>
           <div class="action-row">
@@ -894,7 +894,7 @@
       <div class="shell">
         <div class="section-head">
           <h2>当前核心能力，不只是把文字排成 PDF。</h2>
-          <p>v0.4.5 的重点是把 Skill 重新收束成“框架 + LLM 操作指南”：Python 只负责下载、抽取、验证和渲染，内容理解、判断、写作和复查都交给宿主 LLM 的 Analyst、Writer、Reviewer 三角色完成。</p>
+          <p>v0.5 的重点是把 Skill 重新收束成“框架 + LLM 操作指南”：Python 只负责下载、抽取、验证和渲染；内容理解、判断、写作、每个 topic 的视觉决策和复查都交给宿主 LLM 的 Analyst、Writer、Reviewer 轻量角色完成。</p>
         </div>
         <div class="flow capability-flow">
           <article class="flow-item">
@@ -907,8 +907,8 @@
           <article class="flow-item">
             <div class="num">02 · 协作</div>
             <div>
-              <h3>多 Agent 分工</h3>
-              <p>大纲分析、主编写、视觉路由和最终验收拆开执行；最终验收 Agent 独立阅读结果，而不是照着生成器的说法直接放行。</p>
+              <h3>轻量角色分工</h3>
+              <p>大纲分析、主编写、视觉决策和最终复查拆开执行；可以由一个宿主 LLM 分阶段完成，也可以在用户要求时交给多个 Agent。</p>
             </div>
           </article>
           <article class="flow-item">
@@ -922,7 +922,7 @@
             <div class="num">04 · 图形</div>
             <div>
               <h3>专业图形分流</h3>
-              <p>简单精确图本地生成；流程、层级、关系图走 Kroki；大量文字和图解结合的信息图走外部生图并自动导入。</p>
+              <p>每个 topic 先由 Writer 判断视觉学习价值：文字足够就写明 text-ok 理由；精确图走 exact-SVG 或 Kroki；复杂信息图走外部生图并复核导入。</p>
             </div>
           </article>
           <article class="flow-item">
@@ -935,8 +935,8 @@
           <article class="flow-item">
             <div class="num">06 · 验收</div>
             <div>
-              <h3>独立 Agent 复查</h3>
-              <p>最终交付前检查大纲覆盖、解释质量、术语表、图形和 PDF 抽页；问题能修就修，不能修就保留 draft 状态。</p>
+              <h3>可见成品复查</h3>
+              <p>最终交付前检查大纲覆盖、解释质量、术语表、图形和 PDF 抽页；机器验证只是辅助证据，问题能修就修，不能修就保留 draft 状态。</p>
             </div>
           </article>
         </div>

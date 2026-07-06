@@ -1,4 +1,4 @@
-"""Coordination helpers for multi-agent handbook generation."""
+"""Optional coordination helpers for lightweight handbook generation."""
 
 from intl_exam_guide.coordination.handbook_project_manager import (
     COORDINATOR_FILE,

@@ -65,7 +65,7 @@ class FallbackProvider(LLMContextProvider):
             "topic_id": job.topic_id,
             "concept_term": job.concept_term,
             "context": job.context_snippet,
-            "contract_version": "v0.4-pedagogy-mvp",
+            "contract_version": "v0.5-visual-decision-pedagogy",
             "topic_title": job.topic_title,
             "student_title": job.topic_title,
             "output_language": "en",

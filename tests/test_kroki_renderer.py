@@ -11,6 +11,19 @@ from intl_exam_guide.rendering.kroki import (
 )
 
 
+def brief(visual_type: str, focus: str = "source evidence") -> VisualBrief:
+    return VisualBrief(
+        topic_title="Topic title",
+        focus_point=focus,
+        trigger="Writer selected a professional diagram route.",
+        visual_type=visual_type,
+        complexity="svg-basic",
+        image_provider="kroki",
+        prompt="",
+        source_points=[focus],
+    )
+
+
 def test_render_kroki_svg_asset_posts_graphviz_source(
     monkeypatch: Any,
     tmp_path: Path,
@@ -27,7 +40,7 @@ def test_render_kroki_svg_asset_posts_graphviz_source(
             return None
 
         def read(self) -> bytes:
-            return b'<?xml version="1.0"?><svg><text>Accounting Records Flow</text></svg>'
+            return b'<?xml version="1.0"?><svg><text>Reviewed Flow</text></svg>'
 
     def fake_urlopen(request: Any, timeout: float) -> FakeResponse:
         calls["url"] = request.full_url
@@ -40,43 +53,23 @@ def test_render_kroki_svg_asset_posts_graphviz_source(
         "intl_exam_guide.rendering.kroki.urllib.request.urlopen",
         fake_urlopen,
     )
-    brief = VisualBrief(
-        topic_title="Accounting records",
-        focus_point="Use source documents, books of prime entry and ledger accounts.",
-        trigger="accounting records need a precise source-to-ledger flow diagram",
-        visual_type="source-document to book-of-prime-entry and ledger flow diagram",
-        complexity="svg-basic",
-        image_provider="kroki",
-        prompt="",
-        source_points=["Use source documents, books of prime entry and ledger accounts."],
-    )
+    visual = brief("source evidence to reviewed conclusion flow", "source point and check")
 
     output_path = tmp_path / "visual.svg"
-    render_kroki_svg_asset(brief, output_path, base_url="https://kroki.test", timeout=3)
+    render_kroki_svg_asset(visual, output_path, base_url="https://kroki.test", timeout=3)
 
     assert calls["url"] == "https://kroki.test/graphviz/svg"
     assert calls["method"] == "POST"
-    assert b"Accounting Records Flow - Accounting records" in calls["data"]
+    assert b"Source Evidence To Review" in calls["data"]
     assert b"digraph G" not in calls["data"]
-    assert b"digraph Accounting_Records_Flow" in calls["data"]
-    assert b"Source document" in calls["data"]
+    assert b"digraph Source_Evidence_To_Review" in calls["data"]
+    assert b"Source Evidence To Review" in calls["data"]
     assert calls["timeout"] == 3
     assert output_path.read_text(encoding="utf-8").startswith("<?xml")
 
 
-def test_kroki_graphviz_uses_hierarchy_layout_for_organisation_structure() -> None:
-    source = kroki_graphviz_source(
-        VisualBrief(
-            topic_title="Organisation structure",
-            focus_point="reporting lines",
-            trigger="hierarchy",
-            visual_type="organisation structure hierarchy",
-            complexity="svg-basic",
-            image_provider="kroki",
-            prompt="",
-            source_points=["Understand organisation structure and reporting lines."],
-        )
-    )
+def test_kroki_graphviz_uses_hierarchy_layout_for_structure_keyword() -> None:
+    source = kroki_graphviz_source(brief("topic structure hierarchy", "reporting lines"))
 
     assert "rankdir=TB" in source
     assert "n1 -> n2" in source
@@ -84,104 +77,42 @@ def test_kroki_graphviz_uses_hierarchy_layout_for_organisation_structure() -> No
     assert "n2 -> n4" in source
 
 
-def test_kroki_graphviz_uses_stakeholder_star_map() -> None:
-    source = kroki_graphviz_source(
-        VisualBrief(
-            topic_title="Stakeholders",
-            focus_point="stakeholder influence",
-            trigger="map",
-            visual_type="stakeholder influence map",
-            complexity="svg-basic",
-            image_provider="kroki",
-            prompt="",
-            source_points=["Explain stakeholder influence."],
-        )
-    )
+def test_kroki_graphviz_uses_star_map_for_influence_map_keyword() -> None:
+    source = kroki_graphviz_source(brief("influence map", "decision and groups"))
 
-    assert "Stakeholder Influence Map" in source
+    assert "Influence" in source
     assert "n1 -> n2 [dir=both]" in source
     assert "n1 -> n5 [dir=both]" in source
 
 
-def test_kroki_graphviz_uses_segmentation_map_layout() -> None:
-    source = kroki_graphviz_source(
-        VisualBrief(
-            topic_title="3.5.2 - Market segmentation",
-            focus_point="customer groups",
-            trigger="map",
-            visual_type="customer segmentation map",
-            complexity="svg-basic",
-            image_provider="kroki",
-            prompt="",
-            source_points=["Identify market segments."],
-        )
-    )
+def test_kroki_graphviz_uses_checkpoint_loop() -> None:
+    source = kroki_graphviz_source(brief("checkpoint loop", "standard check improve process"))
 
-    assert "Customer Segmentation Map - Market segmentation" in source
-    assert 'label="segments"' in source
-    assert 'label="target"' in source
-
-
-def test_kroki_graphviz_uses_quality_checkpoint_loop() -> None:
-    source = kroki_graphviz_source(
-        VisualBrief(
-            topic_title="3.3.3 - The concept of quality",
-            focus_point="quality control",
-            trigger="checkpoint",
-            visual_type="quality assurance checkpoint diagram",
-            complexity="svg-basic",
-            image_provider="kroki",
-            prompt="",
-            source_points=["Explain quality assurance."],
-        )
-    )
-
-    assert "Quality Checkpoint Loop - The concept of quality" in source
+    assert "Checkpoint Loop" in source
     assert "n4 -> n2" in source
     assert 'label="improve"' in source
 
 
-def test_kroki_graphviz_prioritises_operations_before_quality_checkpoint() -> None:
-    source = kroki_graphviz_source(
-        VisualBrief(
-            topic_title="3.3.1 - Production processes",
-            focus_point="production process",
-            trigger="flow",
-            visual_type="operations flow and quality checkpoint diagram",
-            complexity="svg-basic",
-            image_provider="kroki",
-            prompt="",
-            source_points=["Describe production processes."],
-        )
-    )
+def test_kroki_graphviz_uses_comparison_clusters() -> None:
+    source = kroki_graphviz_source(brief("comparison", "option A option B evidence"))
 
-    assert "Operations Flow - Production processes" in source
-    assert "Quality Checkpoint Loop" not in source
+    assert "subgraph cluster_left" in source
+    assert "subgraph cluster_right" in source
+    assert 'label="compare"' in source
+
+
+def test_kroki_graphviz_uses_reconciliation_shape_for_verify_keyword() -> None:
+    source = kroki_graphviz_source(brief("verify and match evidence", "source one source two difference"))
+
+    assert "n1 -> n3" in source
+    assert "n2 -> n3" in source
+    assert "n3 -> n4" in source
 
 
 def test_normalize_kroki_svg_title_replaces_graphviz_id_title() -> None:
     payload = b'<svg><title>G</title><g id="node1"></g></svg>'
 
-    normalized = normalize_kroki_svg_title(payload, "Stakeholder Influence Map - Stakeholders")
+    normalized = normalize_kroki_svg_title(payload, "Reviewed Flow - Topic")
 
-    assert b"<title>Stakeholder Influence Map - Stakeholders</title>" in normalized
+    assert b"<title>Reviewed Flow - Topic</title>" in normalized
     assert b"<title>G</title>" not in normalized
-
-
-def test_kroki_graphviz_uses_comparison_clusters() -> None:
-    source = kroki_graphviz_source(
-        VisualBrief(
-            topic_title="Business ownership comparison",
-            focus_point="sole trader and limited company",
-            trigger="comparison",
-            visual_type="business ownership comparison",
-            complexity="svg-basic",
-            image_provider="kroki",
-            prompt="",
-            source_points=["Compare ownership structures."],
-        )
-    )
-
-    assert "subgraph cluster_left" in source
-    assert "subgraph cluster_right" in source
-    assert 'label="compare"' in source

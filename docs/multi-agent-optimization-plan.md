@@ -1,5 +1,7 @@
 # IGCSE Handbook Skill - Multi-Agent 优化方案
 
+> Historical design note: this document explores an optional multi-agent operating mode. It is not the default Skill contract. The shipped Skill remains a lightweight framework where Analyst, Writer, and Reviewer are role labels that the same host LLM may perform sequentially unless the user explicitly asks for multi-agent orchestration. Do not implement Coordinator, mandatory Quality Inspector gates, or release-certification states from this note without a fresh product decision. See `ARCHITECTURE_DECISION_SKILL_WORKFLOW.md` for the binding workflow boundary.
+
 基于 Multi-Agent Expert Team Methodology，对当前 IGCSE & A-Level Revision Handbook Skill 进行优化。
 
 ---
@@ -43,7 +45,7 @@ Members:
 - Expert 1: Syllabus Outline Analyst
 - Expert 2: Handbook Content Writer  
 - Expert 3: Quality Inspector (new)
-- Expert 4: Final Reviewer (independent subagent)
+- Expert 4: Final Reviewer (optional separate Agent when explicitly requested)
 ```
 
 ### 2.2 协作流程图
@@ -144,7 +146,7 @@ Wait for: inspection report (pass/fail + issues)
 Handoff: If pass → Step 5. If fail → back to Writer with issues
 
 ### Step 5: Call Reviewer
-Task: Route to Final Reviewer (independent subagent)
+Task: Route to Final Reviewer (optionally a separate Agent if explicitly requested)
 Input: guide.html + syllabus-evidence.json + validation.json
 Wait for: final-review-packet.json
 Handoff: If approved → Step 6. If repair_needed → back to Writer
@@ -294,7 +296,7 @@ def build_concept_writing_prompt(...) -> str:
         "If you encounter problems:",
         "",
         "1. Missing exam_points in concept_jobs.json:",
-        "   → Flag to Coordinator: 'Topic [X] has no exam_points. Analyst may need to re-check.'",
+        "   → Flag to the host LLM: 'Topic [X] has no exam_points. Analyst may need to re-check.'",
         "",
         "2. Unclear how to explain a topic:",
         "   → Write your best attempt, but note: 'Topic [X] may need subject matter expert review.'",
@@ -309,7 +311,7 @@ def build_concept_writing_prompt(...) -> str:
         "Before submitting concept_explanations.json:",
         "☐ All topics from concept_jobs.json covered",
         f"☐ Writing style is consistent ({style})",
-        "☐ Visual specs only where truly beneficial",
+        "☐ Every topic has visual_decision; visual_spec appears only where truly beneficial",
         f"☐ Glossary has 30-50 terms (if {term_support_language} != en)",
         "☐ No placeholder text like '[insert explanation here]'",
         "",
@@ -318,7 +320,7 @@ def build_concept_writing_prompt(...) -> str:
         "=" * 80,
         "",
         "After completion, suggest to Coordinator:",
-        "\"Content complete for [X] topics. [Y] visual specs created. Ready for Quality Inspector to check format and completeness.\"",
+        "\"Content complete for [X] topics. [Y] visual specs created and every topic has visual_decision. Ready for optional inspection or visible-handbook review.\"",
         "",
     ])
 ```
@@ -474,7 +476,7 @@ def build_final_review_prompt(...) -> str:
         "   → Mark status='repair_needed', instructions='[pattern description]. Suggest Writer review their approach.'",
         "",
         "2. **Out of scope content** (topics not in original syllabus):",
-        "   → Flag to Coordinator: 'Topic [X] appears to be out of syllabus scope. Analyst may need to re-check.'",
+        "   → Flag to the host LLM: 'Topic [X] appears to be out of syllabus scope. Analyst may need to re-check.'",
         "",
         "3. **Unresolvable ambiguity** (can't judge quality without domain expertise):",
         "   → Mark status='approved_with_notes', notes='Topic [X] chemistry mechanism needs subject expert review.'",

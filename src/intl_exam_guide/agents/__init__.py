@@ -1,4 +1,4 @@
-"""Multi-agent orchestration contracts for handbook delivery."""
+"""Optional multi-agent orchestration contracts for handbook delivery."""
 
 from intl_exam_guide.agents.orchestration import (
     AGENT_ORCHESTRATION_FILE,

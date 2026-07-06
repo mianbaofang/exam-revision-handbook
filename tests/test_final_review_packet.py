@@ -243,7 +243,7 @@ def test_final_review_packet_recomputes_machine_validation_from_current_code(tmp
 
 def complete_product_review() -> dict[str, object]:
     return {
-        "schema_version": "v0.4-agent-product-review",
+        "schema_version": "v0.5-visible-handbook-review",
         "visible_handbook_inspected": True,
         "machine_validation_used_only_as_supporting_evidence": True,
         "syllabus_outline_compared": True,

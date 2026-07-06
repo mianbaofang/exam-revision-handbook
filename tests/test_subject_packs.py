@@ -78,7 +78,7 @@ def test_subject_writing_and_review_jobs_define_non_template_contracts():
         pack=pack,
     )
 
-    assert writing_job["contract_version"] == "v0.4-pedagogy-mvp"
+    assert writing_job["contract_version"] == "v0.5-visual-decision-pedagogy"
     assert writing_job["subject_pack"] == "mathematics"
     assert "what relationship or boundary it describes" in writing_job["must_answer"]
     assert "borrow another subject's template" in writing_job["must_not"]

@@ -32,7 +32,12 @@ from intl_exam_guide.planning.language_policy import (
 )
 from intl_exam_guide.rendering.kroki import KrokiRenderError, render_kroki_svg_asset
 from intl_exam_guide.visuals import VisualSpec
-from intl_exam_guide.visuals.manifest import build_asset_metadata, build_visual_manifest_entry_v2
+from intl_exam_guide.visuals.manifest import (
+    VISUAL_CONTRACT,
+    build_asset_metadata,
+    build_visual_manifest_entry_v2,
+    sync_visual_manifest_entry,
+)
 
 PRINT_RASTER_MAX_WIDTH = 1600
 PRINT_RASTER_JPEG_QUALITY = 88
@@ -209,7 +214,7 @@ def write_visual_assets(plan: GuidePlan, images_dir: Path) -> list[Path]:
             entry["generated_by"] = previous["generated_by"]
         if previous.get("source_asset_file"):
             entry["source_asset_file"] = previous["source_asset_file"]
-        manifest.append(entry)
+        manifest.append(sync_visual_manifest_entry(entry))
 
     optimize_raster_assets_for_pdf(manifest, images_dir)
     refresh_manifest_asset_metadata(manifest, images_dir)
@@ -224,7 +229,11 @@ def write_visual_assets(plan: GuidePlan, images_dir: Path) -> list[Path]:
     )
 
     (images_dir / "visual_manifest.json").write_text(
-        json.dumps({"schema_version": 2, "visuals": manifest}, ensure_ascii=False, indent=2),
+        json.dumps(
+            {"schema_version": 2, "visual_contract": VISUAL_CONTRACT, "visuals": manifest},
+            ensure_ascii=False,
+            indent=2,
+        ),
         encoding="utf-8",
     )
     jobs = build_visual_jobs(manifest)
@@ -249,6 +258,7 @@ def refresh_manifest_asset_metadata(
         asset = build_asset_metadata(asset_path)
         entry["asset"] = asset
         entry["file"] = asset["file"]
+        sync_visual_manifest_entry(entry)
 
 
 def cleanup_unreferenced_visual_assets(

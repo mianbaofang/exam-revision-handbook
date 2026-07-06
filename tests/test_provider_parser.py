@@ -578,6 +578,74 @@ def test_parser_captures_subject_listing_level_metadata():
     assert alevel.group_label == "red International AS-A-level subject listing"
 
 
+def test_oxfordaqa_direct_pdf_url_is_treated_as_specification_source():
+    url = (
+        "https://www.oxfordaqa.com/wp-content/uploads/2021/05/"
+        "OxfordAQA-International-AS-and-A-level-Economics-9640-specification.pdf"
+    )
+
+    link = OxfordAQAProvider().find_qualification(url, level="as")
+    qualification = OxfordAQAProvider().parse_qualification(link.href, level="as")
+
+    assert link.href == url
+    assert link.specification_url == url
+    assert link.qualification_type == "international_as_a_level"
+    assert qualification.source.specification_url == url
+    assert qualification.code == "9640"
+    assert qualification.qualification_type == "international_as_a_level"
+    assert qualification.subject_area == "Economics"
+    assert qualification.topics == []
+
+
+def test_oxfordaqa_code_bearing_query_resolves_exact_code_across_subjects():
+    class FakeProvider(OxfordAQAProvider):
+        def discover_subject_pages(self):
+            return [
+                Link(text="Accounting", href="https://example.test/subjects/accounting/"),
+                Link(text="Economics", href="https://example.test/subjects/economics/"),
+            ]
+
+        def list_qualifications(self, subject_url: str):
+            if "accounting" in subject_url:
+                return [
+                    Link(
+                        text="International AS and A-level Accounting (9615)",
+                        href="https://example.test/qualifications/accounting/",
+                        qualification_type="international_as_a_level",
+                    )
+                ]
+            return [
+                Link(
+                    text="International AS and A-level Economics (9640)",
+                    href="https://example.test/qualifications/economics/",
+                    qualification_type="international_as_a_level",
+                )
+            ]
+
+    link = FakeProvider().find_qualification("Economics 9640", level="as")
+
+    assert link.text == "International AS and A-level Economics (9640)"
+    assert link.href == "https://example.test/qualifications/economics/"
+
+
+def test_oxfordaqa_unmatched_subject_query_does_not_guess_from_full_catalogue():
+    class FakeProvider(OxfordAQAProvider):
+        def discover_subject_pages(self):
+            return [Link(text="Accounting", href="https://example.test/subjects/accounting/")]
+
+        def list_qualifications(self, subject_url: str):
+            return [
+                Link(
+                    text="International AS and A-level Accounting (9615)",
+                    href="https://example.test/qualifications/accounting/",
+                    qualification_type="international_as_a_level",
+                )
+            ]
+
+    with pytest.raises(ValueError, match="No OxfordAQA subject-page candidates"):
+        FakeProvider().find_qualification("Economics", level="as")
+
+
 @pytest.mark.skip(reason="Deprecated: Test relies on Python parser/routing. LLM now handles this.")
 def test_oxfordaqa_subject_query_respects_as_level_filter():
     class FakeProvider(OxfordAQAProvider):

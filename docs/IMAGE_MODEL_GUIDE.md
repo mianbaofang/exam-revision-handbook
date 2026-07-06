@@ -21,14 +21,17 @@ For many subjects, richer illustrations are still useful:
 
 Use image generation as an optional illustration adapter, not as the source of
 truth. The LLM/Agent should first write source-bound knowledge points and
-practice examples, then decide which items need visual explanation. The outcome
-is one of three routes:
+practice examples, then record `visual_decision` for every topic. The outcome is
+one of four recommended routes:
 
-- `text-ok`: no visual is needed.
-- `svg-basic`: an SVG is acceptable only when the Writer marks `svg_fit:
+- `text-ok`: no separate visual is needed; include `no_visual_reason` explaining
+  why the worked example/text is the better learning route.
+- `exact-svg`: an SVG is acceptable only when the Writer marks `svg_fit:
   "exact"` and the asset is reviewed or approved before delivery.
-- `infographic`: the visual becomes a source-bound external infographic job
-  until a callable route or reviewed imported asset exists.
+- `kroki-diagram`: a professional formal diagram is appropriate and must be
+  reviewed before delivery.
+- `external-infographic`: the visual becomes a source-bound external infographic
+  job until a callable route or reviewed imported asset exists.
 
 The base handbook pipeline does not require an image model. Do not ask users to
 choose an image model before the base guide exists. After the guide has a visual
@@ -80,7 +83,7 @@ Use this as the integration flow:
 official specification
   -> Python extracts source evidence
   -> LLM writes syllabus outline and concept/practice content
-  -> LLM decides text-ok / exact SVG / external infographic
+  -> LLM records visual_decision: text-ok / exact-svg / kroki-diagram / external-infographic
   -> Python records visual manifest and pending jobs
   -> reviewed exact SVG or reviewed raster asset is imported
   -> Python renders HTML/PDF guide
@@ -208,11 +211,12 @@ examples, equations, or exam claims beyond the source point.
 - Economics 曲线图、流程图、场景信息图；
 - 英文文字信息图，必要时保留公式、符号和经复核的官方术语；用户语言支持放在专业词对照表中。
 
-生图应该是可选插图层，不是事实来源。LLM/Agent 应先写出 source-bound 知识点和例题，再判断视觉路线：
+生图应该是可选插图层，不是事实来源。LLM/Agent 应先写出 source-bound 知识点和例题，再为每个 topic 记录 `visual_decision`：
 
-- `text-ok`：不需要图。
-- `svg-basic`：只有 Writer 写明 `svg_fit="exact"` 且资产 reviewed/approved 后，SVG 才能交付。
-- `infographic`：进入外部信息图任务，直到有可调用路线或已复核导入资产。
+- `text-ok`：不需要单独图片，必须写 `no_visual_reason` 说明为什么文字/例题更适合学习。
+- `exact-svg`：只有 Writer 写明 `svg_fit="exact"` 且资产 reviewed/approved 后，SVG 才能交付。
+- `kroki-diagram`：适合专业正式图表，生成后也必须复核。
+- `external-infographic`：进入外部信息图任务，直到有可调用路线或已复核导入资产。
 
 基础手册生成不要求用户先提供生图服务。不要把模型列表做成生成前菜单。基础手册有 visual manifest 后，再报告复杂视觉 ID，并只使用用户真实拥有的路线：已安装生图 Skill、项目脚本、已复核图片目录，或带模型名、接口 URL、API key 环境变量名的 `custom` 配置。不要在聊天、文档、截图或仓库里暴露真实 key。
 

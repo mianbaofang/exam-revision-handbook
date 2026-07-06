@@ -201,7 +201,7 @@ def lightweight_workflow_payload() -> dict[str, object]:
             },
             {
                 "role_id": "writer",
-                "owns": "Write concept explanations, mastery_summary, and visual decisions.",
+                "owns": "Write concept explanations, mastery_summary, and per-topic visual_decision records.",
             },
             {
                 "role_id": "reviewer",

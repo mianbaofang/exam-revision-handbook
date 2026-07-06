@@ -34,6 +34,7 @@ PENDING_INFOGRAPHIC_STATUSES = {
     "svg-fallback-needs-review",
 }
 PRODUCT_REVIEW_FILE = "agent-product-review.json"
+PRODUCT_REVIEW_SCHEMA_VERSION = "v0.5-visible-handbook-review"
 FINAL_CONTENT_BLOCKER_PATTERNS = [
     "formulaic AI-style wording",
     "Topic map mastery summary is duplicated",
@@ -330,8 +331,8 @@ def product_review_issues(review: object) -> list[str]:
     if not isinstance(review, dict) or not review:
         return [f"Missing {PRODUCT_REVIEW_FILE}."]
     issues: list[str] = []
-    if review.get("schema_version") != "v0.4-agent-product-review":
-        issues.append("schema_version must be v0.4-agent-product-review.")
+    if review.get("schema_version") != PRODUCT_REVIEW_SCHEMA_VERSION:
+        issues.append(f"schema_version must be {PRODUCT_REVIEW_SCHEMA_VERSION}.")
     required_true_fields = [
         "visible_handbook_inspected",
         "machine_validation_used_only_as_supporting_evidence",
@@ -615,7 +616,7 @@ def build_final_review_prompt(
             "Return JSON only:",
             "",
             "{",
-            '  "schema_version": "v0.5-visible-handbook-review",',
+            f'  "schema_version": "{PRODUCT_REVIEW_SCHEMA_VERSION}",',
             '  "visible_handbook_inspected": true,',
             '  "machine_validation_used_only_as_supporting_evidence": true,',
             '  "syllabus_outline_compared": true,',

@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.5 - 2026-07-06
+
+### Changed
+
+- Reframed Analyst, Writer, and Reviewer as lightweight operating roles rather
+  than mandatory multi-agent orchestration. Explicit multi-agent delegation is
+  optional; the Skill no longer requires a project-manager role,
+  release-certification role, or `agent-orchestration.json` deliverable.
+- Introduced the v0.5 visual-decision contract. Every topic in
+  `concepts/concept_explanations.json` must carry a Writer-owned
+  `visual_decision`; `text-ok` is valid only with a clear `no_visual_reason`,
+  and visual routes are limited to `text-ok`, `exact-svg`, `kroki-diagram`, and
+  `external-infographic`.
+- Split visual intent from rendered output in the visual manifest: Writer route
+  recommendations, learning-value claims, workflow state, and actual rendered
+  assets are recorded separately so pending or unreviewed visuals cannot be
+  mistaken for finished handbook images.
+- Kept the Python boundary mechanical: Python downloads official PDFs, extracts
+  text, receives LLM JSON, validates contracts, renders HTML/PDF, imports
+  reviewed assets, and packages evidence; the host LLM owns syllabus judgment,
+  teaching explanations, practice wording, visual need, and final review.
+
+### Fixed
+
+- Replaced the legacy concept-writing script with an explicit refusal so Python
+  cannot silently generate teaching content from concept jobs.
+- Removed subject-specific runtime template residue from the handbook-writing
+  path and updated tests/docs toward source-bound, all-subject visual judgment.
+- Added OxfordAQA direct-PDF/code handling and tightened provider blending so a
+  qualification code must be an exact single four-digit code.
+
+### Review Notes
+
+- This is a framework release, not a blanket certification of every exam board,
+  subject, level, or visual route. Release evidence remains conservative and
+  must be read from the delivery matrix and release-evidence manifests.
+
 ## 0.4.4 - 2026-07-05
 
 ### Changed

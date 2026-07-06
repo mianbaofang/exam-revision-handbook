@@ -589,53 +589,10 @@ def render_exam_logic_goal(focus: str, language: str, source_focus: str | None =
     display_focus = source_focus or focus
     if language != "en":
         return f"Question focus: stay inside this syllabus point: {display_focus}."
-    lower = focus.lower()
-    if any(word in lower for word in ["momentum", "impulse", "impact", "collision"]):
-        action = "choose a positive direction, write signed momenta, and use the before-and-after relationship."
-    elif any(
-        word in lower
-        for word in ["newton", "force", "friction", "normal reaction", "tension", "thrust"]
-    ):
-        action = "start with a force diagram, choose directions, and apply equilibrium or F = ma."
-    elif any(
-        word in lower for word in ["velocity", "speed", "displacement", "acceleration", "kinematic"]
-    ) or ("motion" in lower and any(word in lower for word in ["graph", "gradient", "area under"])):
-        action = (
-            "identify the motion quantity or graph type before using formulae, gradients, or areas."
-        )
-    elif any(word in lower for word in ["probability", "random variable", "bernoulli", "binomial"]):
-        action = "define the event or distribution first, then calculate the required probability or statistic."
-    elif any(word in lower for word in ["sine", "cosine", "trigonometry"]):
-        action = "connect the angle range, triangle rule, identity, or graph feature to the values requested."
-    elif any(word in lower for word in ["integral", "integration", "area under", "trapezium"]):
-        action = (
-            "decide whether the task needs an antiderivative, a definite area, or an approximation."
-        )
-    elif any(word in lower for word in ["derivative", "differentiation", "tangent", "stationary"]):
-        action = "connect the derivative to gradient, rate of change, tangent, normal, or stationary-point meaning."
-    elif any(
-        word in lower for word in ["circle", "straight line", "coordinate", "gradient", "midpoint"]
-    ):
-        action = "translate the geometry into coordinates, gradients, equations, distances, or intersections."
-    elif any(word in lower for word in ["sequence", "series", "progression"]):
-        action = (
-            "identify the term, sum, ratio, or convergence condition before choosing a formula."
-        )
-    elif any(
-        word in lower
-        for word in [
-            "surd",
-            "indices",
-            "factor",
-            "polynomial",
-            "quadratic",
-            "equation",
-            "inequality",
-        ]
-    ):
-        action = "choose the algebraic form that exposes the roots, factors, signs, or exact simplification."
-    else:
-        action = "match the exact syllabus wording to the object, evidence, relationship, or judgement the question asks for."
+    action = (
+        "match the exact syllabus wording to the object, evidence, relationship, calculation, "
+        "or judgement the question asks for."
+    )
     return f"Question focus: {action} Source point: {display_focus}"
 
 

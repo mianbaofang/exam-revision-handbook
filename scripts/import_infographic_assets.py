@@ -10,7 +10,11 @@ SRC_PATH = Path(__file__).resolve().parents[1] / "src"
 if str(SRC_PATH) not in sys.path:
     sys.path.insert(0, str(SRC_PATH))
 
-from intl_exam_guide.visuals.manifest import build_asset_metadata  # noqa: E402
+from intl_exam_guide.visuals.manifest import (  # noqa: E402
+    VISUAL_CONTRACT,
+    build_asset_metadata,
+    sync_visual_manifest_entry,
+)
 
 
 VISUAL_ASSET_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".svg"}
@@ -114,6 +118,7 @@ def main() -> int:
         entry["review_status"] = "reviewed" if "reviewed" in args.status else "generated"
         entry["asset"] = build_asset_metadata(target)
         entry["generated_by"] = args.provider
+        sync_visual_manifest_entry(entry)
         imported += 1
 
     if missing and not args.allow_partial:
@@ -203,7 +208,8 @@ def write_manifest_payload(
 ) -> None:
     if isinstance(original_payload, dict) and original_payload.get("schema_version") == 2:
         payload = dict(original_payload)
-        payload["visuals"] = entries
+        payload.setdefault("visual_contract", VISUAL_CONTRACT)
+        payload["visuals"] = [sync_visual_manifest_entry(entry) for entry in entries]
     else:
         payload = entries
     manifest_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")

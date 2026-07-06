@@ -35,13 +35,12 @@ User-facing promise:
    briefs, HTML, PDF, and validation output.
 6. Agent writes/imports reviewed concept explanations from
    `concepts/concept_jobs.json` before treating the handbook as final.
-7. Agent keeps the production roles separated in `agent-orchestration.json`:
-   syllabus/outline analyst, handbook writer, and independent final reviewer.
-   In runtimes with subagent support, the Agent must dispatch these roles rather
-   than letting the writer self-approve. If no independent Agent/LLM context is
-   available, the output remains review-ready or draft. The final reviewer may
-   mark the output draft or blocked; review completion is not the same as
-   final-ready approval.
+7. Agent keeps the lightweight operating roles clear: Analyst writes the outline,
+   Writer writes content and per-topic visual decisions, and Reviewer inspects the
+   visible handbook. These roles may be separate agents when explicitly requested,
+   but the default Skill contract does not require a project-manager or release
+   certification workflow. Review completion is not the same as final-ready
+   approval.
 8. The user's active LLM/Agent performs a final product review over the actual
    rendered handbook before handoff. It must compare the final topic sequence,
    concept explanations, visuals, glossary support, and sampled PDF pages
@@ -58,7 +57,7 @@ delivery or release-ready until a fresh output passes validation,
 visual-status checks recorded in `final-review-packet.json`, and the release
 claim is recorded in `docs/release-evidence/`.
 
-v0.4 release-evidence status vocabulary:
+v0.5 release-evidence status vocabulary:
 
 - `candidate`: route evidence exists, but it is not delivery-grade.
 - `draft`: a fresh output exists, but concepts, visuals, PDF/export,
@@ -69,7 +68,7 @@ v0.4 release-evidence status vocabulary:
   or a subject-aware reviewer and recorded in a release-evidence manifest.
 
 Do not call any route certified unless the manifest explicitly says so. A v0.3
-ready packet is historical evidence, not a standing v0.4 certification.
+ready packet is historical evidence, not a standing v0.5 certification.
 
 ## 2. Source Of Truth
 
@@ -82,7 +81,8 @@ ready packet is historical evidence, not a standing v0.4 certification.
 - English/Chinese README: `README.md`, `README.zh-CN.md`
 - Delivery matrix: `tests/fixtures/delivery_matrix.json`
 - Release evidence manifest docs: `docs/release-evidence/`
-- Multi-agent role contract: `docs/MULTI_AGENT_ORCHESTRATION.md`
+- Workflow boundary: `docs/ARCHITECTURE_DECISION_SKILL_WORKFLOW.md`
+- Optional multi-agent design notes: `docs/MULTI_AGENT_ORCHESTRATION.md`, `docs/multi-agent-optimization-plan.md`
 
 Do not use old local clones or generated outputs as proof of current behavior.
 When verifying user experience, start from the GitHub repository or the clean
@@ -187,7 +187,7 @@ non-final image jobs. SVG is appropriate only for reviewed `svg_fit: "exact"`
 cases; it must not be used as a blanket substitute for complex instructional
 infographics.
 
-v0.4 documents the release-evidence layer rather than changing the v0.3 facts.
+v0.5 keeps the release-evidence layer conservative rather than changing the v0.3 facts.
 For any route promoted above `candidate`, create or update a concise
 `docs/release-evidence/<version>/manifest.json` entry with the command,
 git revision, validation summary, final-review summary, concept/image status,

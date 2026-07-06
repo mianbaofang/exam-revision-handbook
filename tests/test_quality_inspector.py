@@ -33,7 +33,18 @@ def write_minimum_package(tmp_path, *, html_text=MODULE_TEXT, concept_count=2):
     concepts.mkdir()
     (concepts / "concept_jobs.json").write_text(json.dumps([{}, {}]), encoding="utf-8")
     (concepts / "concept_explanations.json").write_text(
-        json.dumps([{"topic_title": str(index)} for index in range(concept_count)]),
+        json.dumps(
+            [
+                {
+                    "topic_title": str(index),
+                    "visual_decision": {
+                        "recommended_route": "text-ok",
+                        "no_visual_reason": "The topic is sufficiently taught by the worked example and checklist.",
+                    },
+                }
+                for index in range(concept_count)
+            ]
+        ),
         encoding="utf-8",
     )
     images = tmp_path / "images"
@@ -111,6 +122,144 @@ def test_quality_inspector_fails_missing_concept_explanations(tmp_path):
 
     assert result.inspection_status == "fail"
     assert any("concepts/concept_explanations.json" in message for message in messages)
+
+
+def test_quality_inspector_fails_missing_visual_decision(tmp_path):
+    write_minimum_package(tmp_path)
+    (tmp_path / "concepts" / "concept_explanations.json").write_text(
+        json.dumps([{"topic_title": "A"}, {"topic_title": "B"}]),
+        encoding="utf-8",
+    )
+
+    result = inspect_handbook_output(tmp_path)
+    messages = [issue.message for issue in result.issues]
+
+    assert result.inspection_status == "fail"
+    assert any("must record visual_decision" in message for message in messages)
+
+
+def test_quality_inspector_fails_invalid_visual_route(tmp_path):
+    write_minimum_package(tmp_path)
+    (tmp_path / "concepts" / "concept_explanations.json").write_text(
+        json.dumps(
+            [
+                {
+                    "topic_title": "A",
+                    "visual_decision": {"recommended_route": "auto-diagram"},
+                },
+                {
+                    "topic_title": "B",
+                    "visual_decision": {
+                        "recommended_route": "text-ok",
+                        "no_visual_reason": "The worked example already carries the learning clearly.",
+                    },
+                },
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    result = inspect_handbook_output(tmp_path)
+    messages = [issue.message for issue in result.issues]
+
+    assert result.inspection_status == "fail"
+    assert any("recommended_route must be one of" in message for message in messages)
+
+
+def test_quality_inspector_fails_python_fallback_visual_decision(tmp_path):
+    write_minimum_package(tmp_path)
+    (tmp_path / "concepts" / "concept_explanations.json").write_text(
+        json.dumps(
+            [
+                {
+                    "topic_title": "A",
+                    "visual_decision": {
+                        "recommended_route": "text-ok",
+                        "no_visual_reason": "The Writer did not request a separate visual for this topic.",
+                        "workflow_state": "missing-writer-visual-decision-fallback",
+                        "source": "python-draft-fallback",
+                    },
+                },
+                {
+                    "topic_title": "B",
+                    "visual_decision": {
+                        "recommended_route": "text-ok",
+                        "no_visual_reason": "The worked example already carries the learning clearly.",
+                    },
+                },
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    result = inspect_handbook_output(tmp_path)
+    messages = [issue.message for issue in result.issues]
+
+    assert result.inspection_status == "fail"
+    assert any("not inserted by Python" in message for message in messages)
+
+
+def test_quality_inspector_fails_text_ok_with_visual_spec(tmp_path):
+    write_minimum_package(tmp_path)
+    (tmp_path / "concepts" / "concept_explanations.json").write_text(
+        json.dumps(
+            [
+                {
+                    "topic_title": "A",
+                    "visual_decision": {
+                        "recommended_route": "text-ok",
+                        "no_visual_reason": "The worked example already carries the learning clearly.",
+                    },
+                    "visual_spec": {"type": "diagram", "prompt": "Draw an unnecessary diagram."},
+                },
+                {
+                    "topic_title": "B",
+                    "visual_decision": {
+                        "recommended_route": "text-ok",
+                        "no_visual_reason": "The worked example already carries the learning clearly.",
+                    },
+                },
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    result = inspect_handbook_output(tmp_path)
+    messages = [issue.message for issue in result.issues]
+
+    assert result.inspection_status == "fail"
+    assert any("must not include visual_spec" in message for message in messages)
+
+
+def test_quality_inspector_fails_non_text_route_without_visual_spec(tmp_path):
+    write_minimum_package(tmp_path)
+    (tmp_path / "concepts" / "concept_explanations.json").write_text(
+        json.dumps(
+            [
+                {
+                    "topic_title": "A",
+                    "visual_decision": {
+                        "recommended_route": "kroki-diagram",
+                        "learning_claim": "A formal diagram is needed.",
+                    },
+                },
+                {
+                    "topic_title": "B",
+                    "visual_decision": {
+                        "recommended_route": "text-ok",
+                        "no_visual_reason": "The worked example already carries the learning clearly.",
+                    },
+                },
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    result = inspect_handbook_output(tmp_path)
+    messages = [issue.message for issue in result.issues]
+
+    assert result.inspection_status == "fail"
+    assert any("must include visual_spec" in message for message in messages)
 
 
 def test_quality_inspector_fails_non_exact_or_unreviewed_svg(tmp_path):

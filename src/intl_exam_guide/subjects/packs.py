@@ -123,7 +123,7 @@ def build_subject_writing_job(
 ) -> dict[str, object]:
     return {
         "id": job_id,
-        "contract_version": "v0.4-pedagogy-mvp",
+        "contract_version": "v0.5-visual-decision-pedagogy",
         "subject_pack": pack.name,
         "priority_subject": pack.priority,
         "topic_title": topic_title,
@@ -156,7 +156,7 @@ def build_subject_review_job(
 ) -> dict[str, object]:
     return {
         "id": f"{writing_job_id}_review",
-        "contract_version": "v0.4-pedagogy-review-mvp",
+        "contract_version": "v0.5-visual-decision-review",
         "subject_pack": pack.name,
         "topic_title": topic_title,
         "output_language": output_language,

@@ -19,8 +19,8 @@ Before changing workflow scope, read `../docs/ARCHITECTURE_DECISION_SKILL_WORKFL
 
 - Three board visual themes: OxfordAQA blue/red, Pearson Edexcel teal/blue, Cambridge red/navy.
 - An 8-module handbook framework: Cover, How to Use, Study Roadmap, optional Term Glossary, Topic Guides, Practice Workbook, Exam Structure, Revision Checklist.
-- Artifact contracts for `qualification.json`, `syllabus-evidence.json`, `syllabus-outline.json`, and `concepts/concept_explanations.json`.
-- A Python rendering engine that turns approved artifacts into named HTML and optional PDF outputs.
+- Artifact contracts for `qualification.json`, `syllabus-evidence.json`, `syllabus-outline.json`, and `concepts/concept_explanations.json`, including per-topic `visual_decision` records.
+- A Python rendering engine that turns approved artifacts into named HTML and optional PDF outputs, with visual manifests that separate the Writer's recommended route from the asset actually rendered.
 
 ## Preflight
 
@@ -37,6 +37,8 @@ Confirm the minimum run inputs before downloading or writing. Ask the user direc
 If discovery returns several official candidates, show the candidates and wait for the user to choose. Do not guess. If no callable image route exists, continue with pending visual jobs and describe the result as a draft when visuals are still required.
 
 ## Workflow
+
+The Analyst, Writer, and Reviewer names below are lightweight role labels. They can be the same host LLM working step by step, or separate agents if the user explicitly asks for that orchestration. They are not mandatory project-manager or release-certification roles.
 
 ### 1. Extract Evidence
 
@@ -78,21 +80,25 @@ For each topic, provide:
 - a worked example or complete `mini_worked_example`;
 - `pitfall`;
 - `mastery_summary`: one concrete student-facing sentence for the Study Roadmap `What to master` column;
-- optional `visual_spec` when a visual materially improves understanding.
+- `visual_decision`: the Writer's learning-value judgment for the topic;
+- optional `visual_spec` only when `visual_decision.recommended_route` asks for an exact SVG, Kroki diagram, or external infographic.
 
 Use proper student-facing mathematical notation where the subject needs it: `²`, `³`, `√`, `≤`, `≥`, `≠`, `θ`, `μ`, and similar stable Unicode symbols are preferred over plain-text fallbacks such as `^2`, `sqrt()`, `<=`, or `>=`. Do not rely on MathJax or a formula engine for final PDF readability.
 
 `mastery_summary` is Writer-owned content. Python must not fill it from a checklist template.
 
-Visual decisions belong to the Writer:
+Visual decisions belong to the Writer and must be recorded for every topic:
 
-- omit `visual_spec` when text is enough;
-- use `complexity: "svg-basic"` only after the topic explanation and worked example exist, and only for exact-fit diagrams with `svg_fit: "exact"`;
-- generate or import an LLM-authored exact SVG first and mark it reviewed only after LLM visual review passes;
-- if LLM SVG review fails, try a Kroki professional diagram and review that output;
-- if Kroki review fails or the visual needs realism, rich annotation, apparatus, scenes, or modelling nuance, route it to `complexity: "infographic"`;
+- always include `visual_decision` after the topic explanation and worked example exist;
+- use `recommended_route: "text-ok"` only when a clear `no_visual_reason` explains why a separate visual would not improve learning;
+- use `recommended_route: "exact-svg"` only for label/geometry-first diagrams that can be reviewed as exact SVG with `svg_fit: "exact"`;
+- use `recommended_route: "kroki-diagram"` when a professional formal diagram is more suitable than an LLM-authored SVG;
+- use `recommended_route: "external-infographic"` when the topic needs realism, rich annotation, apparatus, scenes, or modelling nuance;
+- add `visual_spec` only for `exact-svg`, `kroki-diagram`, or `external-infographic` decisions, not for `text-ok`;
 - do not request board logos or course-cover packaging;
 - do not claim an infographic exists until a reviewed image is saved under `images/`.
+
+The visual manifest uses the v0.5 route/asset split: `recommended_route` records the Writer's intended learning route, while `rendered_asset` records whether a real SVG/Kroki/image asset is actually present in the HTML/PDF.
 
 If support language is not `en`, add a professional term glossary. Keep the handbook body in English.
 
@@ -150,4 +156,5 @@ Stop or downgrade the handoff when:
 - generated HTML has not been opened or screenshot-inspected;
 - topic explanations are template filler or subject-mismatched;
 - roadmap mastery summaries are missing, duplicated, or Python-generated;
+- a topic is missing `visual_decision`, or a `text-ok` decision lacks `no_visual_reason`;
 - complex visuals are pending but described as reviewed assets.

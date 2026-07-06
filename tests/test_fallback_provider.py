@@ -278,4 +278,4 @@ class TestFallbackProvider:
             assert isinstance(job["topic_id"], str)
             assert isinstance(job["concept_term"], str)
             assert isinstance(job["context"], str)
-            assert job["contract_version"] == "v0.4-pedagogy-mvp"
+            assert job["contract_version"] == "v0.5-visual-decision-pedagogy"

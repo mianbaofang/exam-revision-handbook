@@ -26,6 +26,9 @@ from intl_exam_guide.providers.common import (
     fetch_bytes,
     fetch_text,
     first_node_text,
+    infer_qualification_type,
+    is_pdf_url,
+    title_from_url,
 )
 
 BASE_URL = "https://www.oxfordaqa.com"
@@ -113,6 +116,24 @@ def parse_page(url: str) -> PageParser:
 def code_from_title(title: str) -> str | None:
     match = re.search(r"\((\d{4})\)", title)
     return match.group(1) if match else None
+
+
+def extract_qualification_code(query: str) -> str | None:
+    matches = re.findall(r"\b(\d{4})\b", query)
+    if len(matches) == 1:
+        return matches[0]
+    return None
+
+
+def oxfordaqa_subject_area_from_title(title: str) -> str | None:
+    cleaned = re.sub(
+        r"\b(OxfordAQA|Oxford|AQA|International|GCSE|AS|A|and|Level|A-level|Specification|Syllabus|PDF|Version)\b|\(\d{4}\)",
+        " ",
+        title,
+        flags=re.I,
+    )
+    cleaned = re.sub(r"\b\d{4}\b|\b\d+\.\d+\b", " ", cleaned)
+    return clean_text(cleaned) or None
 
 
 def qualification_type_from_title(title: str) -> str:
@@ -239,30 +260,37 @@ class OxfordAQAProvider(ExamBoardProvider):
         self, query: str, level: str | None = None, exam_year: str | None = None
     ) -> Link:
         if query.startswith("http://") or query.startswith("https://"):
+            qtype = infer_qualification_type(query, query, level)
             return Link(
-                text=query.rstrip("/").split("/")[-1],
+                text=title_from_url(query),
                 href=query,
-                qualification_type=qualification_type_from_title(query),
+                qualification_type=None if qtype == "unknown" else qtype,
+                specification_url=query if is_pdf_url(query) else None,
             )
 
         query_norm = query.lower().strip()
+        code_query = extract_qualification_code(query_norm)
         candidates: list[Link] = []
         for subject in self.discover_subject_pages():
+            if code_query:
+                candidates.extend(self.list_qualifications(subject.href))
+                continue
             if query_norm not in subject.text.lower() and query_norm not in subject.href.lower():
-                if not re.fullmatch(r"\d{4}", query_norm):
-                    continue
+                continue
             candidates.extend(self.list_qualifications(subject.href))
 
         if not candidates:
-            for subject in self.discover_subject_pages():
-                candidates.extend(self.list_qualifications(subject.href))
+            raise ValueError(
+                f"No OxfordAQA subject-page candidates found for query: {query!r}. "
+                "Provide the official qualification page URL, direct specification PDF URL, "
+                "or exact four-digit qualification code."
+            )
 
-        is_code_query = re.fullmatch(r"\d{4}", query_norm) is not None
-        if is_code_query:
-            exact = self.find_by_qualification_code(candidates, query_norm, level)
+        if code_query:
+            exact = self.find_by_qualification_code(candidates, code_query, level)
             if exact:
                 return exact
-            raise ValueError(f"No OxfordAQA qualification found for code: {query!r}")
+            raise ValueError(f"No OxfordAQA qualification found for code: {code_query!r}")
 
         scored: list[tuple[int, Link]] = []
         for candidate in candidates:
@@ -334,6 +362,29 @@ class OxfordAQAProvider(ExamBoardProvider):
     def parse_qualification(
         self, page_url: str, level: str | None = None, exam_year: str | None = None
     ) -> Qualification:
+        if is_pdf_url(page_url):
+            title = title_from_url(page_url)
+            qtype = infer_qualification_type(title, page_url, level)
+            code = code_from_title(title) or extract_qualification_code(title) or extract_qualification_code(page_url)
+            source = SourceRecord(
+                provider=self.name,
+                page_url=page_url,
+                specification_url=page_url,
+            )
+            return Qualification(
+                title=title,
+                code=code,
+                qualification_type=qtype,
+                subject_area=oxfordaqa_subject_area_from_title(title),
+                page_url=page_url,
+                summary=[],
+                topics=[],
+                assessments=[],
+                source=source,
+                audience_note=audience_note(qtype),
+                route_tags=[f"level-scope:{normalize_level_scope(level)}"] if level else [],
+            )
+
         parser = parse_page(page_url)
         title = first_node_text(parser.nodes, "h1") or title_from_links(parser.links, page_url)
         code = code_from_title(title)

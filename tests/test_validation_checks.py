@@ -408,7 +408,7 @@ def test_preflight_topic_guide_practice_and_visual_validators_pin_error_messages
     assert "Specification PDF hash was not recorded." in preflight
     assert "No assessment papers were extracted." in preflight
     assert "Topic guide coverage does not match topic count." in preflight
-    assert "No topics were selected for visual explanation." in preflight
+    assert "No topics were selected for visual explanation." not in preflight
     assert "Missing authored guide block for topic: 3.1 Source documents" in topics
     assert "Missing practice item for topic: 3.1 Source documents" in topics
     assert "Syllabus topic has no extracted body points: 3.1 Source documents" in topics

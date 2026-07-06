@@ -1,4 +1,4 @@
-"""Coordinator prompt and project-state contracts for handbook generation."""
+"""Optional coordination prompt and project-state contracts for handbook generation."""
 
 from __future__ import annotations
 
@@ -13,10 +13,8 @@ COORDINATOR_PROMPT_FILE = "handbook-project-manager-prompt.md"
 COORDINATOR_SCHEMA_VERSION = "v0.5-handbook-project-manager"
 
 REQUIRED_SEQUENCE = [
-    "handbook_project_manager",
     "syllabus_outline_analyst",
     "handbook_writer",
-    "quality_inspector",
     "final_reviewer",
 ]
 
@@ -91,11 +89,11 @@ class HandbookProjectState:
 
 
 def default_handoffs() -> list[ExpertHandoff]:
-    """Return the standard Coordinator -> Analyst -> Writer -> Inspector -> Reviewer handoffs."""
+    """Return the lightweight Analyst -> Writer -> Reviewer handoffs."""
 
     return [
         ExpertHandoff(
-            from_role="handbook_project_manager",
+            from_role="host_llm",
             to_role="syllabus_outline_analyst",
             required_input=["syllabus-evidence.json", "official specification PDF text"],
             expected_output=["syllabus-outline.json"],
@@ -108,44 +106,30 @@ def default_handoffs() -> list[ExpertHandoff]:
             on_failure="Return to syllabus_outline_analyst with exact schema or placeholder issues.",
         ),
         ExpertHandoff(
-            from_role="handbook_project_manager",
+            from_role="syllabus_outline_analyst",
             to_role="handbook_writer",
             required_input=["concepts/concept_jobs.json", "syllabus-outline.json"],
             expected_output=[
                 "concepts/concept_explanations.json",
-                "visual specs or pending visual jobs",
+                "per-topic visual_decision records",
+                "visual specs or pending visual jobs when non-text visuals are needed",
             ],
             validation_gate=[
                 "all concept jobs have matching topic entries",
                 "student-facing explanations are original and source-bound",
+                "every topic records visual_decision",
+                "text-ok decisions include no_visual_reason",
                 "visual specs are created only where they materially help",
             ],
             on_failure="Return to handbook_writer with missing topic IDs or content defects.",
         ),
         ExpertHandoff(
-            from_role="handbook_project_manager",
-            to_role="quality_inspector",
-            required_input=[
-                "named handbook HTML",
-                "qualification.json",
-                "concepts/concept_explanations.json",
-            ],
-            expected_output=["quality-inspection.json"],
-            validation_gate=[
-                "inspection_status == pass",
-                "module and file completeness checks pass",
-                "no placeholder, null, undefined, or repeated visual spec problems are reported",
-            ],
-            on_failure="Repair through handbook_writer or renderer before dispatching final_reviewer.",
-        ),
-        ExpertHandoff(
-            from_role="handbook_project_manager",
+            from_role="handbook_writer",
             to_role="final_reviewer",
             required_input=[
                 "named handbook HTML",
                 "syllabus-evidence.json",
                 "validation.json",
-                "quality-inspection.json",
                 "images/visual_manifest.json",
             ],
             expected_output=[
@@ -153,7 +137,7 @@ def default_handoffs() -> list[ExpertHandoff]:
                 "agent-product-review.json when final-ready",
             ],
             validation_gate=[
-                "final reviewer is independent from analyst and writer",
+                "reviewer opens the rendered HTML/PDF instead of relying on machine validation alone",
                 "agent_self_review.must_not_present_as_final == false before final handoff",
                 "agent-product-review.json is complete for final-ready delivery",
             ],
@@ -203,7 +187,6 @@ def deliverable_paths(output_dir: Path) -> dict[str, str | None]:
         "final_review_packet": output_dir / "final-review-packet.json",
         "product_review": output_dir / "agent-product-review.json",
         "validation": output_dir / "validation.json",
-        "agent_orchestration": output_dir / "agent-orchestration.json",
         "delivery_contract": output_dir / "delivery-contract.json",
     }
     return {key: str(path) if path.exists() else None for key, path in files.items()}
@@ -214,47 +197,47 @@ def build_coordinator_prompt(
     *,
     output_dir: Path | None = None,
 ) -> str:
-    """Build the Handbook Project Manager prompt for an Agent runtime."""
+    """Build the optional coordination prompt for a host LLM runtime."""
 
     state = build_project_state(parameters=parameters, output_dir=output_dir)
     state_payload = json.dumps(state.to_dict(), ensure_ascii=False, indent=2)
     return "\n".join(
         [
-            "# Handbook Project Manager",
+            "# Lightweight Handbook Workflow Coordinator",
             "",
             "## 1. Identity",
             "",
-            "You are the handbook_project_manager, the coordinator for IGCSE and International AS/A-Level handbook generation.",
-            "You do not write syllabus analysis, topic explanations, or final approval yourself.",
-            "You route work to specialist roles, validate their artifacts, and control handoffs.",
+            "You are the host LLM coordinating a lightweight IGCSE and International AS/A-Level handbook run.",
+            "Analyst, Writer, and Reviewer are operating roles you keep explicit; they are not mandatory separate agents.",
+            "Do not add project-manager, mandatory quality-inspector, or release-certification roles unless the user explicitly asks for that infrastructure.",
             "",
             "## 2. Mission",
             "",
-            "Orchestrate a five-role expert team so the final handbook is source-bound, rendered, inspected, and independently reviewed.",
-            "Keep the project moving through Analyst -> Writer -> Quality Inspector -> Final Reviewer without skipping gates.",
+            "Keep the project moving through Analyst -> Writer -> Reviewer while respecting the Python boundary.",
+            "Python fetches evidence, validates contracts, renders HTML/PDF, and writes mechanical manifests; the host LLM owns analysis, writing, visual judgment, and review.",
             "",
             "## 3. Core Principles",
             "",
             "1. Preflight first: confirm board, level, subject, support language, explanation style, and infographic capability before generation.",
-            "2. Sequential handoff: dispatch one expert phase at a time and record what each phase produced.",
-            "3. No domain override: ask the responsible expert to repair their own artifact instead of silently rewriting it.",
-            "4. Evidence before delivery: final-ready requires validation, quality inspection, independent final review, and product-review evidence.",
+            "2. Sequential handoff: complete Analyst artifacts before Writer artifacts, then inspect the visible handbook as Reviewer.",
+            "3. No Python content generation: do not let Python decide topic boundaries, write teaching text, choose visual need, or approve final quality.",
+            "4. Evidence before delivery: final-ready requires visible handbook inspection and product-review evidence, not just validation.",
             "5. Transparent status: tell the user the current phase, blocker, and next action in concise terms.",
             "",
             "## 4. Workflow",
             "",
             "1. Preflight: collect missing required parameters from missing_preflight.",
-            "2. Analyst: provide syllabus-evidence.json and require syllabus-outline.json.",
-            "3. Writer: provide concept_jobs.json and require concept_explanations.json plus visual decisions.",
-            "4. Inspector: run fast structure/completeness checks and write quality-inspection.json.",
-            "5. Reviewer: use a fresh independent context to audit rendered output and final-review-packet.json.",
-            "6. Delivery: only present final-ready when all final handoff gates pass; otherwise label draft/review-ready/blocked accurately.",
+            "2. Analyst: read syllabus-evidence.json and write syllabus-outline.json.",
+            "3. Writer: read concept_jobs.json and write concept_explanations.json with mastery_summary and visual_decision for every topic.",
+            "4. Render/check: let Python validate and render approved artifacts; use quality-inspection.json only as supporting evidence when present.",
+            "5. Reviewer: open the rendered HTML/PDF, compare it with evidence and outline files, and record real issues in final-review-packet.json / agent-product-review.json.",
+            "6. Delivery: only present final-ready when the visible-handbook review and final handoff gates pass; otherwise label draft/review-ready/blocked accurately.",
             "",
             "## 5. Failure Handling",
             "",
-            "- If an expert output fails schema or completeness checks, return it to that expert with exact issues.",
+            "- If an artifact fails schema or completeness checks, repair the responsible role output with exact issues.",
             "- If the same phase fails twice, summarize the failure pattern and continue with a draft or blocked state instead of hiding the risk.",
-            "- If no independent reviewer context exists, stop at review-ready or draft; do not call it final-ready.",
+            "- If the rendered handbook was not opened or screenshot-inspected, stop at review-ready or draft; do not call it final-ready.",
             "",
             "## 6. Current Project State JSON",
             "",
@@ -264,8 +247,8 @@ def build_coordinator_prompt(
             "",
             "## 7. Required Output",
             "",
-            "Maintain an updated handbook-project-manager.json with project_status, current_phase, missing_preflight, deliverables, quality_gates_passed, and handoff notes.",
-            "When handing off, state exactly which files the next expert must read and what file they must produce.",
+            "Maintain an updated handbook-project-manager.json with project_status, current_phase, missing_preflight, deliverables, quality_gates_passed, and handoff notes when this optional coordinator artifact is used.",
+            "When handing off between roles, state exactly which files the next role must read and what file it must produce.",
         ]
     )
 

@@ -10,6 +10,13 @@ from intl_exam_guide.llm.provider import ConceptExplanation, ConceptJob
 from intl_exam_guide.models import GuidePlan, Topic, TopicGuide, VisualBrief
 from intl_exam_guide.planning.source_points import visible_source_points
 
+VISUAL_DECISION_ROUTES = {"text-ok", "exact-svg", "kroki-diagram", "external-infographic"}
+FALLBACK_VISUAL_DECISION_STATE = "missing-writer-visual-decision-fallback"
+
+
+class VisualDecisionContractError(ValueError):
+    """Raised when a Writer concept entry violates the v0.5 visual contract."""
+
 
 def collect_concept_jobs(
     topics: list[Topic],
@@ -127,8 +134,20 @@ def concept_entry_from_explanation(
         entry["mini_worked_example"] = explanation.example.strip()
     if explanation.common_misconception:
         entry["pitfall"] = explanation.common_misconception.strip()
-    if explanation.metadata:
-        entry["writer_metadata"] = dict(explanation.metadata)
+    metadata = explanation.metadata or {}
+    visual_decision = metadata.get("visual_decision")
+    if isinstance(visual_decision, dict):
+        entry["visual_decision"] = visual_decision
+    else:
+        entry["visual_decision"] = fallback_visual_decision(
+            "The Writer did not request a separate visual for this topic."
+        )
+    visual_spec = metadata.get("visual_spec")
+    if isinstance(visual_spec, dict):
+        entry["visual_spec"] = visual_spec
+    if metadata:
+        entry["writer_metadata"] = dict(metadata)
+    validate_visual_decision_entry(entry, allow_fallback=True)
     return entry
 
 
@@ -177,6 +196,7 @@ def apply_concept_entries(
             clean_steps = [str(value).strip() for value in steps if str(value).strip()]
             if clean_steps:
                 guide.worked_solution_steps = clean_steps[:5]
+        validate_visual_decision_entry(entry, allow_fallback=True)
         visual = visual_brief_from_entry(plan, topic_title, entry)
         if visual:
             upsert_visual_brief(plan, visual)
@@ -184,25 +204,92 @@ def apply_concept_entries(
     return imported, missing
 
 
+def fallback_visual_decision(no_visual_reason: str) -> dict[str, object]:
+    return {
+        "recommended_route": "text-ok",
+        "learning_claim": "The written explanation and worked example carry the learning for this topic.",
+        "no_visual_reason": no_visual_reason,
+        "visual_teaching_value": "not-needed",
+        "workflow_state": FALLBACK_VISUAL_DECISION_STATE,
+        "source": "python-draft-fallback",
+    }
+
+
+def visual_decision_route(entry: dict[str, object]) -> str:
+    visual_decision = entry.get("visual_decision")
+    if not isinstance(visual_decision, dict):
+        raise VisualDecisionContractError("visual_decision must be recorded for every topic.")
+    route = str(visual_decision.get("recommended_route") or "").strip().lower()
+    if route not in VISUAL_DECISION_ROUTES:
+        allowed = ", ".join(sorted(VISUAL_DECISION_ROUTES))
+        raise VisualDecisionContractError(
+            f"visual_decision.recommended_route must be one of: {allowed}."
+        )
+    return route
+
+
+def is_fallback_visual_decision(entry: dict[str, object]) -> bool:
+    visual_decision = entry.get("visual_decision")
+    if not isinstance(visual_decision, dict):
+        return False
+    workflow_state = str(visual_decision.get("workflow_state") or "").strip()
+    source = str(visual_decision.get("source") or "").strip()
+    return (
+        workflow_state == FALLBACK_VISUAL_DECISION_STATE
+        or source == "python-draft-fallback"
+    )
+
+
+def validate_visual_decision_entry(
+    entry: dict[str, object],
+    *,
+    allow_fallback: bool = False,
+) -> None:
+    title = str(entry.get("topic_title") or entry.get("concept_term") or "topic")
+    route = visual_decision_route(entry)
+    visual_decision = entry["visual_decision"]
+    assert isinstance(visual_decision, dict)
+    if is_fallback_visual_decision(entry) and not allow_fallback:
+        raise VisualDecisionContractError(
+            f"{title}: visual_decision is a Python draft fallback, not a Writer decision."
+        )
+    has_visual_spec = isinstance(entry.get("visual_spec"), dict)
+    if route == "text-ok":
+        reason = str(visual_decision.get("no_visual_reason") or "").strip()
+        if len(reason) < 12:
+            raise VisualDecisionContractError(
+                f"{title}: text-ok visual_decision requires no_visual_reason."
+            )
+        if has_visual_spec:
+            raise VisualDecisionContractError(
+                f"{title}: text-ok visual_decision must not include visual_spec."
+            )
+    elif not has_visual_spec:
+        raise VisualDecisionContractError(
+            f"{title}: {route} visual_decision requires visual_spec."
+        )
+
+
 def visual_brief_from_entry(
     plan: GuidePlan,
     topic_title: str,
     entry: dict[str, object],
 ) -> VisualBrief | None:
+    route = visual_decision_route(entry)
+    if route == "text-ok":
+        return None
     visual_spec = entry.get("visual_spec")
     if not isinstance(visual_spec, dict):
         return None
     prompt = str(visual_spec.get("prompt") or "").strip()
     visual_type = str(visual_spec.get("visual_type") or visual_spec.get("type") or "").strip()
-    complexity = str(visual_spec.get("complexity") or "infographic").strip()
+    complexity = complexity_for_visual_route(route, visual_spec)
     if not prompt or not visual_type:
         return None
-    if complexity not in {"svg-basic", "infographic"}:
-        complexity = "infographic"
 
     topic = next((item for item in plan.qualification.topics if item.title == topic_title), None)
     source_points = visual_source_points(topic, entry)
-    provider = provider_for_visual_spec(plan, complexity)
+    provider = provider_for_visual_route(plan, route, complexity)
     return VisualBrief(
         topic_title=topic_title,
         focus_point=str(
@@ -237,13 +324,30 @@ def visual_source_points(topic: Topic | None, entry: dict[str, object]) -> list[
     return visible_source_points(topic, limit=4) if topic else []
 
 
-def provider_for_visual_spec(plan: GuidePlan, complexity: str) -> str:
-    if complexity == "svg-basic":
+def complexity_for_visual_route(route: str, visual_spec: dict[str, object]) -> str:
+    complexity = str(visual_spec.get("complexity") or "").strip().lower()
+    if route in {"exact-svg", "kroki-diagram"}:
+        return "svg-basic"
+    if route == "external-infographic":
+        return "infographic"
+    if complexity in {"svg-basic", "infographic"}:
+        return complexity
+    return "infographic"
+
+
+def provider_for_visual_route(plan: GuidePlan, route: str, complexity: str) -> str:
+    if route == "kroki-diagram":
+        return "kroki"
+    if route == "exact-svg" or complexity == "svg-basic":
         return "llm-svg"
     if plan.run_options.image_provider == "custom":
         model = plan.run_options.image_model or "model-not-set"
         return f"custom:{model}"
     return "prompt-queue"
+
+
+def provider_for_visual_spec(plan: GuidePlan, complexity: str) -> str:
+    return provider_for_visual_route(plan, "exact-svg" if complexity == "svg-basic" else "external-infographic", complexity)
 
 
 def upsert_visual_brief(plan: GuidePlan, visual: VisualBrief) -> None:
@@ -309,7 +413,13 @@ def concept_entry_from_callback_response(
     if "common_misconception" in data and "pitfall" not in data:
         data["pitfall"] = data["common_misconception"]
     data["explanations"] = explanations[:4]
-    return {str(key): value for key, value in data.items()}
+    if "visual_decision" not in data:
+        data["visual_decision"] = fallback_visual_decision(
+            "The Writer did not request a separate visual for this topic."
+        )
+    entry = {str(key): value for key, value in data.items()}
+    validate_visual_decision_entry(entry, allow_fallback=True)
+    return entry
 
 
 def strip_json_fence(value: str) -> str:

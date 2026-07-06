@@ -1,0 +1,63 @@
+{
+  "release": "v0.5-visual-decision-framework",
+  "generated_at": "2026-07-06",
+  "git_revision": "pending-release-commit",
+  "overall_status": "candidate",
+  "notes": [
+    "This release packages the v0.5 framework contract: Python remains a mechanical renderer/validator while the host LLM owns syllabus judgment, concept writing, visual need, and final review.",
+    "Every topic must carry a Writer-owned visual_decision with one of text-ok, exact-svg, kroki-diagram, or external-infographic. text-ok requires no_visual_reason.",
+    "This is not a blanket final-ready certification for all boards, levels, subjects, or visual routes. Output-specific evidence is still required before any route is promoted above candidate."
+  ],
+  "entries": [
+    {
+      "id": "framework-v05-visual-decision-contract",
+      "status": "candidate",
+      "provider": "multi-provider",
+      "level": "framework",
+      "subject": "all-subject workflow",
+      "language": "en",
+      "scope": "framework-release",
+      "supported_boards": [
+        "OxfordAQA / Oxford International AQA",
+        "Pearson Edexcel",
+        "Cambridge International / CAIE"
+      ],
+      "commands": [
+        "python -m pytest tests/test_guide_plan_llm_integration.py tests/test_quality_inspector.py tests/test_validation_checks.py tests/test_release_scripts.py tests/test_concept_jobs.py tests/test_fallback_provider.py tests/test_subject_packs.py tests/test_final_review_packet.py -q --tb=line",
+        "python -m pytest tests/ -q --tb=line",
+        "run the active-residue search documented in the release checklist"
+      ],
+      "validation_summary": {
+        "error_count": 0,
+        "pending_concept_explanations": 0,
+        "pending_infographic_assets": 0,
+        "focused_pytest_status": "135 passed, 2 skipped",
+        "full_pytest_status": "387 passed, 165 skipped",
+        "residue_audit_status": "active residue search returned no blocker output"
+      },
+      "final_review": {
+        "must_not_present_as_final": true,
+        "reason": "Candidate framework evidence only; no output-specific final-ready handbook is certified by this manifest."
+      },
+      "release_changes": {
+        "python_role": "mechanical execution only: official source fetch, page text extraction, JSON receipt/validation, rendering, PDF export, asset import, and packaging",
+        "llm_role": "syllabus boundaries, exam-point selection, concept explanations, worked examples, per-topic visual_decision, and visible-handbook review",
+        "workflow_role_model": "Analyst, Writer, and Reviewer are lightweight operating roles, not mandatory separate agents",
+        "visual_policy": "Every topic needs visual_decision; text-ok requires no_visual_reason; non-text routes require visual_spec and reviewed rendered assets before final delivery"
+      },
+      "evidence_files": [
+        "CHANGELOG.md",
+        "README.md",
+        "README.zh-CN.md",
+        "docs/ARCHITECTURE_DECISION_SKILL_WORKFLOW.md",
+        "docs/IMAGE_MODEL_GUIDE.md",
+        "docs/PROJECT_DETAILS.md",
+        "docs/PROJECT_OPERATIONS.md",
+        "docs/index.html",
+        "skill/SKILL.md",
+        "skill/references/revision_guide_spec.md"
+      ],
+      "scope_warning": "Candidate framework evidence only. Do not describe any generated handbook as final-ready unless its own validation, visual, product-review, and release-evidence artifacts say so."
+    }
+  ]
+}

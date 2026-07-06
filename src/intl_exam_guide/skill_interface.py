@@ -22,6 +22,8 @@ from intl_exam_guide.models import GuidePlan, Qualification
 from intl_exam_guide.planning.concept_integration import (
     apply_concept_entries,
     concept_entry_from_callback_response,
+    fallback_visual_decision,
+    validate_visual_decision_entry,
 )
 from intl_exam_guide.planning.guide_plan import build_guide_plan, is_scope_exclusion_topic
 from intl_exam_guide.planning.syllabus_outline import (
@@ -210,11 +212,14 @@ class SkillHandbookGenerator:
         return "\n".join(
             [
                 "Write the final concept explanations for this handbook topic.",
-                "Return JSON only, with keys: topic_title, essence, analogy, mastery_summary, mini_worked_example, pitfall, explanations, and optional visual_spec.",
+                "Return JSON only, with keys: topic_title, essence, analogy, mastery_summary, mini_worked_example, pitfall, explanations, visual_decision, and optional visual_spec.",
                 "The explanations value must be a list of 2-4 direct student-facing bullets.",
                 "The mastery_summary value must be one concrete student-facing sentence for the Study Roadmap 'What to master' column.",
                 "Stay inside the topic title and source points. Do not write a procedural checklist.",
-                "Add visual_spec only when a visual materially improves understanding.",
+                "Always include visual_decision. Use recommended_route='text-ok' only with a clear no_visual_reason explaining why a diagram would not improve learning.",
+                "Prefer exact SVG for coordinate models, processes, tables, curves, simple flows, trees, timelines, and other label/geometry-first visuals.",
+                "Prefer infographic for abstract mechanisms, multiple factors, policy transmission, pros/cons, realism, rich annotation, apparatus, scenes, or modelling assumptions.",
+                "Add visual_spec only when the visual_decision route is exact-svg, kroki-diagram, or external-infographic.",
                 "For visual_spec, use complexity='svg-basic' with svg_fit='exact' only for exact-fit diagrams such as axes, set regions, simple flows, tables, trees, or timelines.",
                 "Use complexity='infographic' for visuals needing nuance, realistic setup, multiple linked states, rich annotation, or modelling assumptions.",
                 f"Topic title: {topic_title}",
@@ -413,6 +418,7 @@ class IncrementalGenerator:
         misconception: str = "",
         visual_spec: dict[str, object] | None = None,
         mastery_summary: str = "",
+        visual_decision: dict[str, object] | None = None,
     ) -> None:
         if not self.plan:
             raise ValueError("Must call step1_prepare first")
@@ -422,6 +428,8 @@ class IncrementalGenerator:
         metadata: dict[str, object] = {"topic_title": str(job.get("topic_title") or "")}
         if mastery_summary.strip():
             metadata["mastery_summary"] = mastery_summary.strip()
+        if visual_decision:
+            metadata["visual_decision"] = visual_decision
         if visual_spec:
             metadata["visual_spec"] = visual_spec
         self.concept_explanations.append(
@@ -552,9 +560,17 @@ class IncrementalGenerator:
                 entry["analogy"] = explanation.analogy
             if explanation.common_misconception:
                 entry["pitfall"] = explanation.common_misconception
+            visual_decision = explanation.metadata.get("visual_decision")
+            if isinstance(visual_decision, dict):
+                entry["visual_decision"] = visual_decision
+            else:
+                entry["visual_decision"] = fallback_visual_decision(
+                    "No separate visual was submitted by the Writer for this incremental entry."
+                )
             visual_spec = explanation.metadata.get("visual_spec")
             if isinstance(visual_spec, dict):
                 entry["visual_spec"] = visual_spec
+            validate_visual_decision_entry(entry, allow_fallback=True)
             entries.append(entry)
         return entries
 

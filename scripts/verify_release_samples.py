@@ -63,13 +63,13 @@ def main() -> int:
     )
     parser.add_argument(
         "--evidence-manifest",
-        default="docs/release-evidence/v0.4/manifest.json",
-        help="v0.4+ lightweight release-evidence manifest.",
+        default="docs/release-evidence/v0.5/manifest.json",
+        help="v0.5+ lightweight release-evidence manifest.",
     )
     parser.add_argument(
         "--legacy-outputs",
         action="store_true",
-        help="Verify the legacy ignored outputs/*-sample directories instead of v0.4 evidence.",
+        help="Verify the legacy ignored outputs/*-sample directories instead of v0.5 evidence.",
     )
     parser.add_argument(
         "--allow-pending",
@@ -115,8 +115,8 @@ def verify_release_evidence(manifest_path: Path) -> int:
         failures.append(f"{manifest_path}: entries must be a non-empty list")
         entries = []
     release = str(manifest.get("release") or "")
-    if not release.startswith("v0.4"):
-        failures.append(f"{manifest_path}: release must start with v0.4")
+    if not release.startswith("v0.5"):
+        failures.append(f"{manifest_path}: release must start with v0.5")
     if str(manifest.get("overall_status") or "") not in RELEASE_STATUSES:
         failures.append(
             f"{manifest_path}: overall_status must be one of {sorted(RELEASE_STATUSES)}"
@@ -421,7 +421,7 @@ def final_delivery_failures(
         failures.append(f"{sample}: final review is missing complete product-review evidence")
     if not isinstance(product_review, dict):
         failures.append(f"{sample}: agent-product-review.json is not an object")
-    elif product_review.get("schema_version") != "v0.4-agent-product-review":
+    elif product_review.get("schema_version") != "v0.5-visible-handbook-review":
         failures.append(f"{sample}: agent-product-review.json has the wrong schema_version")
     elif product_review.get("decision") != "final-ready":
         failures.append(f"{sample}: agent-product-review.json decision is not final-ready")

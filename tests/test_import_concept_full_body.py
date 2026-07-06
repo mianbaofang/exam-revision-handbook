@@ -42,6 +42,10 @@ def test_apply_concept_explanations_replaces_full_topic_body():
                     "An external cost is harm to a third party.",
                     "An external benefit is a gain to a third party.",
                 ],
+                "visual_decision": {
+                    "recommended_route": "text-ok",
+                    "no_visual_reason": "The side-effect distinction is already taught clearly by the analogy and worked example.",
+                },
             }
         ],
     )
@@ -95,6 +99,10 @@ def test_apply_concept_explanations_puts_writer_mastery_first():
                     "The discriminant is the part of the quadratic formula that controls the root type.",
                     "Its sign tells you whether the graph crosses, touches or misses the x-axis.",
                 ],
+                "visual_decision": {
+                    "recommended_route": "text-ok",
+                    "no_visual_reason": "This import test only checks Writer mastery text; no separate visual is needed here.",
+                },
             }
         ],
         force=True,

@@ -28,10 +28,8 @@ then turn the official syllabus into a reusable revision-handbook framework.
     compare it with the syllabus outline and visible PDF/HTML quality, repair
     fixable problems, record `agent-product-review.json`, rerender, and rerun
     final review before handoff;
-12. when the Agent runtime supports subagents or fresh child contexts, dispatch
-    syllabus/outline analysis, handbook writing, and final review as separate
-    roles from `agent-orchestration.json`; without an independent reviewer, the
-    output stays review-ready or draft.
+12. use Analyst, Writer, and Reviewer as lightweight operating roles; separate
+    agents are optional when the user explicitly wants that orchestration.
 
 ### What Makes It Different
 
@@ -42,13 +40,13 @@ then turn the official syllabus into a reusable revision-handbook framework.
   because the exam is English. A non-English choice adds a 30-50 item
   selected-language-to-English professional glossary instead of translating the
   whole handbook body.
-- **Visual learning layer**: the generator first builds source-bound knowledge
-  points and practice examples, then analyzes which items need visual
-  explanation. Exact SVG is allowed only when the LLM marks `svg_fit: "exact"`
-  and the asset is reviewed or approved; complex lab, geometry, circuit,
-  economics, or text-heavy infographic needs are routed to source-bound visual
-  briefs and prompt queues unless a callable image route or imported asset
-  directory is available.
+- **Visual learning layer**: the Writer first builds source-bound topic content,
+  then records `visual_decision` for every topic. `text-ok` is allowed only with
+  a `no_visual_reason`; exact SVG is allowed only when the LLM marks
+  `svg_fit: "exact"` and the asset is reviewed or approved; complex lab,
+  geometry, circuit, multi-factor, or text-heavy infographic needs are routed to
+  source-bound visual briefs and prompt queues unless a callable image route or
+  imported asset directory is available.
 - **Narrative explanation modes**: topic blocks can be explained as life
   scenes, detective reasoning, or anime-quest style study missions while
   avoiding protected-IP copying by default.
@@ -58,10 +56,10 @@ then turn the official syllabus into a reusable revision-handbook framework.
   final visible handbook instead of treating generated files or validation
   gates as proof of student-usable quality. Complete `agent-product-review.json`
   evidence is required before final-ready handoff.
-- **Multi-agent orchestration**: generated outputs include
-  `agent-orchestration.json` with `multi_agent_required: true`, dispatch briefs,
-  and a final reviewer that must be independent from outline analysis and
-  writing.
+- **LLM-owned workflow boundary**: Python provides evidence extraction,
+  validation, rendering, and manifests; the host LLM owns analysis, writing,
+  visual judgment, and final visible-handbook review. Multi-agent orchestration is
+  optional rather than the default contract.
 - **International qualification structure**: International GCSE is handled as
   linear; International AS-A-level is handled as modular.
 - **Website listing checks**: OxfordAQA subject buttons are recorded as the
@@ -83,7 +81,7 @@ pipeline is designed to work across discovered OxfordAQA qualification pages;
 unprofiled subjects fall back to source-bound generic examples instead of
 borrowing Mathematics, Chemistry, or Economics templates.
 
-For v0.4 release evidence, use four status words:
+For v0.5 release evidence, use four status words:
 
 - `candidate`: route evidence exists, but it is not delivery-grade.
 - `draft`: a fresh output exists, but concepts, images, PDF/export, validation,
@@ -119,7 +117,7 @@ The three public release showcase guides are treated as final only after their
 selected image provider has generated all infographic assets, those assets have
 been merged into `guide.html`, `guide.pdf` has been exported, and
 `scripts/verify_release_samples.py --outputs-root <outputs>` passes without
-`--allow-pending`. For v0.4+, the same claim also needs a concise
+`--allow-pending`. For v0.5+, the same claim also needs a concise
 `docs/release-evidence/<version>/manifest.json` entry; the generated output
 folder itself remains untracked.
 
@@ -219,7 +217,7 @@ validation、final-review 和视觉状态证据，否则这些路线仍按 candi
 provider/parser 流程面向已发现的 OxfordAQA qualification pages；暂未做专门 profile 的科目会使用
 基于官方大纲的通用例题和图文判断，不会借用 Mathematics、Chemistry 或 Economics 的模板。
 
-v0.4 发布证据只使用四个状态词：
+v0.5 发布证据只使用四个状态词：
 
 - `candidate`：有路线证据，但不是交付级。
 - `draft`：有当前输出，但概念、图片、PDF/export、validation 或 Agent 自查仍有阻塞。
@@ -227,7 +225,7 @@ v0.4 发布证据只使用四个状态词：
 - `certified`：在 final-ready 之上，又经过发布负责人或熟悉学科的人确认，并写入 release-evidence manifest。
 
 除非 `docs/release-evidence/` 里有对应 manifest 条目，否则不要把任何路线称为 certified。
-v0.3 的 ready 证据是历史发布事实，不等于 v0.4 长期认证。
+v0.3 的 ready 证据是历史发布事实，不等于 v0.5 长期认证。
 
 - Offline synthetic demo：无网络、无版权 PDF，能生成完整 handbook package，
   validation 无问题。
@@ -246,7 +244,7 @@ v0.3 的 ready 证据是历史发布事实，不等于 v0.4 长期认证。
 三份公开发布用 showcase guides 只有在所选生图 provider 生成全部信息图、
 图片合并进 `guide.html`、导出 `guide.pdf`，并且
 `scripts/verify_release_samples.py --outputs-root <outputs>` 不带
-`--allow-pending` 通过之后，才算最终完成。v0.4 起还需要在
+`--allow-pending` 通过之后，才算最终完成。v0.5 起还需要在
 `docs/release-evidence/<version>/manifest.json` 中记录精简证据；完整输出目录仍不提交到 Git。
 这三份是首页展示和发布验收样例，不是生成器的科目支持上限。
 

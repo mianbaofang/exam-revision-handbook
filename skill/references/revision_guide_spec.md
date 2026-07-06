@@ -12,7 +12,7 @@ A generated handbook package may include:
 - `<board>-<level>-<subject>-<time>.pdf`: A4 PDF export when requested and a browser runtime is available.
 - `sections/`: source fragments used to assemble the handbook.
 - `images/`: reviewed SVG assets, reviewed infographic assets, and pending visual jobs.
-- `concepts/`: concept-writing jobs and LLM-written concept explanations.
+- `concepts/`: concept-writing jobs and LLM-written concept explanations, including per-topic `visual_decision` records.
 - `guide-plan.json`: structured topic guides, worked examples, practice items, and visual briefs.
 - `qualification.json`: provider metadata, updated after the LLM Analyst outline pass.
 - `syllabus-evidence.json`: page-level evidence extracted from the official source.
@@ -99,18 +99,20 @@ The tone should help teenagers stay awake and oriented:
 
 ## Visual Workflow
 
-Do not make the handbook text-only by default. The Writer decides visual need after the source-bound topic guide and examples are drafted.
+Do not make the handbook text-only by default. The Writer decides visual need after the source-bound topic guide and examples are drafted. This judgment applies to every subject: any topic can deserve a visual when it improves learning, and any topic can be `text-ok` when a separate image would add noise.
 
-Allowed visual decisions after the topic explanation and worked example exist:
+Every topic in `concepts/concept_explanations.json` must include `visual_decision`:
 
-- `text-ok`: no image needed.
-- `svg-basic`: an exact SVG is appropriate because labels and geometry fully carry the teaching meaning. Include `svg_fit: "exact"`; create/import the LLM-authored SVG first and mark it reviewed only after LLM visual review passes.
-- `kroki`: if LLM SVG review fails but the idea is still a formal diagram, try Kroki and review the generated SVG before final delivery.
-- `infographic`: if Kroki review fails or a richer reviewed raster asset is needed, create a source-bound visual brief and prompt queue entry until an asset exists.
+- `recommended_route: "text-ok"`: no image needed; include `no_visual_reason` explaining why text, example, and source anchor are the better learning route.
+- `recommended_route: "exact-svg"`: an exact SVG is appropriate because labels and geometry fully carry the teaching meaning. Include `svg_fit: "exact"`; create/import the LLM-authored SVG first and mark it reviewed only after LLM visual review passes.
+- `recommended_route: "kroki-diagram"`: a professional formal diagram is more suitable than an exact LLM SVG; review the generated SVG before final delivery.
+- `recommended_route: "external-infographic"`: a richer reviewed raster asset is needed; create a source-bound visual brief and prompt queue entry until an asset exists.
 
-Good SVG cases include number lines, simple graphs, pH scales, particle models, energy profiles, basic geometry, flows, hierarchies, timelines, and relationship maps when the geometry and labels fully carry the concept.
+Only routes other than `text-ok` should include `visual_spec`. The v0.5 visual manifest keeps the Writer's `recommended_route` separate from the actual `rendered_asset`, so `exact-svg`, `kroki-diagram`, or `external-infographic` is not complete until the corresponding reviewed file exists and renders in the handbook.
 
-Good infographic cases include lab apparatus, complex geometry, circuits, dense economics scenes, realistic process scenes, and high-design text+diagram charts.
+Good exact-SVG cases include number lines, simple graphs, pH scales, particle models, energy profiles, basic geometry, flows, hierarchies, timelines, and relationship maps when the geometry and labels fully carry the concept.
+
+Good external-infographic cases include lab apparatus, complex geometry, circuits, dense multi-factor scenes, realistic process scenes, and high-design text+diagram charts.
 
 External infographic prompts should use the default revision-worksheet visual style: landscape educational infographic, clear topic banner, separated teaching panels, pastel subject colors, readable black English labels, accurate diagrams/icons, and a small Quick Q&A or practice box. Do not request board logos, school branding, course-cover packaging, decorative watermarks, or unsupported facts.
 
@@ -137,7 +139,9 @@ Before presenting a handbook as complete, confirm:
 - every topic has reviewed concept explanation content imported from `concepts/concept_explanations.json`;
 - every topic has a Writer-authored `mastery_summary`;
 - every topic has a source snippet or a manual-review warning;
+- every topic has `visual_decision`, with `no_visual_reason` whenever the route is `text-ok`;
 - visual briefs or reviewed assets exist for visual topics;
+- `visual_manifest.json` distinguishes the recommended route from the rendered asset state;
 - `validation.json` has no `error` issues;
 - PDF export succeeded when requested, or the user is told why it was skipped.
 

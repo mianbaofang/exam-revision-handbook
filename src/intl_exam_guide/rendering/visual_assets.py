@@ -5,6 +5,8 @@ import re
 from pathlib import Path
 from typing import Any
 
+from intl_exam_guide.visuals.manifest import sync_visual_manifest_entry
+
 
 GENERATED_ASSET_STATUSES = {
     "generated",
@@ -97,6 +99,9 @@ def load_visual_manifest(path_or_dir: Path) -> list[dict[str, Any]]:
         return []
     if isinstance(data, dict):
         data = data.get("visuals") if data.get("schema_version") == 2 else None
+        if not isinstance(data, list):
+            return []
+        return [sync_visual_manifest_entry(entry) for entry in data if isinstance(entry, dict)]
     if not isinstance(data, list):
         return []
     return [entry for entry in data if isinstance(entry, dict)]

@@ -332,8 +332,6 @@ def validate_preflight_and_source(plan: GuidePlan) -> list[ValidationIssue]:
         issues.append(ValidationIssue("warning", "Practice coverage is below one item per topic."))
     if len(plan.topic_guides) != len(teachable_topics):
         issues.append(ValidationIssue("error", "Topic guide coverage does not match topic count."))
-    if not plan.visual_briefs:
-        issues.append(ValidationIssue("warning", "No topics were selected for visual explanation."))
     return issues
 
 

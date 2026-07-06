@@ -63,7 +63,7 @@ def test_concept_jobs_are_bound_to_current_topic_source():
     assert len(jobs) == 1
     assert jobs[0]["topic_title"] == "2.3 - Market failure: External costs and benefits"
     assert jobs[0]["source_points"] == ["External costs and benefits affect third parties"]
-    assert jobs[0]["contract_version"] == "v0.4-pedagogy-mvp"
+    assert jobs[0]["contract_version"] == "v0.5-visual-decision-pedagogy"
     assert jobs[0]["subject_pack"] == "economics"
     assert jobs[0]["writing_contract"]["subject_pack"] == "economics"
     assert jobs[0]["review_contract"]["id"] == "concept_001_review"
@@ -101,6 +101,10 @@ def test_concept_jobs_write_review_files_and_read_reviewed_titles(tmp_path):
                         "外部成本是第三方承担的成本。",
                         "外部收益是第三方获得的收益。",
                     ],
+                    "visual_decision": {
+                        "recommended_route": "text-ok",
+                        "no_visual_reason": "文字解释和例题已经能清楚说明本 topic 的学习重点。",
+                    },
                 }
             ],
             ensure_ascii=False,
@@ -124,6 +128,10 @@ def test_import_concept_explanations_accepts_writer_concepts_schema(tmp_path):
                     {
                         "topic_title": "Topic A",
                         "explanations": ["Concept A", "Reason A"],
+                        "visual_decision": {
+                            "recommended_route": "text-ok",
+                            "no_visual_reason": "The written explanation already carries the learning clearly.",
+                        },
                     }
                 ],
             },
@@ -134,7 +142,16 @@ def test_import_concept_explanations_accepts_writer_concepts_schema(tmp_path):
 
     entries = load_concept_explanations(path)
 
-    assert entries == [{"topic_title": "Topic A", "explanations": ["Concept A", "Reason A"]}]
+    assert entries == [
+        {
+            "topic_title": "Topic A",
+            "explanations": ["Concept A", "Reason A"],
+            "visual_decision": {
+                "recommended_route": "text-ok",
+                "no_visual_reason": "The written explanation already carries the learning clearly.",
+            },
+        }
+    ]
 
 
 def test_apply_concept_explanations_replaces_matching_topic():
@@ -150,6 +167,10 @@ def test_apply_concept_explanations_replaces_matching_topic():
                     "外部成本是生产或消费让第三方承担的成本。",
                     "外部收益是第三方获得但没有直接付费的收益。",
                 ],
+                "visual_decision": {
+                    "recommended_route": "text-ok",
+                    "no_visual_reason": "文字解释和例题已经能清楚说明本 topic 的学习重点。",
+                },
             }
         ],
     )
