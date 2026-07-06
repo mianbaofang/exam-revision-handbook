@@ -28,15 +28,16 @@ An evidence-only package from `extract-evidence` is intentionally smaller. It co
 
 ## Required Preflight
 
-Do not start syllabus download or handbook writing until the user has confirmed the following. Ask clarifying questions when any item is missing or ambiguous; do not silently choose defaults for content-bearing decisions:
+Do not start syllabus download or handbook writing until the user has confirmed the following. Ask clarifying questions when any item is missing or ambiguous; do not silently choose defaults for content-bearing decisions. In the first preflight exchange, explicitly offer the workflow-mode choice: default single-host role passes, or optional multi-agent delegation when the user wants separate agents and the runtime supports them.
 
 1. board, qualification level, subject, and code when known;
 2. official page URL or direct PDF URL when discovery is ambiguous;
 3. exam year or syllabus range when the provider lists multiple versions;
 4. support language: `en` for no glossary, or `zh-CN`, `zh-TW`, or `ja` for a professional term glossary;
 5. writing style: `formal`, `friendly`, `life`, `story`, `detective`, or `adventure`;
-6. visual route: prompt queue, reviewed asset directory, installed image Skill, project script, or custom API;
-7. output directory.
+6. workflow mode: default single-host Analyst/Writer/Reviewer role passes, or optional multi-agent delegation when explicitly requested;
+7. visual route: prompt queue, reviewed asset directory, installed image Skill, project script, or custom API;
+8. output directory.
 
 If official discovery returns several candidates, show the candidates and wait for selection. Do not guess. If no callable image route exists, continue with prompt-queue visual jobs and report pending visuals honestly.
 

@@ -24,13 +24,23 @@ Before changing workflow scope, read `../docs/ARCHITECTURE_DECISION_SKILL_WORKFL
 
 ## Preflight
 
-Confirm the minimum run inputs before downloading or writing. Ask the user directly when any of these are missing or ambiguous; do not silently choose defaults for content-bearing decisions:
+Confirm the minimum run inputs before downloading or writing. Ask the user directly when any of these are missing or ambiguous; do not silently choose defaults for content-bearing decisions.
+
+During the first preflight exchange, explicitly offer the workflow-mode choice:
+
+- default single-host mode: one host LLM performs Analyst, Writer, and Reviewer as separated role passes;
+- optional multi-agent mode: use separate agents for those roles only if the user asks for that orchestration and the host runtime supports it.
+
+If the user does not choose multi-agent mode, continue with default single-host mode, but record that choice in the handoff summary so the user is not surprised later.
+
+Confirm:
 
 - board, level, subject, and code when known;
 - official page URL or PDF URL if discovery is ambiguous;
 - exam year or syllabus range when the provider lists several versions;
 - support language: `en`, `zh-CN`, `zh-TW`, or `ja`;
 - writing style: `formal`, `friendly`, `life`, `story`, `detective`, or `adventure`;
+- workflow mode: default single-host role passes, or optional multi-agent delegation when explicitly requested;
 - visual route: prompt queue, reviewed assets, installed image Skill, project script, or custom API;
 - output directory.
 

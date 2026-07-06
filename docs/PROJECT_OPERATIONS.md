@@ -29,7 +29,10 @@ User-facing promise:
    Agent.
 2. User asks for a subject revision/study handbook.
 3. Agent confirms exam board, subject, required exam year, term-support
-   language, and explanation style.
+   language, explanation style, and workflow mode. The workflow-mode prompt must
+   explicitly offer default single-host Analyst/Writer/Reviewer role passes or
+   optional multi-agent delegation when the user wants separate agents and the
+   runtime supports them.
 4. Agent fetches official public syllabus/specification sources.
 5. Agent builds topic guides, concept-writing jobs, worked examples, visual
    briefs, HTML, PDF, and validation output.

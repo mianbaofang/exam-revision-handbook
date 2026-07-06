@@ -146,7 +146,11 @@ Before generation starts, the Agent should confirm:
    handbook body, examples, labels, and visual prompts stay in English.
 4. Explanation style: formal, friendly, life-scene, story-based, detective, or
    adventure-style.
-5. Infographic capability: ask whether the user has a callable image or
+5. Workflow mode: explicitly offer default single-host Analyst/Writer/Reviewer
+   role passes, or optional multi-agent delegation if the user wants separate
+   agents and the host runtime supports them. If the user stays with the default,
+   record that choice in the handoff summary.
+6. Infographic capability: ask whether the user has a callable image or
    infographic route for this run. If yes, collect the route type, such as an
    installed image-generation Skill, a custom API endpoint plus environment
    variable name, a project script, or an existing generated-asset directory.
