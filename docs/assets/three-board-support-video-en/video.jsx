@@ -98,7 +98,7 @@ function IntroScene() {
   return (
     <SceneFrame start={0} end={5.2}>
       <div className="orbit" style={{ transform: `rotate(${orbit}deg) scale(${1 + Math.sin(time * 0.7) * 0.025})` }}></div>
-      <div className="kicker">v0.4.4 · Revision Handbook Skill</div>
+      <div className="kicker">Revision Handbook Skill</div>
       <h1 className="headline">Turn official syllabuses into revision handbooks students can actually use.</h1>
       <p className="lead">
         For AQA, Edexcel, and CAIE: fetch the official syllabus first, then let agents split writing, visuals, and final review.
@@ -464,7 +464,7 @@ function ClosingScene() {
 function Footer() {
   return (
     <div className="footer-mark">
-      <span>IGCSE & A-Level AI Revision Handbook Skill · v0.4.4</span>
+      <span>IGCSE & A-Level AI Revision Handbook Skill</span>
       <span>official syllabus → reviewed handbook</span>
     </div>
   );

@@ -5,7 +5,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-from intl_exam_guide import __version__
 from intl_exam_guide.models import (
     AssessmentPaper,
     GuidePlan,
@@ -509,9 +508,8 @@ def test_render_intro_animation_exposes_cli_help():
     assert "--gif" in result.stdout
 
 
-def test_intro_animation_visible_version_labels_match_package_version():
+def test_intro_animation_does_not_hardcode_release_version_labels():
     repo_root = Path(__file__).resolve().parents[1]
-    expected_label = f"v{__version__}"
     animation_files = [
         repo_root / "docs" / "assets" / "three-board-support-video" / "index.html",
         repo_root / "docs" / "assets" / "three-board-support-video" / "video.jsx",
@@ -521,11 +519,8 @@ def test_intro_animation_visible_version_labels_match_package_version():
 
     for animation_file in animation_files:
         text = animation_file.read_text(encoding="utf-8")
-        assert expected_label in text, animation_file
-        stale_labels = {
-            label for label in re.findall(r"v0\.2\.\d+", text) if label != expected_label
-        }
-        assert stale_labels == set(), (animation_file, stale_labels)
+        release_labels = re.findall(r"v\d+\.\d+(?:\.\d+)?", text)
+        assert release_labels == [], (animation_file, release_labels)
 
 
 @pytest.mark.skip(reason="Test needs update after architecture refactor.")

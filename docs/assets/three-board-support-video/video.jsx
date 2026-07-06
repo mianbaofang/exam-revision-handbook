@@ -98,7 +98,7 @@ function IntroScene() {
   return (
     <SceneFrame start={0} end={5.2}>
       <div className="orbit" style={{ transform: `rotate(${orbit}deg) scale(${1 + Math.sin(time * 0.7) * 0.025})` }}></div>
-      <div className="kicker">v0.4.4 · 复习手册生成 Skill</div>
+      <div className="kicker">复习手册生成 Skill</div>
       <h1 className="headline">把官方大纲，变成孩子看得下去的复习手册。</h1>
       <p className="lead">
         面向 AQA、Edexcel、CAIE：先抓取官方大纲，再由多个 Agent 分工写作、配图和验收。
@@ -464,7 +464,7 @@ function ClosingScene() {
 function Footer() {
   return (
     <div className="footer-mark">
-      <span>IGCSE & A-Level AI 复习手册 Skill · v0.4.4</span>
+      <span>IGCSE & A-Level AI 复习手册 Skill</span>
       <span>official syllabus → reviewed handbook</span>
     </div>
   );
