@@ -227,8 +227,15 @@ def test_stylesheet_keeps_handbook_cover_responsive_and_print_contracts():
 
     for selector in [
         ".cover {",
+        ".cover.board-aqa",
+        ".cover.board-edexcel",
+        ".cover.board-caie",
         ".cover-mast",
+        ".cover-main",
+        ".cover-signature-card",
+        ".cover-spec-card",
         ".cover-identity-grid",
+        ".cover-signal-grid",
         ".student-overview",
         ".topic-nav",
         ".practice-block",
@@ -238,6 +245,12 @@ def test_stylesheet_keeps_handbook_cover_responsive_and_print_contracts():
         "@media print",
     ]:
         assert selector in css
+
+    assert "--cover-primary: #1354a5" in css
+    assert "--cover-primary: #007b83" in css
+    assert "--cover-primary: #b42c35" in css
+    assert ".cover.board-edexcel .cover-spec-card" in css
+    assert ".cover.board-caie .cover-mast" in css
 
     assert "min-height: 220mm" in css
     assert "print-color-adjust: exact" in css
@@ -267,6 +280,30 @@ def test_cover_helpers_identify_three_boards_and_neutral_unknown_sources():
     qualification.source.provider = "synthetic-demo"
     qualification.source.specification_url = "https://example.test/spec.pdf"
     assert exam_board_identity(qualification)["class_name"] == "board-neutral"
+
+
+def test_render_cover_applies_distinct_three_board_theme_classes():
+    options = GuideRunOptions(
+        requested_subject="Accounting",
+        image_provider="prompt-queue",
+        explanation_style="friendly",
+        output_language="en",
+    )
+    cases = [
+        ("OxfordAQA", "OxfordAQA", "board-aqa", "AQA"),
+        ("Pearson Edexcel", "Pearson Edexcel", "board-edexcel", "Edexcel"),
+        ("Cambridge International", "Cambridge International", "board-caie", "CAIE"),
+    ]
+
+    for provider, source_provider, class_name, short_name in cases:
+        qualification = sample_rendering_qualification()
+        qualification.provider = provider
+        qualification.source.provider = source_provider
+        html = render_cover(qualification, options)
+
+        assert f'class="cover {class_name}"' in html
+        assert f'class="exam-board-theme-strip {class_name}"' in html
+        assert f"{short_name} handbook" in html
 
 
 def test_cover_version_label_uses_issue_range_exam_year_then_pdf_fallback():
@@ -323,7 +360,7 @@ def test_render_cover_keeps_first_page_to_course_identity():
     assert "Assessment Structure" not in html
 
 
-def test_render_cover_keeps_term_support_routes_in_english_body():
+def test_render_cover_keeps_term_support_generic_without_sample_content():
     qualification = sample_oxfordaqa_as_math_9660()
     options = GuideRunOptions(
         requested_subject="9660",
@@ -336,14 +373,21 @@ def test_render_cover_keeps_term_support_routes_in_english_body():
     options.output_language = "zh-CN"
     term_supported = render_cover(qualification, options)
 
-    assert "Unit P1 + Unit PSM1" in english
-    assert "Mechanics" in english
-    assert "part of this mathematics specification" in english
     assert term_supported == english
-    assert "Exam board" in term_supported
+    assert "class=\"cover board-aqa\"" in english
+    assert "Oxford International AQA Examinations" in english
+    assert "Mathematics" in english
+    assert "Course code" in english
+    assert "9660" in english
+    assert "cover-signal-grid" in english
+    assert "Unit P1" not in english
+    assert "Unit PSM1" not in english
+    assert "Pure Maths" not in english
+    assert "Mechanics" not in english
+    assert "part of this mathematics specification" not in english
     assert "Specification / syllabus version" not in term_supported
     assert "See official specification/syllabus PDF" not in term_supported
-    assert "course-scope-note" in stylesheet()
+    assert "course-scope-note" not in stylesheet()
 
 
 def test_render_cover_hides_unknown_metadata_but_keeps_real_syllabus_range():
