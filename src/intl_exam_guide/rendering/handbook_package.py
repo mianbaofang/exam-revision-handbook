@@ -182,7 +182,7 @@ def write_visual_assets(plan: GuidePlan, images_dir: Path) -> list[Path]:
                     previous = {**previous, "kroki_error": str(exc)}
             else:
                 filename = None
-                asset_status = "svg-fallback-needs-review"
+                asset_status = "llm-svg-required"
                 review_status = "pending"
         else:
             filename = None

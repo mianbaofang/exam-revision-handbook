@@ -6,6 +6,8 @@ import json
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
+from intl_exam_guide.rendering.output_names import find_handbook_html, find_handbook_pdf
+
 COORDINATOR_FILE = "handbook-project-manager.json"
 COORDINATOR_PROMPT_FILE = "handbook-project-manager-prompt.md"
 COORDINATOR_SCHEMA_VERSION = "v0.5-handbook-project-manager"
@@ -124,7 +126,7 @@ def default_handoffs() -> list[ExpertHandoff]:
             from_role="handbook_project_manager",
             to_role="quality_inspector",
             required_input=[
-                "guide.html",
+                "named handbook HTML",
                 "qualification.json",
                 "concepts/concept_explanations.json",
             ],
@@ -140,7 +142,7 @@ def default_handoffs() -> list[ExpertHandoff]:
             from_role="handbook_project_manager",
             to_role="final_reviewer",
             required_input=[
-                "guide.html",
+                "named handbook HTML",
                 "syllabus-evidence.json",
                 "validation.json",
                 "quality-inspection.json",
@@ -187,26 +189,24 @@ def build_project_state(
 
 
 def deliverable_paths(output_dir: Path) -> dict[str, str | None]:
+    handbook_html = find_handbook_html(output_dir)
+    handbook_pdf = find_handbook_pdf(output_dir)
     files = {
-        "guide_html": "guide.html",
-        "guide_pdf": "guide.pdf",
-        "qualification": "qualification.json",
-        "syllabus_evidence": "syllabus-evidence.json",
-        "syllabus_outline": "syllabus-outline.json",
-        "concept_jobs": "concepts/concept_jobs.json",
-        "concept_explanations": "concepts/concept_explanations.json",
-        "quality_inspection": "quality-inspection.json",
-        "final_review_packet": "final-review-packet.json",
-        "product_review": "agent-product-review.json",
-        "validation": "validation.json",
-        "agent_orchestration": "agent-orchestration.json",
-        "delivery_contract": "delivery-contract.json",
+        "guide_html": handbook_html,
+        "guide_pdf": handbook_pdf,
+        "qualification": output_dir / "qualification.json",
+        "syllabus_evidence": output_dir / "syllabus-evidence.json",
+        "syllabus_outline": output_dir / "syllabus-outline.json",
+        "concept_jobs": output_dir / "concepts" / "concept_jobs.json",
+        "concept_explanations": output_dir / "concepts" / "concept_explanations.json",
+        "quality_inspection": output_dir / "quality-inspection.json",
+        "final_review_packet": output_dir / "final-review-packet.json",
+        "product_review": output_dir / "agent-product-review.json",
+        "validation": output_dir / "validation.json",
+        "agent_orchestration": output_dir / "agent-orchestration.json",
+        "delivery_contract": output_dir / "delivery-contract.json",
     }
-    values: dict[str, str | None] = {}
-    for key, relative in files.items():
-        path = output_dir / relative
-        values[key] = str(path) if path.exists() else None
-    return values
+    return {key: str(path) if path.exists() else None for key, path in files.items()}
 
 
 def build_coordinator_prompt(

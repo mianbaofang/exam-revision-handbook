@@ -310,8 +310,9 @@ def test_render_cover_keeps_first_page_to_course_identity():
 
     html = render_cover(qualification, options)
 
-    assert "Official exam board" in html
-    assert "AQA" in html
+    assert "Exam board" in html
+    assert "Oxford International AQA Examinations" in html
+    assert "exam-board-badge" not in html
     assert "Accounting Example" in html
     assert "Course code" in html
     assert "9215" in html
@@ -339,7 +340,7 @@ def test_render_cover_keeps_term_support_routes_in_english_body():
     assert "Mechanics" in english
     assert "part of this mathematics specification" in english
     assert term_supported == english
-    assert "Official exam board" in term_supported
+    assert "Exam board" in term_supported
     assert "Specification / syllabus version" not in term_supported
     assert "See official specification/syllabus PDF" not in term_supported
     assert "course-scope-note" in stylesheet()
@@ -1218,7 +1219,7 @@ def test_write_visual_assets_preserves_generated_raster_and_rebuilds_svg_manifes
     assert not (images_dir / "stale.png").exists()
     assert len(written) == 1
     assert [entry["asset_status"] for entry in manifest] == [
-        "svg-fallback-needs-review",
+        "llm-svg-required",
         "reviewed-generated",
         "external-generation-required",
     ]

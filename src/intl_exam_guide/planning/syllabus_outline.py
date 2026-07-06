@@ -148,7 +148,16 @@ def build_syllabus_outline_prompt(qualification: Qualification, evidence: Syllab
             "   - Do not merge unrelated source items just to make the outline shorter. Do not",
             "     split a single indivisible source item merely to reach a count.",
             "",
-            "3. Split final teachable knowledge units",
+            "3. Audit teaching granularity for every source item",
+            "   - For each source_coverage item, decide how it will be treated:",
+            "     independent_topic, merged_into_topic, prerequisite, or sub_skill.",
+            "   - If a source item is merged, name the target topic and explain why the",
+            "     items belong together for teaching. Do not merge merely because they share",
+            "     a container heading.",
+            "   - The handbook table of contents must let the Reviewer trace each official",
+            "     source item to a visible topic, sub-skill, explanation, example, or practice.",
+            "",
+            "4. Split final teachable knowledge units",
             "   - topics[] is the final list consumed by the handbook writer. Each entry should",
             "     be one teachable knowledge unit or a tightly linked cluster justified by the",
             "     current syllabus evidence.",
@@ -157,7 +166,7 @@ def build_syllabus_outline_prompt(qualification: Qualification, evidence: Syllab
             "   - For each topic, include parent_path and source_coverage_ids so the Writer and",
             "     Reviewer can trace it back to your source coverage map.",
             "",
-            "4. Extract exam points and source snippets",
+            "5. Extract exam points and source snippets",
             "   - exam_points should be specific source-bound claims, skills, formula uses,",
             "     restrictions, or applications.",
             "   - source_snippets should quote short evidence from the PDF with page numbers.",
@@ -200,6 +209,15 @@ def build_syllabus_outline_prompt(qualification: Qualification, evidence: Syllab
             '      "page": 12',
             "    }",
             "  ],",
+            '  "granularity_audit": [',
+            "    {",
+            '      "source_coverage_id": "SC001",',
+            '      "teaching_treatment": "independent_topic | merged_into_topic | prerequisite | sub_skill",',
+            '      "target_topic_title": "Topic title that visibly teaches this source item",',
+            '      "merge_rationale": "Required when merged_into_topic or sub_skill; explain the teaching reason.",',
+            '      "visible_treatment": "Where the handbook will show this item: topic title, explanation, worked example, practice, or sub-skill."',
+            "    }",
+            "  ],",
             '  "topics": [',
             "    {",
             '      "title": "Teachable knowledge unit named from the source evidence",',
@@ -227,8 +245,8 @@ def build_syllabus_outline_prompt(qualification: Qualification, evidence: Syllab
             "",
             "1. Read the PDF evidence itself. Do not rely on candidate hints or Python guesses.",
             "",
-            "2. Let this syllabus decide the structure. Do not require any preselected layers,",
-            "   provider-specific labels, or minimum topic count.",
+            "2. Let this syllabus decide the structure. Do not require any preselected layers",
+            "   or provider-specific labels.",
             "",
             "3. Do not collapse detailed examinable content into container headings. If you list",
             "   multiple source_coverage items under a container, topics[] must show how those",
@@ -347,6 +365,7 @@ def validate_syllabus_outline(data: dict[str, object]) -> list[SyllabusOutlineIs
                 )
             )
     used_coverage_ids: set[str] = set()
+    issues.extend(_validate_granularity_audit(data, coverage_ids))
 
     for index, topic in enumerate(topics, start=1):
         if not isinstance(topic, dict):
@@ -429,6 +448,85 @@ def validate_syllabus_outline(data: dict[str, object]) -> list[SyllabusOutlineIs
                     f"source_coverage has {len(unused)} item(s) not mapped to topics: {preview}",
                 )
             )
+    return issues
+
+
+def _validate_granularity_audit(
+    data: dict[str, object],
+    coverage_ids: set[str],
+) -> list[SyllabusOutlineIssue]:
+    audit = data.get("granularity_audit")
+    if not isinstance(audit, list) or not audit:
+        return [
+            SyllabusOutlineIssue(
+                "error",
+                "Analyst outline must include granularity_audit for every source_coverage item.",
+            )
+        ]
+
+    issues: list[SyllabusOutlineIssue] = []
+    audited_ids: set[str] = set()
+    valid_treatments = {"independent_topic", "merged_into_topic", "prerequisite", "sub_skill"}
+    for index, item in enumerate(audit, start=1):
+        if not isinstance(item, dict):
+            issues.append(SyllabusOutlineIssue("error", f"granularity_audit item {index} must be an object."))
+            continue
+        coverage_id = str(item.get("source_coverage_id") or item.get("coverage_id") or "").strip()
+        if not coverage_id:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error", f"granularity_audit item {index} is missing source_coverage_id."
+                )
+            )
+            continue
+        audited_ids.add(coverage_id)
+        if coverage_ids and coverage_id not in coverage_ids:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error",
+                    f"granularity_audit item {index} references unknown source_coverage id: {coverage_id}",
+                )
+            )
+        treatment = str(item.get("teaching_treatment") or "").strip()
+        if treatment not in valid_treatments:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error",
+                    f"granularity_audit item {index} has invalid teaching_treatment: {treatment or 'missing'}",
+                )
+            )
+        target = str(item.get("target_topic_title") or "").strip()
+        visible = str(item.get("visible_treatment") or "").strip()
+        if not target:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error", f"granularity_audit item {index} must name target_topic_title."
+                )
+            )
+        if not visible:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error", f"granularity_audit item {index} must describe visible_treatment."
+                )
+            )
+        if treatment in {"merged_into_topic", "sub_skill"} and not str(
+            item.get("merge_rationale") or ""
+        ).strip():
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error",
+                    f"granularity_audit item {index} must explain merge_rationale for {treatment}.",
+                )
+            )
+    missing = sorted(coverage_ids - audited_ids)
+    if missing:
+        preview = ", ".join(missing[:8])
+        issues.append(
+            SyllabusOutlineIssue(
+                "error",
+                f"granularity_audit is missing {len(missing)} source_coverage item(s): {preview}",
+            )
+        )
     return issues
 
 

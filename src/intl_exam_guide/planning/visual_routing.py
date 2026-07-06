@@ -233,7 +233,7 @@ def choose_provider_for_visual(
     visual_type: str = "",
 ) -> str:
     if complexity == "svg-basic":
-        return "kroki"
+        return "llm-svg"
     if run_options.image_provider == "prompt-queue":
         return "external-generation-required"
     if run_options.image_provider == "custom":

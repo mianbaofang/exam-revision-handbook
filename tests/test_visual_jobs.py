@@ -70,7 +70,7 @@ def test_visual_jobs_explain_pending_generation_and_replacement():
     assert "Generation choices" in markdown
     assert "PNG/JPG/WebP" in markdown
     assert "--asset-dir" in markdown
-    assert "re-renders `guide.html`" in markdown
+    assert "re-renders the named handbook HTML" in markdown
 
 
 def test_visual_jobs_include_provider_selected_pending_generation():

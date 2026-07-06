@@ -69,6 +69,23 @@ def test_quality_inspector_passes_complete_package(tmp_path):
     assert result.checks["concept_explanations"]["entry_count"] == 2
 
 
+def test_quality_inspector_uses_named_handbook_html(tmp_path):
+    write_minimum_package(tmp_path)
+    legacy_html = tmp_path / "guide.html"
+    named_html = tmp_path / "oxfordaqa-igcse-mathematics-20260706-1430.html"
+    named_html.write_text(legacy_html.read_text(encoding="utf-8"), encoding="utf-8")
+    legacy_html.unlink()
+    (tmp_path / "validation.json").write_text(
+        json.dumps({"html": str(named_html)}),
+        encoding="utf-8",
+    )
+
+    result = inspect_handbook_output(tmp_path)
+
+    assert result.inspection_status == "pass"
+    assert result.checks["files"]["handbook_html"] is True
+
+
 def test_quality_inspector_fails_missing_file_and_placeholder(tmp_path):
     write_minimum_package(
         tmp_path, html_text=f"{MODULE_TEXT} [insert explanation here]", concept_count=1

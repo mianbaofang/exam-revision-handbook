@@ -33,6 +33,7 @@ from intl_exam_guide.planning.syllabus_outline import (
 )
 from intl_exam_guide.rendering.handbook_package import write_handbook_package
 from intl_exam_guide.rendering.html import render_html
+from intl_exam_guide.rendering.output_names import default_handbook_paths
 from intl_exam_guide.rendering.pdf import PdfExportError, export_pdf
 from intl_exam_guide.validation.checks import (
     delivery_status_from_issues,
@@ -119,10 +120,11 @@ class SkillHandbookGenerator:
         write_handbook_package(plan, output_path)
 
         self._report_progress("rendering", 5, 7, "Rendering HTML and PDF...")
+        html_output, pdf_output = default_handbook_paths(output_path, plan.qualification)
         html_path = render_html(
-            plan, output_path / "guide.html", output_path / "images" / "visual_manifest.json"
+            plan, html_output, output_path / "images" / "visual_manifest.json"
         )
-        pdf_path = output_path / "guide.pdf"
+        pdf_path = pdf_output
         pdf_error: str | None = None
         if not skip_pdf:
             try:
@@ -467,13 +469,14 @@ class IncrementalGenerator:
             encoding="utf-8",
         )
         write_handbook_package(self.plan, self.output_dir)
+        html_output, pdf_output = default_handbook_paths(self.output_dir, self.plan.qualification)
         html_path = render_html(
             self.plan,
-            self.output_dir / "guide.html",
+            html_output,
             self.output_dir / "images" / "visual_manifest.json",
         )
         result: dict[str, object] = {"html_path": str(html_path)}
-        pdf_path = self.output_dir / "guide.pdf"
+        pdf_path = pdf_output
         if not skip_pdf:
             try:
                 export_pdf(html_path, pdf_path)

@@ -8,6 +8,8 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
+from intl_exam_guide.rendering.output_names import find_handbook_html
+
 QUALITY_INSPECTION_FILE = "quality-inspection.json"
 QUALITY_INSPECTION_PROMPT_FILE = "quality-inspection-prompt.md"
 QUALITY_INSPECTION_SCHEMA_VERSION = "v0.5-quality-inspection"
@@ -64,7 +66,7 @@ def inspect_handbook_output(output_dir: Path) -> QualityInspectionResult:
 
     issues: list[InspectionIssue] = []
     checks: dict[str, object] = {}
-    html_path = output_dir / "guide.html"
+    html_path = find_handbook_html(output_dir)
     html = read_text(html_path)
     visible_text = student_visible_text_from_html(html)
 
@@ -83,7 +85,7 @@ def inspect_handbook_output(output_dir: Path) -> QualityInspectionResult:
     if not visible_text:
         issues.append(
             InspectionIssue(
-                "error", "formatting", "guide.html has no readable student-facing text."
+                "error", "formatting", "Named handbook HTML has no readable student-facing text."
             )
         )
     else:
@@ -159,7 +161,7 @@ def build_quality_inspector_prompt(output_dir: Path) -> str:
     """Build the checklist prompt for a fast package check."""
 
     context = {
-        "guide_html": str(output_dir / "guide.html"),
+        "guide_html": str(find_handbook_html(output_dir)),
         "qualification": str(output_dir / "qualification.json"),
         "syllabus_outline": str(output_dir / "syllabus-outline.json"),
         "concept_explanations": str(output_dir / "concepts" / "concept_explanations.json"),
@@ -181,7 +183,7 @@ def build_quality_inspector_prompt(output_dir: Path) -> str:
             "",
             "## 3. Checklist",
             "",
-            "A. Files: guide.html, qualification.json, syllabus-outline.json, guide-plan.json, validation.json, concept_jobs.json.",
+            "A. Files: named handbook HTML, qualification.json, syllabus-outline.json, guide-plan.json, validation.json, concept_jobs.json.",
             "B. Module structure: cover, how-to-use, topic map, glossary when applicable, topic guides, practice, exam structure, revision checklist.",
             "C. Topic completeness: topic count matches qualification.json and each topic has visible teaching content.",
             "D. Concept import: concept_explanations.json exists when the package is being considered complete.",
@@ -226,7 +228,7 @@ def build_quality_inspector_prompt(output_dir: Path) -> str:
 
 def check_required_files(output_dir: Path) -> dict[str, bool]:
     files = {
-        "guide.html": output_dir / "guide.html",
+        "handbook_html": find_handbook_html(output_dir),
         "qualification.json": output_dir / "qualification.json",
         "syllabus-outline.json": output_dir / "syllabus-outline.json",
         "guide-plan.json": output_dir / "guide-plan.json",
@@ -298,6 +300,7 @@ def check_visual_manifest(output_dir: Path) -> dict[str, object]:
             "external-generation-required",
             "infographic-provider-required",
             "provider-selected-pending-generation",
+            "llm-svg-required",
             "svg-fallback-needs-review",
         }:
             pending_complex.append(entry.get("id"))

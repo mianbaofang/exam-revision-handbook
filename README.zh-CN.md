@@ -99,8 +99,8 @@ https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill
 
 ```text
 outputs/chemistry-9202/
-  guide.html                 可预览、可打印的学习手册
-  guide.pdf                  PDF 文件
+  <board>-<level>-<subject>-<time>.html  可预览、可打印的学习手册
+  <board>-<level>-<subject>-<time>.pdf   PDF 文件
   sections/                  分章节手册内容，便于 Agent 复查
   images/                    配图清单、已复核资产和待生成任务
   concepts/                  概念解释任务和已复查概念解释
@@ -210,13 +210,13 @@ v0.4 使用四个状态词：
 ## 开发者快速开始
 
 普通用户可以跳过这一节。只有想修改 Python 引擎或本地调试时才需要看。
-这条命令只运行 CLI-only fallback，没有运行 LLM syllabus_outline_analyst，只能产出 `draft/evidence-ready`；真正可教学的手册必须通过 Skill 宿主 LLM 完成大纲 outline、考点、概念写作和独立 reviewer 复查。
+这条命令只运行 evidence-only official run，不运行 LLM syllabus_outline_analyst，不拆大纲、不写教学内容、不渲染 HTML/PDF。真正可教学的手册必须通过 Skill 宿主 LLM 完成大纲 outline、考点、概念写作、渲染和独立 reviewer 复查。
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -e .
-python -m intl_exam_guide generate --query chemistry --level igcse --language zh-CN --explanation-style friendly --out ./outputs/chemistry-9202
+python -m intl_exam_guide generate --query chemistry --level igcse --out ./outputs/chemistry-9202
 ```
 
 Windows PowerShell：
@@ -225,7 +225,7 @@ Windows PowerShell：
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -e .
-python -m intl_exam_guide generate --query chemistry --level igcse --language zh-CN --explanation-style friendly --out .\outputs\chemistry-9202
+python -m intl_exam_guide generate --query chemistry --level igcse --out .\outputs\chemistry-9202
 ```
 
 常用检查：

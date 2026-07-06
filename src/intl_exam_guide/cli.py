@@ -23,6 +23,7 @@ from intl_exam_guide.planning.syllabus_outline import (
 from intl_exam_guide.providers import PROVIDER_NAMES, get_provider, infer_provider_from_url
 from intl_exam_guide.rendering.handbook_package import write_handbook_package
 from intl_exam_guide.rendering.html import render_html
+from intl_exam_guide.rendering.output_names import default_handbook_paths
 from intl_exam_guide.rendering.pdf import PdfExportError, export_pdf
 from intl_exam_guide.validation.checks import (
     delivery_status_from_issues,
@@ -54,7 +55,10 @@ def main(argv: list[str] | None = None) -> int:
     )
     discover.add_argument("--subject-url", help="Optional provider subject page URL.")
 
-    generate = subcommands.add_parser("generate", help="Generate a revision guide.")
+    generate = subcommands.add_parser(
+        "generate",
+        help="Prepare official evidence for the host LLM handbook workflow.",
+    )
     generate.add_argument(
         "--query", required=True, help="Subject name, code, slug, or qualification URL."
     )
@@ -73,9 +77,6 @@ def main(argv: list[str] | None = None) -> int:
         help="Exam year used by year-ranged syllabuses, especially Cambridge subject pages.",
     )
     generate.add_argument("--out", required=True, help="Output directory.")
-    generate.add_argument("--questions-per-topic", type=int, default=1)
-    add_generation_choice_args(generate)
-    generate.add_argument("--skip-pdf", action="store_true")
 
     extract_evidence = subcommands.add_parser(
         "extract-evidence",
@@ -153,7 +154,6 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.command == "generate":
-        validate_generation_choices(parser, args)
         try:
             qualification = resolve_and_download_qualification(
                 args.query,
@@ -167,24 +167,21 @@ def main(argv: list[str] | None = None) -> int:
             return 2
         out_dir = Path(args.out)
         out_dir.mkdir(parents=True, exist_ok=True)
-        return write_guide_outputs(
-            qualification,
-            out_dir,
-            args.questions_per_topic,
-            args.skip_pdf,
-            args.image_provider,
-            args.explanation_style,
-            args.language,
-            args.query,
-            args.exam_year,
-            args.image_model,
-            args.image_endpoint_url,
-            args.image_api_key_env,
-            provider=getattr(args, "provider", None)
-            or qualification.provider
-            or qualification.source.provider,
-            level=args.level,
+        evidence_path = write_evidence_package(qualification, out_dir)
+        print_json_payload(
+            {
+                "qualification": qualification.title,
+                "mode": "evidence-only",
+                "syllabus_evidence": str(evidence_path),
+                "qualification_json": str(out_dir / "qualification.json"),
+                "message": (
+                    "Evidence ready. The host LLM must write syllabus-outline.json, "
+                    "concepts/concept_explanations.json, mastery_summary values, and visual decisions "
+                    "before rendering HTML/PDF."
+                ),
+            }
         )
+        return 0
 
     if args.command == "extract-evidence":
         out_dir = Path(args.out)
@@ -200,21 +197,14 @@ def main(argv: list[str] | None = None) -> int:
         except (ValueError, NotImplementedError) as exc:
             print(f"error: {exc}", file=sys.stderr)
             return 2
-        (out_dir / "qualification.json").write_text(
-            json.dumps(qualification.to_dict(), ensure_ascii=False, indent=2),
-            encoding="utf-8",
-        )
-        evidence_path = write_syllabus_evidence(
-            qualification,
-            out_dir,
-            pages_from_extracted_text(qualification.source.extracted_text_path),
-        )
+        evidence_path = write_evidence_package(qualification, out_dir)
         print_json_payload(
             {
                 "qualification": qualification.title,
+                "mode": "evidence-only",
                 "syllabus_evidence": str(evidence_path),
                 "qualification_json": str(out_dir / "qualification.json"),
-                "message": "Evidence ready. Run the Skill host LLM workflow to write syllabus-outline.json, concept_explanations.json, and guide.html.",
+                "message": "Evidence ready. Run the Skill host LLM workflow to write syllabus-outline.json, concepts/concept_explanations.json, and render the named HTML/PDF outputs.",
             }
         )
         return 0
@@ -322,6 +312,18 @@ def resolve_and_download_qualification(
     return provider.download_specification(qualification, source_dir, exam_year)
 
 
+def write_evidence_package(qualification: Qualification, out_dir: Path) -> Path:
+    (out_dir / "qualification.json").write_text(
+        json.dumps(qualification.to_dict(), ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    return write_syllabus_evidence(
+        qualification,
+        out_dir,
+        pages_from_extracted_text(qualification.source.extracted_text_path),
+    )
+
+
 def pages_from_extracted_text(path_value: str | None) -> list[tuple[int, str]]:
     if not path_value:
         return []
@@ -384,8 +386,7 @@ def write_guide_outputs(
 
     qualification_path = out_dir / "qualification.json"
     plan_path = out_dir / "guide-plan.json"
-    html_path = out_dir / "guide.html"
-    pdf_path = out_dir / "guide.pdf"
+    html_path, pdf_path = default_handbook_paths(out_dir, plan.qualification)
     validation_path = out_dir / "validation.json"
     delivery_contract_path = out_dir / "delivery-contract.json"
     run_options_path = out_dir / "run-options.json"

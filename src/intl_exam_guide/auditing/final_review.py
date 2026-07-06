@@ -10,7 +10,13 @@ from intl_exam_guide.auditing.quality_inspector import (
 )
 from intl_exam_guide.core import DeliveryState, course_contract_payload
 from intl_exam_guide.models import GuidePlan
+from intl_exam_guide.rendering.output_names import (
+    default_handbook_paths,
+    find_handbook_html,
+    find_handbook_pdf,
+)
 from intl_exam_guide.rendering.pdf import PdfExportError, export_pdf
+from intl_exam_guide.rendering.text import strip_internal_review_panel
 from intl_exam_guide.rendering.visual_assets import load_visual_manifest
 from intl_exam_guide.validation.checks import (
     delivery_status_from_issues,
@@ -24,6 +30,7 @@ PENDING_INFOGRAPHIC_STATUSES = {
     "external-generation-required",
     "infographic-provider-required",
     "provider-selected-pending-generation",
+    "llm-svg-required",
     "svg-fallback-needs-review",
 }
 PRODUCT_REVIEW_FILE = "agent-product-review.json"
@@ -47,7 +54,7 @@ def build_final_review_packet(output_dir: Path) -> dict[str, object]:
     guide_plan = read_json(output_dir / "guide-plan.json")
     manifest_entries = load_visual_manifest(output_dir / "images")
     infographic_jobs = read_json(output_dir / "images" / "infographic_jobs.json", default=[])
-    html = read_text(output_dir / "guide.html")
+    html = read_text(find_handbook_html(output_dir))
     refreshed_validation = build_refreshed_validation(output_dir, validation, guide_plan)
     issues = refreshed_validation.get("issues", [])
     if not isinstance(issues, list):
@@ -74,7 +81,7 @@ def build_final_review_packet(output_dir: Path) -> dict[str, object]:
     workflow = {
         "mode": "lightweight-three-role",
         "roles": ["analyst", "writer", "reviewer"],
-        "reviewer_instruction": "Open the rendered handbook and compare it with syllabus evidence, outline, concepts, visuals, and PDF when exported.",
+        "reviewer_instruction": "Open the rendered handbook/PDF yourself. Machine validation and quality inspection are supporting evidence only; they are not approval.",
     }
     quality_inspection = quality_inspection_evidence(output_dir)
     product_review = product_review_evidence(output_dir)
@@ -84,7 +91,9 @@ def build_final_review_packet(output_dir: Path) -> dict[str, object]:
         "quality_inspection": quality_inspection,
         "review_questions": [
             "Does the rendered handbook match the requested board, level, subject, language, and style?",
-            "Are topic titles teachable rather than parser fragments or generic labels?",
+            "Are topic titles teachable rather than parser fragments, broad container labels, or generic syllabus headings?",
+            "Can every official source_coverage item be traced from the handbook table of contents to visible teaching treatment, not just JSON coverage?",
+            "Do merged official bullets have a defensible teaching reason and visible explanation, worked-example, practice, or sub-skill coverage?",
             "Do sampled worked examples contain concrete questions, solution steps, final answers, and source anchors?",
             "Are complex infographics either reviewed/generated or clearly listed as pending with replacement instructions?",
             "Should this output be presented as final, draft, or blocked?",
@@ -110,6 +119,7 @@ def build_final_review_packet(output_dir: Path) -> dict[str, object]:
             ),
             "must_fix_before_final": [
                 "blocking validation errors",
+                "collapsed official bullets that are only covered in JSON and not visibly taught",
                 "duplicated mastery requirements across independent topics",
                 "worked examples that do not match the topic",
                 "pending complex infographic assets",
@@ -118,7 +128,10 @@ def build_final_review_packet(output_dir: Path) -> dict[str, object]:
             ],
             "required_product_review_fields": [
                 "visible_handbook_inspected",
+                "machine_validation_used_only_as_supporting_evidence",
                 "syllabus_outline_compared",
+                "granularity_audit_checked",
+                "merged_bullets_visible_in_handbook",
                 "pdf_pages_sampled",
                 "visuals_inspected",
                 "glossary_policy_checked",
@@ -321,7 +334,10 @@ def product_review_issues(review: object) -> list[str]:
         issues.append("schema_version must be v0.4-agent-product-review.")
     required_true_fields = [
         "visible_handbook_inspected",
+        "machine_validation_used_only_as_supporting_evidence",
         "syllabus_outline_compared",
+        "granularity_audit_checked",
+        "merged_bullets_visible_in_handbook",
         "visuals_inspected",
         "glossary_policy_checked",
         "repair_loop_completed",
@@ -364,11 +380,11 @@ def build_refreshed_validation(
     except (KeyError, TypeError, ValueError):
         return stored_validation_with_flag(stored_validation, refreshed=False)
 
-    html_path = output_dir / "guide.html"
+    html_path = find_handbook_html(output_dir, plan.qualification)
     stored_pdf = stored_validation.get("pdf") if isinstance(stored_validation, dict) else None
-    pdf_path = Path(str(stored_pdf)) if stored_pdf else None
-    if pdf_path is None and (output_dir / "guide.pdf").exists():
-        pdf_path = output_dir / "guide.pdf"
+    pdf_path = Path(str(stored_pdf)) if stored_pdf else find_handbook_pdf(output_dir, plan.qualification)
+    if not pdf_path.exists():
+        pdf_path = None
     issues = validate_plan(plan, html_path=html_path, pdf_path=pdf_path, output_dir=output_dir)
     summary = review_summary(plan, html_path=html_path, pdf_path=pdf_path, output_dir=output_dir)
     delivery_status = delivery_status_from_issues(issues, summary)
@@ -449,19 +465,31 @@ def rerender_html(output_dir: Path) -> None:
         from intl_exam_guide.rendering.html import render_html
 
         plan = GuidePlan.from_dict(json.loads(plan_path.read_text(encoding="utf-8")))
-        render_html(plan, output_dir / "guide.html", output_dir / "images" / "visual_manifest.json")
+        html_path = find_handbook_html(output_dir, plan.qualification)
+        if html_path.name == "guide.html" and not html_path.exists():
+            html_path, _ = default_handbook_paths(output_dir, plan.qualification)
+        render_html(plan, html_path, output_dir / "images" / "visual_manifest.json")
+        strip_internal_review_panel_from_file(html_path)
     except (KeyError, TypeError, ValueError, json.JSONDecodeError, OSError):
         return
 
 
 def rerender_pdf(output_dir: Path) -> None:
-    html_path = output_dir / "guide.html"
+    plan_path = output_dir / "guide-plan.json"
+    qualification = None
+    if plan_path.exists():
+        try:
+            qualification = GuidePlan.from_dict(json.loads(plan_path.read_text(encoding="utf-8"))).qualification
+        except (KeyError, TypeError, ValueError, json.JSONDecodeError, OSError):
+            qualification = None
+    html_path = find_handbook_html(output_dir, qualification)
     if not html_path.exists():
         return
+    strip_internal_review_panel_from_file(html_path)
     validation_path = output_dir / "validation.json"
     stored = read_json(validation_path)
     payload = dict(stored) if isinstance(stored, dict) else {}
-    pdf_path = output_dir / "guide.pdf"
+    pdf_path = find_handbook_pdf(output_dir, qualification)
     try:
         export_pdf(html_path, pdf_path)
     except PdfExportError as exc:
@@ -470,6 +498,15 @@ def rerender_pdf(output_dir: Path) -> None:
         payload["pdf"] = str(pdf_path)
         payload["pdf_error"] = None
     validation_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def strip_internal_review_panel_from_file(html_path: Path) -> None:
+    if not html_path.exists():
+        return
+    html = html_path.read_text(encoding="utf-8", errors="replace")
+    cleaned = strip_internal_review_panel(html)
+    if cleaned != html:
+        html_path.write_text(cleaned, encoding="utf-8")
 
 
 def write_refreshed_validation(output_dir: Path, packet: dict[str, object]) -> None:
@@ -546,7 +583,7 @@ def build_final_review_prompt(
     """
 
     guide_html = (
-        read_text(guide_html_path) if guide_html_path.exists() else "[guide.html not found]"
+        read_text(guide_html_path) if guide_html_path.exists() else "[named handbook HTML not found]"
     )
     syllabus_evidence = (
         read_text(syllabus_evidence_path) if syllabus_evidence_path.exists() else "{}"
@@ -564,21 +601,26 @@ def build_final_review_prompt(
             "# Reviewer Visible-Handbook Audit",
             "",
             "You are the Reviewer in a lightweight three-role workflow. The Analyst and Writer may have made mistakes; inspect the rendered handbook directly.",
+            "Machine validation, quality-inspection.json, and final-review-packet.json are supporting evidence only. They are not approval and must not replace visible HTML/PDF review.",
             "",
             "Required checks:",
             "",
-            "1. Open or inspect guide.html as the student-facing handbook.",
-            "2. Compare the topic sequence and source anchors with syllabus-evidence.json and syllabus-outline.json when present.",
-            "3. Check concept explanations, mastery summaries, worked examples, glossary policy, and visuals.",
-            "4. If guide.pdf exists, sample pages for blank pages, broken images, overflow, or cut-off content.",
-            "5. Report repairable issues concretely; do not rubber-stamp the output because validation passed.",
+            "1. Open or inspect the named HTML output as the student-facing handbook.",
+            "2. Compare the topic sequence and source anchors with syllabus-evidence.json, syllabus-outline.json, and granularity_audit when present.",
+            "3. Check that official source_coverage items are visibly taught in the handbook, especially bullets merged into larger topics.",
+            "4. Check concept explanations, mastery summaries, worked examples, glossary policy, and visuals.",
+            "5. If the named PDF exists, sample pages for blank pages, broken images, overflow, or cut-off content.",
+            "6. Report repairable issues concretely; do not rubber-stamp the output because validation passed.",
             "",
             "Return JSON only:",
             "",
             "{",
             '  "schema_version": "v0.5-visible-handbook-review",',
             '  "visible_handbook_inspected": true,',
+            '  "machine_validation_used_only_as_supporting_evidence": true,',
             '  "syllabus_outline_compared": true,',
+            '  "granularity_audit_checked": true,',
+            '  "merged_bullets_visible_in_handbook": true,',
             '  "concepts_checked": true,',
             '  "visuals_checked": true,',
             '  "glossary_policy_checked": true,',
@@ -591,11 +633,11 @@ def build_final_review_prompt(
             "",
             "The decision is the Reviewer's handoff decision, not a Python-generated certification state.",
             "",
-            "# guide.html",
+            "# Named handbook HTML",
             "",
             guide_html[:50000]
             + (
-                "\n\n[... truncated, full HTML available in guide.html ...]"
+                "\n\n[... truncated, full HTML available in the named handbook file ...]"
                 if len(guide_html) > 50000
                 else ""
             ),

@@ -8,8 +8,8 @@ The workflow boundary is recorded in `../../docs/ARCHITECTURE_DECISION_SKILL_WOR
 
 A generated handbook package may include:
 
-- `guide.html`: one print-friendly UTF-8 HTML handbook.
-- `guide.pdf`: A4 PDF export when requested and a browser runtime is available.
+- `<board>-<level>-<subject>-<time>.html`: one print-friendly UTF-8 HTML handbook, for example `oxfordaqa-igcse-mathematics-20260706-1430.html`.
+- `<board>-<level>-<subject>-<time>.pdf`: A4 PDF export when requested and a browser runtime is available.
 - `sections/`: source fragments used to assemble the handbook.
 - `images/`: reviewed SVG assets, reviewed infographic assets, and pending visual jobs.
 - `concepts/`: concept-writing jobs and LLM-written concept explanations.
@@ -24,11 +24,11 @@ A generated handbook package may include:
 
 Downloaded specification PDFs and extracted text belong under `source/` and must not be committed to the repository.
 
-An evidence-only package from `extract-evidence` is intentionally smaller. It contains `qualification.json`, `syllabus-evidence.json`, and `source/`. It is not a generated handbook and should not include `guide.html`, `guide-plan.json`, `validation.json`, or delivery status.
+An evidence-only package from `extract-evidence` is intentionally smaller. It contains `qualification.json`, `syllabus-evidence.json`, and `source/`. It is not a generated handbook and should not include handbook HTML/PDF, `guide-plan.json`, `validation.json`, or delivery status.
 
 ## Required Preflight
 
-Do not start syllabus download or handbook writing until the user has confirmed:
+Do not start syllabus download or handbook writing until the user has confirmed the following. Ask clarifying questions when any item is missing or ambiguous; do not silently choose defaults for content-bearing decisions:
 
 1. board, qualification level, subject, and code when known;
 2. official page URL or direct PDF URL when discovery is ambiguous;
@@ -44,17 +44,18 @@ For custom image providers, record the model name, endpoint URL, and API-key env
 
 ## Analyst Source Split Contract
 
-The syllabus outline is an LLM-owned interpretation of the current official specification. Python may download, extract, store, and validate evidence, but it must not decide the syllabus structure, require a fixed number of layers, require provider-specific labels, or require a minimum topic count.
+The syllabus outline is an LLM-owned interpretation of the current official specification. Python may download, extract, store, and validate evidence, but it must not decide the syllabus structure, require a fixed number of layers, or require provider-specific labels.
 
 The Analyst writes `syllabus-outline.json` in this order:
 
 1. Read the current PDF evidence and write `structure_analysis`, explaining how this exact syllabus organizes examinable content. The structure may be flat, nested, mixed, route-based, table-based, code-based, objective-based, or another form visible in the PDF.
 2. Record `official_structure` when the PDF exposes structural containers such as parts, units, components, routes, sections, options, papers, or sub-sections. If the source is genuinely flat, say so; Python must not invent missing layers.
 3. Record `source_coverage`: the actual examinable rows, bullets, coded points, skill statements, formula requirements, restrictions, examples, or table cells that need coverage. Paired columns such as Content and Additional information should stay linked when the second column clarifies the first.
-4. Split `topics[]` into final teachable knowledge units or tight clusters justified by the current source evidence. A topic title should name what the student learns, not merely repeat where it appears in the PDF.
-5. Map every final topic back to `source_coverage_ids`, source snippets, and page numbers so the Writer and Reviewer can audit the split.
+4. Write `granularity_audit`: for every `source_coverage` item, decide whether it is an independent topic, merged into a topic, prerequisite, or sub-skill. Any merged item must name the target topic, explain the teaching reason for the merge, and state the visible handbook treatment that will teach it.
+5. Split `topics[]` into final teachable knowledge units or tight clusters justified by the current source evidence. A topic title should name what the student learns, not merely repeat where it appears in the PDF.
+6. Map every final topic back to `source_coverage_ids`, source snippets, and page numbers so the Writer and Reviewer can audit the split.
 
-A valid split is source-relative, not count-relative. A short flat syllabus may produce a short flat outline. A dense table may produce many knowledge units. The failure case to block is not "too few topics" by itself; it is an outline that collapses detailed source coverage into container headings or cannot show how its teaching units cover the source evidence.
+A valid split is source-relative and teaching-relative. The failure case to block is an outline that collapses detailed source coverage into container headings, maps official bullets only in JSON, or cannot show where each official bullet receives visible teaching treatment in the handbook.
 
 ## Handbook Structure
 
@@ -93,17 +94,19 @@ The tone should help teenagers stay awake and oriented:
 - use original adventure or story framing only when it helps motivation;
 - avoid copying protected characters, stories, or exam-paper artwork;
 - avoid long academic paragraphs and unsupported syllabus claims;
+- write formulas and inequalities with stable student-facing symbols such as `²`, `³`, `√`, `≤`, `≥`, `≠`, `θ`, and `μ` instead of plain-text fallbacks such as `^2`, `sqrt()`, `<=`, or `>=`;
 - remove formulaic transitions such as `In conclusion`, `Overall`, `总之`, and `值得注意的是` from student-facing text.
 
 ## Visual Workflow
 
 Do not make the handbook text-only by default. The Writer decides visual need after the source-bound topic guide and examples are drafted.
 
-Allowed visual decisions:
+Allowed visual decisions after the topic explanation and worked example exist:
 
 - `text-ok`: no image needed.
-- `svg-basic`: exact SVG is appropriate because labels and geometry fully carry the teaching meaning. Include `svg_fit: "exact"`.
-- `infographic`: a richer reviewed raster asset is needed; create a source-bound visual brief and prompt queue entry until an asset exists.
+- `svg-basic`: an exact SVG is appropriate because labels and geometry fully carry the teaching meaning. Include `svg_fit: "exact"`; create/import the LLM-authored SVG first and mark it reviewed only after LLM visual review passes.
+- `kroki`: if LLM SVG review fails but the idea is still a formal diagram, try Kroki and review the generated SVG before final delivery.
+- `infographic`: if Kroki review fails or a richer reviewed raster asset is needed, create a source-bound visual brief and prompt queue entry until an asset exists.
 
 Good SVG cases include number lines, simple graphs, pH scales, particle models, energy profiles, basic geometry, flows, hierarchies, timelines, and relationship maps when the geometry and labels fully carry the concept.
 
@@ -138,6 +141,8 @@ Before presenting a handbook as complete, confirm:
 - `validation.json` has no `error` issues;
 - PDF export succeeded when requested, or the user is told why it was skipped.
 
-Then the host LLM must open or screenshot `guide.html` and review the visible handbook. It should compare topic sequence and concept explanations with the syllabus outline, inspect diagrams/images, check glossary policy, sample PDF pages when exported, and fix repairable issues before handoff.
+Then the host LLM must open or screenshot the named HTML output and review the visible handbook. It should compare topic sequence, `granularity_audit`, and concept explanations with the syllabus outline; confirm official bullets are visibly taught rather than only mapped in JSON; inspect diagrams/images; check glossary policy; sample PDF pages when exported; and fix repairable issues before handoff.
 
-Validation is not enough by itself. A handbook is not complete merely because the Skill generated files or validation passed. If the rendered HTML was not opened or screenshot-inspected, say so and do not present the handbook as complete.
+The student edition must be exported only after internal review/check panels have been removed. `final-review-packet.json`, `quality-inspection.json`, and validation notes are review evidence, not student handbook sections.
+
+Validation is not enough by itself. A handbook is not complete merely because the Skill generated files, quality inspection passed, or validation passed. If the rendered HTML was not opened or screenshot-inspected, say so and do not present the handbook as complete.

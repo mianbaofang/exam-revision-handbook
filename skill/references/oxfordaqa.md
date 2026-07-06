@@ -35,7 +35,7 @@ Before presenting an output:
 3. `qualification.json` records listing metadata when the guide was discovered
    from a subject page.
 4. The PDF SHA-256 hash is present.
-5. Every topic title appears in `guide.html`.
+5. Every topic title appears in the named handbook HTML.
 6. Every topic has at least one authored block: essence, analogy, mini worked
    example, pitfall, checklist, and diagram brief.
 7. Every topic has practice cards with command words, public solution steps, and

@@ -204,6 +204,53 @@ def test_validate_html_output_rejects_internal_visual_status_text(tmp_path):
     assert "HTML output exposes internal visual status text: Reviewed visual asset" in messages
 
 
+def test_validate_html_output_rejects_internal_review_panel_text(tmp_path):
+    plan = valid_plan()
+    marker = expected_topic_marker(plan.qualification.topics[0].title, 1, "en")
+    html_path = tmp_path / "guide.html"
+    html_path.write_text(
+        (
+            "<html><body>"
+            f"<h2>{marker}</h2>"
+            "<p>How to Study Study Roadmap One-Sentence Essence Method Worked Example "
+            "Solution Check Exam Pitfall Source anchor Visual Worked Example</p>"
+            '<section class="band delivery-panel" data-review-state="needs-review">'
+            "<h2>Review Check</h2><strong>Needs visible review</strong>"
+            "</section>"
+            "</body></html>"
+        ),
+        encoding="utf-8",
+    )
+
+    messages = [issue.message for issue in validate_html_output(plan, html_path)]
+
+    assert "HTML output exposes internal review-panel text: Review Check" in messages
+    assert "HTML output exposes internal review-panel text: Needs visible review" in messages
+
+
+def test_validate_html_output_rejects_plain_text_math_notation(tmp_path):
+    plan = valid_plan()
+    marker = expected_topic_marker(plan.qualification.topics[0].title, 1, "en")
+    html_path = tmp_path / "guide.html"
+    html_path.write_text(
+        (
+            "<html><body>"
+            f"<h2>{marker}</h2>"
+            "<p>How to Study Study Roadmap One-Sentence Essence Method Worked Example "
+            "Solution Check Exam Pitfall Source anchor Visual Worked Example</p>"
+            "<p>Use y = (x - 3)^2 + sqrt(x) >= 0.</p>"
+            "</body></html>"
+        ),
+        encoding="utf-8",
+    )
+
+    messages = [issue.message for issue in validate_html_output(plan, html_path)]
+
+    assert "Student-facing maths should use rendered symbols, not caret exponent notation: ^2" in messages
+    assert "Student-facing maths should use rendered symbols, not sqrt() notation: sqrt(" in messages
+    assert "Student-facing maths should use rendered symbols, not >= notation: >=" in messages
+
+
 def test_validate_html_output_uses_disambiguated_rendered_topic_titles(tmp_path):
     plan = valid_plan()
     plan.run_options.output_language = "zh-CN"
@@ -623,7 +670,7 @@ def test_visual_provider_contract_requires_exact_fit_svg_and_rejects_local_rende
             trigger="exact graph",
             visual_type="function graph and equation-balance visual",
             complexity="svg-basic",
-            image_provider="kroki",
+            image_provider="llm-svg",
             prompt="Draw the graph.",
             source_points=["Sketch quadratic graphs."],
         ),
@@ -646,9 +693,7 @@ def test_visual_provider_contract_requires_exact_fit_svg_and_rejects_local_rende
         "svg_fit='exact'" in message and "Accounting flow" in message for message in messages
     )
     assert any("Local deterministic SVG rendering" in message for message in messages)
-    assert any(
-        "Professional diagram visual must use Kroki renderer" in message for message in messages
-    )
+    assert not any("Professional diagram visual must use Kroki renderer" in message for message in messages)
     assert any("svg_fit='exact'" in message and "Function graph" in message for message in messages)
     assert not any("Probability tree" in message for message in messages)
 

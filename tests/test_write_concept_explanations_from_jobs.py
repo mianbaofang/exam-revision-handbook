@@ -201,7 +201,7 @@ def test_generic_math_entry_avoids_template_phrases_and_ocr_noise():
     lower = text.lower()
 
     assert "2t as vtt" not in text
-    assert "s = ut + 1/2 at^2" in text
+    assert "s = ut + ½ at²" in text
     assert "specific syllabus idea" not in lower
     assert "relationship named in this source point" not in lower
     assert "define the idea and apply only" not in lower
@@ -741,10 +741,10 @@ def test_trigonometry_subtopics_have_distinct_mastery_text():
     first_explanations = [entry["explanations"][0] for entry in entries]
     assert len(set(first_explanations)) == len(first_explanations)
     assert any("sine rule" in value.lower() for value in first_explanations)
-    assert any("1/2 ab sin c" in value.lower() for value in first_explanations)
+    assert any("½ ab sin c" in value.lower() for value in first_explanations)
     assert any("radian" in value.lower() for value in first_explanations)
     assert any(
-        "identity" in value.lower() or "sin^2" in value.lower() for value in first_explanations
+        "identity" in value.lower() or "sin²" in value.lower() for value in first_explanations
     )
 
 

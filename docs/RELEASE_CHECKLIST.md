@@ -49,7 +49,7 @@
 - [ ] Offline demo works:
 
 ```bash
-python -m intl_exam_guide demo --out ./outputs/demo-science --language en --image-provider prompt-queue --explanation-style friendly --skip-pdf
+python -m intl_exam_guide demo --out ./outputs/demo-science
 ```
 
 - [ ] Subject-page discovery shows qualification metadata:
@@ -64,49 +64,49 @@ python -m intl_exam_guide discover --subject-url https://www.oxfordaqa.com/subje
 - [ ] OxfordAQA International GCSE sample works:
 
 ```bash
-python -m intl_exam_guide generate --query chemistry --level igcse --language en --explanation-style friendly --out ./outputs/chemistry-9202
+python -m intl_exam_guide generate --query chemistry --level igcse --out ./outputs/chemistry-9202
 ```
 
 - [ ] OxfordAQA International AS-A-level sample works:
 
 ```bash
-python -m intl_exam_guide generate --query chemistry --level a-level --language en --image-provider prompt-queue --explanation-style detective --out ./outputs/chemistry-9620
+python -m intl_exam_guide generate --query chemistry --level a-level --out ./outputs/chemistry-9620
 ```
 
 - [ ] OxfordAQA non-Science International GCSE sample works:
 
 ```bash
-python -m intl_exam_guide generate --query economics --level igcse --language en --explanation-style life --out ./outputs/economics-9214
+python -m intl_exam_guide generate --query economics --level igcse --out ./outputs/economics-9214
 ```
 
 - [ ] OxfordAQA revised non-Science International AS-A-level code lookup sample works:
 
 ```bash
-python -m intl_exam_guide generate --query 9725 --level a-level --language en --explanation-style story --out ./outputs/business-9725
+python -m intl_exam_guide generate --query 9725 --level a-level --out ./outputs/business-9725
 ```
 
 - [ ] Pearson Edexcel International GCSE candidate-discovery sample works:
 
 ```bash
-python -m intl_exam_guide generate --provider pearson --query "Mathematics B" --level igcse --language en --explanation-style friendly --out ./outputs/pearson-igcse-maths-b --skip-pdf
+python -m intl_exam_guide generate --provider pearson --query "Mathematics B" --level igcse --out ./outputs/pearson-igcse-maths-b
 ```
 
 - [ ] Pearson Edexcel International AS/A Level candidate-discovery sample works:
 
 ```bash
-python -m intl_exam_guide generate --provider pearson --query "Biology" --level a-level --language en --explanation-style friendly --out ./outputs/pearson-ial-biology --skip-pdf
+python -m intl_exam_guide generate --provider pearson --query "Biology" --level a-level --out ./outputs/pearson-ial-biology
 ```
 
 - [ ] Cambridge IGCSE candidate-discovery sample works with `--exam-year`:
 
 ```bash
-python -m intl_exam_guide generate --provider cambridge --query "Accounting 0452" --level igcse --exam-year 2027 --language en --explanation-style friendly --out ./outputs/cambridge-igcse-accounting-2027 --skip-pdf
+python -m intl_exam_guide generate --provider cambridge --query "Accounting 0452" --level igcse --exam-year 2027 --out ./outputs/cambridge-igcse-accounting-2027
 ```
 
 - [ ] Cambridge AS/A Level candidate-discovery sample works with `--exam-year`:
 
 ```bash
-python -m intl_exam_guide generate --provider cambridge --query "Chemistry 9701" --level a-level --exam-year 2029 --language en --explanation-style friendly --out ./outputs/cambridge-ial-chemistry-2029 --skip-pdf
+python -m intl_exam_guide generate --provider cambridge --query "Chemistry 9701" --level a-level --exam-year 2029 --out ./outputs/cambridge-ial-chemistry-2029
 ```
 
 ## Validation

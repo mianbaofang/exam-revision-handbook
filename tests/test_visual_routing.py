@@ -414,7 +414,7 @@ def test_term_support_image_prompt_is_english_content_only_not_source_metadata()
     reason="Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
 )
 def test_choose_provider_for_visual_covers_svg_custom_and_passthrough_routes():
-    assert choose_provider_for_visual("svg-basic", options()) == "deterministic-svg"
+    assert choose_provider_for_visual("svg-basic", options()) == "llm-svg"
     assert (
         choose_provider_for_visual("infographic", options(provider="custom"))
         == "custom:reviewed-model"

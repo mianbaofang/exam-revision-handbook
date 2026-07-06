@@ -164,8 +164,8 @@ any unresolved complex visuals as not yet reviewed.
 
 ```text
 outputs/chemistry-9202/
-  guide.html                 printable student handbook
-  guide.pdf                  PDF export
+  <board>-<level>-<subject>-<time>.html  printable student handbook
+  <board>-<level>-<subject>-<time>.pdf   PDF export
   sections/                  modular guide sections for review
   images/                    visual manifest, reviewed assets, and pending jobs
   concepts/                  concept-writing jobs and reviewed explanations
@@ -332,9 +332,9 @@ existing handbook-package.json, validation.json, visual-manifest.json so the
 Skill can keep iterating until `quality_inspector.status == complete` and
 `final_reviewer.status == complete`.
 
-### Mode 2: CLI-only (no Skill host, scaffolding/draft only)
+### Mode 2: CLI-only (no Skill host, evidence package only)
 
-The CLI generates a structurally complete but pedagogically skeletal draft:
+The official CLI run prepares source evidence for the host LLM workflow. It does not split topics, write teaching content, or render the handbook:
 
 ```bash
 python -m venv .venv
@@ -343,8 +343,6 @@ pip install -e .
 python -m intl_exam_guide generate \
   --query chemistry \
   --level igcse \
-  --language en \
-  --explanation-style friendly \
   --out ./outputs/chemistry-9202
 ```
 
@@ -354,14 +352,10 @@ Windows PowerShell:
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -e .
-python -m intl_exam_guide generate --query chemistry --level igcse --language en --explanation-style friendly --out .\outputs\chemistry-9202
+python -m intl_exam_guide generate --query chemistry --level igcse --out .\outputs\chemistry-9202
 ```
 
-The CLI is for testing the pipeline, fetching source material, and producing
-structural drafts. Without a Skill host's LLM writing the concepts, the
-content fields default to topic-family templates — useful as scaffolding but
-not suitable for handing straight to students. Always run Mode 1 when
-generating a real teaching handbook.
+The CLI is for fetching official source material and writing `qualification.json`, `syllabus-evidence.json`, and `source/`. A real teaching handbook still requires Mode 1: an LLM Analyst outline, Writer-authored concepts/visual decisions, rendered HTML/PDF, Quality Inspector checks, and independent visible-handbook review.
 
 Checks:
 

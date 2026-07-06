@@ -58,19 +58,21 @@ def write_en_entry(
     boundary = en_boundary_sentence(concept, lower, source_points, subject_pack)
     steps = en_steps(concept, lower, subject_pack)
     pitfall = en_pitfall(concept, lower, subject_pack)
-    return {
-        "topic_title": topic_title,
-        "essence": en_essence(concept, lower, source_points, subject_pack),
-        "analogy": en_analogy(concept, lower, subject_pack),
-        "mini_worked_example": en_mini_example(concept, lower, subject_pack),
-        "worked_solution_steps": steps,
-        "pitfall": pitfall,
-        "explanations": [
-            en_definition_sentence(concept, lower, source_points, subject_pack),
-            relation,
-            boundary,
-        ],
-    }
+    return normalize_entry_math(
+        {
+            "topic_title": topic_title,
+            "essence": en_essence(concept, lower, source_points, subject_pack),
+            "analogy": en_analogy(concept, lower, subject_pack),
+            "mini_worked_example": en_mini_example(concept, lower, subject_pack),
+            "worked_solution_steps": steps,
+            "pitfall": pitfall,
+            "explanations": [
+                en_definition_sentence(concept, lower, source_points, subject_pack),
+                relation,
+                boundary,
+            ],
+        }
+    )
 
 
 def write_zh_entry(
@@ -193,6 +195,77 @@ def clean_ocr_math_text(value: str) -> str:
     text = re.sub(r"\bx n\b", "x^n", text)
     text = re.sub(r"\bxn\b", "x^n", text)
     return text
+
+
+def normalize_entry_math(entry: dict[str, object]) -> dict[str, object]:
+    normalized: dict[str, object] = {}
+    for key, value in entry.items():
+        normalized[key] = value if key == "topic_title" else normalize_entry_value(value)
+    return normalized
+
+
+def normalize_entry_value(value: object) -> object:
+    if isinstance(value, str):
+        return normalize_student_math_notation(value)
+    if isinstance(value, list):
+        return [normalize_entry_value(item) for item in value]
+    if isinstance(value, dict):
+        return {key: normalize_entry_value(item) for key, item in value.items()}
+    return value
+
+
+SUPERSCRIPT_MAP = str.maketrans(
+    {
+        "0": "⁰",
+        "1": "¹",
+        "2": "²",
+        "3": "³",
+        "4": "⁴",
+        "5": "⁵",
+        "6": "⁶",
+        "7": "⁷",
+        "8": "⁸",
+        "9": "⁹",
+        "+": "⁺",
+        "-": "⁻",
+        "(": "⁽",
+        ")": "⁾",
+        "n": "ⁿ",
+        "x": "ˣ",
+        "y": "ʸ",
+        "a": "ᵃ",
+        "b": "ᵇ",
+        "c": "ᶜ",
+        "t": "ᵗ",
+    }
+)
+
+
+def normalize_student_math_notation(value: str) -> str:
+    text = re.sub(r"\bsqrt\s*\(", "√(", value, flags=re.IGNORECASE)
+    text = text.replace(">=", "≥").replace("<=", "≤").replace("!=", "≠")
+    text = re.sub(r"\b1/2\b", "½", text)
+    text = re.sub(r"\b1/4\b", "¼", text)
+    text = re.sub(r"\b3/4\b", "¾", text)
+    text = re.sub(r"\^\{([^{}]{1,8})\}", superscript_replacement, text)
+    text = re.sub(r"\^\(([-+0-9nxyabct]{1,8})\)", superscript_replacement, text)
+    text = re.sub(r"\^([-+]?\d+|[nxyabct])", superscript_replacement, text)
+    for name, symbol in {
+        "theta": "θ",
+        "mu": "μ",
+        "pi": "π",
+        "alpha": "α",
+        "beta": "β",
+        "lambda": "λ",
+    }.items():
+        text = re.sub(rf"\b{name}\b", symbol, text, flags=re.IGNORECASE)
+    return text
+
+
+def superscript_replacement(match: re.Match[str]) -> str:
+    raw = match.group(1)
+    rendered = raw.translate(SUPERSCRIPT_MAP)
+    return rendered if rendered != raw else match.group(0)
 
 
 def usable_source_fragments(source_points: list[str]) -> list[str]:

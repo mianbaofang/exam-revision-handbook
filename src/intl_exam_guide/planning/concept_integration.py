@@ -239,7 +239,7 @@ def visual_source_points(topic: Topic | None, entry: dict[str, object]) -> list[
 
 def provider_for_visual_spec(plan: GuidePlan, complexity: str) -> str:
     if complexity == "svg-basic":
-        return "kroki"
+        return "llm-svg"
     if plan.run_options.image_provider == "custom":
         model = plan.run_options.image_model or "model-not-set"
         return f"custom:{model}"

@@ -68,7 +68,7 @@ def default_agent_roles(
                 "Create source-bound PedagogicalUnit content, practice, visuals, and HTML/PDF output."
             ),
             status="complete",
-            evidence=["guide-plan.json", "handbook-package.json", "guide.html"],
+            evidence=["guide-plan.json", "handbook-package.json", "named handbook HTML"],
             dispatch_brief=[
                 "Read CourseSpec, LearningUnit records, source snippets, and concept jobs.",
                 "Write source-bound PedagogicalUnit content, practice, visual specs, HTML, and PDF.",
@@ -85,7 +85,7 @@ def default_agent_roles(
             evidence=inspector_evidence,
             independent_from=["handbook_writer"],
             dispatch_brief=[
-                "Read guide.html, qualification.json, concept_explanations.json, and visual_manifest.json.",
+                "Read the named handbook HTML, qualification.json, concept_explanations.json, and visual_manifest.json.",
                 "Check module presence, topic completeness, placeholder text, missing files, and repeated visual specs.",
                 "Return fail with exact issues to the writer/renderer, or pass the package to the final reviewer.",
             ],
@@ -101,7 +101,8 @@ def default_agent_roles(
             independent_from=["syllabus_outline_analyst", "handbook_writer", "quality_inspector"],
             dispatch_brief=[
                 "Run in a fresh Agent/LLM context or subagent separate from outline analysis and writing.",
-                "Read the rendered guide.html/guide.pdf, validation.json, quality-inspection.json, final-review-packet.json, and visual manifest.",
+                "Read the rendered named HTML/PDF outputs, validation.json, quality-inspection.json, final-review-packet.json, and visual manifest.",
+                "Treat machine validation as supporting evidence only; inspect the visible handbook before handoff.",
                 "Compare the visible handbook with the syllabus outline and repair fixable content, visual, glossary, or PDF issues before handoff.",
             ],
         ),

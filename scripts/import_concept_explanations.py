@@ -117,6 +117,7 @@ def rerender_handbook(output_dir: Path) -> dict[str, object]:
         from intl_exam_guide.models import GuidePlan
         from intl_exam_guide.rendering.handbook_package import write_handbook_package
         from intl_exam_guide.rendering.html import render_html
+        from intl_exam_guide.rendering.output_names import find_handbook_html, find_handbook_pdf
         from intl_exam_guide.rendering.pdf import PdfExportError, export_pdf
 
         plan_path = output_dir / "guide-plan.json"
@@ -124,7 +125,7 @@ def rerender_handbook(output_dir: Path) -> dict[str, object]:
         write_handbook_package(plan, output_dir)
         html_path = render_html(
             plan,
-            output_dir / "guide.html",
+            find_handbook_html(output_dir, plan.qualification),
             output_dir / "images" / "visual_manifest.json",
         )
         result: dict[str, object] = {
@@ -132,7 +133,7 @@ def rerender_handbook(output_dir: Path) -> dict[str, object]:
             "html": str(html_path),
             "sections": str(output_dir / "sections"),
         }
-        pdf_path = output_dir / "guide.pdf"
+        pdf_path = find_handbook_pdf(output_dir, plan.qualification)
         if pdf_path.exists():
             try:
                 export_pdf(html_path, pdf_path)

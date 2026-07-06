@@ -6,21 +6,21 @@ The offline demo uses `src/intl_exam_guide/assets/demo_qualification.json`. It
 does not download OxfordAQA content and does not include copyrighted PDFs.
 
 ```bash
-python -m intl_exam_guide demo --out ./outputs/demo-science --language en --image-provider prompt-queue --explanation-style friendly --skip-pdf
+python -m intl_exam_guide demo --out ./outputs/demo-science
 ```
 
 With local Chrome/Edge PDF export:
 
 ```bash
-python -m intl_exam_guide demo --out ./outputs/demo-science --language en --image-provider prompt-queue --explanation-style friendly
+python -m intl_exam_guide demo --out ./outputs/demo-science
 ```
 
 Expected files:
 
 ```text
 outputs/demo-science/
-  guide.html
-  guide.pdf                  optional if browser export succeeds
+  <board>-<level>-<subject>-<time>.html
+  <board>-<level>-<subject>-<time>.pdf  optional if browser export succeeds
   guide-plan.json
   qualification.json
   validation.json
@@ -53,25 +53,25 @@ The science page should show International GCSE rows tagged as
 rows tagged as `international_as_a_level` with the red listing group.
 
 ```bash
-python -m intl_exam_guide generate --query chemistry --level igcse --language en --explanation-style friendly --out ./outputs/chemistry-9202
+python -m intl_exam_guide generate --query chemistry --level igcse --out ./outputs/chemistry-9202
 ```
 
 ## OxfordAQA International AS-A-level Example
 
 ```bash
-python -m intl_exam_guide generate --query chemistry --level a-level --language en --image-provider prompt-queue --explanation-style detective --out ./outputs/chemistry-9620
+python -m intl_exam_guide generate --query chemistry --level a-level --out ./outputs/chemistry-9620
 ```
 
 ## OxfordAQA Non-Science International GCSE Example
 
 ```bash
-python -m intl_exam_guide generate --query economics --level igcse --language en --explanation-style life --out ./outputs/economics-9214
+python -m intl_exam_guide generate --query economics --level igcse --out ./outputs/economics-9214
 ```
 
 ## OxfordAQA Revised Non-Science AS-A-level Example
 
 ```bash
-python -m intl_exam_guide generate --query 9725 --level a-level --language en --explanation-style story --out ./outputs/business-9725
+python -m intl_exam_guide generate --query 9725 --level a-level --out ./outputs/business-9725
 ```
 
 This covers a revised qualification page where the subject listing text does
@@ -85,8 +85,8 @@ Official subject-page URLs or direct specification PDF URLs still work as exact
 inputs:
 
 ```bash
-python -m intl_exam_guide generate --provider pearson --query "https://qualifications.pearson.com/en/qualifications/edexcel-international-gcses/international-gcse-mathematics-a-2016.html" --level igcse --language en --explanation-style friendly --out ./outputs/pearson-igcse-maths --skip-pdf
-python -m intl_exam_guide generate --provider pearson --query "https://qualifications.pearson.com/en/qualifications/edexcel-international-advanced-levels/mathematics-2018.html" --level a-level --language en --explanation-style friendly --out ./outputs/pearson-ial-maths --skip-pdf
+python -m intl_exam_guide generate --provider pearson --query "https://qualifications.pearson.com/en/qualifications/edexcel-international-gcses/international-gcse-mathematics-a-2016.html" --level igcse --out ./outputs/pearson-igcse-maths
+python -m intl_exam_guide generate --provider pearson --query "https://qualifications.pearson.com/en/qualifications/edexcel-international-advanced-levels/mathematics-2018.html" --level a-level --out ./outputs/pearson-ial-maths
 ```
 
 ## Cambridge International / CAIE Examples
@@ -97,8 +97,8 @@ Cambridge subject pages often list several syllabus year ranges, so provide
 `--exam-year` when the selected page has multiple syllabus PDFs:
 
 ```bash
-python -m intl_exam_guide generate --provider cambridge --query "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-chemistry-0620/" --level igcse --exam-year 2027 --language en --explanation-style friendly --out ./outputs/cambridge-igcse-chemistry-2027 --skip-pdf
-python -m intl_exam_guide generate --provider cambridge --query "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-chemistry-9701/" --level a-level --exam-year 2029 --language en --explanation-style friendly --out ./outputs/cambridge-ial-chemistry-2029 --skip-pdf
+python -m intl_exam_guide generate --provider cambridge --query "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-chemistry-0620/" --level igcse --exam-year 2027 --out ./outputs/cambridge-igcse-chemistry-2027
+python -m intl_exam_guide generate --provider cambridge --query "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-chemistry-9701/" --level a-level --exam-year 2029 --out ./outputs/cambridge-ial-chemistry-2029
 ```
 
 ## Release Sample Verification

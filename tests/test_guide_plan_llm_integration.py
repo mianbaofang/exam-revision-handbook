@@ -15,6 +15,7 @@ from intl_exam_guide.planning.concept_integration import (
     concept_entries_from_explanations,
 )
 from intl_exam_guide.planning.guide_plan import build_guide_plan
+from intl_exam_guide.rendering.output_names import default_handbook_stem
 from intl_exam_guide.skill_interface import SkillHandbookGenerator
 
 
@@ -200,7 +201,7 @@ class TestCanonicalConceptEntries:
         visual = plan.visual_briefs[0]
         assert visual.topic_title == topic_title
         assert visual.complexity == "svg-basic"
-        assert visual.image_provider == "kroki"
+        assert visual.image_provider == "llm-svg"
         assert visual.llm_visual_spec is True
         assert visual.svg_fit == "exact"
 
@@ -234,7 +235,9 @@ class TestSkillHostConceptFlow:
         validation_path = tmp_path / "validation.json"
         plan_path = tmp_path / "guide-plan.json"
 
-        assert html_path == tmp_path / "guide.html"
+        assert html_path.parent == tmp_path
+        assert html_path.suffix == ".html"
+        assert html_path.stem.startswith(default_handbook_stem(sample_qualification).rsplit("-", 2)[0])
         assert concepts_path.exists()
         assert validation_path.exists()
         assert plan_path.exists()

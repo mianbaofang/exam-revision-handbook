@@ -4,7 +4,7 @@ from typing import Any
 
 from intl_exam_guide.models import VisualBrief
 from intl_exam_guide.rendering.icons import render_icon
-from intl_exam_guide.rendering.text import html_escape
+from intl_exam_guide.rendering.text import html_attribute_escape, html_escape
 from intl_exam_guide.rendering.visual_assets import has_renderable_infographic
 
 
@@ -54,7 +54,7 @@ def _render_generated_infographic(
 <figure class="visual-example generated-infographic" aria-label="Generated infographic for {html_escape(title)}">
   <figcaption>{render_icon("visual")}<span>{html_escape(caption)}</span></figcaption>
   <div class="generated-infographic-grid">
-    <img class="infographic-image" src="images/{html_escape(filename)}" alt="{html_escape(title)} infographic for {html_escape(visual.focus_point)}">
+    <img class="infographic-image" src="images/{html_attribute_escape(filename)}" alt="{html_escape(title)} infographic for {html_escape(visual.focus_point)}">
     <div class="visual-notes">
       <div class="visual-source">{html_escape(source_prefix)}: {html_escape(source_label)}</div>
       <p class="visual-question">{html_escape(question)} <strong>{html_escape(visual.focus_point)}</strong>.</p>

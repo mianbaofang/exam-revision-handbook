@@ -37,29 +37,27 @@ a { color: var(--blue); }
 }
 .cover-mast {
   display: grid;
-  grid-template-columns: 118px minmax(0, 1fr);
+  grid-template-columns: 18px minmax(0, 1fr);
   gap: 16px;
   align-items: stretch;
   max-width: 980px;
 }
-.exam-board-badge {
-  display: grid;
-  place-items: center;
+.exam-board-theme-strip {
   min-height: 96px;
-  color: #ffffff;
-  background: linear-gradient(135deg, var(--blue) 0 64%, var(--red) 64% 100%);
-  font-size: 28px;
-  font-weight: 900;
-  letter-spacing: .02em;
+  background: var(--blue);
+  border-bottom: 14px solid var(--red);
 }
-.exam-board-badge.board-edexcel {
-  background: linear-gradient(135deg, #007b83 0 64%, #2d5aa7 64% 100%);
+.exam-board-theme-strip.board-edexcel {
+  background: #007b83;
+  border-bottom-color: #2d5aa7;
 }
-.exam-board-badge.board-caie {
-  background: linear-gradient(135deg, #b42c35 0 64%, #173154 64% 100%);
+.exam-board-theme-strip.board-caie {
+  background: #b42c35;
+  border-bottom-color: #173154;
 }
-.exam-board-badge.board-neutral {
-  background: linear-gradient(135deg, #5b677a 0 64%, #172033 64% 100%);
+.exam-board-theme-strip.board-neutral {
+  background: #5b677a;
+  border-bottom-color: #172033;
 }
 .exam-board-name {
   padding: 16px 18px;
@@ -158,39 +156,6 @@ h1 { max-width: 920px; font-size: 52px; line-height: 1.05; margin: 18px 0; lette
   margin-right: auto;
 }
 .student-overview { background: #fffaf1; }
-.delivery-panel { background: #f7fbff; }
-.delivery-status-grid {
-  display: grid;
-  grid-template-columns: minmax(180px, .28fr) minmax(0, .72fr);
-  gap: 16px;
-}
-.delivery-state-badge {
-  padding: 16px;
-  color: #ffffff;
-  background: var(--blue);
-}
-.delivery-state-badge span {
-  display: block;
-  font-size: 12px;
-  font-weight: 850;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-}
-.delivery-state-badge strong {
-  display: block;
-  margin-top: 8px;
-  font-size: 24px;
-  line-height: 1.1;
-}
-.delivery-state-draft { background: var(--red); }
-.delivery-state-needs-review { background: var(--gold); }
-.delivery-state-blocked { background: var(--red); }
-.delivery-state-detail {
-  padding: 16px;
-  background: #ffffff;
-  border: 1px solid var(--line);
-}
-.delivery-state-detail p { margin: 0 0 8px; font-weight: 750; }
 .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .overview-grid article {
   border: 1px solid var(--line);

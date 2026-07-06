@@ -22,6 +22,7 @@ from intl_exam_guide.planning.guide_plan import (
 from intl_exam_guide.planning.subject_profiles import resolve_subject_profile
 from intl_exam_guide.rendering.handbook_package import write_handbook_package
 from intl_exam_guide.rendering.html import render_cover, render_html, subject_display_name
+from intl_exam_guide.rendering.output_names import default_handbook_stem, find_handbook_html
 from intl_exam_guide.rendering.visual_assets import (
     has_renderable_infographic,
     scientific_vector_route,
@@ -137,6 +138,27 @@ def sample_downloaded_qualification() -> Qualification:
     )
 
 
+def test_default_handbook_name_uses_board_level_subject_time():
+    qualification = Qualification(
+        title="International GCSE Mathematics (9260)",
+        code="9260",
+        qualification_type="international_gcse",
+        subject_area="Mathematics",
+        page_url="https://example.test/mathematics/",
+        summary=[],
+        topics=[],
+        assessments=[],
+        source=SourceRecord(provider="oxfordaqa", page_url="https://example.test/mathematics/"),
+        audience_note="For international students.",
+        provider="OxfordAQA",
+    )
+
+    assert (
+        default_handbook_stem(qualification, "20260706-1430")
+        == "oxfordaqa-igcse-mathematics-20260706-1430"
+    )
+
+
 @pytest.mark.skip(reason="Deprecated: Test relies on Python parser/routing. LLM now handles this.")
 def test_discover_cli_lists_subject_pages_offline(monkeypatch, capsys):
     class FakeProvider:
@@ -156,7 +178,6 @@ def test_discover_cli_lists_subject_pages_offline(monkeypatch, capsys):
     assert "Accounting\thttps://example.test/accounting/" in capsys.readouterr().out
 
 
-@pytest.mark.skip(reason="Deprecated: Test relies on Python parser/routing. LLM now handles this.")
 def test_generate_cli_runs_provider_chain_offline(monkeypatch, tmp_path):
     calls = []
 
@@ -194,33 +215,21 @@ def test_generate_cli_runs_provider_chain_offline(monkeypatch, tmp_path):
             "igcse",
             "--out",
             str(output_dir),
-            "--image-provider",
-            "prompt-queue",
-            "--explanation-style",
-            "friendly",
-            "--language",
-            "en",
-            "--skip-pdf",
         ]
     )
 
-    assert result == 1
+    assert result == 0
     assert calls == [
         ("find", "Accounting 9999", "igcse", None),
         ("parse", "https://example.test/accounting/", "igcse", None),
         ("metadata", "Accounting"),
         ("download", "source", None),
     ]
-    validation = json.loads((output_dir / "validation.json").read_text(encoding="utf-8"))
-    assert validation["review_summary"]["topics"] == 6
-    assert validation["review_summary"]["practice_cards"] == 6
-    assert validation["review_summary"]["topics_with_guides"] == 6
-    assert validation["review_summary"]["topics_with_practice"] == 6
-    assert validation["delivery_status"] == "blocked_errors"
-    assert validation["delivery_state"] == "blocked"
-    assert any(
-        "Python-generated" in issue["message"] for issue in validation["issues"]
-    )
+    assert (output_dir / "qualification.json").exists()
+    assert (output_dir / "syllabus-evidence.json").exists()
+    assert not (output_dir / "guide.html").exists()
+    assert not (output_dir / "guide-plan.json").exists()
+    assert not (output_dir / "validation.json").exists()
 
 
 def test_extract_evidence_cli_writes_evidence_only(monkeypatch, tmp_path):
@@ -307,7 +316,8 @@ def test_demo_cli_generates_offline_guide(tmp_path):
         ]
     )
     assert result == 1
-    assert (output_dir / "guide.html").exists()
+    handbook_html = find_handbook_html(output_dir)
+    assert handbook_html.exists()
     assert (output_dir / "guide-plan.json").exists()
     assert (output_dir / "qualification.json").exists()
     assert (output_dir / "run-options.json").exists()
@@ -319,13 +329,13 @@ def test_demo_cli_generates_offline_guide(tmp_path):
     assert (output_dir / "sections" / "04_topic_guides_and_examples.txt").exists()
     assert (output_dir / "images" / "visual_manifest.json").exists()
     assert len(list((output_dir / "images").glob("*.svg"))) == 2
-    html = (output_dir / "guide.html").read_text(encoding="utf-8")
+    html = handbook_html.read_text(encoding="utf-8")
     assert html.count('class="topic-diagram"') == 0
     assert html.count('class="visual-example"') == 2
     assert "Concept Map" not in html
     assert "Visual Worked Example" in html
-    assert "Review Check" in html
-    assert 'data-review-state="draft"' in html
+    assert "Review Check" not in html
+    assert 'data-review-state="draft"' not in html
     assert "How to Study" in html
     assert "Guide Setup" in html
     assert "Study route" not in html
@@ -394,7 +404,7 @@ def test_demo_cli_generates_english_guide_with_chinese_term_glossary(tmp_path):
         ]
     )
     assert result == 1
-    html = (output_dir / "guide.html").read_text(encoding="utf-8")
+    html = find_handbook_html(output_dir).read_text(encoding="utf-8")
     assert 'lang="en"' in html
     assert "How to Study" in html
     assert "Study Roadmap" in html
@@ -412,8 +422,8 @@ def test_demo_cli_generates_english_guide_with_chinese_term_glossary(tmp_path):
     assert "Check" in html
     assert "Command:" in html
     assert "Can explain" not in html
-    assert "Review Check" in html
-    assert 'data-review-state="draft"' in html
+    assert "Review Check" not in html
+    assert 'data-review-state="draft"' not in html
     assert "知识单元 1" not in html
     assert "大纲点 1" not in html
     validation = json.loads((output_dir / "validation.json").read_text(encoding="utf-8"))

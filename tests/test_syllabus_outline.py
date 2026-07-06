@@ -31,6 +31,22 @@ def outline_base() -> dict[str, object]:
                 "page": 4,
             },
         ],
+        "granularity_audit": [
+            {
+                "source_coverage_id": "SC001",
+                "teaching_treatment": "independent_topic",
+                "target_topic_title": "Ratios for comparing quantities",
+                "merge_rationale": "",
+                "visible_treatment": "Dedicated topic with explanation and practice coverage.",
+            },
+            {
+                "source_coverage_id": "SC002",
+                "teaching_treatment": "independent_topic",
+                "target_topic_title": "Direct proportion problems",
+                "merge_rationale": "",
+                "visible_treatment": "Dedicated topic with explanation and practice coverage.",
+            },
+        ],
         "topics": [
             {
                 "title": "Ratios for comparing quantities",
@@ -70,7 +86,25 @@ def test_outline_validation_accepts_small_llm_led_flat_split():
     assert [issue for issue in issues if issue.severity == "error"] == []
 
 
-def test_outline_validation_rejects_collapsed_declared_structure_title():
+
+def test_outline_validation_requires_granularity_audit_for_each_source_item():
+    outline = outline_base()
+    outline["granularity_audit"] = [
+        {
+            "source_coverage_id": "SC001",
+            "teaching_treatment": "merged_into_topic",
+            "target_topic_title": "Ratio and proportion skills",
+            "visible_treatment": "Covered only by the broad topic title.",
+        }
+    ]
+
+    messages = [issue.message for issue in validate_syllabus_outline(outline)]
+
+    assert any("merge_rationale" in message for message in messages)
+    assert any("granularity_audit is missing 1 source_coverage" in message for message in messages)
+
+
+
     outline = outline_base()
     outline["structure_analysis"] = {
         "model": "nested",

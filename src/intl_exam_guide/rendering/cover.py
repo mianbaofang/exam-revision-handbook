@@ -4,7 +4,7 @@ import re
 
 from intl_exam_guide.models import GuideRunOptions, Qualification
 from intl_exam_guide.planning.language_policy import handbook_body_language
-from intl_exam_guide.rendering.text import html_escape, subject_display_name
+from intl_exam_guide.rendering.text import html_attribute_escape, html_escape, subject_display_name
 
 
 def render_cover(qualification: Qualification, options: GuideRunOptions) -> str:
@@ -26,9 +26,9 @@ def render_cover(qualification: Qualification, options: GuideRunOptions) -> str:
         return f"""
 <section class="cover">
   <div class="cover-mast">
-    <div class="exam-board-badge {html_escape(board["class_name"])}">{html_escape(board["short"])}</div>
+    <div class="exam-board-theme-strip {html_attribute_escape(board["class_name"])}" aria-hidden="true"></div>
     <div class="exam-board-name">
-      <span>Official exam board</span>
+      <span>Exam board</span>
       <strong>{html_escape(board["full"])}</strong>
     </div>
   </div>
@@ -44,9 +44,9 @@ def render_cover(qualification: Qualification, options: GuideRunOptions) -> str:
     return f"""
 <section class="cover">
   <div class="cover-mast">
-    <div class="exam-board-badge {html_escape(board["class_name"])}">{html_escape(board["short"])}</div>
+    <div class="exam-board-theme-strip {html_attribute_escape(board["class_name"])}" aria-hidden="true"></div>
     <div class="exam-board-name">
-      <span>官方考试局</span>
+      <span>考试局</span>
       <strong>{html_escape(board["full"])}</strong>
     </div>
   </div>

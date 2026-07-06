@@ -20,11 +20,11 @@ Before changing workflow scope, read `../docs/ARCHITECTURE_DECISION_SKILL_WORKFL
 - Three board visual themes: OxfordAQA blue/red, Pearson Edexcel teal/blue, Cambridge red/navy.
 - An 8-module handbook framework: Cover, How to Use, Study Roadmap, optional Term Glossary, Topic Guides, Practice Workbook, Exam Structure, Revision Checklist.
 - Artifact contracts for `qualification.json`, `syllabus-evidence.json`, `syllabus-outline.json`, and `concepts/concept_explanations.json`.
-- A Python rendering engine that turns approved artifacts into `guide.html` and optional `guide.pdf`.
+- A Python rendering engine that turns approved artifacts into named HTML and optional PDF outputs.
 
 ## Preflight
 
-Confirm the minimum run inputs before downloading or writing:
+Confirm the minimum run inputs before downloading or writing. Ask the user directly when any of these are missing or ambiguous; do not silently choose defaults for content-bearing decisions:
 
 - board, level, subject, and code when known;
 - official page URL or PDF URL if discovery is ambiguous;
@@ -59,6 +59,8 @@ The outline must include:
 - `official_structure` when the PDF exposes containers;
 - `source_coverage[]` with stable IDs, page references, and source snippets;
 - `topics[]` as final teachable knowledge units;
+- `granularity_audit[]` showing how each `source_coverage` item is taught: independent topic, merged into a topic, prerequisite, or sub-skill;
+- merge rationale whenever official bullets are combined, plus the visible handbook treatment that will teach each bullet;
 - each topic mapped to `source_coverage_ids`, `exam_points`, and `source_snippets`.
 
 The Analyst must not use provider templates, subject templates, topic-count targets, candidate hints, or Python fallback topics as the final split.
@@ -78,13 +80,17 @@ For each topic, provide:
 - `mastery_summary`: one concrete student-facing sentence for the Study Roadmap `What to master` column;
 - optional `visual_spec` when a visual materially improves understanding.
 
+Use proper student-facing mathematical notation where the subject needs it: `²`, `³`, `√`, `≤`, `≥`, `≠`, `θ`, `μ`, and similar stable Unicode symbols are preferred over plain-text fallbacks such as `^2`, `sqrt()`, `<=`, or `>=`. Do not rely on MathJax or a formula engine for final PDF readability.
+
 `mastery_summary` is Writer-owned content. Python must not fill it from a checklist template.
 
 Visual decisions belong to the Writer:
 
 - omit `visual_spec` when text is enough;
-- use `complexity: "svg-basic"` only for exact-fit diagrams, and include `svg_fit: "exact"`;
-- use `complexity: "infographic"` for realistic scenes, dense posters, multi-state explanations, apparatus, circuits, or anything a simple SVG could mislead;
+- use `complexity: "svg-basic"` only after the topic explanation and worked example exist, and only for exact-fit diagrams with `svg_fit: "exact"`;
+- generate or import an LLM-authored exact SVG first and mark it reviewed only after LLM visual review passes;
+- if LLM SVG review fails, try a Kroki professional diagram and review that output;
+- if Kroki review fails or the visual needs realism, rich annotation, apparatus, scenes, or modelling nuance, route it to `complexity: "infographic"`;
 - do not request board logos or course-cover packaging;
 - do not claim an infographic exists until a reviewed image is saved under `images/`.
 
@@ -94,9 +100,11 @@ If support language is not `en`, add a professional term glossary. Keep the hand
 
 Render HTML after the Analyst and Writer artifacts are present. Mechanical validation can catch missing files and contract errors, but it does not prove teaching quality.
 
-The Reviewer must open or screenshot `guide.html` and inspect the visible handbook. At minimum, check the cover, roadmap, topic order, first topic, several later topics, concept explanations, examples, visuals, glossary policy, and source traceability. If PDF is exported, sample pages from it too.
+The Reviewer must open or screenshot the named HTML output and inspect the visible handbook. If PDF is exported, sample pages from it too. Validation, quality inspection, and review packets are supporting evidence only; they are not approval.
 
-Do not present the handbook as final until the rendered HTML has actually been inspected and any pending visual or concept blockers are reported honestly.
+At minimum, check the cover, roadmap, topic order, concept explanations, examples, visuals, glossary policy, source traceability, and the Analyst `granularity_audit`. Confirm official bullets can be traced from the handbook directory/table of contents to visible teaching treatment, not only to JSON coverage IDs.
+
+Do not present the handbook as final until the rendered HTML has actually been inspected and any pending visual or concept blockers are reported honestly. Student-facing HTML/PDF must not expose internal review/check panels such as `Review Check`, `Needs visible review`, delivery states, validation reminders, or coordinator-only handoff text.
 
 ## Board Themes
 
@@ -116,19 +124,19 @@ Framework preview only:
 python -m intl_exam_guide demo --out <output-dir> --explanation-style friendly --language en --skip-pdf
 ```
 
-Legacy draft generator:
+Evidence-only official run:
 
 ```bash
-python -m intl_exam_guide generate --provider <provider> --query "<subject or URL>" --level <level> --out <output-dir> --explanation-style friendly --language en --skip-pdf
+python -m intl_exam_guide generate --provider <provider> --query "<subject or URL>" --level <level> --out <output-dir>
 ```
 
-`demo` and `generate` are not production handbook commands by themselves. If they run without an LLM Analyst outline and Writer-reviewed concepts, treat the output as draft/framework evidence only.
+`generate` prepares official evidence for the host LLM workflow. It must not split topics, write fallback outlines, or render HTML/PDF.
+
+`demo` is only an offline framework preview. Production handbooks require an LLM Analyst outline, Writer-reviewed concepts/visual decisions, and Reviewer inspection of the rendered output.
 
 ## Reference Files
 
 - `references/revision_guide_spec.md`
-- `references/style_guide.md`
-- `references/visual_routing_guide.md`
 - `references/scientific_vector_fallback.md`
 
 ## Stop Conditions

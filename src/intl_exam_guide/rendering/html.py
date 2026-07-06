@@ -28,13 +28,13 @@ from intl_exam_guide.planning.source_points import (
 )
 from intl_exam_guide.planning.source_points import is_syllabus_shell
 from intl_exam_guide.rendering.cover import render_cover
-from intl_exam_guide.rendering.delivery_panel import render_delivery_panel
 from intl_exam_guide.rendering.glossary import render_professional_glossary
 from intl_exam_guide.rendering.icons import render_icon
 from intl_exam_guide.rendering.infographics import render_infographic_required
+from intl_exam_guide.rendering.output_names import default_handbook_paths
 from intl_exam_guide.rendering.styles import stylesheet
 from intl_exam_guide.rendering.story_modes import chinese_story_lines, english_story_lines
-from intl_exam_guide.rendering.text import html_escape, subject_display_name
+from intl_exam_guide.rendering.text import html_attribute_escape, html_escape, subject_display_name
 from intl_exam_guide.rendering.visual_assets import (
     build_visual_asset_lookup,
     load_visual_manifest,
@@ -44,9 +44,13 @@ from intl_exam_guide.rendering.visual_assets import (
 
 def render_html(
     plan: GuidePlan,
-    output_path: Path,
+    output_path: Path | None = None,
     visual_manifest_path: Path | None = None,
+    output_dir: Path | None = None,
 ) -> Path:
+    if output_path is None:
+        base_dir = output_dir or Path(".")
+        output_path = default_handbook_paths(base_dir, plan.qualification)[0]
     output_path.parent.mkdir(parents=True, exist_ok=True)
     qualification = plan.qualification
     selected_language = plan.run_options.output_language
@@ -66,7 +70,6 @@ def render_html(
         f"<title>{html_escape(page_title)}</title>",
         f"<style>{stylesheet()}</style></head><body>",
         render_cover(qualification, body_options),
-        render_delivery_panel(plan, manifest_entries, output_path.parent),
         render_student_overview(qualification, plan.revision_stages, plan.run_options),
         render_professional_glossary(qualification, glossary_language(selected_language) or "en"),
         render_topic_map(qualification.topics, language, plan.topic_guides),
@@ -184,7 +187,7 @@ def render_source_note(qualification: Qualification, language: str = "en") -> st
   <p>{html_escape(audience_note)}</p>
   {listing_note}
   <ul>
-    <li>{html_escape(page_label)}: <a href="{html_escape(qualification.page_url)}">{html_escape(qualification.page_url)}</a></li>
+    <li>{html_escape(page_label)}: <a href="{html_attribute_escape(qualification.page_url)}">{html_escape(qualification.page_url)}</a></li>
     <li>{html_escape(spec_label)}: {link_or_missing(qualification.source.specification_url, language)}</li>
     <li>PDF SHA-256: <code>{html_escape(hash_value)}</code></li>
   </ul>
@@ -744,7 +747,7 @@ def render_manifest_visual_asset(
         return ""
     return (
         f'<img class="visual-svg visual-asset" '
-        f'src="images/{html_escape(filename)}" alt="{html_escape(title)} visual">'
+        f'src="images/{html_attribute_escape(filename)}" alt="{html_escape(title)} visual">'
     )
 
 
@@ -884,7 +887,7 @@ def render_reference_appendix(
   <p>{html_escape(audience_note)}</p>
   {listing_note}
   <ul>
-    <li>{html_escape(page_label)}: <a href="{html_escape(qualification.page_url)}">{html_escape(qualification.page_url)}</a></li>
+    <li>{html_escape(page_label)}: <a href="{html_attribute_escape(qualification.page_url)}">{html_escape(qualification.page_url)}</a></li>
     <li>{html_escape(spec_label)}: {link_or_missing(qualification.source.specification_url, language)}</li>
     <li>PDF SHA-256: <code>{html_escape(hash_value)}</code></li>
     <li>{html_escape(practice_label)}: {practice_count}</li>
@@ -967,7 +970,7 @@ def link_or_missing(value: str | None, language: str = "en") -> str:
     if not value:
         missing = "missing" if language == "en" else "缺失"
         return f'<span class="warning">{html_escape(missing)}</span>'
-    return f'<a href="{html_escape(value)}">{html_escape(value)}</a>'
+    return f'<a href="{html_attribute_escape(value)}">{html_escape(value)}</a>'
 
 
 def display_topic_title(topic: Topic, index: int, language: str) -> str:

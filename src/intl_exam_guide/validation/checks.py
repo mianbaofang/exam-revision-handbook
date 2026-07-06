@@ -205,6 +205,16 @@ INTERNAL_VISUAL_STATUS_TERMS = [
     "专业图表",
     "生图模型",
 ]
+INTERNAL_REVIEW_PANEL_TERMS = [
+    "Review Check",
+    "Needs visible review",
+    "Current check",
+    "Rendered HTML must be opened or screenshot-inspected before handoff.",
+    "data-review-state",
+    "delivery-panel",
+    "复查提示",
+    "需要打开复查",
+]
 
 
 def validate_plan(
@@ -764,6 +774,7 @@ def validate_visual_briefs(plan: GuidePlan) -> list[ValidationIssue]:
             )
         if brief.complexity == "svg-basic" or brief.image_provider in {
             "deterministic-svg",
+            "llm-svg",
             "kroki",
         }:
             llm_required = (
@@ -799,17 +810,6 @@ def validate_visual_briefs(plan: GuidePlan) -> list[ValidationIssue]:
                     ValidationIssue(
                         "error",
                         f"Local deterministic SVG rendering is not allowed for deliverable visuals: {brief.topic_title}",
-                    )
-                )
-            if (
-                brief.complexity == "svg-basic"
-                and is_professional_diagram_visual(brief.visual_type)
-                and brief.image_provider != "kroki"
-            ):
-                issues.append(
-                    ValidationIssue(
-                        "error",
-                        f"Professional diagram visual must use Kroki renderer: {brief.topic_title}",
                     )
                 )
     return issues
@@ -935,6 +935,16 @@ def validate_html_output(plan: GuidePlan, html_path: Path) -> list[ValidationIss
                     f"HTML output exposes internal visual status text: {term}",
                 )
             )
+    for term in INTERNAL_REVIEW_PANEL_TERMS:
+        if term in html_body:
+            issues.append(
+                ValidationIssue(
+                    "error",
+                    f"HTML output exposes internal review-panel text: {term}",
+                )
+            )
+    for message in plain_math_notation_issues(html_body):
+        issues.append(ValidationIssue("error", message))
     issues.extend(validate_html_glossary_policy(html, options.output_language))
     rendered_titles = rendered_topic_titles(html)
     for message in topic_title_quality_issues(rendered_titles, body_language):
@@ -1061,6 +1071,30 @@ def validate_html_topic_map_mastery(html: str, language: str) -> list[Validation
 
 def normalize_html_cell(html: str) -> str:
     text = re.sub(r"<[^>]+>", "", html)
+    return re.sub(r"\s+", " ", html_unescape(text)).strip()
+
+
+def plain_math_notation_issues(html: str) -> list[str]:
+    text = student_visible_text(html)
+    findings = []
+    checks = [
+        (r"\^[{(]?[A-Za-z0-9+-]{1,8}[})]?", "caret exponent notation"),
+        (r"\bsqrt\s*\(", "sqrt() notation"),
+        (r"(?<![<])>=(?![\"'])", ">= notation"),
+        (r"(?<![<])<=", "<= notation"),
+    ]
+    for pattern, label in checks:
+        match = re.search(pattern, text, flags=re.IGNORECASE)
+        if match:
+            findings.append(
+                f"Student-facing maths should use rendered symbols, not {label}: {match.group(0)}"
+            )
+    return findings
+
+
+def student_visible_text(html: str) -> str:
+    html = re.sub(r"<(script|style)\b[^>]*>.*?</\1>", " ", html, flags=re.I | re.S)
+    text = re.sub(r"<[^>]+>", " ", html)
     return re.sub(r"\s+", " ", html_unescape(text)).strip()
 
 
@@ -2065,8 +2099,7 @@ def review_summary(
             pending_infographic_assets = sum(
                 1
                 for entry in manifest_entries
-                if entry.get("complexity") == "infographic"
-                and str(entry.get("asset_status", "")).lower() in PENDING_ASSET_STATUSES
+                if str(entry.get("asset_status", "")).lower() in PENDING_ASSET_STATUSES
             )
         has_visual_manifest = (images_dir / "visual_manifest.json").exists()
         has_package_manifest = (output_dir / "handbook-package.json").exists()

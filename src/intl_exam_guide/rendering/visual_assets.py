@@ -17,6 +17,7 @@ PENDING_ASSET_STATUSES = {
     "external-generation-required",
     "provider-selected-pending-generation",
     "infographic-provider-required",
+    "llm-svg-required",
     "svg-fallback-needs-review",
     "professional-diagram-required",
 }

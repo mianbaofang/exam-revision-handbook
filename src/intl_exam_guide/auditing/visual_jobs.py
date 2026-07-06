@@ -5,6 +5,7 @@ PENDING_STATUSES = {
     "external-generation-required",
     "infographic-provider-required",
     "provider-selected-pending-generation",
+    "llm-svg-required",
     "svg-fallback-needs-review",
     "professional-diagram-required",
 }
@@ -40,22 +41,23 @@ def visual_jobs_markdown(jobs: list[dict[str, object]]) -> str:
         return "# Infographic Jobs\n\nNo pending complex infographic jobs.\n"
 
     lines = [
-        "# Infographic Jobs",
+        "# Visual Jobs",
         "",
-        "These complex visuals are not final. Generate reviewed PNG/JPG/WebP assets for the IDs below, "
-        "or keep the handbook marked as a draft.",
+        "These visuals are not final. Follow the route in order: create or import an LLM-authored exact SVG when `asset_status` is `llm-svg-required`; if LLM review rejects that SVG, try a Kroki professional diagram and review it; if Kroki review also rejects it, import a reviewed PNG/JPG/WebP infographic asset.",
+        "Keep the handbook marked as a draft while any job remains pending.",
         "",
         "Generation choices:",
         "",
-        "- Use an external image model or designer with the prompt under each visual ID.",
-        "- Exact SVG or professional diagram assets must be reviewed before final delivery.",
-        "- Name each generated file with the visual ID prefix, for example `visual_001.png` or `visual_001_tangent.png`.",
+        "- LLM-authored exact SVG must have `svg_fit: exact`, `review_status: reviewed|approved`, and a saved SVG file.",
+        "- Kroki SVG output is only an intermediate fallback and still needs LLM review before final delivery.",
+        "- Information-graphic assets should use a source-bound prompt and be imported under the matching visual ID.",
+        "- Name each generated file with the visual ID prefix, for example `visual_001.svg`, `visual_001.png`, or `visual_001_tangent.png`.",
         "",
         "After generation, import and rebuild the handbook:",
         "",
         "`python scripts/import_infographic_assets.py <output-dir> --asset-dir <generated-asset-dir> --provider <provider-name>`",
         "",
-        "The import script updates `images/visual_manifest.json` and re-renders `guide.html` and section files by default.",
+        "The import script updates `images/visual_manifest.json` and re-renders the named handbook HTML and section files by default.",
         "",
     ]
     for job in jobs:

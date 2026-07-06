@@ -245,7 +245,10 @@ def complete_product_review() -> dict[str, object]:
     return {
         "schema_version": "v0.4-agent-product-review",
         "visible_handbook_inspected": True,
+        "machine_validation_used_only_as_supporting_evidence": True,
         "syllabus_outline_compared": True,
+        "granularity_audit_checked": True,
+        "merged_bullets_visible_in_handbook": True,
         "pdf_pages_sampled": [1, 2],
         "visuals_inspected": True,
         "glossary_policy_checked": True,
@@ -423,10 +426,46 @@ def test_write_final_review_packet_rerenders_pdf_after_html(monkeypatch, tmp_pat
 
     validation = json.loads((tmp_path / "validation.json").read_text(encoding="utf-8"))
     assert calls
-    assert calls[-1][1] == tmp_path / "guide.pdf"
-    assert "Review Check" in calls[-1][2]
-    assert validation["pdf"] == str(tmp_path / "guide.pdf")
+    assert calls[-1][1].parent == tmp_path
+    assert calls[-1][1].suffix == ".pdf"
+    assert "guide.pdf" not in calls[-1][1].name
+    assert "Review Check" not in calls[-1][2]
+    assert "data-review-state" not in calls[-1][2]
+    assert validation["pdf"] == str(calls[-1][1])
     assert validation["pdf_error"] is None
+
+
+def test_write_final_review_packet_strips_legacy_review_panel_before_pdf(monkeypatch, tmp_path):
+    write_recomputable_review_fixture(tmp_path)
+    html_path = tmp_path / "guide.html"
+    html_path.write_text(
+        html_path.read_text(encoding="utf-8")
+        + '<section class="band delivery-panel" data-review-state="needs-review"><h2>Review Check</h2><strong>Needs visible review</strong></section>',
+        encoding="utf-8",
+    )
+    calls = []
+
+    def fake_rerender_html(_output_dir):
+        return None
+
+    def fake_export_pdf(html_path, pdf_path):
+        calls.append(html_path.read_text(encoding="utf-8"))
+        writer = PdfWriter()
+        writer.add_blank_page(width=72, height=72)
+        with pdf_path.open("wb") as handle:
+            writer.write(handle)
+        return pdf_path
+
+    monkeypatch.setattr(final_review_module, "rerender_html", fake_rerender_html)
+    monkeypatch.setattr(final_review_module, "export_pdf", fake_export_pdf)
+
+    write_final_review_packet(tmp_path)
+
+    assert calls
+    assert "Review Check" not in calls[-1]
+    assert "Needs visible review" not in calls[-1]
+    assert "data-review-state" not in calls[-1]
+    assert "delivery-panel" not in html_path.read_text(encoding="utf-8")
 
 
 def test_write_final_review_packet_validates_the_rerendered_html(monkeypatch, tmp_path):
