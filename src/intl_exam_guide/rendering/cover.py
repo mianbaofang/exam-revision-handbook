@@ -10,9 +10,21 @@ from intl_exam_guide.rendering.text import html_attribute_escape, html_escape, s
 def render_cover(qualification: Qualification, options: GuideRunOptions) -> str:
     language = handbook_body_language(options.output_language)
     board = exam_board_identity(qualification)
-    board_class = html_attribute_escape(board["class_name"])
-    qtype = qualification_type_display(qualification)
-    subject = cover_subject_title(qualification, language)
+    context = cover_context(qualification, options, board, language)
+
+    if board["class_name"] == "board-edexcel":
+        return render_edexcel_cover(context, language)
+    if board["class_name"] == "board-caie":
+        return render_cambridge_cover(context, language)
+    return render_aqa_cover(context, language)
+
+
+def cover_context(
+    qualification: Qualification,
+    options: GuideRunOptions,
+    board: dict[str, str],
+    language: str,
+) -> dict[str, str]:
     code = qualification.code or ""
     version = cover_version_label(qualification, options, language)
     year = (
@@ -20,71 +32,220 @@ def render_cover(qualification: Qualification, options: GuideRunOptions) -> str:
         or qualification.selected_exam_year
         or qualification.source.selected_exam_year
     )
-    identity_html = cover_identity_grid(version, year, language)
-    code_html = cover_course_code(code, language)
-    signal_html = cover_signal_grid(language)
+    return {
+        "board_class": html_attribute_escape(board["class_name"]),
+        "board_short": board["short"],
+        "board_full": board["full"],
+        "qtype": qualification_type_display(qualification),
+        "subject": cover_subject_title(qualification, language),
+        "code_html": cover_course_code(code, language),
+        "identity_html": cover_identity_grid(version, year, language),
+        "signal_html": cover_signal_grid(language),
+    }
+
+
+def render_aqa_cover(context: dict[str, str], language: str) -> str:
+    board_class = context["board_class"]
     if language == "en":
         return f"""
-<section class="cover {board_class}">
+<section class="cover {board_class} cover-template-aqa">
   <div class="exam-board-theme-strip {board_class}" aria-hidden="true"></div>
-  <div class="cover-mast">
+  <div class="cover-mast cover-aqa-mast">
     <div class="exam-board-name">
       <span>Exam board</span>
-      <strong>{html_escape(board["full"])}</strong>
+      <strong>{html_escape(context["board_full"])}</strong>
     </div>
     <div class="cover-signature-card">
-      <span>{html_escape(board["short"])}</span>
+      <span>{html_escape(context["board_short"])}</span>
       <strong>Revision Guide</strong>
-      <em>{html_escape(qtype)}</em>
+      <em>{html_escape(context["qtype"])}</em>
     </div>
   </div>
-  <div class="cover-main">
+  <div class="cover-main cover-aqa-main">
     <div class="cover-title-lockup">
-      <div class="qualification-pill">{html_escape(qtype)}</div>
-      <h1>{html_escape(subject)}</h1>
-      {code_html}
+      <div class="qualification-pill">{html_escape(context["qtype"])}</div>
+      <h1>{html_escape(context["subject"])}</h1>
+      {context["code_html"]}
     </div>
     <div class="cover-spec-card">
       <span>Course identity</span>
-      <strong>{html_escape(board["short"])} handbook</strong>
+      <strong>{html_escape(context["board_short"])} handbook</strong>
       <p>Specification-led revision guide</p>
     </div>
   </div>
-  <div class="cover-footer">
-    {identity_html}
-    {signal_html}
+  <div class="cover-footer cover-aqa-footer">
+    {context["identity_html"]}
+    {context["signal_html"]}
   </div>
 </section>
 """
     return f"""
-<section class="cover {board_class}">
+<section class="cover {board_class} cover-template-aqa">
   <div class="exam-board-theme-strip {board_class}" aria-hidden="true"></div>
-  <div class="cover-mast">
+  <div class="cover-mast cover-aqa-mast">
     <div class="exam-board-name">
       <span>考试局</span>
-      <strong>{html_escape(board["full"])}</strong>
+      <strong>{html_escape(context["board_full"])}</strong>
     </div>
     <div class="cover-signature-card">
-      <span>{html_escape(board["short"])}</span>
+      <span>{html_escape(context["board_short"])}</span>
       <strong>复习手册</strong>
-      <em>{html_escape(qtype)}</em>
+      <em>{html_escape(context["qtype"])}</em>
     </div>
   </div>
-  <div class="cover-main">
+  <div class="cover-main cover-aqa-main">
     <div class="cover-title-lockup">
-      <div class="qualification-pill">{html_escape(qtype)}</div>
-      <h1>{html_escape(subject)}</h1>
-      {code_html}
+      <div class="qualification-pill">{html_escape(context["qtype"])}</div>
+      <h1>{html_escape(context["subject"])}</h1>
+      {context["code_html"]}
     </div>
     <div class="cover-spec-card">
       <span>课程身份</span>
-      <strong>{html_escape(board["short"])} 手册</strong>
+      <strong>{html_escape(context["board_short"])} 手册</strong>
       <p>基于官方考试大纲的复习手册</p>
     </div>
   </div>
-  <div class="cover-footer">
-    {identity_html}
-    {signal_html}
+  <div class="cover-footer cover-aqa-footer">
+    {context["identity_html"]}
+    {context["signal_html"]}
+  </div>
+</section>
+"""
+
+
+def render_edexcel_cover(context: dict[str, str], language: str) -> str:
+    board_class = context["board_class"]
+    if language == "en":
+        return f"""
+<section class="cover {board_class} cover-template-edexcel">
+  <div class="exam-board-theme-strip {board_class}" aria-hidden="true"></div>
+  <div class="cover-edexcel-header">
+    <div class="cover-signature-card">
+      <span>{html_escape(context["board_short"])}</span>
+      <strong>Revision Guide</strong>
+      <em>{html_escape(context["qtype"])}</em>
+    </div>
+    <div class="exam-board-name">
+      <span>Exam board</span>
+      <strong>{html_escape(context["board_full"])}</strong>
+    </div>
+  </div>
+  <div class="cover-edexcel-body">
+    <div class="cover-spec-card">
+      <span>Course identity</span>
+      <strong>{html_escape(context["board_short"])} handbook</strong>
+      <p>Specification-led revision guide</p>
+    </div>
+    <div class="cover-title-lockup">
+      <div class="qualification-pill">{html_escape(context["qtype"])}</div>
+      <h1>{html_escape(context["subject"])}</h1>
+      {context["code_html"]}
+    </div>
+  </div>
+  <div class="cover-footer cover-edexcel-footer">
+    {context["identity_html"]}
+    {context["signal_html"]}
+  </div>
+</section>
+"""
+    return f"""
+<section class="cover {board_class} cover-template-edexcel">
+  <div class="exam-board-theme-strip {board_class}" aria-hidden="true"></div>
+  <div class="cover-edexcel-header">
+    <div class="cover-signature-card">
+      <span>{html_escape(context["board_short"])}</span>
+      <strong>复习手册</strong>
+      <em>{html_escape(context["qtype"])}</em>
+    </div>
+    <div class="exam-board-name">
+      <span>考试局</span>
+      <strong>{html_escape(context["board_full"])}</strong>
+    </div>
+  </div>
+  <div class="cover-edexcel-body">
+    <div class="cover-spec-card">
+      <span>课程身份</span>
+      <strong>{html_escape(context["board_short"])} 手册</strong>
+      <p>基于官方考试大纲的复习手册</p>
+    </div>
+    <div class="cover-title-lockup">
+      <div class="qualification-pill">{html_escape(context["qtype"])}</div>
+      <h1>{html_escape(context["subject"])}</h1>
+      {context["code_html"]}
+    </div>
+  </div>
+  <div class="cover-footer cover-edexcel-footer">
+    {context["identity_html"]}
+    {context["signal_html"]}
+  </div>
+</section>
+"""
+
+
+def render_cambridge_cover(context: dict[str, str], language: str) -> str:
+    board_class = context["board_class"]
+    if language == "en":
+        return f"""
+<section class="cover {board_class} cover-template-caie">
+  <div class="exam-board-theme-strip {board_class}" aria-hidden="true"></div>
+  <div class="cover-caie-header">
+    <div class="cover-signature-card">
+      <span>{html_escape(context["board_short"])}</span>
+      <strong>Revision Guide</strong>
+      <em>{html_escape(context["qtype"])}</em>
+    </div>
+    <div class="exam-board-name">
+      <span>Exam board</span>
+      <strong>{html_escape(context["board_full"])}</strong>
+    </div>
+  </div>
+  <div class="cover-caie-body">
+    <div class="cover-title-lockup">
+      <div class="qualification-pill">{html_escape(context["qtype"])}</div>
+      <h1>{html_escape(context["subject"])}</h1>
+      {context["code_html"]}
+    </div>
+    <div class="cover-spec-card">
+      <span>Course identity</span>
+      <strong>{html_escape(context["board_short"])} handbook</strong>
+      <p>Specification-led revision guide</p>
+    </div>
+  </div>
+  <div class="cover-footer cover-caie-footer">
+    {context["identity_html"]}
+    {context["signal_html"]}
+  </div>
+</section>
+"""
+    return f"""
+<section class="cover {board_class} cover-template-caie">
+  <div class="exam-board-theme-strip {board_class}" aria-hidden="true"></div>
+  <div class="cover-caie-header">
+    <div class="cover-signature-card">
+      <span>{html_escape(context["board_short"])}</span>
+      <strong>复习手册</strong>
+      <em>{html_escape(context["qtype"])}</em>
+    </div>
+    <div class="exam-board-name">
+      <span>考试局</span>
+      <strong>{html_escape(context["board_full"])}</strong>
+    </div>
+  </div>
+  <div class="cover-caie-body">
+    <div class="cover-title-lockup">
+      <div class="qualification-pill">{html_escape(context["qtype"])}</div>
+      <h1>{html_escape(context["subject"])}</h1>
+      {context["code_html"]}
+    </div>
+    <div class="cover-spec-card">
+      <span>课程身份</span>
+      <strong>{html_escape(context["board_short"])} 手册</strong>
+      <p>基于官方考试大纲的复习手册</p>
+    </div>
+  </div>
+  <div class="cover-footer cover-caie-footer">
+    {context["identity_html"]}
+    {context["signal_html"]}
   </div>
 </section>
 """
@@ -126,7 +287,9 @@ def cover_identity_grid(version: str, year: str | None, language: str) -> str:
     items: list[str] = []
     if version and not is_cover_version_fallback(version, language):
         label = "Specification / syllabus version" if language == "en" else "考试大纲版本"
-        items.append(f"<div><span>{html_escape(label)}</span><strong>{html_escape(version)}</strong></div>")
+        items.append(
+            f"<div><span>{html_escape(label)}</span><strong>{html_escape(version)}</strong></div>"
+        )
     if year:
         label = "Target exam year" if language == "en" else "目标考试年份"
         items.append(f"<div><span>{html_escape(label)}</span><strong>{html_escape(year)}</strong></div>")

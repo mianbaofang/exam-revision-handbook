@@ -230,8 +230,13 @@ def test_stylesheet_keeps_handbook_cover_responsive_and_print_contracts():
         ".cover.board-aqa",
         ".cover.board-edexcel",
         ".cover.board-caie",
+        ".cover-template-aqa",
+        ".cover-template-edexcel",
+        ".cover-template-caie",
         ".cover-mast",
         ".cover-main",
+        ".cover-edexcel-body",
+        ".cover-caie-body",
         ".cover-signature-card",
         ".cover-spec-card",
         ".cover-identity-grid",
@@ -249,8 +254,8 @@ def test_stylesheet_keeps_handbook_cover_responsive_and_print_contracts():
     assert "--cover-primary: #1354a5" in css
     assert "--cover-primary: #007b83" in css
     assert "--cover-primary: #b42c35" in css
-    assert ".cover.board-edexcel .cover-spec-card" in css
-    assert ".cover.board-caie .cover-mast" in css
+    assert ".cover-template-edexcel .cover-edexcel-body" in css
+    assert ".cover-template-caie .cover-caie-header" in css
 
     assert "min-height: 220mm" in css
     assert "print-color-adjust: exact" in css
@@ -290,20 +295,37 @@ def test_render_cover_applies_distinct_three_board_theme_classes():
         output_language="en",
     )
     cases = [
-        ("OxfordAQA", "OxfordAQA", "board-aqa", "AQA"),
-        ("Pearson Edexcel", "Pearson Edexcel", "board-edexcel", "Edexcel"),
-        ("Cambridge International", "Cambridge International", "board-caie", "CAIE"),
+        ("OxfordAQA", "OxfordAQA", "board-aqa", "cover-template-aqa", "cover-aqa-main", "AQA"),
+        (
+            "Pearson Edexcel",
+            "Pearson Edexcel",
+            "board-edexcel",
+            "cover-template-edexcel",
+            "cover-edexcel-body",
+            "Edexcel",
+        ),
+        (
+            "Cambridge International",
+            "Cambridge International",
+            "board-caie",
+            "cover-template-caie",
+            "cover-caie-body",
+            "CAIE",
+        ),
     ]
 
-    for provider, source_provider, class_name, short_name in cases:
+    for provider, source_provider, class_name, template_class, structure_class, short_name in cases:
         qualification = sample_rendering_qualification()
         qualification.provider = provider
         qualification.source.provider = source_provider
         html = render_cover(qualification, options)
 
-        assert f'class="cover {class_name}"' in html
+        assert f'class="cover {class_name} {template_class}"' in html
         assert f'class="exam-board-theme-strip {class_name}"' in html
+        assert structure_class in html
         assert f"{short_name} handbook" in html
+
+    assert "cover-template-edexcel" not in render_cover(sample_rendering_qualification(), options)
 
 
 def test_cover_version_label_uses_issue_range_exam_year_then_pdf_fallback():
@@ -374,7 +396,7 @@ def test_render_cover_keeps_term_support_generic_without_sample_content():
     term_supported = render_cover(qualification, options)
 
     assert term_supported == english
-    assert "class=\"cover board-aqa\"" in english
+    assert "class=\"cover board-aqa cover-template-aqa\"" in english
     assert "Oxford International AQA Examinations" in english
     assert "Mathematics" in english
     assert "Course code" in english
