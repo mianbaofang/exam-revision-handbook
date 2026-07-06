@@ -42,36 +42,27 @@ def test_delivery_status_ready_when_clean_and_no_pending_infographics():
     )
 
 
-def test_delivery_panel_does_not_upgrade_blocked_validation_to_review_ready():
+def test_delivery_panel_does_not_upgrade_blocked_validation_to_review_state():
     assert (
         state_from_artifacts(
             0,
             0,
             {"agent_self_review": {"status": "ready"}},
-            {"delivery_status": "blocked_errors", "delivery_state": "candidate"},
+            {"delivery_status": "blocked_errors", "delivery_state": "blocked"},
         )
-        == "candidate"
+        == "blocked"
     )
 
 
-def test_delivery_panel_requires_final_review_before_final_ready():
+def test_delivery_panel_never_claims_final_readiness():
     assert (
         state_from_artifacts(
             0,
             0,
             {},
-            {"delivery_status": "ready", "delivery_state": "review-ready"},
+            {"delivery_status": "ready", "delivery_state": "needs-review"},
         )
-        == "review-ready"
-    )
-    assert (
-        state_from_artifacts(
-            0,
-            0,
-            {"agent_self_review": {"status": "ready"}},
-            {"delivery_status": "ready", "delivery_state": "final-ready"},
-        )
-        == "review-ready"
+        == "needs-review"
     )
     assert (
         state_from_artifacts(
@@ -83,7 +74,7 @@ def test_delivery_panel_requires_final_review_before_final_ready():
             },
             {"delivery_status": "ready", "delivery_state": "final-ready"},
         )
-        == "final-ready"
+        == "needs-review"
     )
 
 
@@ -105,12 +96,12 @@ def test_validation_json_contains_delivery_status(tmp_path):
         ]
     )
 
-    assert result == 0
+    assert result == 1
     validation = json.loads((output_dir / "validation.json").read_text(encoding="utf-8"))
-    assert validation["delivery_status"] == "draft_needs_concept_review"
-    assert validation["delivery_state"] == "draft"
+    assert validation["delivery_status"] == "blocked_errors"
+    assert validation["delivery_state"] == "blocked"
     contract = json.loads((output_dir / "delivery-contract.json").read_text(encoding="utf-8"))
-    assert contract["delivery_state"] == "draft"
+    assert contract["delivery_state"] == "blocked"
     assert len(contract["learning_units"]) == validation["review_summary"]["source_topics"]
     assert (
         validation["review_summary"]["concept_jobs"] == validation["review_summary"]["topic_guides"]

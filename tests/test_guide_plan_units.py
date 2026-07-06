@@ -307,8 +307,20 @@ def test_source_points_remove_cambridge_page_boilerplate():
     )
 
 
-@pytest.mark.skip(reason="Deprecated: Test relies on Python parser/routing. LLM now handles this.")
-def test_source_points_remove_pearson_page_boilerplate_and_formula_noise():
+def test_source_points_remove_cambridge_inline_page_boilerplate_and_next_section_intro():
+    assert (
+        clean_source_point(
+            "main influences on whether supply is elastic or inelastic Cambridge IGCSE Economics 0455 syllabus for 2027, 2028 and 2029. Subject content 15www.cambridgeinternational.org/igcseBack to contents page"
+        )
+        == "main influences on whether supply is elastic or inelastic"
+    )
+    assert (
+        clean_source_point(
+            "causes and consequences of shifts of a PPC in terms of an economy's growth 2 The allocation of resources This topic considers the fundamental principles of resource allocation through the price mechanism"
+        )
+        == "causes and consequences of shifts of a PPC in terms of an economy's growth"
+    )
+
     topic = Topic(
         title="5.5 - pressure, force and area",
         points=[

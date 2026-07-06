@@ -168,6 +168,7 @@ def sample_topic_guide(topic_title: str = "3.1 - Source documents") -> TopicGuid
                 matched_term="Source documents",
             )
         ],
+        mastery_summary="Master the route from source document to book of prime entry and ledger posting.",
     )
 
 
@@ -339,8 +340,33 @@ def test_render_cover_keeps_term_support_routes_in_english_body():
     assert "part of this mathematics specification" in english
     assert term_supported == english
     assert "Official exam board" in term_supported
-    assert "Specification / syllabus version" in term_supported
+    assert "Specification / syllabus version" not in term_supported
+    assert "See official specification/syllabus PDF" not in term_supported
     assert "course-scope-note" in stylesheet()
+
+
+def test_render_cover_hides_unknown_metadata_but_keeps_real_syllabus_range():
+    qualification = sample_rendering_qualification()
+    options = GuideRunOptions(
+        requested_subject="Accounting",
+        image_provider="prompt-queue",
+        explanation_style="friendly",
+        output_language="en",
+    )
+
+    html = render_cover(qualification, options)
+
+    assert "See official specification/syllabus PDF" not in html
+    assert "Target exam year" not in html
+
+    qualification.source.syllabus_year_range = "2026-2028"
+    qualification.selected_exam_year = "2027"
+    html = render_cover(qualification, options)
+
+    assert "Specification / syllabus version" in html
+    assert "2026-2028 syllabus" in html
+    assert "Target exam year" in html
+    assert "2027" in html
 
 
 def test_render_html_writes_full_handbook_from_manifest_assets(tmp_path):
@@ -835,9 +861,10 @@ def test_secondary_html_sections_and_chinese_rendering_paths():
     assert "warning" in render_assessments(qualification, "en")
     english_map = render_topic_map([topic], "en", [guide])
     assert "Study Roadmap" in english_map
-    assert guide.checklist[0] in english_map
+    assert guide.mastery_summary in english_map
+    assert guide.checklist[0] not in english_map
     assert "Market demand shifts" not in english_map
-    assert "Use the specification text" in render_topic_map(
+    assert "Writer mastery summary missing." in render_topic_map(
         [Topic(title="No points", points=[])], "en"
     )
     assert "Quick Navigation" in render_topic_nav([topic], "en")
@@ -861,7 +888,8 @@ def test_secondary_html_sections_and_chinese_rendering_paths():
     chinese_title = display_topic_title(chinese_topic, 4, "zh-CN")
 
     assert "topic-1" in chinese_map
-    assert guide.checklist[0] in chinese_map
+    assert guide.mastery_summary in chinese_map
+    assert guide.checklist[0] not in chinese_map
     assert guide.checklist[1] not in chinese_map
     assert guide.checklist[2] not in chinese_map
     assert "topic-1" in chinese_nav
@@ -876,7 +904,24 @@ def test_secondary_html_sections_and_chinese_rendering_paths():
     )
 
 
-def test_legacy_chinese_rendering_helpers_keep_contracts_while_overview_uses_new_policy():
+def test_topic_navigation_groups_long_syllabus_by_visible_topic_codes():
+    topics = [
+        Topic(title="P1.1.KP01: Surds", points=[]),
+        Topic(title="P1.1.KP02: Indices", points=[]),
+        Topic(title="PP1.2.KP01: Sine rule", points=[]),
+        Topic(title="S1.3.KP01: Bernoulli distribution", points=[]),
+        Topic(title="M1.4.KP01: Momentum", points=[]),
+    ]
+
+    html = render_topic_nav(topics, "en")
+
+    assert "topic-nav-group" in html
+    assert "P1 topics" in html
+    assert "PP1 topics" in html
+    assert "S1 topics" in html
+    assert "M1 topics" in html
+    assert 'href="#topic-5"' in html
+
     qualification = sample_rendering_qualification()
     topic = qualification.topics[0]
     guide = sample_topic_guide()
@@ -1022,6 +1067,7 @@ def test_topic_map_disambiguates_duplicate_chinese_topic_titles():
             pitfall="Do not confuse factor theorem with long division.",
             checklist=["因式定理说明 f(a)=0 与 x-a 是 f(x) 的因式互相等价。"],
             diagram_brief="Show root to factor link.",
+            mastery_summary="因式定理说明 f(a)=0 与 x-a 是 f(x) 的因式互相等价。",
         ),
         TopicGuide(
             topic_title=topics[1].title,
@@ -1032,6 +1078,7 @@ def test_topic_map_disambiguates_duplicate_chinese_topic_titles():
             pitfall="Do not stop after finding one factor.",
             checklist=["因式定理应用是用 f(a)=0 寻找三次多项式的线性因式。"],
             diagram_brief="Show application flow.",
+            mastery_summary="因式定理应用是用 f(a)=0 寻找三次多项式的线性因式。",
         ),
     ]
 

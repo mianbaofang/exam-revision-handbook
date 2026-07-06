@@ -163,6 +163,7 @@ class TopicGuide:
     checklist: list[str]
     diagram_brief: str
     source_snippets: list[SourceSnippet] = field(default_factory=list)
+    mastery_summary: str = ""
 
 
 @dataclass
@@ -212,6 +213,7 @@ class GuidePlan:
                     checklist=item.get("checklist", []),
                     diagram_brief=item["diagram_brief"],
                     source_snippets=snippets(item.get("source_snippets")),
+                    mastery_summary=str(item.get("mastery_summary", "") or ""),
                 )
                 for item in data.get("topic_guides", [])
             ],

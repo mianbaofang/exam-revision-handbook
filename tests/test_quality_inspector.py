@@ -133,6 +133,6 @@ def test_quality_inspection_writer_and_prompt(tmp_path):
 
     assert payload["schema_version"] == "v0.5-quality-inspection"
     assert payload["inspection_status"] == "pass"
-    assert "Quality Inspector" in prompt
+    assert "Fast Package Check" in prompt
     assert "pass_to_reviewer" in prompt
     assert (tmp_path / "quality-inspection-prompt.md").exists()

@@ -140,42 +140,23 @@ def test_pedagogical_units_link_guides_practice_and_visuals():
 def test_course_contract_payload_exposes_delivery_state_without_mutating_plan():
     payload = course_contract_payload(guide_plan(), delivery_status="ready")
 
-    assert payload["schema_version"] == "v0.4-core-mvp"
-    assert payload["delivery_state"] == "review-ready"
-    orchestration = payload["agent_orchestration"]
-    roles = {role["role_id"]: role for role in orchestration["roles"]}
-    runtime_contract = orchestration["agent_runtime_contract"]
-    assert orchestration["schema_version"] == "v0.5-agent-orchestration"
-    assert orchestration["multi_agent_required"] is True
-    assert orchestration["required_sequence"] == [
-        "handbook_project_manager",
-        "syllabus_outline_analyst",
-        "handbook_writer",
-        "quality_inspector",
-        "final_reviewer",
+    assert payload["schema_version"] == "v0.5-lightweight-contract"
+    assert payload["delivery_state"] == "needs-review"
+    assert "agent_orchestration" not in payload
+    assert payload["workflow"]["mode"] == "llm-owned-lightweight-workflow"
+    assert [role["role_id"] for role in payload["workflow"]["roles"]] == [
+        "analyst",
+        "writer",
+        "reviewer",
     ]
-    assert "subagent support must dispatch" in runtime_contract["automatic_dispatch"]
-    assert "do not present it as final-ready" in runtime_contract["fallback_without_subagents"]
-    assert orchestration["final_reviewer_independent"] is True
-    assert roles["handbook_project_manager"]["status"] == "complete"
-    assert roles["syllabus_outline_analyst"]["status"] == "complete"
-    assert roles["handbook_writer"]["status"] == "complete"
-    assert roles["quality_inspector"]["status"] == "pending"
-    assert roles["final_reviewer"]["status"] == "pending"
-    assert roles["final_reviewer"]["independent_from"] == [
-        "syllabus_outline_analyst",
-        "handbook_writer",
-        "quality_inspector",
-    ]
-    assert "fresh Agent/LLM context" in roles["final_reviewer"]["dispatch_brief"][0]
     assert payload["course_spec"]["provider"] == "oxfordaqa"
     assert payload["learning_units"][0]["id"] == "unit_001"
     assert payload["pedagogical_units"][0]["writing_job_id"] == "concept_001"
     assert payload["pedagogical_units"][0]["learning_unit_id"] == "unit_001"
-    assert payload["pedagogical_units"][0]["delivery_state"] == "review-ready"
+    assert payload["pedagogical_units"][0]["delivery_state"] == "needs-review"
 
 
-def test_course_contract_payload_final_ready_requires_agent_review():
+def test_course_contract_payload_never_promotes_to_final_ready():
     payload = course_contract_payload(
         guide_plan(),
         delivery_status="ready",
@@ -183,16 +164,12 @@ def test_course_contract_payload_final_ready_requires_agent_review():
         quality_inspection_complete=True,
     )
 
-    assert payload["delivery_state"] == "final-ready"
-    assert payload["pedagogical_units"][0]["delivery_state"] == "final-ready"
-    roles = {role["role_id"]: role for role in payload["agent_orchestration"]["roles"]}
-    assert roles["quality_inspector"]["status"] == "complete"
-    assert roles["quality_inspector"]["evidence"] == ["quality-inspection.json"]
-    assert roles["final_reviewer"]["status"] == "complete"
-    assert roles["final_reviewer"]["evidence"] == ["final-review-packet.json"]
+    assert payload["delivery_state"] == "needs-review"
+    assert payload["pedagogical_units"][0]["delivery_state"] == "needs-review"
+    assert payload["quality_inspection_complete"] is True
 
 
-def test_course_contract_payload_separates_review_performed_from_ready_verdict():
+def test_course_contract_payload_keeps_review_performed_as_external_context():
     payload = course_contract_payload(
         guide_plan(),
         delivery_status="ready",
@@ -200,6 +177,7 @@ def test_course_contract_payload_separates_review_performed_from_ready_verdict()
         final_review_complete=True,
     )
 
-    roles = {role["role_id"]: role for role in payload["agent_orchestration"]["roles"]}
-    assert payload["delivery_state"] == "review-ready"
-    assert roles["final_reviewer"]["status"] == "complete"
+    assert payload["delivery_state"] == "needs-review"
+    assert "Python does not decide syllabus splits" in " ".join(
+        payload["workflow"]["python_boundary"]
+    )

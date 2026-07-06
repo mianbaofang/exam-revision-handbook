@@ -15,8 +15,10 @@ SHELL_PATTERNS = [
 ]
 
 BOILERPLATE_SUFFIX_PATTERNS = [
-    r"\s*Cambridge\s+IGCSE\b.+?\bSubject content\b.*$",
+    r"\s*Cambridge\s+(?:IGCSE|International\s+AS\s*&\s*A\s+Level)\b.+?\bSubject content\b.*$",
     r"\s*\d+\s*www\.cambridgeinternational\.org/\S*Back to contents page.*$",
+    r"\s+\d+\s+[A-Z][A-Za-z ,&()'-]+\s+This topic\b.*$",
+    r"\s+This topic\s+(?:considers|covers|introduces|explores)\b.*$",
     r"\s*Specification\s+-\s+Issue\b.+?Pearson Education Limited\s+\d{4}.*$",
     r"\s*Faculty feedback:.+$",
     r"\s*Feedback from:.+$",

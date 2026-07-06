@@ -59,10 +59,6 @@ def _render_generated_infographic(
       <div class="visual-source">{html_escape(source_prefix)}: {html_escape(source_label)}</div>
       <p class="visual-question">{html_escape(question)} <strong>{html_escape(visual.focus_point)}</strong>.</p>
       <ol>{step_items}</ol>
-      <details class="visual-prompt">
-        <summary>{html_escape(prompt_label)}</summary>
-        <p>{html_escape(visual.prompt)}</p>
-      </details>
     </div>
   </div>
 </figure>
@@ -90,14 +86,13 @@ def _render_pending_infographic(
             if language == "en"
             else f"等待 {provider} 生成并复核"
         )
-    caption = "Infographic Queue" if language == "en" else "信息图生成队列"
-    why_label = "Why not SVG" if language == "en" else "为什么需要信息图模型"
+    caption = "Infographic Pending" if language == "en" else "信息图待补充"
+    why_label = "Why this needs a visual" if language == "en" else "为什么需要图解"
     type_label = "Visual type" if language == "en" else "图形类型"
     focus_label = "Focus" if language == "en" else "聚焦知识点"
-    prompt_label = "Prompt queue" if language == "en" else "生图提示词"
     replacement_note = _render_replacement_note(asset, language)
     return f"""
-<figure class="visual-example infographic-required" aria-label="Infographic required for {html_escape(title)}">
+<figure class="visual-example infographic-required" aria-label="Infographic pending for {html_escape(title)}">
   <figcaption>{render_icon("visual")}<span>{html_escape(caption)}</span></figcaption>
   <div class="infographic-card">
     <div class="visual-model">{html_escape(status)}</div>
@@ -106,10 +101,6 @@ def _render_pending_infographic(
     <p><strong>{html_escape(why_label)}:</strong> {html_escape(visual.trigger)}</p>
     <p><strong>{html_escape(type_label)}:</strong> {html_escape(visual.visual_type)}</p>
     <p><strong>{html_escape(focus_label)}:</strong> {html_escape(visual.focus_point)}</p>
-    <details class="visual-prompt">
-      <summary>{html_escape(prompt_label)}</summary>
-      <p>{html_escape(visual.prompt)}</p>
-    </details>
   </div>
 </figure>
 """
@@ -119,13 +110,9 @@ def _render_replacement_note(asset: dict[str, Any] | None, language: str) -> str
     visual_id = str((asset or {}).get("id") or "").strip()
     if not visual_id:
         return ""
-    label = "Visual job:" if language == "en" else "信息图任务："
     note = (
-        "Generate or import a reviewed image for this visual ID to replace it automatically."
+        "A reviewed infographic will replace this placeholder in the final version."
         if language == "en"
-        else "导入这个 visual ID 对应的复核图片后，会自动替换当前草图。"
+        else "最终版本会用复核后的信息图替换这个占位说明。"
     )
-    return (
-        f"<p><strong>{html_escape(label)}</strong> {html_escape(visual_id)}</p>"
-        f"<p>{html_escape(note)}</p>"
-    )
+    return f'<p class="visual-placeholder-note">{html_escape(note)}</p>'

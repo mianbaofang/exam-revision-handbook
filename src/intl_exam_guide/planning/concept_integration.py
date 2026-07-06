@@ -162,6 +162,9 @@ def apply_concept_entries(
         if not guide:
             missing.append(topic_title)
             continue
+        mastery_summary = str(entry.get("mastery_summary") or "").strip()
+        if mastery_summary:
+            guide.mastery_summary = mastery_summary
         if force or values:
             guide.checklist = values[:4]
         apply_optional_text(entry, guide, "essence")

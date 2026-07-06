@@ -204,7 +204,7 @@ def test_generate_cli_runs_provider_chain_offline(monkeypatch, tmp_path):
         ]
     )
 
-    assert result == 0
+    assert result == 1
     assert calls == [
         ("find", "Accounting 9999", "igcse", None),
         ("parse", "https://example.test/accounting/", "igcse", None),
@@ -216,7 +216,77 @@ def test_generate_cli_runs_provider_chain_offline(monkeypatch, tmp_path):
     assert validation["review_summary"]["practice_cards"] == 6
     assert validation["review_summary"]["topics_with_guides"] == 6
     assert validation["review_summary"]["topics_with_practice"] == 6
-    assert not [issue for issue in validation["issues"] if issue["severity"] == "error"]
+    assert validation["delivery_status"] == "blocked_errors"
+    assert validation["delivery_state"] == "blocked"
+    assert any(
+        "Python-generated" in issue["message"] for issue in validation["issues"]
+    )
+
+
+def test_extract_evidence_cli_writes_evidence_only(monkeypatch, tmp_path):
+    calls = []
+
+    class FakeProvider:
+        def find_qualification(self, query, level=None, exam_year=None):
+            calls.append(("find", query, level, exam_year))
+            return Link(text="Accounting", href="https://example.test/accounting/")
+
+        def parse_qualification(self, page_url, level=None, exam_year=None):
+            calls.append(("parse", page_url, level, exam_year))
+            return sample_downloaded_qualification()
+
+        def apply_listing_metadata(self, qualification, link):
+            calls.append(("metadata", link.text))
+            return qualification
+
+        def download_specification(self, qualification, output_dir, exam_year=None):
+            calls.append(("download", str(output_dir.name), exam_year))
+            output_dir.mkdir(parents=True, exist_ok=True)
+            text_path = output_dir / "specification.txt"
+            text_path.write_text(
+                "--- Page 1 ---\nStudents should explain source documents.\n"
+                "--- Page 2 ---\nStudents should prepare a trial balance.",
+                encoding="utf-8",
+            )
+            qualification.source.extracted_text_path = str(text_path)
+            qualification.source.specification_path = str(output_dir / "specification.pdf")
+            return qualification
+
+    monkeypatch.setattr(cli_module, "get_provider", lambda _name: FakeProvider())
+    output_dir = tmp_path / "evidence"
+
+    result = cli_module.main(
+        [
+            "extract-evidence",
+            "--provider",
+            "fake",
+            "--query",
+            "Accounting 9999",
+            "--level",
+            "igcse",
+            "--exam-year",
+            "2027",
+            "--out",
+            str(output_dir),
+        ]
+    )
+
+    assert result == 0
+    assert calls == [
+        ("find", "Accounting 9999", "igcse", "2027"),
+        ("parse", "https://example.test/accounting/", "igcse", "2027"),
+        ("metadata", "Accounting"),
+        ("download", "source", "2027"),
+    ]
+    evidence = json.loads((output_dir / "syllabus-evidence.json").read_text(encoding="utf-8"))
+    qualification = json.loads((output_dir / "qualification.json").read_text(encoding="utf-8"))
+    assert evidence["course"]["title"] == "International GCSE Accounting Example (9999)"
+    assert [page["page"] for page in evidence["pages"]] == [1, 2]
+    assert "source documents" in evidence["pages"][0]["text"]
+    assert qualification["source"]["extracted_text_path"].endswith("specification.txt")
+    assert not (output_dir / "guide.html").exists()
+    assert not (output_dir / "guide-plan.json").exists()
+    assert not (output_dir / "validation.json").exists()
 
 
 @pytest.mark.skip(reason="Deprecated: Test relies on Python parser/routing. LLM now handles this.")
@@ -236,13 +306,13 @@ def test_demo_cli_generates_offline_guide(tmp_path):
             "--skip-pdf",
         ]
     )
-    assert result == 0
+    assert result == 1
     assert (output_dir / "guide.html").exists()
     assert (output_dir / "guide-plan.json").exists()
     assert (output_dir / "qualification.json").exists()
     assert (output_dir / "run-options.json").exists()
     assert (output_dir / "delivery-contract.json").exists()
-    assert (output_dir / "agent-orchestration.json").exists()
+    assert not (output_dir / "agent-orchestration.json").exists()
     assert (output_dir / "handbook-package.json").exists()
     assert (output_dir / "sections" / "00_css.txt").exists()
     assert (output_dir / "sections" / "03_topic_navigation.txt").exists()
@@ -254,8 +324,8 @@ def test_demo_cli_generates_offline_guide(tmp_path):
     assert html.count('class="visual-example"') == 2
     assert "Concept Map" not in html
     assert "Visual Worked Example" in html
-    assert "Delivery Status" in html
-    assert 'data-delivery-state="draft"' in html
+    assert "Review Check" in html
+    assert 'data-review-state="draft"' in html
     assert "How to Study" in html
     assert "Guide Setup" in html
     assert "Study route" not in html
@@ -277,27 +347,29 @@ def test_demo_cli_generates_offline_guide(tmp_path):
     assert validation["review_summary"]["has_package_manifest"] is True
     assert validation["review_summary"]["concept_jobs"] == 3
     assert validation["review_summary"]["pending_concept_explanations"] == 3
-    assert validation["delivery_status"] == "draft_needs_concept_review"
-    assert validation["delivery_state"] == "draft"
+    assert validation["delivery_status"] == "blocked_errors"
+    assert validation["delivery_state"] == "blocked"
     # CLI demo runs without a real LLM Analyst pass; the syllabus outline is a
     # CLI fallback placeholder. Final-ready requires outline-source:llm-analyst.
     assert any("syllabus_outline_analyst" in issue["message"] for issue in validation["issues"])
     delivery_contract = json.loads(
         (output_dir / "delivery-contract.json").read_text(encoding="utf-8")
     )
-    orchestration = json.loads(
-        (output_dir / "agent-orchestration.json").read_text(encoding="utf-8")
-    )
-    roles = {role["role_id"]: role for role in orchestration["roles"]}
-    assert delivery_contract["delivery_state"] == "draft"
+    assert delivery_contract["delivery_state"] == "blocked"
     assert delivery_contract["course_spec"]["title"] == validation["qualification"]
-    assert validation["agent_orchestration"] == str(output_dir / "agent-orchestration.json")
-    assert delivery_contract["agent_orchestration"] == orchestration
-    assert orchestration["final_reviewer_independent"] is True
-    assert roles["syllabus_outline_analyst"]["status"] == "complete"
-    assert roles["handbook_writer"]["status"] == "complete"
-    assert roles["final_reviewer"]["status"] == "pending"
-    assert not [issue for issue in validation["issues"] if issue["severity"] == "error"]
+    assert "agent_orchestration" not in validation
+    assert "agent_orchestration" not in delivery_contract
+    assert delivery_contract["workflow"]["mode"] == "llm-owned-lightweight-workflow"
+    assert [role["role_id"] for role in delivery_contract["workflow"]["roles"]] == [
+        "analyst",
+        "writer",
+        "reviewer",
+    ]
+    assert validation["delivery_status"] == "blocked_errors"
+    assert validation["delivery_state"] == "blocked"
+    assert any(
+        "Python-generated" in issue["message"] for issue in validation["issues"]
+    )
     assert any(
         "topic concept explanations still need LLM/Agent review" in issue["message"]
         for issue in validation["issues"]
@@ -321,7 +393,7 @@ def test_demo_cli_generates_english_guide_with_chinese_term_glossary(tmp_path):
             "--skip-pdf",
         ]
     )
-    assert result == 0
+    assert result == 1
     html = (output_dir / "guide.html").read_text(encoding="utf-8")
     assert 'lang="en"' in html
     assert "How to Study" in html
@@ -340,16 +412,19 @@ def test_demo_cli_generates_english_guide_with_chinese_term_glossary(tmp_path):
     assert "Check" in html
     assert "Command:" in html
     assert "Can explain" not in html
-    assert "Delivery Status" in html
-    assert 'data-delivery-state="draft"' in html
+    assert "Review Check" in html
+    assert 'data-review-state="draft"' in html
     assert "知识单元 1" not in html
     assert "大纲点 1" not in html
     validation = json.loads((output_dir / "validation.json").read_text(encoding="utf-8"))
     assert validation["review_summary"]["output_language"] == "zh-CN"
     assert validation["review_summary"]["concept_jobs"] == 3
     assert validation["review_summary"]["pending_concept_explanations"] == 3
-    assert validation["delivery_status"] == "draft_needs_concept_review"
-    assert not [issue for issue in validation["issues"] if issue["severity"] == "error"]
+    assert validation["delivery_status"] == "blocked_errors"
+    assert validation["delivery_state"] == "blocked"
+    assert any(
+        "Python-generated" in issue["message"] for issue in validation["issues"]
+    )
     assert any(
         "topic concept explanations still need LLM/Agent review" in issue["message"]
         for issue in validation["issues"]
@@ -538,7 +613,9 @@ def test_generated_infographic_assets_are_preserved_and_rendered(tmp_path):
 
     render_html(plan, output_dir / "guide.html", manifest_path)
     fallback_html = (output_dir / "guide.html").read_text(encoding="utf-8")
-    assert "Infographic Queue" in fallback_html
+    assert "Infographic Pending" in fallback_html
+    assert "Infographic Queue" not in fallback_html
+    assert "Prompt queue" not in fallback_html
     assert "SVG Fallback - Review Needed" not in fallback_html
     fallback_summary = review_summary(plan, output_dir=output_dir)
     assert fallback_summary["generated_infographic_assets"] == 0

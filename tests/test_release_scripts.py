@@ -745,7 +745,7 @@ def write_sample_outputs(outputs: Path, completed: bool) -> None:
             json.dumps(manifest, indent=2),
             encoding="utf-8",
         )
-        pending = "" if completed else "<section>Infographic Queue</section>"
+        pending = "" if completed else "<section>Infographic Pending</section>"
         (sample_dir / "guide.html").write_text(
             f'<html lang="en"><body><h1>{sample}</h1>{"".join(html_images)}{pending}</body></html>',
             encoding="utf-8",

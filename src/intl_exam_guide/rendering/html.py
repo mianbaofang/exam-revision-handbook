@@ -281,22 +281,11 @@ def render_topic_map(
     for index, topic in enumerate(display_topics, start=1):
         guide = guides.get(topic.title)
         if language == "en":
-            points = (
-                topic_map_mastery_text(guide, language)
-                if guide
-                else (
-                    ", ".join(topic.points[:4])
-                    if topic.points
-                    else "Use the specification text for detailed statements."
-                )
-            )
+            points = topic_map_mastery_text(guide, language) if guide else "Writer mastery summary missing."
             title = display_titles[index - 1]
         else:
             title = display_titles[index - 1]
-            if guide:
-                points = topic_map_mastery_text(guide, language)
-            else:
-                points = "使用考试大纲抽取结果补全本节细分要求。"
+            points = topic_map_mastery_text(guide, language) if guide else "缺少 Writer 写入的掌握目标。"
         title_link = f'<a href="#{topic_anchor(index)}">{html_escape(title)}</a>'
         rows.append(f"<tr><td>{index}</td><td>{title_link}</td><td>{html_escape(points)}</td></tr>")
     if language == "en":
@@ -314,16 +303,16 @@ def render_topic_map(
 """
 
 
-def topic_map_mastery_text(guide: TopicGuide, language: str) -> str:
-    """Keep the roadmap scan-friendly; full explanations stay in the topic body."""
+def topic_map_mastery_text(guide: TopicGuide | None, language: str) -> str:
+    """Roadmap mastery is Writer-owned; Python does not invent student-facing targets."""
 
-    if not guide.checklist:
-        return (
-            "Use the topic guide for the detailed mastery target."
-            if language == "en"
-            else "查看正文中的本节要掌握。"
-        )
-    return guide.checklist[0]
+    if guide and guide.mastery_summary.strip():
+        return guide.mastery_summary.strip()
+    return (
+        "Writer mastery summary missing; keep this handbook in draft."
+        if language == "en"
+        else "缺少 Writer 写入的掌握目标；本手册只能作为草稿。"
+    )
 
 
 def display_topic_titles(
@@ -367,8 +356,8 @@ def display_topic_titles(
 
 def unique_topic_title_suffix(topic: Topic, guide: TopicGuide | None, language: str) -> str:
     candidates: list[str] = []
-    if guide:
-        candidates.extend(guide.checklist[:1])
+    if guide and guide.mastery_summary.strip():
+        candidates.append(guide.mastery_summary)
         candidates.append(guide.essence)
     if ":" in topic.title:
         candidates.append(topic.title.rsplit(":", 1)[-1])
@@ -411,20 +400,45 @@ def render_topic_nav(
     topic_guides: list[TopicGuide] | None = None,
 ) -> str:
     heading = "Quick Navigation" if language == "en" else "快速目录"
-    links = []
     display_topics = topics_with_guides(topics, topic_guides)
     display_titles = display_topic_titles(display_topics, language, topic_guides)
+    grouped_links: dict[str, list[str]] = {}
     for index, topic in enumerate(display_topics, start=1):
         title = display_titles[index - 1]
-        links.append(
+        group = topic_nav_group_label(topic, language)
+        grouped_links.setdefault(group, []).append(
             f'<a href="#{topic_anchor(index)}"><span>T{index}</span>{html_escape(title)}</a>'
+        )
+    groups = []
+    for group, links in grouped_links.items():
+        groups.append(
+            "<section class=\"topic-nav-group\">"
+            f"<h3>{html_escape(group)}</h3>"
+            f"<div class=\"topic-nav-links\">{''.join(links)}</div>"
+            "</section>"
         )
     return f"""
 <nav class="band topic-nav" aria-label="{html_escape(heading)}">
   <h2>{html_escape(heading)}</h2>
-  <div class="topic-nav-grid">{"".join(links)}</div>
+  <div class="topic-nav-grid">{"".join(groups)}</div>
 </nav>
 """
+
+
+def topic_nav_group_label(topic: Topic, language: str) -> str:
+    code_match = re.match(r"^([A-Z]{1,5}\d*)\.\d+(?:\.KP\d+)?\b", topic.title.strip())
+    if code_match:
+        code = code_match.group(1)
+        return f"{code} topics" if language == "en" else f"{code} 单元"
+    numeric_match = re.match(r"^(\d+(?:\.\d+){0,2})\b", topic.title.strip())
+    if numeric_match:
+        code = numeric_match.group(1)
+        return f"Section {code}" if language == "en" else f"第 {code} 节"
+    for tag in topic.level_tags:
+        clean = tag.strip()
+        if clean:
+            return f"{clean} topics" if language == "en" else f"{clean} 单元"
+    return "Other topics" if language == "en" else "其他主题"
 
 
 def topic_anchor(index: int) -> str:
@@ -618,7 +632,7 @@ def render_exam_logic_goal(focus: str, language: str, source_focus: str | None =
     ):
         action = "choose the algebraic form that exposes the roots, factors, signs, or exact simplification."
     else:
-        action = "match the exact syllabus wording to the mathematical object in the question."
+        action = "match the exact syllabus wording to the object, evidence, relationship, or judgement the question asks for."
     return f"Question focus: {action} Source point: {display_focus}"
 
 

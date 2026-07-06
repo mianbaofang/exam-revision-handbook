@@ -205,6 +205,8 @@ class TestSkillHandbookGenerator:
         assert "slope" in prompt
         assert "Mathematics" in prompt
         assert "IGCSE" in prompt
+        assert "mastery_summary" in prompt
+        assert "What to master" in prompt
 
     def test_parse_concept_response_json(
         self,
@@ -346,12 +348,44 @@ class TestIncrementalGenerator:
                 content="Test explanation",
                 analogy="Test analogy",
                 misconception="Test misconception",
+                mastery_summary="Use algebraic rules to simplify and expand expressions accurately.",
             )
 
             assert gen.current_concept_index == initial_index + 1
             explanation = gen.concept_explanations[initial_index]
             assert explanation.explanation == "Test explanation"
             assert explanation.status == "generated"
+            assert (
+                explanation.metadata["mastery_summary"]
+                == "Use algebraic rules to simplify and expand expressions accurately."
+            )
+
+    def test_incremental_entries_include_writer_mastery_summary(
+        self,
+        sample_qualification,
+        temp_output_dir,
+    ):
+        """Test incremental entries preserve Writer-owned mastery summary."""
+        gen = IncrementalGenerator(
+            qualification=sample_qualification,
+            output_dir=temp_output_dir,
+        )
+
+        gen.step1_prepare()
+        if not gen.concept_jobs:
+            pytest.skip("Sample qualification produced no concept jobs")
+
+        gen.step2_submit_concept(
+            content="Expressions can be simplified by combining like terms and applying bracket rules.",
+            analogy="It is like sorting matching stationery before packing a pencil case.",
+            mastery_summary="Simplify expressions and expand brackets without changing their value.",
+        )
+
+        entries = gen._incremental_entries()
+
+        assert entries[0]["mastery_summary"] == (
+            "Simplify expressions and expand brackets without changing their value."
+        )
 
     def test_step2_skip_concept(self, sample_qualification, temp_output_dir):
         """Test skipping a concept."""

@@ -23,10 +23,10 @@ def render_delivery_panel(
     message = state_message(summary, language)
     detail_items = delivery_detail_items(summary, language)
     items = "".join(f"<li>{html_escape(item)}</li>" for item in detail_items)
-    heading = "Delivery Status" if language == "en" else "交付状态"
-    status_label = "Current state" if language == "en" else "当前状态"
+    heading = "Review Check" if language == "en" else "复查提示"
+    status_label = "Current check" if language == "en" else "当前检查"
     return f"""
-<section class="band delivery-panel" data-delivery-state="{html_escape(state)}">
+<section class="band delivery-panel" data-review-state="{html_escape(state)}">
   <h2>{html_escape(heading)}</h2>
   <div class="delivery-status-grid">
     <div class="delivery-state-badge delivery-state-{html_escape(state)}">
@@ -63,8 +63,7 @@ def delivery_panel_summary(
         "state": state,
         "pending_concepts": pending_concepts,
         "pending_images": pending_images,
-        "has_final_review": bool(packet),
-        "certified": state == "certified",
+        "has_review_packet": bool(packet),
     }
 
 
@@ -77,40 +76,23 @@ def state_from_artifacts(
     delivery_status = str(validation.get("delivery_status") or "")
     delivery_state = str(validation.get("delivery_state") or "")
     if delivery_status == "blocked_errors" or delivery_state in {"candidate", "unsupported"}:
-        return "candidate"
-    if pending_concepts or pending_images:
+        return "blocked"
+    if pending_concepts or pending_images or delivery_state == "draft":
         return "draft"
-    if delivery_state == "draft":
-        return "draft"
-    if delivery_state == "certified":
-        return "certified"
-    agent_review = packet.get("agent_self_review") if isinstance(packet, dict) else None
-    product_review = packet.get("product_review_evidence") if isinstance(packet, dict) else None
-    if (
-        isinstance(agent_review, dict)
-        and agent_review.get("status") == "ready"
-        and isinstance(product_review, dict)
-        and product_review.get("complete") is True
-    ):
-        return "final-ready"
-    return "review-ready"
+    return "needs-review"
 
 
 def state_label(state: str, language: str) -> str:
     if language == "en":
         return {
-            "candidate": "Candidate",
+            "blocked": "Blocked",
             "draft": "Draft",
-            "review-ready": "Review-ready",
-            "final-ready": "Final-ready",
-            "certified": "Certified",
+            "needs-review": "Needs visible review",
         }.get(state, state)
     return {
-        "candidate": "候选",
+        "blocked": "阻断",
         "draft": "草稿",
-        "review-ready": "待最终复查",
-        "final-ready": "可交付",
-        "certified": "已认证",
+        "needs-review": "需要打开复查",
     }.get(state, state)
 
 
@@ -119,38 +101,38 @@ def state_message(summary: dict[str, object], language: str) -> str:
     pending_images = int_value(summary.get("pending_images"))
     state = str(summary.get("state") or "")
     if language == "en":
-        if state == "candidate":
-            return "Validation has blocking errors, so this output is not delivery-ready."
+        if state == "blocked":
+            return "Mechanical validation has blocking errors; repair them before handoff."
         if pending_concepts or pending_images:
-            return "This handbook is visible as a draft until all review work is closed."
-        if summary.get("has_final_review"):
-            return "The handbook has passed the local final-review packet."
-        return "The handbook is ready for the final Agent review packet."
-    if state == "candidate":
-        return "机器验证仍有阻断错误，这份输出不能作为交付成品。"
+            return "This handbook is still a draft because required concept or visual review work is open."
+        if summary.get("has_review_packet"):
+            return "A review packet exists, but the host LLM must still inspect the rendered HTML before claiming completion."
+        return "The rendered HTML is ready for host LLM review, not automatic approval."
+    if state == "blocked":
+        return "机器验证仍有阻断错误，交付前必须修复。"
     if pending_concepts or pending_images:
-        return "这份手册仍是草稿，未完成的概念讲解或复杂配图不会被当作最终成品。"
-    if summary.get("has_final_review"):
-        return "这份手册已经通过本地最终复查包。"
-    return "这份手册可以进入最终复查。"
+        return "这份手册仍是草稿，未完成的概念讲解或复杂配图不能当作最终成品。"
+    if summary.get("has_review_packet"):
+        return "已生成复查包，但宿主 LLM 仍必须打开 HTML 后才能声称完成。"
+    return "HTML 已可进入宿主 LLM 复查，但不能自动批准。"
 
 
 def delivery_detail_items(summary: dict[str, object], language: str) -> list[str]:
     pending_concepts = int_value(summary.get("pending_concepts"))
     pending_images = int_value(summary.get("pending_images"))
-    has_final_review = bool(summary.get("has_final_review"))
+    has_review_packet = bool(summary.get("has_review_packet"))
     if language == "en":
         return [
             f"Pending concept explanation reviews: {pending_concepts}",
             f"Pending complex image assets: {pending_images}",
-            "Final review packet: present"
-            if has_final_review
-            else "Final review packet: not yet run",
+            "Review packet: present" if has_review_packet else "Review packet: not yet run",
+            "Rendered HTML must be opened or screenshot-inspected before handoff.",
         ]
     return [
         f"待复查概念讲解：{pending_concepts}",
         f"待完成复杂配图：{pending_images}",
-        "最终复查包：已生成" if has_final_review else "最终复查包：尚未运行",
+        "复查包：已生成" if has_review_packet else "复查包：尚未运行",
+        "交付前必须打开或截图检查渲染后的 HTML。",
     ]
 
 

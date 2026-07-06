@@ -141,7 +141,8 @@ class PearsonEdexcelProvider(ExamBoardProvider):
         first_teaching: str | None,
         first_assessment: str | None,
     ) -> Qualification:
-        code = code_from_text(title) or code_from_text(page_url)
+        title = pearson_clean_title(title)
+        code = pearson_code_from_title_or_url(title, page_url)
         subject_area = pearson_subject_area(title, page_url)
         source = SourceRecord(
             provider=self.name,
@@ -166,6 +167,28 @@ class PearsonEdexcelProvider(ExamBoardProvider):
             qualification_family=qualification_family(self.name, qtype),
             route_tags=pearson_route_tags(qtype, page_url),
         )
+
+
+def pearson_clean_title(title: str) -> str:
+    cleaned = re.sub(r"\s*\|\s*Pearson\s+qualifications\s*$", "", title, flags=re.I)
+    cleaned = re.sub(r"^Edexcel\s+", "Pearson Edexcel ", cleaned, flags=re.I)
+    return clean_text(cleaned)
+
+
+def pearson_code_from_title_or_url(title: str, url: str) -> str | None:
+    pearson_code = re.search(r"\(([0-9][A-Za-z][A-Za-z0-9]{2}|[A-Za-z][0-9][A-Za-z0-9]{2})\)", title)
+    if pearson_code:
+        return pearson_code.group(1).upper()
+    code = code_from_text(title)
+    if code and not pearson_is_year_code(code):
+        return code
+    slug = title_from_url(url).lower()
+    matches = re.findall(r"\b(?!20\d{2}\b)([0-9][A-Za-z][A-Za-z0-9]{2}|[A-Za-z][0-9][A-Za-z0-9]{2})\b", slug)
+    return matches[0].upper() if matches else None
+
+
+def pearson_is_year_code(value: str) -> bool:
+    return bool(re.fullmatch(r"20\d{2}", value.strip()))
 
 
 def pearson_subject_area(title: str, url: str) -> str | None:

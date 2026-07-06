@@ -40,13 +40,25 @@ from intl_exam_guide.providers.common import (
 from intl_exam_guide.providers.pearson import (
     PearsonEdexcelProvider,
     pearson_candidate_urls,
+    pearson_clean_title,
+    pearson_code_from_title_or_url,
     pearson_is_specification_pdf,
     pearson_route_tags,
     pearson_subject_area,
 )
 
 
-class FakeParser:
+def test_pearson_metadata_cleans_site_chrome_and_does_not_use_year_as_code():
+    title = "Edexcel International GCSE Accounting | Pearson qualifications"
+    url = "https://qualifications.pearson.com/en/qualifications/edexcel-international-gcses/international-gcse-accounting-2017.html"
+
+    assert pearson_clean_title(title) == "Pearson Edexcel International GCSE Accounting"
+    assert pearson_code_from_title_or_url(title, url) is None
+    assert pearson_subject_area(pearson_clean_title(title), url) == "Accounting"
+
+    coded_title = "Pearson Edexcel International GCSE Accounting (4AC1)"
+    assert pearson_code_from_title_or_url(coded_title, url) == "4AC1"
+
     def __init__(self, title="", links=None, nodes=None):
         self.title = title
         self.links = links or []

@@ -4,35 +4,24 @@ from dataclasses import asdict, dataclass, field
 from enum import StrEnum
 from typing import Any
 
-from intl_exam_guide.agents.orchestration import agent_orchestration_payload
-
 
 class DeliveryState(StrEnum):
-    """User-facing delivery state for a generated handbook package."""
+    """Mechanical package state for a generated handbook package."""
 
     UNSUPPORTED = "unsupported"
-    CANDIDATE = "candidate"
+    BLOCKED = "blocked"
     DRAFT = "draft"
-    REVIEW_READY = "review-ready"
-    FINAL_READY = "final-ready"
-    CERTIFIED = "certified"
+    NEEDS_REVIEW = "needs-review"
 
     @classmethod
-    def from_delivery_status(
-        cls,
-        status: str | None,
-        certified: bool = False,
-        agent_review_ready: bool = False,
-    ) -> "DeliveryState":
-        if certified:
-            return cls.CERTIFIED
+    def from_delivery_status(cls, status: str | None) -> "DeliveryState":
         if status == "ready":
-            return cls.FINAL_READY if agent_review_ready else cls.REVIEW_READY
+            return cls.NEEDS_REVIEW
         if status in {"draft_needs_concept_review", "draft_needs_image_review"}:
             return cls.DRAFT
         if status == "blocked_errors":
-            return cls.CANDIDATE
-        return cls.CANDIDATE
+            return cls.BLOCKED
+        return cls.UNSUPPORTED
 
 
 @dataclass(frozen=True)
@@ -76,7 +65,7 @@ class CourseSpec:
 
 @dataclass(frozen=True)
 class LearningUnit:
-    """Smallest teachable unit after syllabus parsing and scope filtering."""
+    """Smallest teachable unit after source filtering or an LLM Analyst outline."""
 
     id: str
     title: str
@@ -202,31 +191,46 @@ def _visual_ids_by_topic(plan: object) -> dict[str, list[str]]:
     return values
 
 
+def lightweight_workflow_payload() -> dict[str, object]:
+    return {
+        "mode": "llm-owned-lightweight-workflow",
+        "roles": [
+            {
+                "role_id": "analyst",
+                "owns": "Read syllabus-evidence.json and write syllabus-outline.json.",
+            },
+            {
+                "role_id": "writer",
+                "owns": "Write concept explanations, mastery_summary, and visual decisions.",
+            },
+            {
+                "role_id": "reviewer",
+                "owns": "Open the rendered handbook and compare it with evidence and outline artifacts.",
+            },
+        ],
+        "python_boundary": [
+            "Python renders and validates artifacts mechanically.",
+            "Python does not decide syllabus splits, write teaching content, decide visuals, or approve final quality.",
+        ],
+    }
+
+
 def course_contract_payload(
     plan: object,
     delivery_status: str | None = None,
     *,
-    agent_review_ready: bool = False,
-    final_review_complete: bool | None = None,
     quality_inspection_complete: bool = False,
+    **_: object,
 ) -> dict[str, Any]:
-    """Build a serializable v0.4 contract packet while preserving v0.3 plan data."""
+    """Build a lightweight serializable contract packet while preserving plan data."""
 
     qualification = getattr(plan, "qualification")
-    delivery_state = DeliveryState.from_delivery_status(
-        delivery_status,
-        agent_review_ready=agent_review_ready,
-    )
-    reviewer_complete = (
-        agent_review_ready if final_review_complete is None else final_review_complete
-    )
+    delivery_state = DeliveryState.from_delivery_status(delivery_status)
     return {
-        "schema_version": "v0.4-core-mvp",
+        "schema_version": "v0.5-lightweight-contract",
         "delivery_state": delivery_state.value,
-        "agent_orchestration": agent_orchestration_payload(
-            final_review_complete=reviewer_complete,
-            quality_inspection_complete=quality_inspection_complete,
-        ),
+        "workflow": lightweight_workflow_payload(),
+        "quality_inspection_complete": quality_inspection_complete,
         "course_spec": course_spec_from_qualification(qualification).to_dict(),
         "learning_units": [
             unit.to_dict() for unit in learning_units_from_qualification(qualification)

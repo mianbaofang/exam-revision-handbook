@@ -52,15 +52,12 @@ def test_svg_fallback_stays_pending_until_reviewed_raster_is_imported():
     )
 
     assert "infographic-required" in html
-    assert "Infographic Queue" in html
+    assert "Infographic Pending" in html
     assert "visual_001_bonding.svg" not in html
-    assert "Prompt queue" in html
-    assert "Visual job:" in html
-    assert "visual_001" in html
-    assert (
-        "Generate or import a reviewed image for this visual ID to replace it automatically."
-        in html
-    )
+    assert "Prompt queue" not in html
+    assert "Visual job:" not in html
+    assert "visual_001" not in html
+    assert "A reviewed infographic will replace this placeholder in the final version." in html
     assert "Generated Infographic" not in html
 
 
@@ -77,12 +74,12 @@ def test_render_pending_infographic_branch():
     )
 
     assert "infographic-required" in html
-    assert "Infographic Queue" in html
+    assert "Infographic Pending" in html
     assert "external infographic generation pending" in html
-    assert "Prompt queue" in html
+    assert "Prompt queue" not in html
     assert "bonding and structure infographic" in html
-    assert "Visual job:" in html
-    assert "visual_001" in html
+    assert "Visual job:" not in html
+    assert "visual_001" not in html
 
 
 def test_svg_fallback_replacement_note_respects_chinese_language():
@@ -100,8 +97,8 @@ def test_svg_fallback_replacement_note_respects_chinese_language():
         "zh-CN",
     )
 
-    assert "信息图任务：" in html
-    assert "visual_001" in html
+    assert "信息图待补充" in html
+    assert "visual_001" not in html
     assert "visual_001_bonding.svg" not in html
-    assert "导入这个 visual ID 对应的复核图片后，会自动替换当前草图。" in html
+    assert "最终版本会用复核后的信息图替换这个占位说明。" in html
     assert "Generate or import" not in html

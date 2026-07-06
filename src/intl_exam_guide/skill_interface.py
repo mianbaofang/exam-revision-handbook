@@ -15,12 +15,7 @@ from pathlib import Path
 from typing import Awaitable, Callable
 
 from intl_exam_guide.core import course_contract_payload
-from intl_exam_guide.agents import write_agent_orchestration
 from intl_exam_guide.auditing.quality_inspector import write_quality_inspection
-from intl_exam_guide.coordination import (
-    parameters_from_generation_args,
-    write_coordinator_artifacts,
-)
 from intl_exam_guide.auditing.concept_jobs import build_concept_jobs, write_concept_jobs
 from intl_exam_guide.llm.provider import ConceptExplanation, ConceptJob
 from intl_exam_guide.models import GuidePlan, Qualification
@@ -87,20 +82,6 @@ class SkillHandbookGenerator:
     ) -> Path:
         output_path = Path(output_dir)
         output_path.mkdir(parents=True, exist_ok=True)
-        write_coordinator_artifacts(
-            output_path,
-            parameters_from_generation_args(
-                provider=qualification.provider or qualification.source.provider,
-                level=qualification.qualification_type,
-                subject=qualification.subject_area or qualification.title,
-                exam_year=qualification.selected_exam_year,
-                term_support_language=output_language,
-                explanation_style=explanation_style,
-                image_provider="prompt-queue",
-            ),
-            current_phase="analysis",
-            project_status="in_progress",
-        )
 
         self._report_progress(
             "analysis", 0, 7, "Preparing syllabus evidence for LLM outline analysis..."
@@ -227,8 +208,9 @@ class SkillHandbookGenerator:
         return "\n".join(
             [
                 "Write the final concept explanations for this handbook topic.",
-                "Return JSON only, with keys: topic_title, essence, analogy, mini_worked_example, pitfall, explanations, and optional visual_spec.",
+                "Return JSON only, with keys: topic_title, essence, analogy, mastery_summary, mini_worked_example, pitfall, explanations, and optional visual_spec.",
                 "The explanations value must be a list of 2-4 direct student-facing bullets.",
+                "The mastery_summary value must be one concrete student-facing sentence for the Study Roadmap 'What to master' column.",
                 "Stay inside the topic title and source points. Do not write a procedural checklist.",
                 "Add visual_spec only when a visual materially improves understanding.",
                 "For visual_spec, use complexity='svg-basic' with svg_fit='exact' only for exact-fit diagrams such as axes, set regions, simple flows, tables, trees, or timelines.",
@@ -299,7 +281,6 @@ class SkillHandbookGenerator:
             encoding="utf-8",
         )
         self._write_plan(plan, output_dir)
-        write_agent_orchestration(output_dir, final_review_complete=False)
 
     def _write_plan(self, plan: GuidePlan, output_dir: Path) -> None:
         (output_dir / "guide-plan.json").write_text(
@@ -381,20 +362,6 @@ class IncrementalGenerator:
 
     def step1_prepare(self) -> dict[str, object]:
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        write_coordinator_artifacts(
-            self.output_dir,
-            parameters_from_generation_args(
-                provider=self.qualification.provider or self.qualification.source.provider,
-                level=self.qualification.qualification_type,
-                subject=self.qualification.subject_area or self.qualification.title,
-                exam_year=self.qualification.selected_exam_year,
-                term_support_language=self.output_language,
-                explanation_style=self.explanation_style,
-                image_provider="prompt-queue",
-            ),
-            current_phase="planning",
-            project_status="in_progress",
-        )
         self.plan = build_guide_plan(
             qualification=self.qualification,
             questions_per_topic=self.questions_per_topic,
@@ -443,12 +410,18 @@ class IncrementalGenerator:
         analogy: str = "",
         misconception: str = "",
         visual_spec: dict[str, object] | None = None,
+        mastery_summary: str = "",
     ) -> None:
         if not self.plan:
             raise ValueError("Must call step1_prepare first")
         if self.current_concept_index >= len(self.concept_jobs):
             raise ValueError("No more concepts to generate")
         job = self.concept_jobs[self.current_concept_index]
+        metadata: dict[str, object] = {"topic_title": str(job.get("topic_title") or "")}
+        if mastery_summary.strip():
+            metadata["mastery_summary"] = mastery_summary.strip()
+        if visual_spec:
+            metadata["visual_spec"] = visual_spec
         self.concept_explanations.append(
             ConceptExplanation(
                 concept_term=str(job.get("student_title") or job.get("topic_title") or ""),
@@ -456,10 +429,7 @@ class IncrementalGenerator:
                 analogy=analogy or None,
                 common_misconception=misconception or None,
                 status="generated",
-                metadata={
-                    "topic_title": str(job.get("topic_title") or ""),
-                    **({"visual_spec": visual_spec} if visual_spec else {}),
-                },
+                metadata=metadata,
             )
         )
         self.current_concept_index += 1
@@ -572,6 +542,9 @@ class IncrementalGenerator:
                 "explanations": values[:4],
                 "essence": explanation.explanation,
             }
+            mastery_summary = explanation.metadata.get("mastery_summary")
+            if isinstance(mastery_summary, str) and mastery_summary.strip():
+                entry["mastery_summary"] = mastery_summary.strip()
             if explanation.analogy:
                 entry["analogy"] = explanation.analogy
             if explanation.common_misconception:

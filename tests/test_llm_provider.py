@@ -215,12 +215,17 @@ def test_concept_explanation_metadata_types():
             "int_value": 100,
             "float_value": 0.05,
             "model": "gpt-4",
+            "visual_spec": {"complexity": "infographic", "prompt": "Draw the market failure scene."},
         },
     )
 
     assert explanation.metadata["string_value"] == "test"
     assert explanation.metadata["int_value"] == 100
     assert explanation.metadata["float_value"] == 0.05
+    assert explanation.metadata["visual_spec"] == {
+        "complexity": "infographic",
+        "prompt": "Draw the market failure scene.",
+    }
 
 
 # Tests for CostLimitExceededError

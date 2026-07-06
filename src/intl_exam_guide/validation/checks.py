@@ -27,6 +27,7 @@ from intl_exam_guide.planning.language_policy import (
 )
 from intl_exam_guide.planning.localization import zh_teachable_topic_title, zh_topic_keyword_label
 from intl_exam_guide.planning.source_points import is_incomplete_topic_title
+from intl_exam_guide.planning.syllabus_outline import validate_syllabus_outline
 from intl_exam_guide.planning.visual_routing import is_professional_diagram_visual
 from intl_exam_guide.rendering.html import display_topic_titles
 from intl_exam_guide.rendering.visual_assets import (
@@ -431,6 +432,20 @@ def validate_guides(plan: GuidePlan) -> list[ValidationIssue]:
             issues.append(
                 ValidationIssue("warning", f"Checklist is too short: {guide.topic_title}")
             )
+        if requires_writer_authored_content(plan) and not guide.mastery_summary.strip():
+            issues.append(
+                ValidationIssue(
+                    "error",
+                    f"Topic guide is missing Writer-authored mastery_summary for Study Roadmap: {guide.topic_title}",
+                )
+            )
+        if has_python_generated_mastery_text([guide.mastery_summary, *guide.checklist]):
+            issues.append(
+                ValidationIssue(
+                    "error",
+                    f"Topic guide roadmap mastery appears to be Python-generated instead of Writer-authored: {guide.topic_title}",
+                )
+            )
         if has_ai_language_smell(
             body_values,
             body_language,
@@ -478,6 +493,26 @@ def validate_guides(plan: GuidePlan) -> list[ValidationIssue]:
             )
     issues.extend(validate_checklist_diversity(plan))
     return issues
+
+
+def requires_writer_authored_content(plan: GuidePlan) -> bool:
+    return "outline-source:llm-analyst" in plan.qualification.route_tags
+
+
+def has_python_generated_mastery_text(values: Sequence[str]) -> bool:
+    patterns = [
+        r"^Core content in .+?:",
+        r"^Relationship to understand:",
+        r"^It is central because later examples first translate",
+        r"^核心内容：",
+        r"^需要说清的关系：",
+        r"^它之所以重要，是因为后面的例题要先",
+    ]
+    return any(
+        re.search(pattern, value.strip(), flags=re.IGNORECASE)
+        for value in values
+        for pattern in patterns
+    )
 
 
 def validate_checklist_diversity(plan: GuidePlan) -> list[ValidationIssue]:
@@ -1105,12 +1140,12 @@ def validate_html_visual_and_diagram_blocks(plan: GuidePlan, html: str) -> list[
         visual_markers = (
             [
                 "Visual Worked Example",
-                "Infographic Queue",
+                "Infographic Pending",
                 "Generated Infographic",
                 "SVG Fallback - Review Needed",
             ]
             if body_language == "en"
-            else ["图形例题", "信息图生成队列", "已生成信息图", "SVG 兜底图 - 需要复核"]
+            else ["图形例题", "信息图待补充", "已生成信息图", "SVG 兜底图 - 需要复核"]
         )
         if not any(marker in html for marker in visual_markers):
             issues.append(
@@ -1153,13 +1188,16 @@ def validate_output_package(plan: GuidePlan, output_dir: Path) -> list[Validatio
                 "Syllabus evidence file is missing from output directory.",
             )
         )
-    if not (output_dir / "syllabus-outline.json").exists():
+    outline_path = output_dir / "syllabus-outline.json"
+    if not outline_path.exists():
         issues.append(
             ValidationIssue(
                 "error" if not is_cli_fallback else "warning",
                 "LLM Analyst syllabus outline is missing. Python evidence extraction cannot be treated as final topic/exam-point analysis.",
             )
         )
+    elif not is_cli_fallback:
+        issues.extend(validate_syllabus_outline_file(outline_path))
     if "outline-source:llm-analyst" not in plan.qualification.route_tags:
         issues.append(
             ValidationIssue(
@@ -1191,6 +1229,19 @@ def validate_output_package(plan: GuidePlan, output_dir: Path) -> list[Validatio
             )
         )
     return issues
+
+
+def validate_syllabus_outline_file(outline_path: Path) -> list[ValidationIssue]:
+    try:
+        data = json.loads(outline_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [ValidationIssue("error", f"LLM Analyst syllabus outline cannot be read: {exc}")]
+    if not isinstance(data, dict):
+        return [ValidationIssue("error", "LLM Analyst syllabus outline must be a JSON object.")]
+    return [
+        ValidationIssue(issue.severity, f"LLM Analyst syllabus outline invalid: {issue.message}")
+        for issue in validate_syllabus_outline(data)
+    ]
 
 
 def validate_pdf_output(plan: GuidePlan, pdf_path: Path) -> list[ValidationIssue]:

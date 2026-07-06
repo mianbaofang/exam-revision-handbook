@@ -8,12 +8,7 @@ from importlib import resources
 from pathlib import Path
 
 from intl_exam_guide.core import course_contract_payload
-from intl_exam_guide.agents import write_agent_orchestration
 from intl_exam_guide.auditing.quality_inspector import write_quality_inspection
-from intl_exam_guide.coordination import (
-    parameters_from_generation_args,
-    write_coordinator_artifacts,
-)
 from intl_exam_guide.models import Qualification
 from intl_exam_guide.planning.guide_plan import (
     IMAGE_PROVIDERS,
@@ -82,6 +77,29 @@ def main(argv: list[str] | None = None) -> int:
     add_generation_choice_args(generate)
     generate.add_argument("--skip-pdf", action="store_true")
 
+    extract_evidence = subcommands.add_parser(
+        "extract-evidence",
+        help="Download the official specification and write syllabus evidence only.",
+    )
+    extract_evidence.add_argument(
+        "--query", required=True, help="Subject name, code, slug, qualification URL, or direct PDF URL."
+    )
+    extract_evidence.add_argument(
+        "--provider",
+        default=None,
+        help=f"Exam board provider ({', '.join(PROVIDER_NAMES)}). Inferred from --query URL when omitted.",
+    )
+    extract_evidence.add_argument(
+        "--level",
+        choices=["gcse", "igcse", "as", "as-level", "a-level", "alevel", "as-a-level"],
+        help="Qualification level.",
+    )
+    extract_evidence.add_argument(
+        "--exam-year",
+        help="Exam year used by year-ranged syllabuses, especially Cambridge subject pages.",
+    )
+    extract_evidence.add_argument("--out", required=True, help="Output directory.")
+
     demo = subcommands.add_parser("demo", help="Generate an offline synthetic demo guide.")
     demo.add_argument("--out", required=True, help="Output directory.")
     demo.add_argument("--questions-per-topic", type=int, default=1)
@@ -96,7 +114,7 @@ def main(argv: list[str] | None = None) -> int:
 
     inspect = subcommands.add_parser(
         "inspect",
-        help="Run the fast Quality Inspector checks for an output directory.",
+        help="Run fast package checks for an output directory.",
     )
     inspect.add_argument("--out", required=True, help="Existing handbook output directory.")
 
@@ -136,21 +154,19 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "generate":
         validate_generation_choices(parser, args)
-        provider = get_provider(resolve_provider(args.provider, args.query))
-        out_dir = Path(args.out)
-        source_dir = out_dir / "source"
-        out_dir.mkdir(parents=True, exist_ok=True)
-
         try:
-            link = provider.find_qualification(args.query, args.level, args.exam_year)
-            qualification = provider.parse_qualification(link.href, args.level, args.exam_year)
-            qualification = provider.apply_listing_metadata(qualification, link)
-            qualification = provider.download_specification(
-                qualification, source_dir, args.exam_year
+            qualification = resolve_and_download_qualification(
+                args.query,
+                args.provider,
+                args.level,
+                args.exam_year,
+                Path(args.out) / "source",
             )
         except (ValueError, NotImplementedError) as exc:
             print(f"error: {exc}", file=sys.stderr)
             return 2
+        out_dir = Path(args.out)
+        out_dir.mkdir(parents=True, exist_ok=True)
         return write_guide_outputs(
             qualification,
             out_dir,
@@ -169,6 +185,39 @@ def main(argv: list[str] | None = None) -> int:
             or qualification.source.provider,
             level=args.level,
         )
+
+    if args.command == "extract-evidence":
+        out_dir = Path(args.out)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        try:
+            qualification = resolve_and_download_qualification(
+                args.query,
+                args.provider,
+                args.level,
+                args.exam_year,
+                out_dir / "source",
+            )
+        except (ValueError, NotImplementedError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+        (out_dir / "qualification.json").write_text(
+            json.dumps(qualification.to_dict(), ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        evidence_path = write_syllabus_evidence(
+            qualification,
+            out_dir,
+            pages_from_extracted_text(qualification.source.extracted_text_path),
+        )
+        print_json_payload(
+            {
+                "qualification": qualification.title,
+                "syllabus_evidence": str(evidence_path),
+                "qualification_json": str(out_dir / "qualification.json"),
+                "message": "Evidence ready. Run the Skill host LLM workflow to write syllabus-outline.json, concept_explanations.json, and guide.html.",
+            }
+        )
+        return 0
 
     if args.command == "demo":
         validate_generation_choices(parser, args)
@@ -259,6 +308,41 @@ def resolve_provider(provider: str | None, query: str) -> str:
     return "oxfordaqa"
 
 
+def resolve_and_download_qualification(
+    query: str,
+    provider_name: str | None,
+    level: str | None,
+    exam_year: str | None,
+    source_dir: Path,
+) -> Qualification:
+    provider = get_provider(resolve_provider(provider_name, query))
+    link = provider.find_qualification(query, level, exam_year)
+    qualification = provider.parse_qualification(link.href, level, exam_year)
+    qualification = provider.apply_listing_metadata(qualification, link)
+    return provider.download_specification(qualification, source_dir, exam_year)
+
+
+def pages_from_extracted_text(path_value: str | None) -> list[tuple[int, str]]:
+    if not path_value:
+        return []
+    path = Path(path_value)
+    if not path.exists():
+        return []
+    text = path.read_text(encoding="utf-8")
+    pages: list[tuple[int, str]] = []
+    for chunk in text.split("--- Page "):
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+        header, _, body = chunk.partition("---")
+        try:
+            page_number = int(header.strip())
+        except ValueError:
+            continue
+        pages.append((page_number, body.strip()))
+    return pages
+
+
 def load_demo_qualification() -> Qualification:
     data = json.loads(
         resources.files("intl_exam_guide")
@@ -304,29 +388,9 @@ def write_guide_outputs(
     pdf_path = out_dir / "guide.pdf"
     validation_path = out_dir / "validation.json"
     delivery_contract_path = out_dir / "delivery-contract.json"
-    orchestration_path = out_dir / "agent-orchestration.json"
     run_options_path = out_dir / "run-options.json"
     if pdf_path.exists():
         pdf_path.unlink()
-
-    coordinator_parameters = parameters_from_generation_args(
-        provider=provider or qualification.provider or qualification.source.provider,
-        level=level,
-        subject=requested_subject or qualification.subject_area or qualification.title,
-        exam_year=exam_year,
-        term_support_language=output_language,
-        explanation_style=explanation_style,
-        image_provider=image_provider,
-    )
-    write_coordinator_artifacts(
-        out_dir,
-        coordinator_parameters,
-        current_phase="framework_demo",
-        project_status="in_progress",
-        notes=[
-            "CLI generated a framework demo package. Final-ready output requires the Skill host to dispatch Analyst, Writer, Quality Inspector, and Final Reviewer roles.",
-        ],
-    )
 
     qualification_path.write_text(
         json.dumps(plan.qualification.to_dict(), ensure_ascii=False, indent=2),
@@ -334,8 +398,8 @@ def write_guide_outputs(
     )
 
     # CLI fallback writes evidence and a placeholder outline so demo runs stay
-    # structurally complete. The CLI is not an LLM Analyst; real teaching-grade
-    # final-ready output must come from the Skill host's analyst callback.
+    # structurally complete. The CLI is not an LLM Analyst; teaching-grade
+    # output must come from the Skill host's analyst callback.
     write_syllabus_evidence(plan.qualification, out_dir, [])
     outline_payload: dict[str, object] = {
         "schema_version": "v0.5-cli-fallback-outline",
@@ -439,9 +503,6 @@ def write_guide_outputs(
         json.dumps(delivery_contract, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    write_agent_orchestration(
-        out_dir, final_review_complete=False, quality_inspection_complete=True
-    )
     payload = {
         "qualification": qualification.title,
         "html": str(html_path),
@@ -449,7 +510,6 @@ def write_guide_outputs(
         "pdf_error": pdf_error,
         "package": package_manifest,
         "delivery_contract": str(delivery_contract_path),
-        "agent_orchestration": str(orchestration_path),
         "quality_inspection": str(quality_inspection_path),
         "review_summary": summary,
         "delivery_status": delivery_status,
@@ -474,14 +534,12 @@ def write_guide_outputs(
     print("To generate a complete, teaching-grade handbook:", file=sys.stderr)
     print("", file=sys.stderr)
     print(
-        "  1. Use this Skill in an LLM agent environment (OpenClaw, Claude, etc.)", file=sys.stderr
+        "  1. Use this Skill in an LLM agent environment with the extracted evidence.", file=sys.stderr
     )
-    print("  2. The LLM will run five coordinated roles:", file=sys.stderr)
-    print("     - Project Manager: preflight, dispatch, repair loops", file=sys.stderr)
-    print("     - Phase 1 Analyst: read syllabus evidence, decide topics", file=sys.stderr)
-    print("     - Phase 2 Writer: write concepts, judge visual needs", file=sys.stderr)
-    print("     - Phase 3 Quality Inspector: check format and completeness", file=sys.stderr)
-    print("     - Phase 4 Reviewer: independent quality audit", file=sys.stderr)
+    print("  2. The host LLM must run the lightweight workflow:", file=sys.stderr)
+    print("     - Analyst: read syllabus evidence and write syllabus-outline.json", file=sys.stderr)
+    print("     - Writer: write concepts, mastery summaries, and visual decisions", file=sys.stderr)
+    print("     - Reviewer: open the rendered HTML and audit it against the evidence", file=sys.stderr)
     print("", file=sys.stderr)
     print("See skill/SKILL.md for LLM workflow instructions.", file=sys.stderr)
     print("", file=sys.stderr)

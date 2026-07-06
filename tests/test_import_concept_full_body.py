@@ -20,6 +20,7 @@ def test_apply_concept_explanations_replaces_full_topic_body():
         worked_solution_steps=["old step"],
         pitfall="old pitfall",
         checklist=["old concept"],
+        mastery_summary="",
     )
     plan = SimpleNamespace(topic_guides=[guide])
 
@@ -68,4 +69,41 @@ def test_apply_concept_explanations_replaces_full_topic_body():
     assert guide.checklist == [
         "An external cost is harm to a third party.",
         "An external benefit is a gain to a third party.",
+    ]
+
+
+def test_apply_concept_explanations_puts_writer_mastery_first():
+    guide = SimpleNamespace(
+        topic_title="P1.1.KP04: Discriminant and quadratic root conditions",
+        essence="old essence",
+        analogy="old analogy",
+        mini_worked_example="old example",
+        worked_solution_steps=["old step"],
+        pitfall="old pitfall",
+        checklist=["Core content in P1.1: The discriminant."],
+        mastery_summary="",
+    )
+    plan = SimpleNamespace(topic_guides=[guide])
+
+    imported, missing = apply_concept_explanations(
+        plan,
+        [
+            {
+                "topic_title": guide.topic_title,
+                "mastery_summary": "Decide from b^2 - 4ac whether a quadratic has two real roots, one repeated root or no real roots, and link that to its graph.",
+                "explanations": [
+                    "The discriminant is the part of the quadratic formula that controls the root type.",
+                    "Its sign tells you whether the graph crosses, touches or misses the x-axis.",
+                ],
+            }
+        ],
+        force=True,
+    )
+
+    assert imported == 1
+    assert missing == []
+    assert guide.mastery_summary.startswith("Decide from b^2 - 4ac")
+    assert guide.checklist == [
+        "The discriminant is the part of the quadratic formula that controls the root type.",
+        "Its sign tells you whether the graph crosses, touches or misses the x-axis.",
     ]

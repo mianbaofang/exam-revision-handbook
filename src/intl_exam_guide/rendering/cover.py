@@ -19,6 +19,7 @@ def render_cover(qualification: Qualification, options: GuideRunOptions) -> str:
         or qualification.selected_exam_year
         or qualification.source.selected_exam_year
     )
+    identity_html = cover_identity_grid(version, year, language)
     scope_note = cover_scope_note(qualification, language)
     scope_html = f'<p class="course-scope-note">{html_escape(scope_note)}</p>' if scope_note else ""
     if language == "en":
@@ -35,12 +36,9 @@ def render_cover(qualification: Qualification, options: GuideRunOptions) -> str:
     <div class="qualification-pill">{html_escape(qtype)}</div>
     <h1>{html_escape(subject)}</h1>
     <div class="course-code">Course code · {html_escape(code)}</div>
-    {scope_html}
+      {scope_html}
   </div>
-  <div class="cover-identity-grid">
-    <div><span>Specification / syllabus version</span><strong>{html_escape(version)}</strong></div>
-    <div><span>Target exam year</span><strong>{html_escape(year or "Not specified")}</strong></div>
-  </div>
+  {identity_html}
 </section>
 """
     return f"""
@@ -56,14 +54,29 @@ def render_cover(qualification: Qualification, options: GuideRunOptions) -> str:
     <div class="qualification-pill">{html_escape(qtype)}</div>
     <h1>{html_escape(subject)}</h1>
     <div class="course-code">课程代码 · {html_escape(code)}</div>
-    {scope_html}
+      {scope_html}
   </div>
-  <div class="cover-identity-grid">
-    <div><span>考试大纲版本</span><strong>{html_escape(version)}</strong></div>
-    <div><span>目标考试年份</span><strong>{html_escape(year or "未指定")}</strong></div>
-  </div>
+  {identity_html}
 </section>
 """
+
+
+def cover_identity_grid(version: str, year: str | None, language: str) -> str:
+    items: list[str] = []
+    if version and not is_cover_version_fallback(version, language):
+        label = "Specification / syllabus version" if language == "en" else "考试大纲版本"
+        items.append(f"<div><span>{html_escape(label)}</span><strong>{html_escape(version)}</strong></div>")
+    if year:
+        label = "Target exam year" if language == "en" else "目标考试年份"
+        items.append(f"<div><span>{html_escape(label)}</span><strong>{html_escape(year)}</strong></div>")
+    if not items:
+        return ""
+    return f'<div class="cover-identity-grid">{"".join(items)}</div>'
+
+
+def is_cover_version_fallback(version: str, language: str) -> bool:
+    fallback = "See official specification/syllabus PDF" if language == "en" else "见官方考试大纲 PDF"
+    return version.strip() == fallback
 
 
 def cover_scope_note(qualification: Qualification, language: str) -> str:

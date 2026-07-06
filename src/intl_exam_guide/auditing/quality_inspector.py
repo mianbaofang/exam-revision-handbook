@@ -156,7 +156,7 @@ def write_quality_inspection(output_dir: Path) -> Path:
 
 
 def build_quality_inspector_prompt(output_dir: Path) -> str:
-    """Build the checklist prompt for an LLM quality_inspector role."""
+    """Build the checklist prompt for a fast package check."""
 
     context = {
         "guide_html": str(output_dir / "guide.html"),
@@ -168,29 +168,29 @@ def build_quality_inspector_prompt(output_dir: Path) -> str:
     }
     return "\n".join(
         [
-            "# Quality Inspector",
+            "# Fast Package Check",
             "",
-            "## 1. Identity",
+            "## 1. Purpose",
             "",
-            "You are the quality_inspector, the fast format and completeness checker between handbook_writer and final_reviewer.",
-            "You do not judge deep teaching quality; the final_reviewer owns that audit.",
+            "This is a fast format and completeness check for the rendered handbook package.",
+            "It does not judge deep teaching quality; the host LLM Reviewer owns that visible-handbook audit.",
             "",
             "## 2. Mission",
             "",
-            "Catch obvious structural, schema, placeholder, file, glossary, and visual-manifest problems before the independent final reviewer spends time on the package.",
+            "Catch obvious structural, schema, placeholder, file, glossary, and visual-manifest problems before handoff.",
             "",
             "## 3. Checklist",
             "",
             "A. Files: guide.html, qualification.json, syllabus-outline.json, guide-plan.json, validation.json, concept_jobs.json.",
             "B. Module structure: cover, how-to-use, topic map, glossary when applicable, topic guides, practice, exam structure, revision checklist.",
             "C. Topic completeness: topic count matches qualification.json and each topic has visible teaching content.",
-            "D. Concept import: concept_explanations.json exists when the package is being considered for review-ready/final-ready delivery.",
+            "D. Concept import: concept_explanations.json exists when the package is being considered complete.",
             "E. Formatting: no visible [insert ...], [LLM fills ...], undefined, null, or TODO text.",
             "F. Visuals: manifest exists, visual prompts are not repeated five or more times, pending complex assets are explicit.",
             "",
             "## 4. Decision",
             "",
-            "Output pass only when there are no error-level issues. Warnings may pass to final_reviewer if they are explicit and non-blocking.",
+            "Output pass only when there are no error-level issues. Warnings may pass to the host LLM Reviewer if they are explicit and non-blocking.",
             "Return fail with specific issues when a required artifact or visible module is missing.",
             "",
             "## 5. Runtime Context",

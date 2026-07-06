@@ -47,7 +47,7 @@ class ConceptExplanation:
     example: str | None = None
     common_misconception: str | None = None
     status: Literal["generated", "pending", "failed"] = "pending"
-    metadata: dict[str, str | int | float] = field(default_factory=dict)
+    metadata: dict[str, object] = field(default_factory=dict)
 
 
 class LLMContextProvider(Protocol):

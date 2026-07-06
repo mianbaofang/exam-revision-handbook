@@ -536,6 +536,29 @@ def test_topic_map_titles_must_not_repeat_across_topics():
     )
 
 
+def test_validate_guides_rejects_python_generated_mastery_text():
+    plan = valid_plan()
+    plan.topic_guides[0].checklist = [
+        "Core content in P1.1.KP04: The discriminant of a quadratic function.",
+        "Relationship to understand: connect the discriminant with root conditions.",
+        "It is central because later examples first translate the question into the discriminant relationship.",
+    ]
+
+    messages = [issue.message for issue in validate_guides(plan)]
+
+    assert any("Python-generated instead of Writer-authored" in message for message in messages)
+
+
+def test_validate_guides_requires_writer_mastery_for_llm_outline():
+    plan = valid_plan()
+    plan.qualification.route_tags.append("outline-source:llm-analyst")
+    plan.topic_guides[0].mastery_summary = ""
+
+    messages = [issue.message for issue in validate_guides(plan)]
+
+    assert any("missing Writer-authored mastery_summary" in message for message in messages)
+
+
 def test_html_glossary_policy_is_enforced_for_term_support_mode():
     valid_rows = "".join(
         '<tr class="glossary-term-row"><td>术语</td><td>Term</td><td>Use</td></tr>'
@@ -673,6 +696,48 @@ def test_qualification_notes_and_output_package_pin_release_quality_edges(tmp_pa
     output_messages = [issue.message for issue in validate_output_package(plan, tmp_path)]
     assert "Sections directory has only 0 section files." in output_messages
     assert "Visual manifest is missing from images directory." in output_messages
+
+
+def test_output_package_validates_llm_syllabus_outline_self_consistency(tmp_path):
+    plan = valid_plan()
+    plan.qualification.route_tags.append("outline-source:llm-analyst")
+    (tmp_path / "syllabus-outline.json").write_text(
+        json.dumps(
+            {
+                "schema_version": "v0.5-llm-syllabus-outline",
+                "status": "llm-analyst-approved",
+                "structure_analysis": {
+                    "model": "nested",
+                    "rationale": "The PDF groups rows under one source container.",
+                    "lowest_source_unit": "content rows",
+                },
+                "official_structure": [
+                    {"id": "S1", "title": "1.1 Ratio and proportion", "role": "source-structure"}
+                ],
+                "source_coverage": [
+                    {"id": "SC001", "content": "Use ratios.", "page": 4},
+                    {"id": "SC002", "content": "Solve direct proportion problems.", "page": 4},
+                ],
+                "topics": [
+                    {
+                        "title": "1.1 Ratio and proportion",
+                        "source_coverage_ids": ["SC001", "SC002"],
+                        "exam_points": ["Use ratios and direct proportion."],
+                        "source_snippets": [
+                            {"page": 4, "text": "Use ratios. Solve direct proportion problems.", "matched_term": "ratio"}
+                        ],
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    messages = [issue.message for issue in validate_output_package(plan, tmp_path)]
+
+    assert any("LLM Analyst syllabus outline invalid" in message for message in messages)
+    assert any("reuses a declared structure title" in message for message in messages)
 
 
 def test_image_assets_error_when_svg_titles_and_shapes_are_repetitive(tmp_path):
@@ -896,7 +961,7 @@ def test_validate_html_output_rejects_real_rendered_weak_topic_headings(tmp_path
         "Exam Pitfall",
         "Source anchor",
         "Visual Worked Example",
-        "Infographic Queue",
+        "Infographic Pending",
     ]
     topic_sections = "\n".join(
         f'<section class="topic"><h2>T{index}. {title}</h2>'
