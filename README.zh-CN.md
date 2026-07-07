@@ -35,6 +35,16 @@
   <a href="skill/references/revision_guide_spec.md">手册规范</a>
 </p>
 
+## 一眼看懂
+
+| 问题 | 回答 |
+|---|---|
+| 适合谁 | 正在准备 International GCSE / International AS-A-level 复习手册的家庭、老师和 Agent 用户。 |
+| 会生成什么 | 带来源证据的手册包：HTML/PDF、topic 规划、例题、配图决策和复查证据。 |
+| Python 包负责什么 | 抓取官方来源证据、渲染输出、管理资产、执行机械验证。 |
+| 宿主 LLM 负责什么 | 写大纲结构、教学解释、例题、配图决策和最终产品复查。 |
+| 当前考试局范围 | 只写 AQA、Edexcel、CAIE，不把未支持考试局写成已支持。 |
+
 **这个项目是框架，不是离线内容生成器。** `skill/` 里的 Skill 说明会让
 OpenClaw、Hermes 或其它 Agent 的宿主 LLM 按 Analyst、Writer、Reviewer 三个轻量角色工作：
 根据当前官方大纲即时判断 topic 边界、写概念解释、例题、学习路线和每个 topic 的
@@ -265,6 +275,22 @@ tests/            测试与回归样例
 公开样例应使用原创讲解、原创练习卡和必要的来源信息。
 
 给孩子正式备考使用前，建议由老师或熟悉大纲的人复核深度例题和答案。
+
+## 致谢
+
+这个项目建立在公开考试局资料、开源工具和 Agent 工作流方法之上：
+
+- 官方公开大纲页面和 PDF：OxfordAQA / Oxford International AQA、Pearson Edexcel、Cambridge International。
+- PDF 与文档处理：`pypdf`，以及宿主工作流可用时的 Microsoft [`markitdown`](https://github.com/microsoft/markitdown)。
+- 渲染和验证工具：Playwright、pytest、pytest-cov、Ruff、mypy。
+- 演示与视觉链路：HyperFrames、生成预览素材，以及用户或宿主运行环境提供的生图路线。
+- 写作质量参考：反模板腔检查借鉴 `qiaomu-novel-generator` 的风格规则。
+
+考试局名称只用于说明来源，不表示本项目获得这些考试局背书、合作或认证。
+
+## 状态
+
+当前包版本：`v0.5.1`。这个 Skill 已具备公开使用的框架形态，但每条手册路线仍要对照 `tests/fixtures/delivery_matrix.json` 和生成的 `final-review-packet.json` 复查后，才能称为 final-ready。
 
 ## 作者
 

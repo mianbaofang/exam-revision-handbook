@@ -76,6 +76,16 @@ control.
   <a href="skill/references/revision_guide_spec.md">Handbook spec</a>
 </p>
 
+## At A Glance
+
+| Question | Answer |
+|---|---|
+| Who is it for? | Families, tutors, and agent users preparing International GCSE or International AS/A-level revision handbooks. |
+| What does it generate? | A source-backed handbook package with HTML/PDF output, topic plans, worked examples, visual decisions, and review evidence. |
+| What does the Python package do? | Fetch official source evidence, render outputs, manage assets, and run mechanical validation. |
+| What must the host LLM do? | Write the syllabus outline, teaching explanations, examples, visual decisions, and final product review. |
+| Current board scope | AQA, Edexcel, and CAIE only. |
+
 An AI Skill for generating image-rich, printable International GCSE and
 International AS-A-level revision handbooks from official exam-board sources.
 
@@ -438,6 +448,22 @@ cards, and the minimum source information needed for review.
 
 Families should have subject teachers or syllabus-aware adults review deeper
 worked examples before using generated guides as final exam preparation.
+
+## Acknowledgements
+
+This project builds on public exam-board materials, open-source tooling, and agent workflow patterns:
+
+- Official public syllabus pages and PDFs from OxfordAQA / Oxford International AQA, Pearson Edexcel, and Cambridge International.
+- PDF and document processing: `pypdf` and Microsoft [`markitdown`](https://github.com/microsoft/markitdown) when available in the host workflow.
+- Rendering and validation tooling: Playwright, pytest, pytest-cov, Ruff, and mypy.
+- Demo and visual workflow: HyperFrames, generated preview assets, and image-generation routes supplied by the user or host runtime.
+- Writing-quality guidance: anti-template wording checks inspired by `qiaomu-novel-generator` style rules.
+
+Exam-board names are used for source identification only. This project is not endorsed by, affiliated with, or certified by those exam boards.
+
+## Status
+
+Current package version: `v0.5.1`. The Skill is public-ready as a framework for source-backed handbook generation, but individual handbook routes must still be reviewed against `tests/fixtures/delivery_matrix.json` and the generated `final-review-packet.json` before being called final-ready.
 
 ## Author
 
