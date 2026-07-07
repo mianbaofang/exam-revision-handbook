@@ -10,6 +10,7 @@ from pathlib import Path
 from intl_exam_guide.core import course_contract_payload
 from intl_exam_guide.auditing.quality_inspector import write_quality_inspection
 from intl_exam_guide.models import Qualification
+from intl_exam_guide.parsing.markdown_companion import write_markdown_companion
 from intl_exam_guide.planning.guide_plan import (
     IMAGE_PROVIDERS,
     LANGUAGE_CHOICES,
@@ -313,6 +314,7 @@ def resolve_and_download_qualification(
 
 
 def write_evidence_package(qualification: Qualification, out_dir: Path) -> Path:
+    ensure_markdown_companion(qualification)
     (out_dir / "qualification.json").write_text(
         json.dumps(qualification.to_dict(), ensure_ascii=False, indent=2),
         encoding="utf-8",
@@ -321,6 +323,23 @@ def write_evidence_package(qualification: Qualification, out_dir: Path) -> Path:
         qualification,
         out_dir,
         pages_from_extracted_text(qualification.source.extracted_text_path),
+    )
+
+
+def ensure_markdown_companion(qualification: Qualification) -> None:
+    if not qualification.source.specification_path:
+        return
+    pdf_path = Path(qualification.source.specification_path)
+    if not pdf_path.exists():
+        return
+    report_path = pdf_path.parent / "markdown-extraction.json"
+    markdown_path = pdf_path.parent / "specification.md"
+    if report_path.exists() and markdown_path.exists():
+        return
+    write_markdown_companion(
+        pdf_path,
+        source_pdf_sha256=qualification.source.specification_sha256,
+        output_dir=pdf_path.parent,
     )
 
 

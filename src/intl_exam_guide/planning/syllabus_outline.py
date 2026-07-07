@@ -99,7 +99,12 @@ def write_syllabus_evidence(
     return path
 
 
-def build_syllabus_outline_prompt(qualification: Qualification, evidence: SyllabusEvidence) -> str:
+def build_syllabus_outline_prompt(
+    qualification: Qualification,
+    evidence: SyllabusEvidence,
+    markdown_text: str | None = None,
+    markdown_extraction: dict[str, object] | None = None,
+) -> str:
     """
     Build detailed prompt for the LLM Analyst to produce a source-driven outline.
 
@@ -109,29 +114,37 @@ def build_syllabus_outline_prompt(qualification: Qualification, evidence: Syllab
     subject template.
     """
     payload = json.dumps(evidence.to_dict(), ensure_ascii=False, indent=2)
+    markdown_report = json.dumps(markdown_extraction or {}, ensure_ascii=False, indent=2)
+    markdown_payload = markdown_text or "[source/specification.md was not available to this prompt]"
     return "\n".join(
         [
             "=" * 80,
             "PHASE 1: SYLLABUS OUTLINE ANALYST",
             "=" * 80,
             "",
-            "You are the syllabus_outline_analyst. Read the official specification evidence",
-            "and produce a source-driven outline for a revision handbook.",
+            "You are the syllabus_outline_analyst. Read the official specification Markdown companion",
+            "and the page-level PDF evidence, then produce a source-driven outline for a revision handbook.",
             "",
-            "IMPORTANT: Python has not chosen the topic split. Python only extracted page text.",
-            "You decide the structure from this specific syllabus. Do not follow a fixed",
-            "exam-board, provider, subject, or topic-count template.",
+            "IMPORTANT: Python has not chosen the topic split. Python only extracted page text and",
+            "converted the official PDF to Markdown for your reading. You decide the structure from",
+            "this specific syllabus. Do not follow a fixed exam-board, provider, subject, or topic-count template.",
             "",
-            "INPUT:",
-            "The following JSON contains:",
-            "- course.title, course.code, course.qualification_type, course.subject_area",
-            "- pages[]: array of {page: number, text: string} from the official PDF",
-            "- specification_url, page_url",
+            "MANDATORY INPUTS:",
+            "- source/specification.md: MarkItDown Markdown companion for reading headings, tables, bullets, and boundaries.",
+            "- source/markdown-extraction.json: conversion status and warnings; PDF-to-Markdown can lose formula fidelity.",
+            "- syllabus-evidence.json: page-level evidence from the official PDF; this is the source truth for pages and snippets.",
+            "",
+            "Use Markdown to identify official document structure, heading levels, table membership, bullet ownership,",
+            "and content/assessment/appendix boundaries. Use page-level evidence to verify page numbers, source snippets,",
+            "and coverage. If Markdown and page-level evidence conflict, page-level evidence wins.",
+            "",
+            "Python must not parse Markdown to split topics. Topic splitting, merging, structure judgement, and",
+            "source coverage decisions are your Analyst responsibility and must be written explicitly in syllabus-outline.json.",
             "",
             "WORKFLOW:",
             "",
             "1. Decide the source structure for this syllabus",
-            "   - Read the evidence and state how this PDF organizes examinable content.",
+            "   - Read source/specification.md and syllabus-evidence.json together, then state how this PDF organizes examinable content.",
             "   - The structure may be flat, nested, mixed, route-based, table-based, code-based,",
             "     objective-based, or another form visible in the PDF.",
             "   - Record that judgement in structure_analysis. If there are structural entries",
@@ -176,6 +189,22 @@ def build_syllabus_outline_prompt(qualification: Qualification, evidence: Syllab
             "{",
             '  "schema_version": "v0.5-llm-syllabus-outline",',
             '  "status": "llm-analyst-approved",',
+            '  "source_inputs": {',
+            '    "markdown_companion_read": true,',
+            '    "page_evidence_read": true,',
+            '    "markdown_extraction_status": "success",',
+            '    "raw_pdf_available_to_llm": false,',
+            '    "markdown_path": "source/specification.md",',
+            '    "page_evidence_path": "syllabus-evidence.json",',
+            '    "markdown_extraction_path": "source/markdown-extraction.json"',
+            "  },",
+            '  "cross_check": {',
+            '    "markdown_structure_used": "Explain the headings, tables, bullets, and boundaries used from Markdown.",',
+            '    "page_evidence_used": "Explain how page-level evidence verified pages, snippets, and source coverage.",',
+            '    "mismatches": [],',
+            '    "markdown_omissions": [],',
+            '    "unresolved_source_gaps": []',
+            "  },",
             '  "course_spec": {',
             '    "title": "Use course.title from the input evidence",',
             '    "code": "Use course.code from the input evidence",',
@@ -243,16 +272,20 @@ def build_syllabus_outline_prompt(qualification: Qualification, evidence: Syllab
             "",
             "CRITICAL RULES:",
             "",
-            "1. Read the PDF evidence itself. Do not rely on candidate hints or Python guesses.",
+            "1. Read all three inputs: source/specification.md, source/markdown-extraction.json, and syllabus-evidence.json.",
             "",
-            "2. Let this syllabus decide the structure. Do not require any preselected layers",
+            "2. If Markdown and page-level evidence conflict, page-level evidence is authoritative for source truth.",
+            "",
+            "3. Do not rely on candidate hints or Python guesses. Python did not split topics from Markdown.",
+            "",
+            "4. Let this syllabus decide the structure. Do not require any preselected layers",
             "   or provider-specific labels.",
             "",
-            "3. Do not collapse detailed examinable content into container headings. If you list",
+            "5. Do not collapse detailed examinable content into container headings. If you list",
             "   multiple source_coverage items under a container, topics[] must show how those",
             "   items are taught or tightly clustered.",
             "",
-            "4. Do not invent board/subject information. If the evidence is unclear, output",
+            "6. Do not invent board/subject information. If the evidence is unclear, output",
             "   an issues array explaining the uncertainty instead of guessing.",
             "",
             "AFTER YOU OUTPUT THIS JSON:",
@@ -264,6 +297,8 @@ def build_syllabus_outline_prompt(qualification: Qualification, evidence: Syllab
             "- If invalid, the host LLM returns exact schema or evidence issues to you for repair.",
             "",
             "DELIVERY CHECKLIST:",
+            "- source_inputs confirms Markdown companion and page evidence were both read.",
+            "- cross_check records Markdown structure use, page-evidence verification, mismatches, omissions, and unresolved gaps.",
             "- structure_analysis explains how this exact PDF is organized.",
             "- source_coverage records the actual examinable items selected from the source.",
             "- topics[] contains final teachable knowledge units or justified tight clusters.",
@@ -274,7 +309,22 @@ def build_syllabus_outline_prompt(qualification: Qualification, evidence: Syllab
             '"Syllabus outline approved with [X] teachable knowledge units mapped to [Y] source coverage items. Ready for Handbook Writer."',
             "",
             "=" * 80,
-            "OFFICIAL EVIDENCE (read all pages):",
+            "source/markdown-extraction.json:",
+            "=" * 80,
+            "",
+            markdown_report,
+            "",
+            "source/specification.md:",
+            "=" * 80,
+            "",
+            markdown_payload[:120000]
+            + (
+                "\n\n[... truncated; read the full source/specification.md file in the package ...]"
+                if len(markdown_payload) > 120000
+                else ""
+            ),
+            "",
+            "syllabus-evidence.json (page-level source truth; read all pages):",
             "=" * 80,
             "",
             payload,
@@ -332,6 +382,8 @@ def validate_syllabus_outline(data: dict[str, object]) -> list[SyllabusOutlineIs
             SyllabusOutlineIssue("error", "Analyst outline must include non-empty topics.")
         )
         return issues
+
+    issues.extend(_validate_source_inputs_cross_check(data))
 
     structure_analysis = data.get("structure_analysis")
     if not isinstance(structure_analysis, dict) or not str(
@@ -449,6 +501,46 @@ def validate_syllabus_outline(data: dict[str, object]) -> list[SyllabusOutlineIs
                 )
             )
     return issues
+
+
+def _validate_source_inputs_cross_check(data: dict[str, object]) -> list[SyllabusOutlineIssue]:
+    issues: list[SyllabusOutlineIssue] = []
+    source_inputs = data.get("source_inputs")
+    if not isinstance(source_inputs, dict):
+        return [
+            SyllabusOutlineIssue(
+                "error",
+                "Analyst outline must include source_inputs confirming Markdown companion and page evidence use.",
+            )
+        ]
+    for field in ("markdown_companion_read", "page_evidence_read"):
+        if source_inputs.get(field) is not True:
+            issues.append(SyllabusOutlineIssue("error", f"source_inputs.{field} must be true."))
+    status = str(source_inputs.get("markdown_extraction_status") or "").strip()
+    if not status:
+        issues.append(
+            SyllabusOutlineIssue(
+                "error", "source_inputs.markdown_extraction_status must record the MarkItDown status."
+            )
+        )
+
+    cross_check = data.get("cross_check")
+    if not isinstance(cross_check, dict):
+        return [
+            *issues,
+            SyllabusOutlineIssue(
+                "error",
+                "Analyst outline must include cross_check for Markdown/page-evidence comparison.",
+            ),
+        ]
+    for field in ("markdown_structure_used", "page_evidence_used"):
+        if not str(cross_check.get(field) or "").strip():
+            issues.append(SyllabusOutlineIssue("error", f"cross_check.{field} must be described."))
+    for field in ("mismatches", "markdown_omissions", "unresolved_source_gaps"):
+        if not isinstance(cross_check.get(field), list):
+            issues.append(SyllabusOutlineIssue("error", f"cross_check.{field} must be a list."))
+    return issues
+
 
 
 def _validate_granularity_audit(

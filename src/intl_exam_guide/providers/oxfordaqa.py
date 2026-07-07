@@ -17,6 +17,7 @@ from intl_exam_guide.models import (
     SourceSnippet,
     Topic,
 )
+from intl_exam_guide.parsing.markdown_companion import write_markdown_companion
 from intl_exam_guide.parsing.pdf_text import extract_pdf_pages, extract_pdf_text
 from intl_exam_guide.providers.base import ExamBoardProvider, Link
 from intl_exam_guide.providers.common import (
@@ -450,6 +451,7 @@ class OxfordAQAProvider(ExamBoardProvider):
         pdf_path.write_bytes(pdf_bytes)
         pages = extract_pdf_pages(pdf_path)
         text_path.write_text(extract_pdf_text(pdf_path), encoding="utf-8")
+        write_markdown_companion(pdf_path, source_pdf_sha256=digest, output_dir=output_dir)
         level_scope = qualification_level_scope(qualification)
 
         # Write candidate hints (page text only, no topic parsing)

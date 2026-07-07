@@ -13,6 +13,7 @@ from intl_exam_guide.planning.concept_integration import (
     VISUAL_DECISION_ROUTES,
 )
 from intl_exam_guide.rendering.output_names import find_handbook_html
+from intl_exam_guide.validation.checks import ascii_math_residue_issues
 from intl_exam_guide.visuals.manifest import PENDING_WORKFLOW_STATUSES, sync_visual_manifest_entry
 
 QUALITY_INSPECTION_FILE = "quality-inspection.json"
@@ -107,6 +108,11 @@ def inspect_handbook_output(output_dir: Path) -> QualityInspectionResult:
                         f"Visible handbook marker missing for module: {module_name}.",
                     )
                 )
+
+    notation_hits = ascii_math_residue_issues(visible_text)
+    checks["ascii_math_residue"] = notation_hits[:20]
+    for hit in notation_hits[:10]:
+        issues.append(InspectionIssue("error", "notation", hit))
 
     placeholder_hits = find_placeholder_hits(visible_text)
     checks["placeholder_hits"] = placeholder_hits[:20]

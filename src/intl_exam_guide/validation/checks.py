@@ -27,6 +27,10 @@ from intl_exam_guide.planning.language_policy import (
 )
 from intl_exam_guide.planning.localization import zh_teachable_topic_title, zh_topic_keyword_label
 from intl_exam_guide.planning.source_points import is_incomplete_topic_title
+from intl_exam_guide.parsing.markdown_companion import (
+    MARKDOWN_EXTRACTION_FILE,
+    MARKDOWN_SPECIFICATION_FILE,
+)
 from intl_exam_guide.planning.syllabus_outline import validate_syllabus_outline
 from intl_exam_guide.planning.visual_routing import is_professional_diagram_visual
 from intl_exam_guide.rendering.html import display_topic_titles
@@ -230,6 +234,7 @@ def validate_plan(
     issues.extend(validate_practice(plan))
     issues.extend(validate_visual_briefs(plan))
     issues.extend(validate_qualification_notes(plan))
+    issues.extend(validate_guide_plan_notation(plan))
     if html_path:
         issues.extend(validate_html_output(plan, html_path))
     if pdf_path:
@@ -1072,22 +1077,65 @@ def normalize_html_cell(html: str) -> str:
     return re.sub(r"\s+", " ", html_unescape(text)).strip()
 
 
+ASCII_MATH_RESIDUE_CHECKS = [
+    (r"\b\w\s*\^\s*[-+]?\d+\b", "caret exponent notation"),
+    (r"\b\w\s*\^\s*\([-+−]?\d+(?:/\d+)?\)", "caret exponent notation"),
+    (r"\b\w\s*\^\s*[-+]?\d+/\d+\b", "caret exponent notation"),
+    (r"\bsqrt\s*\(", "sqrt() notation"),
+    (r"(?<![<])>=(?![\"'])", ">= notation"),
+    (r"(?<![<])<=", "<= notation"),
+    (r"!=", "!= notation"),
+]
+
+
 def plain_math_notation_issues(html: str) -> list[str]:
-    text = student_visible_text(html)
+    return ascii_math_residue_issues(student_visible_text(html))
+
+
+
+def ascii_math_residue_issues(text: str, *, context: str = "Student-facing maths") -> list[str]:
     findings = []
-    checks = [
-        (r"\^[{(]?[A-Za-z0-9+-]{1,8}[})]?", "caret exponent notation"),
-        (r"\bsqrt\s*\(", "sqrt() notation"),
-        (r"(?<![<])>=(?![\"'])", ">= notation"),
-        (r"(?<![<])<=", "<= notation"),
-    ]
-    for pattern, label in checks:
-        match = re.search(pattern, text, flags=re.IGNORECASE)
-        if match:
+    for pattern, label in ASCII_MATH_RESIDUE_CHECKS:
+        seen: set[str] = set()
+        for match in re.finditer(pattern, text, flags=re.IGNORECASE):
+            residue = match.group(0)
+            if residue in seen:
+                continue
+            seen.add(residue)
             findings.append(
-                f"Student-facing maths should use rendered symbols, not {label}: {match.group(0)}"
+                f"{context} should use print-ready notation, not {label}: {residue}"
             )
+            if len(seen) >= 5:
+                break
     return findings
+
+
+
+def validate_guide_plan_notation(plan: GuidePlan) -> list[ValidationIssue]:
+    issues: list[ValidationIssue] = []
+    checks: list[tuple[str, str]] = []
+    for guide in plan.topic_guides:
+        checks.append((f"topic guide {guide.topic_title}", guide.essence))
+        checks.append((f"topic guide {guide.topic_title}", guide.analogy))
+        checks.append((f"topic guide {guide.topic_title}", guide.mini_worked_example))
+        checks.extend((f"topic guide {guide.topic_title}", value) for value in guide.worked_solution_steps)
+        checks.append((f"topic guide {guide.topic_title}", guide.pitfall))
+        checks.extend((f"topic guide {guide.topic_title}", value) for value in guide.checklist)
+        checks.append((f"topic guide {guide.topic_title}", guide.mastery_summary))
+    for item in plan.practice_items:
+        checks.append((f"practice item {item.topic_title}", item.question))
+        checks.append((f"practice item {item.topic_title}", item.focus_point))
+        checks.extend((f"practice item {item.topic_title}", value) for value in item.answer_frame)
+        checks.extend((f"practice item {item.topic_title}", value) for value in item.public_solution_steps)
+        checks.extend((f"practice item {item.topic_title}", value) for value in item.answer_checkpoints)
+    for brief in plan.visual_briefs:
+        checks.append((f"visual brief {brief.topic_title}", brief.focus_point))
+        checks.append((f"visual brief {brief.topic_title}", brief.trigger))
+        checks.append((f"visual brief {brief.topic_title}", brief.prompt))
+    for label, value in checks:
+        for message in ascii_math_residue_issues(value, context=label):
+            issues.append(ValidationIssue("error", message))
+    return issues
 
 
 def student_visible_text(html: str) -> str:
@@ -1220,6 +1268,8 @@ def validate_output_package(plan: GuidePlan, output_dir: Path) -> list[Validatio
                 "Syllabus evidence file is missing from output directory.",
             )
         )
+    if plan.qualification.source.specification_path:
+        issues.extend(validate_markdown_companion_files(plan.qualification.source.specification_path))
     outline_path = output_dir / "syllabus-outline.json"
     if not outline_path.exists():
         issues.append(
@@ -1263,6 +1313,61 @@ def validate_output_package(plan: GuidePlan, output_dir: Path) -> list[Validatio
     return issues
 
 
+def validate_markdown_companion_files(specification_path: str) -> list[ValidationIssue]:
+    source_dir = Path(specification_path).parent
+    markdown_path = source_dir / MARKDOWN_SPECIFICATION_FILE
+    report_path = source_dir / MARKDOWN_EXTRACTION_FILE
+    issues: list[ValidationIssue] = []
+    if not markdown_path.exists():
+        issues.append(
+            ValidationIssue(
+                "error",
+                f"Official PDF run is missing Markdown companion: {markdown_path}",
+            )
+        )
+    if not report_path.exists():
+        issues.append(
+            ValidationIssue(
+                "error",
+                f"Official PDF run is missing MarkItDown extraction report: {report_path}",
+            )
+        )
+        return issues
+    try:
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        issues.append(ValidationIssue("error", f"MarkItDown extraction report cannot be read: {exc}"))
+        return issues
+    if not isinstance(report, dict):
+        issues.append(ValidationIssue("error", "MarkItDown extraction report must be a JSON object."))
+        return issues
+    if report.get("status") != "success":
+        issues.append(
+            ValidationIssue(
+                "error",
+                "Official PDF run cannot be final-ready because MarkItDown extraction status is "
+                f"{report.get('status') or 'missing'}.",
+            )
+        )
+    for field in (
+        "schema_version",
+        "tool",
+        "tool_version",
+        "source_pdf",
+        "source_pdf_sha256",
+        "markdown_path",
+        "command",
+        "created_at",
+        "status",
+        "markdown_char_count",
+        "warnings",
+    ):
+        if field not in report:
+            issues.append(ValidationIssue("error", f"MarkItDown extraction report missing field: {field}"))
+    return issues
+
+
+
 def validate_syllabus_outline_file(outline_path: Path) -> list[ValidationIssue]:
     try:
         data = json.loads(outline_path.read_text(encoding="utf-8"))
@@ -1292,6 +1397,7 @@ def validate_pdf_output(plan: GuidePlan, pdf_path: Path) -> list[ValidationIssue
     max_mib = summary_float(summary, "pdf_max_recommended_mib")
     blank_text_pages = summary_int(summary, "pdf_blank_text_pages")
     file_uri_footer_pages = summary_int(summary, "pdf_file_uri_footer_pages")
+    pdf_notation_issues = summary.get("pdf_ascii_math_residue", [])
     issues: list[ValidationIssue] = []
     if page_count <= 0:
         issues.append(ValidationIssue("error", f"PDF output has no pages: {pdf_path}"))
@@ -1326,6 +1432,9 @@ def validate_pdf_output(plan: GuidePlan, pdf_path: Path) -> list[ValidationIssue
                 f"{file_uri_footer_pages} page(s). Re-export with headers and footers disabled.",
             )
         )
+    if isinstance(pdf_notation_issues, list):
+        for item in pdf_notation_issues[:5]:
+            issues.append(ValidationIssue("error", f"PDF output has student-facing ASCII maths residue: {item}"))
     return issues
 
 
@@ -1333,12 +1442,14 @@ def pdf_quality_summary(plan: GuidePlan, pdf_path: Path) -> dict[str, object]:
     try:
         reader = PdfReader(str(pdf_path))
         page_text_lengths: list[int] = []
+        page_texts: list[str] = []
         file_uri_footer_pages = 0
         for page in reader.pages:
             try:
                 text = page.extract_text() or ""
             except (KeyError, ValueError, TypeError):
                 text = ""
+            page_texts.append(text)
             page_text_lengths.append(len(text.strip()))
             if has_pdf_local_footer_text(text):
                 file_uri_footer_pages += 1
@@ -1350,6 +1461,7 @@ def pdf_quality_summary(plan: GuidePlan, pdf_path: Path) -> dict[str, object]:
     max_pages = pdf_recommended_max_pages(plan)
     size_mib = pdf_path.stat().st_size / (1024 * 1024)
     max_mib = pdf_recommended_max_mib(plan)
+    notation_issues = ascii_math_residue_issues("\n".join(page_texts), context="PDF text")
     return {
         "pdf_pages": page_count,
         "pdf_max_recommended_pages": max_pages,
@@ -1357,6 +1469,7 @@ def pdf_quality_summary(plan: GuidePlan, pdf_path: Path) -> dict[str, object]:
         "pdf_max_recommended_mib": round(max_mib, 2),
         "pdf_blank_text_pages": blank_text_pages,
         "pdf_file_uri_footer_pages": file_uri_footer_pages,
+        "pdf_ascii_math_residue": notation_issues,
         "pdf_average_text_chars": (int(sum(page_text_lengths) / page_count) if page_count else 0),
     }
 

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from intl_exam_guide.planning.syllabus_outline import (
     apply_syllabus_outline_response,
+    build_syllabus_evidence,
+    build_syllabus_outline_prompt,
     validate_syllabus_outline,
 )
 from intl_exam_guide.models import Qualification, SourceRecord
@@ -11,6 +13,19 @@ def outline_base() -> dict[str, object]:
     return {
         "schema_version": "v0.5-llm-syllabus-outline",
         "status": "llm-analyst-approved",
+        "source_inputs": {
+            "markdown_companion_read": True,
+            "page_evidence_read": True,
+            "markdown_extraction_status": "success",
+            "raw_pdf_available_to_llm": False,
+        },
+        "cross_check": {
+            "markdown_structure_used": "Markdown showed the two skill statements as flat bullets.",
+            "page_evidence_used": "Page-level evidence confirmed both bullets and page references.",
+            "mismatches": [],
+            "markdown_omissions": [],
+            "unresolved_source_gaps": [],
+        },
         "structure_analysis": {
             "model": "flat",
             "rationale": "The PDF lists two standalone skill statements with no deeper hierarchy.",
@@ -80,10 +95,56 @@ def outline_base() -> dict[str, object]:
     }
 
 
+def test_syllabus_outline_prompt_includes_dual_track_inputs_and_page_priority():
+    qualification = Qualification(
+        title="Test Mathematics",
+        code="9999",
+        qualification_type="international_gcse",
+        subject_area="Mathematics",
+        page_url="https://example.test/math",
+        summary=[],
+        topics=[],
+        assessments=[],
+        source=SourceRecord(
+            provider="test",
+            page_url="https://example.test/math",
+            specification_url="https://example.test/spec.pdf",
+            specification_sha256="abc",
+        ),
+        audience_note="For test students.",
+    )
+    evidence = build_syllabus_evidence(qualification, [(4, "Use ratios to compare quantities.")])
+    prompt = build_syllabus_outline_prompt(
+        qualification,
+        evidence,
+        "# Specification\n\n## Ratio and proportion",
+        {"status": "success", "markdown_path": "source/specification.md"},
+    )
+
+    assert "source/specification.md" in prompt
+    assert "source/markdown-extraction.json" in prompt
+    assert "syllabus-evidence.json" in prompt
+    assert "page-level evidence wins" in prompt
+    assert "Python must not parse Markdown to split topics" in prompt
+
+
+
 def test_outline_validation_accepts_small_llm_led_flat_split():
     issues = validate_syllabus_outline(outline_base())
 
     assert [issue for issue in issues if issue.severity == "error"] == []
+
+
+
+def test_outline_validation_requires_dual_track_audit_fields():
+    outline = outline_base()
+    outline["source_inputs"] = {"markdown_companion_read": False}
+    outline.pop("cross_check")
+
+    messages = [issue.message for issue in validate_syllabus_outline(outline)]
+
+    assert any("source_inputs" in message for message in messages)
+    assert any("cross_check" in message for message in messages)
 
 
 

@@ -39,8 +39,9 @@
 OpenClaw、Hermes 或其它 Agent 的宿主 LLM 按 Analyst、Writer、Reviewer 三个轻量角色工作：
 根据当前官方大纲即时判断 topic 边界、写概念解释、例题、学习路线和每个 topic 的
 `visual_decision`，再单独复查渲染后的手册。Reviewer 可以是用户明确要求时的独立 Agent，
-但不是强制子 Agent。Python 包只负责抓取官方来源、规划结构、导出 HTML/PDF、登记图片资产、
-写入 concept/image jobs 和执行机械验证。
+但不是强制子 Agent。Python 包只负责抓取官方来源、生成 page-level evidence、调用外部
+MarkItDown 生成 `source/specification.md`、导出 HTML/PDF、登记图片资产、写入 concept/image jobs
+和执行机械验证；Python 不从 Markdown 拆 topic。
 
 CLI 只是框架调试和草稿 fallback。直接运行 `python -m intl_exam_guide generate ...`
 会得到结构完整但教学内容偏骨架化的 draft，不能当成已经可交给学生的最终手册。
@@ -58,7 +59,7 @@ CLI 只是框架调试和草稿 fallback。直接运行 `python -m intl_exam_gui
 
 说明：文档和用户提示里优先使用国内更常见的简称 AQA、Edexcel、CAIE；对应全称分别是 OxfordAQA / Oxford International AQA、Pearson Edexcel、Cambridge International / CAIE。
 
-这套流程面向三大考试局统一设计：先读取官方大纲，再围绕当前 topic/source points 写出已复查的概念解释，生成例题、图文学习单元、复习题和 PDF。
+这套流程面向三大考试局统一设计：先把官方 PDF 生成 Markdown companion 和 page-level evidence，让 Analyst 同时读两份输入判断结构并保留页码证据，再围绕当前 topic/source points 写出已复查的概念解释，生成例题、图文学习单元、复习题和 PDF。
 
 ## 快速使用
 
@@ -108,8 +109,13 @@ outputs/chemistry-9202/
   concepts/                  概念解释任务和已复查概念解释
   run-options.json           本次确认的科目、语言和讲解风格
   guide-plan.json            知识点、例题和复习任务规划
-  qualification.json         课程与来源信息
-  validation.json            完整性检查结果
+      qualification.json         课程与来源信息
+      syllabus-evidence.json     官方 PDF page-level evidence
+      syllabus-outline.json      Analyst 写出的结构与 topic 拆分
+      source/specification.md    MarkItDown 生成的官方 PDF Markdown companion
+      source/markdown-extraction.json  Markdown 转换状态和警告
+      validation.json            完整性检查结果
+
   handbook-package.json      最终交付清单
   final-review-packet.json   reviewer 最终复查证据
   agent-product-review.json  当前 Agent 读成品、修复并兜底后的产品复查证据
@@ -129,7 +135,7 @@ outputs/chemistry-9202/
 `python -m intl_exam_guide review --out <output-dir>` 并阅读
 `final-review-packet.json`。Validation 不是充分条件；独立 reviewer 要看渲染摘录、
 topic/source 摘要、例题证据、概念解释任务和视觉任务状态。当前 Agent 还必须像学生一样
-打开手册成品，检查 PDF 页面、图像、术语策略和大纲对应关系，修复能修的问题，并写入
+打开手册成品，检查 PDF 页面、图像、跨页视觉重复、数学/科学符号可读性、术语策略和大纲对应关系，修复能修的问题，并写入
 `agent-product-review.json`。没有这个产品复查证据，即使 validation 没有 error，也只能是
 review-ready 或 draft，不能标 final-ready。
 

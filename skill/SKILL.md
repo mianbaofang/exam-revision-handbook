@@ -58,15 +58,17 @@ Use evidence extraction first:
 python -m intl_exam_guide extract-evidence --provider <oxfordaqa|pearson|cambridge> --query "<subject or official URL>" --level <level> --exam-year <year> --out <output-dir>
 ```
 
-This writes only `qualification.json`, `syllabus-evidence.json`, and `source/`. It must not be treated as a generated handbook.
+This writes only `qualification.json`, `syllabus-evidence.json`, and `source/`. For official PDF runs, `source/` must include the original PDF, page-text extraction, `specification.md`, and `markdown-extraction.json`. It must not be treated as a generated handbook.
 
 ### 2. Analyst Writes The Outline
 
-The host LLM reads `syllabus-evidence.json` and writes `syllabus-outline.json`.
+The host LLM reads all three source inputs and writes `syllabus-outline.json`: `source/specification.md` for document structure, `source/markdown-extraction.json` for conversion status/warnings, and `syllabus-evidence.json` for page-level source truth. Markdown helps identify headings, tables, bullets, and content/assessment/appendix boundaries; page-level evidence controls page numbers, snippets, and source coverage when the two disagree. Python must not split topics from Markdown.
 
 The outline must include:
 
 - `schema_version: "v0.5-llm-syllabus-outline"`;
+- `source_inputs` confirming `markdown_companion_read`, `page_evidence_read`, and `markdown_extraction_status`;
+- `cross_check` recording `markdown_structure_used`, `page_evidence_used`, `mismatches`, `markdown_omissions`, and `unresolved_source_gaps`;
 - `structure_analysis` for this exact PDF;
 - `official_structure` when the PDF exposes containers;
 - `source_coverage[]` with stable IDs, page references, and source snippets;
@@ -93,7 +95,7 @@ For each topic, provide:
 - `visual_decision`: the Writer's learning-value judgment for the topic;
 - optional `visual_spec` only when `visual_decision.recommended_route` asks for an exact SVG, Kroki diagram, or external infographic.
 
-Use proper student-facing mathematical notation where the subject needs it: `²`, `³`, `√`, `≤`, `≥`, `≠`, `θ`, `μ`, and similar stable Unicode symbols are preferred over plain-text fallbacks such as `^2`, `sqrt()`, `<=`, or `>=`. Do not rely on MathJax or a formula engine for final PDF readability.
+Use proper student-facing mathematical/scientific notation where the subject needs it: `b²`, `t³`, `x<sup>−1/2</sup>`, `√(...)`, `≤`, `≥`, `≠`, `θ`, `μ`, and similar stable expressions are preferred over programmer-style fallbacks such as `b^2`, `t^3`, `x^(-1/2)`, `sqrt(...)`, `<=`, `>=`, or `!=`. Do not rely on PDF→Markdown, MathJax, or a formula engine to fix notation after writing.
 
 `mastery_summary` is Writer-owned content. Python must not fill it from a checklist template.
 
@@ -118,7 +120,7 @@ Render HTML after the Analyst and Writer artifacts are present. Mechanical valid
 
 The Reviewer must open or screenshot the named HTML output and inspect the visible handbook. If PDF is exported, sample pages from it too. Validation, quality inspection, and review packets are supporting evidence only; they are not approval.
 
-At minimum, check the cover, roadmap, topic order, concept explanations, examples, visuals, glossary policy, source traceability, and the Analyst `granularity_audit`. Confirm official bullets can be traced from the handbook directory/table of contents to visible teaching treatment, not only to JSON coverage IDs.
+At minimum, check the cover, roadmap, topic order, concept explanations, examples, visuals, glossary policy, source traceability, and the Analyst `granularity_audit`. Confirm official bullets can be traced from the handbook directory/table of contents to visible teaching treatment, not only to JSON coverage IDs. Also check cross-page visual repetition: repeated SVG layouts, identical raster infographics, duplicate visual titles/structures, or decorative page patterns that make different topics look the same. Spot-check HTML/PDF notation for code-style residues such as `b^2`, `t^3`, `x^(-1/2)`, `sqrt(...)`, `<=`, `>=`, and `!=`.
 
 Do not present the handbook as final until the rendered HTML has actually been inspected and any pending visual or concept blockers are reported honestly. Student-facing HTML/PDF must not expose internal review/check panels such as `Review Check`, `Needs visible review`, delivery states, validation reminders, or coordinator-only handoff text.
 
@@ -163,8 +165,11 @@ Stop or downgrade the handoff when:
 - the topic split came from Python fallback instead of the LLM Analyst;
 - Pearson or Cambridge metadata is visibly wrong;
 - source page furniture leaks into topic points;
+- official PDF run lacks `source/specification.md` or `source/markdown-extraction.json`, or Markdown extraction status is not `success`;
 - generated HTML has not been opened or screenshot-inspected;
 - topic explanations are template filler or subject-mismatched;
 - roadmap mastery summaries are missing, duplicated, or Python-generated;
 - a topic is missing `visual_decision`, or a `text-ok` decision lacks `no_visual_reason`;
-- complex visuals are pending but described as reviewed assets.
+- complex visuals are pending but described as reviewed assets;
+- cross-page visual repetition makes different topics look like reused templates;
+- student-facing HTML/PDF still contains ASCII math residue such as `^2`, `sqrt(...)`, `<=`, `>=`, or `!=`.

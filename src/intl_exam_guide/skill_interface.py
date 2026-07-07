@@ -19,6 +19,7 @@ from intl_exam_guide.auditing.quality_inspector import write_quality_inspection
 from intl_exam_guide.auditing.concept_jobs import build_concept_jobs, write_concept_jobs
 from intl_exam_guide.llm.provider import ConceptExplanation, ConceptJob
 from intl_exam_guide.models import GuidePlan, Qualification
+from intl_exam_guide.parsing.markdown_companion import write_markdown_companion
 from intl_exam_guide.planning.concept_integration import (
     apply_concept_entries,
     concept_entry_from_callback_response,
@@ -148,6 +149,7 @@ class SkillHandbookGenerator:
         qualification: Qualification,
         output_path: Path,
     ) -> Qualification:
+        _ensure_markdown_companion(qualification)
         pages = _pages_from_extracted_text(qualification.source.extracted_text_path)
         write_syllabus_evidence(qualification, output_path, pages)
         if not self.analyst_callback:
@@ -156,7 +158,8 @@ class SkillHandbookGenerator:
             )
             return qualification
         evidence = build_syllabus_evidence(qualification, pages)
-        prompt = build_syllabus_outline_prompt(qualification, evidence)
+        markdown_text, markdown_report = _markdown_companion_inputs(qualification)
+        prompt = build_syllabus_outline_prompt(qualification, evidence, markdown_text, markdown_report)
         response = await self.analyst_callback(prompt)
         result = apply_syllabus_outline_response(qualification, response)
         write_syllabus_outline(output_path, result.outline)
@@ -216,6 +219,7 @@ class SkillHandbookGenerator:
                 "The explanations value must be a list of 2-4 direct student-facing bullets.",
                 "The mastery_summary value must be one concrete student-facing sentence for the Study Roadmap 'What to master' column.",
                 "Stay inside the topic title and source points. Do not write a procedural checklist.",
+                "Use print-ready math/science notation in student-facing text: b², t³, x<sup>−1/2</sup>, √(...), ≤, ≥, ≠, θ, μ. Do not leave b^2, t^3, x^(-1/2), sqrt(...), <=, >=, or !=.",
                 "Always include visual_decision. Use recommended_route='text-ok' only with a clear no_visual_reason explaining why a diagram would not improve learning.",
                 "Prefer exact SVG for coordinate models, processes, tables, curves, simple flows, trees, timelines, and other label/geometry-first visuals.",
                 "Prefer infographic for abstract mechanisms, multiple factors, policy transmission, pros/cons, realism, rich annotation, apparatus, scenes, or modelling assumptions.",
@@ -628,6 +632,43 @@ class IncrementalGenerator:
 
 def handbook_topics(plan: GuidePlan) -> list[object]:
     return [topic for topic in plan.qualification.topics if not is_scope_exclusion_topic(topic)]
+
+
+def _ensure_markdown_companion(qualification: Qualification) -> None:
+    if not qualification.source.specification_path:
+        return
+    pdf_path = Path(qualification.source.specification_path)
+    if not pdf_path.exists():
+        return
+    report_path = pdf_path.parent / "markdown-extraction.json"
+    markdown_path = pdf_path.parent / "specification.md"
+    if report_path.exists() and markdown_path.exists():
+        return
+    write_markdown_companion(
+        pdf_path,
+        source_pdf_sha256=qualification.source.specification_sha256,
+        output_dir=pdf_path.parent,
+    )
+
+
+
+def _markdown_companion_inputs(qualification: Qualification) -> tuple[str | None, dict[str, object] | None]:
+    if not qualification.source.specification_path:
+        return None, None
+    source_dir = Path(qualification.source.specification_path).parent
+    markdown_path = source_dir / "specification.md"
+    report_path = source_dir / "markdown-extraction.json"
+    markdown_text = markdown_path.read_text(encoding="utf-8", errors="replace") if markdown_path.exists() else None
+    report: dict[str, object] | None = None
+    if report_path.exists():
+        try:
+            parsed = json.loads(report_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            parsed = None
+        if isinstance(parsed, dict):
+            report = parsed
+    return markdown_text, report
+
 
 
 def _pages_from_extracted_text(path_value: str | None) -> list[tuple[int, str]]:

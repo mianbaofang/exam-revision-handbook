@@ -81,7 +81,9 @@ def concept_task_text(language: str) -> str:
         "Write 2-3 student-facing concept explanation bullets. Stay inside "
         "topic_title and source_points; explain what the concept is, what "
         "relationship or boundary it describes, and why it is central. Do not "
-        "write a procedural checklist or import adjacent topics."
+        "write a procedural checklist or import adjacent topics. Use print-ready "
+        "math/science notation: b², t³, x<sup>−1/2</sup>, √(...), ≤, ≥, ≠, θ, μ; "
+        "do not leave b^2, t^3, x^(-1/2), sqrt(...), <=, >=, or != in student-facing text."
     )
 
 

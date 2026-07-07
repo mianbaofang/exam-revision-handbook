@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.5.1 - 2026-07-06
+
+### Changed
+
+- Made official PDF evidence dual-track: provider downloads now create page-level
+  `syllabus-evidence.json`, mandatory `source/specification.md`, and
+  `source/markdown-extraction.json` via an external MarkItDown CLI or isolated
+  `.venv-markitdown`, without adding MarkItDown to main package dependencies.
+- Updated the Analyst contract so `syllabus-outline.json` must record
+  `source_inputs` and `cross_check`, and the LLM Analyst must read Markdown plus
+  page-level evidence while Python still never splits topics from Markdown.
+- Added final-readiness gates for missing/failed Markdown extraction and stronger
+  source-evidence mapping checks.
+- Added a notation contract and mechanical lint for student-facing ASCII maths
+  residue in guide plans, rendered HTML, and extracted PDF text.
+- Expanded Reviewer duties to include notation spot-checks and cross-page visual
+  repetition checks for repeated SVG/raster/layout patterns.
+
 ## 0.5 - 2026-07-06
 
 ### Changed

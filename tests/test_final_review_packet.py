@@ -251,6 +251,8 @@ def complete_product_review() -> dict[str, object]:
         "merged_bullets_visible_in_handbook": True,
         "pdf_pages_sampled": [1, 2],
         "visuals_inspected": True,
+        "cross_page_visual_repetition_checked": True,
+        "notation_spot_check_completed": True,
         "glossary_policy_checked": True,
         "repair_loop_completed": True,
         "repairs_made": [],

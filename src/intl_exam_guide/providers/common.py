@@ -18,6 +18,7 @@ from intl_exam_guide.models import (
     SourceSnippet,
     Topic,
 )
+from intl_exam_guide.parsing.markdown_companion import write_markdown_companion
 from intl_exam_guide.parsing.pdf_text import extract_pdf_pages, extract_pdf_text
 from intl_exam_guide.providers.base import Link
 
@@ -302,6 +303,7 @@ def attach_pdf_content(
 
     pages = extract_pdf_pages(pdf_path)
     text_path.write_text(extract_pdf_text(pdf_path), encoding="utf-8")
+    write_markdown_companion(pdf_path, source_pdf_sha256=digest, output_dir=output_dir)
 
     # Write candidate hints (page text only, no topic parsing)
     # These are optional reference hints for the LLM Analyst.

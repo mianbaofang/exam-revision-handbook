@@ -14,10 +14,12 @@ worked-example wording are produced by **the LLM that runs this Skill**:
 - When the Agent host (OpenClaw / Hermes / Claude / etc.) loads this Skill,
   the host's LLM plays the **Writer** role: it writes original concept
   explanations for each topic from its own knowledge, in the requested style.
-- The host's LLM also plays the **Analyst** role: it reads the official
-  syllabus evidence, decides the real topic boundaries and exam points, and
-  writes the authoritative `syllabus-outline.json`. Python only collects page
-  evidence; it does **not** decide topics or exam points on its own.
+- The host's LLM also plays the **Analyst** role: it reads both the official
+  Markdown companion (`source/specification.md`) and page-level evidence
+  (`syllabus-evidence.json`), decides the real topic boundaries and exam
+  points, and writes the authoritative `syllabus-outline.json`. Python only
+  collects page evidence and invokes external MarkItDown for structure-readable
+  Markdown; it does **not** decide topics or exam points on its own.
 - The host's LLM then performs the **Reviewer** role as a separate review pass:
   the Reviewer reads the rendered handbook/PDF and source evidence without
   treating the Writer's validation as approval, then checks for teaching
@@ -27,8 +29,10 @@ worked-example wording are produced by **the LLM that runs this Skill**:
 
 The Python package under `src/intl_exam_guide/` provides:
 
-- Provider adapters that fetch and parse official OxfordAQA / Pearson Edexcel /
-  Cambridge International qualification pages and PDFs.
+- Provider adapters that fetch official OxfordAQA / Pearson Edexcel /
+  Cambridge International qualification pages and PDFs, extract page-level evidence,
+  and create a mandatory MarkItDown Markdown companion for official PDF workflows
+  without adding MarkItDown to the main package dependencies.
 - HTML and PDF rendering of the three-role output.
 - Validation and quality gates (`scripts/import_concept_explanations.py`,
   `scripts/import_infographic_assets.py`).
@@ -93,8 +97,10 @@ The workflow is a lightweight three-role process: Analyst, Writer, and Reviewer.
 Those names are operating roles, not mandatory separate agents; one host LLM can
 run them step by step unless the user explicitly chooses multi-agent delegation.
 The Reviewer still has to open the visible handbook/PDF and cannot treat machine
-validation as approval. Supporting evidence is written to `delivery-contract.json`
-and `final-review-packet.json`.
+validation as approval. The review includes source traceability, notation spot-checks,
+and cross-page visual repetition checks so repeated image layouts or code-style
+maths do not slip into the student edition. Supporting evidence is written to
+`delivery-contract.json` and `final-review-packet.json`.
 
 Delivery quality claims are tracked in the delivery matrix at
 `tests/fixtures/delivery_matrix.json`. Each route has an explicit claim status

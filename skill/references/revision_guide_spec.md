@@ -45,16 +45,19 @@ For custom image providers, record the model name, endpoint URL, and API-key env
 
 ## Analyst Source Split Contract
 
-The syllabus outline is an LLM-owned interpretation of the current official specification. Python may download, extract, store, and validate evidence, but it must not decide the syllabus structure, require a fixed number of layers, or require provider-specific labels.
+The syllabus outline is an LLM-owned interpretation of the current official specification. Python may download, extract, store, convert the official PDF to Markdown, and validate evidence, but it must not decide the syllabus structure, require a fixed number of layers, or require provider-specific labels.
+
+Official PDF production uses dual-track source input. Python must generate `syllabus-evidence.json`, `source/specification.md`, and `source/markdown-extraction.json`. The Analyst reads Markdown for document structure and page-level evidence for source truth. If Markdown and page evidence disagree, page evidence wins. Python must not split topics from Markdown headings, tables, or bullets.
 
 The Analyst writes `syllabus-outline.json` in this order:
 
-1. Read the current PDF evidence and write `structure_analysis`, explaining how this exact syllabus organizes examinable content. The structure may be flat, nested, mixed, route-based, table-based, code-based, objective-based, or another form visible in the PDF.
-2. Record `official_structure` when the PDF exposes structural containers such as parts, units, components, routes, sections, options, papers, or sub-sections. If the source is genuinely flat, say so; Python must not invent missing layers.
-3. Record `source_coverage`: the actual examinable rows, bullets, coded points, skill statements, formula requirements, restrictions, examples, or table cells that need coverage. Paired columns such as Content and Additional information should stay linked when the second column clarifies the first.
-4. Write `granularity_audit`: for every `source_coverage` item, decide whether it is an independent topic, merged into a topic, prerequisite, or sub-skill. Any merged item must name the target topic, explain the teaching reason for the merge, and state the visible handbook treatment that will teach it.
-5. Split `topics[]` into final teachable knowledge units or tight clusters justified by the current source evidence. A topic title should name what the student learns, not merely repeat where it appears in the PDF.
-6. Map every final topic back to `source_coverage_ids`, source snippets, and page numbers so the Writer and Reviewer can audit the split.
+1. Read `source/specification.md`, `source/markdown-extraction.json`, and `syllabus-evidence.json`; record `source_inputs` and `cross_check` with Markdown structure use, page evidence use, mismatches, Markdown omissions, and unresolved source gaps.
+2. Write `structure_analysis`, explaining how this exact syllabus organizes examinable content. The structure may be flat, nested, mixed, route-based, table-based, code-based, objective-based, or another form visible in the PDF.
+3. Record `official_structure` when the PDF exposes structural containers such as parts, units, components, routes, sections, options, papers, or sub-sections. If the source is genuinely flat, say so; Python must not invent missing layers.
+4. Record `source_coverage`: the actual examinable rows, bullets, coded points, skill statements, formula requirements, restrictions, examples, or table cells that need coverage. Paired columns such as Content and Additional information should stay linked when the second column clarifies the first.
+5. Write `granularity_audit`: for every `source_coverage` item, decide whether it is an independent topic, merged into a topic, prerequisite, or sub-skill. Any merged item must name the target topic, explain the teaching reason for the merge, and state the visible handbook treatment that will teach it.
+6. Split `topics[]` into final teachable knowledge units or tight clusters justified by the current source evidence. A topic title should name what the student learns, not merely repeat where it appears in the PDF.
+7. Map every final topic back to `source_coverage_ids`, source snippets, and page numbers so the Writer and Reviewer can audit the split.
 
 A valid split is source-relative and teaching-relative. The failure case to block is an outline that collapses detailed source coverage into container headings, maps official bullets only in JSON, or cannot show where each official bullet receives visible teaching treatment in the handbook.
 
@@ -95,7 +98,7 @@ The tone should help teenagers stay awake and oriented:
 - use original adventure or story framing only when it helps motivation;
 - avoid copying protected characters, stories, or exam-paper artwork;
 - avoid long academic paragraphs and unsupported syllabus claims;
-- write formulas and inequalities with stable student-facing symbols such as `²`, `³`, `√`, `≤`, `≥`, `≠`, `θ`, and `μ` instead of plain-text fallbacks such as `^2`, `sqrt()`, `<=`, or `>=`;
+- write formulas and inequalities with stable student-facing symbols such as `b²`, `t³`, `x<sup>−1/2</sup>`, `√(...)`, `≤`, `≥`, `≠`, `θ`, and `μ` instead of programmer-style fallbacks such as `b^2`, `t^3`, `x^(-1/2)`, `sqrt(...)`, `<=`, `>=`, or `!=`;
 - remove formulaic transitions such as `In conclusion`, `Overall`, `总之`, and `值得注意的是` from student-facing text.
 
 ## Visual Workflow
@@ -109,7 +112,7 @@ Every topic in `concepts/concept_explanations.json` must include `visual_decisio
 - `recommended_route: "kroki-diagram"`: a professional formal diagram is more suitable than an exact LLM SVG; review the generated SVG before final delivery.
 - `recommended_route: "external-infographic"`: a richer reviewed raster asset is needed; create a source-bound visual brief and prompt queue entry until an asset exists.
 
-Only routes other than `text-ok` should include `visual_spec`. The v0.5 visual manifest keeps the Writer's `recommended_route` separate from the actual `rendered_asset`, so `exact-svg`, `kroki-diagram`, or `external-infographic` is not complete until the corresponding reviewed file exists and renders in the handbook.
+Only routes other than `text-ok` should include `visual_spec`. The v0.5 visual manifest keeps the Writer's `recommended_route` separate from the actual `rendered_asset`, so `exact-svg`, `kroki-diagram`, or `external-infographic` is not complete until the corresponding reviewed file exists and renders in the handbook. Review must also catch cross-page visual repetition: repeated SVG structures, reused raster assets, duplicate visual titles, or decorative page layouts that make unrelated topics look copied.
 
 Good exact-SVG cases include number lines, simple graphs, pH scales, particle models, energy profiles, basic geometry, flows, hierarchies, timelines, and relationship maps when the geometry and labels fully carry the concept.
 
@@ -144,9 +147,10 @@ Before presenting a handbook as complete, confirm:
 - visual briefs or reviewed assets exist for visual topics;
 - `visual_manifest.json` distinguishes the recommended route from the rendered asset state;
 - `validation.json` has no `error` issues;
+- official PDF runs have successful `source/markdown-extraction.json` and readable `source/specification.md`;
 - PDF export succeeded when requested, or the user is told why it was skipped.
 
-Then the host LLM must open or screenshot the named HTML output and review the visible handbook. It should compare topic sequence, `granularity_audit`, and concept explanations with the syllabus outline; confirm official bullets are visibly taught rather than only mapped in JSON; inspect diagrams/images; check glossary policy; sample PDF pages when exported; and fix repairable issues before handoff.
+Then the host LLM must open or screenshot the named HTML output and review the visible handbook. It should compare topic sequence, `granularity_audit`, and concept explanations with the syllabus outline; confirm official bullets are visibly taught rather than only mapped in JSON; inspect diagrams/images for accuracy and cross-page repetition; check glossary policy; spot-check notation for `b^2`, `sqrt(...)`, `x^(-1/2)`, `<=`, `>=`, and similar ASCII residue; sample PDF pages when exported; and fix repairable issues before handoff.
 
 The student edition must be exported only after internal review/check panels have been removed. `final-review-packet.json`, `quality-inspection.json`, and validation notes are review evidence, not student handbook sections.
 

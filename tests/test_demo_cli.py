@@ -198,7 +198,11 @@ def test_generate_cli_runs_provider_chain_offline(monkeypatch, tmp_path):
         def download_specification(self, qualification, output_dir, exam_year=None):
             calls.append(("download", str(output_dir.name), exam_year))
             output_dir.mkdir(parents=True, exist_ok=True)
-            (output_dir / "spec.pdf").write_bytes(b"%PDF-1.4\n")
+            pdf_path = output_dir / "spec.pdf"
+            pdf_path.write_bytes(b"%PDF-1.4\n")
+            qualification.source.specification_path = str(pdf_path)
+            qualification.source.extracted_text_path = str(output_dir / "specification.txt")
+            (output_dir / "specification.txt").write_text("--- Page 1 ---\nEvidence.", encoding="utf-8")
             return qualification
 
     monkeypatch.setattr(cli_module, "get_provider", lambda _name: FakeProvider())
@@ -227,6 +231,7 @@ def test_generate_cli_runs_provider_chain_offline(monkeypatch, tmp_path):
     ]
     assert (output_dir / "qualification.json").exists()
     assert (output_dir / "syllabus-evidence.json").exists()
+    assert (output_dir / "source" / "markdown-extraction.json").exists()
     assert not (output_dir / "guide.html").exists()
     assert not (output_dir / "guide-plan.json").exists()
     assert not (output_dir / "validation.json").exists()
@@ -258,7 +263,9 @@ def test_extract_evidence_cli_writes_evidence_only(monkeypatch, tmp_path):
                 encoding="utf-8",
             )
             qualification.source.extracted_text_path = str(text_path)
-            qualification.source.specification_path = str(output_dir / "specification.pdf")
+            pdf_path = output_dir / "specification.pdf"
+            pdf_path.write_bytes(b"%PDF-1.4\n")
+            qualification.source.specification_path = str(pdf_path)
             return qualification
 
     monkeypatch.setattr(cli_module, "get_provider", lambda _name: FakeProvider())
@@ -293,6 +300,7 @@ def test_extract_evidence_cli_writes_evidence_only(monkeypatch, tmp_path):
     assert [page["page"] for page in evidence["pages"]] == [1, 2]
     assert "source documents" in evidence["pages"][0]["text"]
     assert qualification["source"]["extracted_text_path"].endswith("specification.txt")
+    assert (output_dir / "source" / "markdown-extraction.json").exists()
     assert not (output_dir / "guide.html").exists()
     assert not (output_dir / "guide-plan.json").exists()
     assert not (output_dir / "validation.json").exists()

@@ -238,7 +238,7 @@ def test_validate_html_output_rejects_plain_text_math_notation(tmp_path):
             f"<h2>{marker}</h2>"
             "<p>How to Study Study Roadmap One-Sentence Essence Method Worked Example "
             "Solution Check Exam Pitfall Source anchor Visual Worked Example</p>"
-            "<p>Use y = (x - 3)^2 + sqrt(x) >= 0.</p>"
+            "<p>Use y = x^2 + sqrt(x) >= 0.</p>"
             "</body></html>"
         ),
         encoding="utf-8",
@@ -246,9 +246,31 @@ def test_validate_html_output_rejects_plain_text_math_notation(tmp_path):
 
     messages = [issue.message for issue in validate_html_output(plan, html_path)]
 
-    assert "Student-facing maths should use rendered symbols, not caret exponent notation: ^2" in messages
-    assert "Student-facing maths should use rendered symbols, not sqrt() notation: sqrt(" in messages
-    assert "Student-facing maths should use rendered symbols, not >= notation: >=" in messages
+    assert "Student-facing maths should use print-ready notation, not caret exponent notation: x^2" in messages
+    assert "Student-facing maths should use print-ready notation, not sqrt() notation: sqrt(" in messages
+    assert "Student-facing maths should use print-ready notation, not >= notation: >=" in messages
+
+
+def test_validate_plan_rejects_ascii_math_residue_and_accepts_print_ready_notation():
+    plan = valid_plan()
+    plan.visual_briefs = []
+    plan.topic_guides[0].mini_worked_example = "Use b^2 and t^3, then x^(-1/2), sqrt(np(1-p)), <=, >=, !=."
+
+    messages = [issue.message for issue in validate_plan(plan)]
+
+    assert any("b^2" in message for message in messages)
+    assert any("t^3" in message for message in messages)
+    assert any("x^(-1/2)" in message for message in messages)
+    assert any("sqrt(" in message for message in messages)
+    assert any("<=" in message for message in messages)
+    assert any(">=" in message for message in messages)
+    assert any("!=" in message for message in messages)
+
+    plan.topic_guides[0].mini_worked_example = "Use b² and t³, then x<sup>−1/2</sup>, √(np(1 − p)), ≤, ≥, ≠."
+    messages = [issue.message for issue in validate_plan(plan)]
+
+    assert not any("print-ready notation" in message for message in messages)
+
 
 
 def test_validate_html_output_uses_disambiguated_rendered_topic_titles(tmp_path):
@@ -743,6 +765,44 @@ def test_qualification_notes_and_output_package_pin_release_quality_edges(tmp_pa
     assert "Visual manifest is missing from images directory." in output_messages
 
 
+def test_output_package_requires_markdown_companion_success_for_official_pdf(tmp_path):
+    plan = valid_plan()
+    source_dir = tmp_path / "source"
+    source_dir.mkdir()
+    pdf_path = source_dir / "spec.pdf"
+    pdf_path.write_bytes(b"%PDF-1.4\n")
+    plan.qualification.source.specification_path = str(pdf_path)
+
+    messages = [issue.message for issue in validate_output_package(plan, tmp_path)]
+
+    assert any("missing Markdown companion" in message for message in messages)
+    assert any("missing MarkItDown extraction report" in message for message in messages)
+
+    (source_dir / "specification.md").write_text("# Specification", encoding="utf-8")
+    (source_dir / "markdown-extraction.json").write_text(
+        json.dumps(
+            {
+                "schema_version": "v0.5-markdown-extraction",
+                "tool": "markitdown",
+                "tool_version": None,
+                "source_pdf": str(pdf_path),
+                "source_pdf_sha256": "abc",
+                "markdown_path": str(source_dir / "specification.md"),
+                "command": [],
+                "created_at": "2026-07-06T00:00:00+00:00",
+                "status": "missing-tool",
+                "markdown_char_count": 0,
+                "warnings": ["missing"],
+            }
+        ),
+        encoding="utf-8",
+    )
+    messages = [issue.message for issue in validate_output_package(plan, tmp_path)]
+
+    assert any("MarkItDown extraction status is missing-tool" in message for message in messages)
+
+
+
 def test_output_package_validates_llm_syllabus_outline_self_consistency(tmp_path):
     plan = valid_plan()
     plan.qualification.route_tags.append("outline-source:llm-analyst")
@@ -751,6 +811,19 @@ def test_output_package_validates_llm_syllabus_outline_self_consistency(tmp_path
             {
                 "schema_version": "v0.5-llm-syllabus-outline",
                 "status": "llm-analyst-approved",
+                "source_inputs": {
+                    "markdown_companion_read": True,
+                    "page_evidence_read": True,
+                    "markdown_extraction_status": "success",
+                    "raw_pdf_available_to_llm": False,
+                },
+                "cross_check": {
+                    "markdown_structure_used": "Markdown showed the source rows under a container.",
+                    "page_evidence_used": "Page evidence confirmed source snippets and page 4.",
+                    "mismatches": [],
+                    "markdown_omissions": [],
+                    "unresolved_source_gaps": [],
+                },
                 "structure_analysis": {
                     "model": "nested",
                     "rationale": "The PDF groups rows under one source container.",

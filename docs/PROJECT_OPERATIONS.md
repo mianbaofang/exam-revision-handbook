@@ -33,25 +33,27 @@ User-facing promise:
    explicitly offer default single-host Analyst/Writer/Reviewer role passes or
    optional multi-agent delegation when the user wants separate agents and the
    runtime supports them.
-4. Agent fetches official public syllabus/specification sources.
-5. Agent builds topic guides, concept-writing jobs, worked examples, visual
+4. Agent fetches official public syllabus/specification sources and official PDF runs produce dual-track evidence: `syllabus-evidence.json`, `source/specification.md`, and `source/markdown-extraction.json`.
+5. Analyst reads Markdown for document structure and page-level evidence for source truth; Python must not split topics from Markdown.
+6. Agent builds topic guides, concept-writing jobs, worked examples, visual
    briefs, HTML, PDF, and validation output.
-6. Agent writes/imports reviewed concept explanations from
+7. Agent writes/imports reviewed concept explanations from
    `concepts/concept_jobs.json` before treating the handbook as final.
-7. Agent keeps the lightweight operating roles clear: Analyst writes the outline,
+8. Agent keeps the lightweight operating roles clear: Analyst writes the outline,
    Writer writes content and per-topic visual decisions, and Reviewer inspects the
    visible handbook. These roles may be separate agents when explicitly requested,
    but the default Skill contract does not require a project-manager or release
    certification workflow. Review completion is not the same as final-ready
    approval.
-8. The user's active LLM/Agent performs a final product review over the actual
+9. The user's active LLM/Agent performs a final product review over the actual
    rendered handbook before handoff. It must compare the final topic sequence,
-   concept explanations, visuals, glossary support, and sampled PDF pages
-   against the syllabus outline and repair fixable problems before giving the
-   file to the user. Machine gates and Skill output are evidence, not a
-   substitute for this review-and-repair loop. The pass must be recorded in
-   `agent-product-review.json`; without complete product-review evidence, the
-   output remains review-ready or draft even when validation is clean.
+   concept explanations, visuals, glossary support, cross-page visual repetition,
+   notation readability, and sampled PDF pages against the syllabus outline and
+   repair fixable problems before giving the file to the user. Machine gates and
+   Skill output are evidence, not a substitute for this review-and-repair loop.
+   The pass must be recorded in `agent-product-review.json`; without complete
+   product-review evidence, the output remains review-ready or draft even when
+   validation is clean.
 
 Verified delivery entries are only the routes recorded in the delivery matrix
 with current evidence. Candidate routes must not be described as verified

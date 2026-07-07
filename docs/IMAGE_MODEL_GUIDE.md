@@ -61,7 +61,9 @@ external jobs until a reviewed raster asset is supplied.
 Before approving an SVG asset, record the learning claim, required labels,
 source-bound symbols or values, and review risk. The manifest entry must include
 `svg_fit: "exact"` and `review_status: "reviewed"` or `"approved"` before the
-asset can be treated as deliverable.
+asset can be treated as deliverable. Review SVGs across pages, not one by one only:
+repeated structures, repeated titles, or reused decorative diagrams across unrelated
+topics are a handbook-quality failure even when each individual SVG renders.
 
 ## Recommended Providers
 
@@ -81,8 +83,8 @@ Use this as the integration flow:
 
 ```text
 official specification
-  -> Python extracts source evidence
-  -> LLM writes syllabus outline and concept/practice content
+  -> Python extracts page evidence and external MarkItDown creates source/specification.md
+  -> LLM reads Markdown + page evidence and writes syllabus outline and concept/practice content
   -> LLM records visual_decision: text-ok / exact-svg / kroki-diagram / external-infographic
   -> Python records visual manifest and pending jobs
   -> reviewed exact SVG or reviewed raster asset is imported

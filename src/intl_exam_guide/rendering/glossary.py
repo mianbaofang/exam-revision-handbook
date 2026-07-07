@@ -18,7 +18,7 @@ MATH_TERMS: tuple[TermRow, ...] = (
         "判别式",
         "判別式",
         "判別式",
-        "The value b^2 - 4ac used to decide root types.",
+        "The value b² − 4ac used to decide root types.",
     ),
     ("Root", "根", "根", "解", "A value that makes an equation equal zero."),
     ("Intercept", "截距", "截距", "切片", "Where a graph crosses an axis."),
