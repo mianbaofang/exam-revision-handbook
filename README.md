@@ -24,6 +24,14 @@
   <a href="skill/references/revision_guide_spec.md">Handbook spec</a>
 </p>
 
+## Why This Skill Exists
+
+This project did not start as "a tool." It started with a real child moving through a difficult transition.
+
+My son is preparing for his International GCSE exams this year. Less than a year ago, he moved from a Chinese public-school path into an international curriculum. Almost overnight, the classroom language changed from Chinese to English. The knowledge itself can be learned step by step, but a new language, a new exam style, and the pressure of an approaching exam season can easily make a child feel pushed along by the system.
+
+I built this study and revision Skill with AI so it can take the relevant course requirements and break them into understandable structures, worked examples, diagrams, and checkpoints. The purpose is simple: not to let AI study for a child, but to reduce the noise around learning and help students face schoolwork with more calm and control.
+
 An AI Skill for generating image-rich, printable International GCSE and International AS/A-level revision handbooks from official exam-board sources, with Analyst, Writer, and Reviewer roles kept visible from source evidence to final HTML/PDF output.
 
 > Read [Disclaimer](DISCLAIMER.md) before use. This project is not affiliated with or endorsed by any exam board, and generated study materials must be reviewed against official sources.
@@ -76,19 +84,6 @@ The Python package under `src/intl_exam_guide/` provides:
   available. The output stays at `draft/evidence-ready` and cannot be
   presented as `final-ready`. **Run the Skill through an LLM agent to get a
   teaching-grade handbook.**
-
-## Why This Skill Exists
-
-This project began at home. My son is taking his International GCSE exams this
-year after moving from a Chinese public-school path into an international
-curriculum. In less than a year, the classroom language shifted from Chinese to
-English, while the exam clock kept moving.
-
-I used AI to build a study and revision Skill: take the course requirements,
-break knowledge into understandable structures, worked examples, diagrams, and
-checkpoints. The goal is not to let AI learn for a child. The goal is to lower
-the noise around learning so students can face schoolwork with more calm and
-control.
 
 This version is built around the three exam boards most relevant to mainland
 China international-school usage:
