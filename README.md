@@ -1,8 +1,42 @@
 # IGCSE & A-Level AI Revision Guide Skill
 
 <p align="center">
-  <img src="docs/assets/hero.svg" alt="IGCSE and A-Level AI Revision Guide Skill hero" width="100%">
+  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/project-intro-animation-en.html">
+    <img src="docs/assets/intro-animation-preview-en.gif" alt="Three-board revision handbook Skill HTML intro preview" width="100%">
+  </a>
 </p>
+
+<p align="center">
+  <a href="README.zh-CN.md">中文 README</a>
+  ·
+  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/">Project site</a>
+  ·
+  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/project-intro-animation-en.html">HTML intro</a>
+  ·
+  <a href="docs/index.html">Project details</a>
+  ·
+  <a href="docs/release-evidence/README.md">Release evidence</a>
+  ·
+  <a href="DISCLAIMER.md">Disclaimer</a>
+  ·
+  <a href="ACKNOWLEDGEMENTS.md">Acknowledgements</a>
+  ·
+  <a href="skill/references/revision_guide_spec.md">Handbook spec</a>
+</p>
+
+An AI Skill for generating image-rich, printable International GCSE and International AS/A-level revision handbooks from official exam-board sources, with Analyst, Writer, and Reviewer roles kept visible from source evidence to final HTML/PDF output.
+
+> Read [Disclaimer](DISCLAIMER.md) before use. This project is not affiliated with or endorsed by any exam board, and generated study materials must be reviewed against official sources.
+
+## At A Glance
+
+| Question | Answer |
+|---|---|
+| Who is it for? | Families, tutors, and agent users preparing International GCSE or International AS/A-level revision handbooks. |
+| What does it generate? | A source-backed handbook package with HTML/PDF output, topic plans, worked examples, visual decisions, and review evidence. |
+| What does the Python package do? | Fetch official source evidence, render outputs, manage assets, and run mechanical validation. |
+| What must the host LLM do? | Write the syllabus outline, teaching explanations, examples, visual decisions, and final product review. |
+| Current board scope | AQA, Edexcel, and CAIE only. |
 
 ## What This Project Is
 
@@ -55,43 +89,6 @@ break knowledge into understandable structures, worked examples, diagrams, and
 checkpoints. The goal is not to let AI learn for a child. The goal is to lower
 the noise around learning so students can face schoolwork with more calm and
 control.
-
-<p align="center">
-  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/project-intro-animation-en.html">
-    <img src="docs/assets/intro-animation-preview-en.gif" alt="Three-board revision handbook Skill HTML intro preview" width="100%">
-  </a>
-</p>
-
-<p align="center">
-  <a href="README.zh-CN.md">中文 README</a>
-  ·
-  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/">Project site</a>
-  ·
-  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/project-intro-animation-en.html">HTML intro</a>
-  ·
-  <a href="docs/index.html">Project details</a>
-  ·
-  <a href="docs/release-evidence/README.md">Release evidence</a>
-  ·
-  <a href="DISCLAIMER.md">Disclaimer</a>
-  ·
-  <a href="ACKNOWLEDGEMENTS.md">Acknowledgements</a>
-  ·
-  <a href="skill/references/revision_guide_spec.md">Handbook spec</a>
-</p>
-
-## At A Glance
-
-| Question | Answer |
-|---|---|
-| Who is it for? | Families, tutors, and agent users preparing International GCSE or International AS/A-level revision handbooks. |
-| What does it generate? | A source-backed handbook package with HTML/PDF output, topic plans, worked examples, visual decisions, and review evidence. |
-| What does the Python package do? | Fetch official source evidence, render outputs, manage assets, and run mechanical validation. |
-| What must the host LLM do? | Write the syllabus outline, teaching explanations, examples, visual decisions, and final product review. |
-| Current board scope | AQA, Edexcel, and CAIE only. |
-
-An AI Skill for generating image-rich, printable International GCSE and
-International AS-A-level revision handbooks from official exam-board sources.
 
 This version is built around the three exam boards most relevant to mainland
 China international-school usage:
@@ -444,7 +441,7 @@ docs/             project details, policies, examples, and preview pages
 tests/            tests and regression samples
 ```
 
-## Copyright And Source Policy
+## Safety And Source Policy
 
 Do not commit downloaded official PDFs, past papers, mark schemes, or copied exam
 questions. Public samples should use original explanations, original practice

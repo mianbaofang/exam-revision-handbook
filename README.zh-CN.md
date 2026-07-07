@@ -1,21 +1,6 @@
 # IGCSE & A-Level AI Revision Guide Skill
 
 <p align="center">
-  <img src="docs/assets/hero.svg" alt="IGCSE 与 A-Level AI 复习手册 Skill 封面" width="100%">
-</p>
-
-## 为什么要做这个 Skill
-
-这个项目最早不是为了做一个“工具”，而是为了帮一个真实的孩子轻一点地走过转轨期。
-我的儿子今年要参加 International GCSE 大考；他从公办体系转到国际课程还不到一年，
-课堂语言几乎一下从全中文切换到全英文。知识点本身可以慢慢学，但新的语言、新的考试方式
-和临近大考的时间压力叠在一起，很容易让孩子觉得自己被推着走。
-
-我用 AI 做了一个学习、复习用的 Skill：让它围绕对应课程要求，把知识点拆成能理解的结构、
-例题、图解和检查点。这个项目的初衷很简单：不是替孩子学习，而是把学习路上的噪音降下来，
-利用人工智能帮助孩子更轻松、更有掌控感地面对学业。
-
-<p align="center">
   <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/project-intro-animation.html">
     <img src="docs/assets/intro-animation-preview.gif" alt="三大考试局复习手册 Skill 介绍动画预览" width="100%">
   </a>
@@ -39,6 +24,10 @@
   <a href="skill/references/revision_guide_spec.md">手册规范</a>
 </p>
 
+一个给 AI Agent 使用的复习手册 Skill：基于官方考试局来源，生成图文并茂、可打印的 International GCSE / International AS-A-level 学习复习手册，并把 Analyst、Writer、Reviewer 三个角色从来源证据到最终 HTML/PDF 输出都保留下来。
+
+> 使用前请阅读 [免责声明](DISCLAIMER.md)。本项目不隶属于任何考试局，也不代表考试局背书；生成内容必须结合官方来源和教师判断复核。
+
 ## 一眼看懂
 
 | 问题 | 回答 |
@@ -48,6 +37,17 @@
 | Python 包负责什么 | 抓取官方来源证据、渲染输出、管理资产、执行机械验证。 |
 | 宿主 LLM 负责什么 | 写大纲结构、教学解释、例题、配图决策和最终产品复查。 |
 | 当前考试局范围 | 只写 AQA、Edexcel、CAIE，不把未支持考试局写成已支持。 |
+
+## 为什么要做这个 Skill
+
+这个项目最早不是为了做一个“工具”，而是为了帮一个真实的孩子轻一点地走过转轨期。
+我的儿子今年要参加 International GCSE 大考；他从公办体系转到国际课程还不到一年，
+课堂语言几乎一下从全中文切换到全英文。知识点本身可以慢慢学，但新的语言、新的考试方式
+和临近大考的时间压力叠在一起，很容易让孩子觉得自己被推着走。
+
+我用 AI 做了一个学习、复习用的 Skill：让它围绕对应课程要求，把知识点拆成能理解的结构、
+例题、图解和检查点。这个项目的初衷很简单：不是替孩子学习，而是把学习路上的噪音降下来，
+利用人工智能帮助孩子更轻松、更有掌控感地面对学业。
 
 **这个项目是框架，不是离线内容生成器。** `skill/` 里的 Skill 说明会让
 OpenClaw、Hermes 或其它 Agent 的宿主 LLM 按 Analyst、Writer、Reviewer 三个轻量角色工作：
@@ -59,9 +59,6 @@ MarkItDown 生成 `source/specification.md`、导出 HTML/PDF、登记图片资�
 
 CLI 只是框架调试和草稿 fallback。直接运行 `python -m intl_exam_guide generate ...`
 会得到结构完整但教学内容偏骨架化的 draft，不能当成已经可交给学生的最终手册。
-
-一个给 AI Agent 使用的复习手册 Skill：输入国内常用三大国际考试局的科目要求，
-生成图文并茂、可打印的 International GCSE / International AS-A-level 学习复习手册。
 
 当前版本以三大考试局为基础设计：
 
@@ -273,7 +270,7 @@ docs/             项目详情、准确性政策、示例和展示页面
 tests/            测试与回归样例
 ```
 
-## 版权与来源
+## 安全与来源边界
 
 不要把下载的官方 PDF、past papers、mark schemes 或复制来的真题内容提交到仓库。
 公开样例应使用原创讲解、原创练习卡和必要的来源信息。
