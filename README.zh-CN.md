@@ -32,6 +32,10 @@
   ·
   <a href="docs/release-evidence/README.md">发布证据</a>
   ·
+  <a href="DISCLAIMER.md">免责声明</a>
+  ·
+  <a href="ACKNOWLEDGEMENTS.md">致谢</a>
+  ·
   <a href="skill/references/revision_guide_spec.md">手册规范</a>
 </p>
 
@@ -287,6 +291,8 @@ tests/            测试与回归样例
 - 写作质量参考：反模板腔检查借鉴 `qiaomu-novel-generator` 的风格规则。
 
 考试局名称只用于说明来源，不表示本项目获得这些考试局背书、合作或认证。
+
+完整的非关联声明、版权边界和引用来源见 [DISCLAIMER.md](DISCLAIMER.md) 与 [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md)。
 
 ## 状态
 

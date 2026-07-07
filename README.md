@@ -73,6 +73,10 @@ control.
   ·
   <a href="docs/release-evidence/README.md">Release evidence</a>
   ·
+  <a href="DISCLAIMER.md">Disclaimer</a>
+  ·
+  <a href="ACKNOWLEDGEMENTS.md">Acknowledgements</a>
+  ·
   <a href="skill/references/revision_guide_spec.md">Handbook spec</a>
 </p>
 
@@ -460,6 +464,8 @@ This project builds on public exam-board materials, open-source tooling, and age
 - Writing-quality guidance: anti-template wording checks inspired by `qiaomu-novel-generator` style rules.
 
 Exam-board names are used for source identification only. This project is not endorsed by, affiliated with, or certified by those exam boards.
+
+See [DISCLAIMER.md](DISCLAIMER.md) and [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md) for the full non-affiliation, copyright, and attribution notes.
 
 ## Status
 
