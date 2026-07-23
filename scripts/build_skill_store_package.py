@@ -37,6 +37,13 @@ def skill_files(source_dir: Path) -> list[Path]:
     )
 
 
+def package_bytes(path: Path) -> bytes:
+    data = path.read_bytes()
+    if path.suffix.lower() in TEXT_SUFFIXES:
+        return data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return data
+
+
 def inspect_package(archive_path: Path, expected_skill: bytes | None = None) -> dict[str, object]:
     with zipfile.ZipFile(archive_path) as archive:
         names = [entry.filename for entry in archive.infolist() if not entry.is_dir()]
@@ -103,13 +110,13 @@ def build_package(source_dir: Path, output_path: Path) -> dict[str, object]:
                 entry = zipfile.ZipInfo(relative, date_time=(1980, 1, 1, 0, 0, 0))
                 entry.compress_type = zipfile.ZIP_DEFLATED
                 entry.external_attr = 0o644 << 16
-                archive.writestr(entry, path.read_bytes())
-        inspect_package(temporary_path, expected_skill=skill_path.read_bytes())
+                archive.writestr(entry, package_bytes(path))
+        inspect_package(temporary_path, expected_skill=package_bytes(skill_path))
         temporary_path.replace(output_path)
     finally:
         temporary_path.unlink(missing_ok=True)
 
-    return inspect_package(output_path, expected_skill=skill_path.read_bytes())
+    return inspect_package(output_path, expected_skill=package_bytes(skill_path))
 
 
 def main() -> int:

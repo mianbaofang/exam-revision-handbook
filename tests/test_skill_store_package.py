@@ -76,3 +76,23 @@ def test_skill_store_package_rejects_references_above_archive_root(tmp_path: Pat
 
     assert result.returncode != 0
     assert "outside the package root" in result.stderr
+
+
+def test_skill_store_package_normalizes_text_line_endings(tmp_path: Path):
+    source = tmp_path / "skill"
+    references = source / "references"
+    references.mkdir(parents=True)
+    skill_lf = b"---\nname: portable-skill\n---\n\nRead the reference.\n"
+    reference_lf = b"# Contract\n\nPortable text.\n"
+    (source / "SKILL.md").write_bytes(skill_lf.replace(b"\n", b"\r\n"))
+    (references / "contract.md").write_bytes(reference_lf.replace(b"\n", b"\r\n"))
+
+    first = build_package(tmp_path / "crlf.zip", source)
+    (source / "SKILL.md").write_bytes(skill_lf)
+    (references / "contract.md").write_bytes(reference_lf)
+    second = build_package(tmp_path / "lf.zip", source)
+
+    assert first["sha256"] == second["sha256"]
+    with zipfile.ZipFile(tmp_path / "crlf.zip") as archive:
+        assert archive.read("SKILL.md") == skill_lf
+        assert archive.read("references/contract.md") == reference_lf

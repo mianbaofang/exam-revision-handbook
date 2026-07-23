@@ -12,7 +12,8 @@ No completed iterations have been recorded after `v0.6.0`.
 
 - Added a deterministic Skill-store package builder that promotes the contents
   of `skill/` to archive root, verifies the root `SKILL.md` byte-for-byte, rejects
-  unsafe or nested Skill paths, and prints the final SHA-256.
+  unsafe or nested Skill paths, canonicalizes text line endings across LF/CRLF
+  checkouts, and prints the final SHA-256.
 - Added 12 full-A4 preview pages from four independently reviewed handbooks:
   OxfordAQA IGCSE Biology, CAIE AS Physics, College Board AP Chemistry, and
   Pearson Edexcel International A Level Mathematics.
@@ -54,8 +55,8 @@ No completed iterations have been recorded after `v0.6.0`.
   matches, and the animation source synchronization check passed.
 - Built `dist/igcse-a-level-revision-guide-skill-v0.6.0.zip` with seven files,
   one root `SKILL.md`, no nested Skill entry, and SHA-256
-  `104b7a0fc768214481457bb6b54511f7b3215c9872909e264943cd1d36f8fe20`.
-- Final regression suite: `488 passed, 165 skipped`. Ruff, compileall, and mypy
+  `6b553f0ba834e80c7e64f24895834724afa5df78afa34abbd15c1153a626a688`.
+- Final regression suite: `489 passed, 165 skipped`. Ruff, compileall, and mypy
   for all 80 source files and the changed release scripts passed.
 
 ### Iteration 2026-07-24 - Pearson Edexcel International A Level Mathematics Controlled Delivery
