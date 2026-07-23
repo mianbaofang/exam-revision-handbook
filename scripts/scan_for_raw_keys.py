@@ -20,6 +20,14 @@ SKIP_SUFFIXES = {
     ".webp",
     ".zip",
 }
+WINDOWS_DEVICE_NAMES = {
+    "CON",
+    "PRN",
+    "AUX",
+    "NUL",
+    *(f"COM{index}" for index in range(1, 10)),
+    *(f"LPT{index}" for index in range(1, 10)),
+}
 
 
 def main() -> int:
@@ -69,6 +77,8 @@ def iter_scan_files(root: Path, max_bytes: int):
 
 
 def should_scan(path: Path, max_bytes: int) -> bool:
+    if path.name.upper() in WINDOWS_DEVICE_NAMES:
+        return False
     if path.suffix.lower() in SKIP_SUFFIXES:
         return False
     try:

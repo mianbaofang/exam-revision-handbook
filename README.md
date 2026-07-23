@@ -1,8 +1,8 @@
-# IGCSE & A-Level AI Revision Guide Skill
+# IGCSE, A-Level & AP AI Revision Guide Skill
 
 <p align="center">
   <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/project-intro-animation-en.html">
-    <img src="docs/assets/intro-animation-preview-en.gif" alt="Three-board revision handbook Skill HTML intro preview" width="100%">
+    <img src="docs/assets/intro-animation-preview-en.gif" alt="IGCSE, A-Level, and AP revision handbook Skill intro preview" width="100%">
   </a>
 </p>
 
@@ -32,7 +32,7 @@ My son is preparing for his International GCSE exams this year. Less than a year
 
 I built this study and revision Skill with AI so it can take the relevant course requirements and break them into understandable structures, worked examples, diagrams, and checkpoints. The purpose is simple: not to let AI study for a child, but to reduce the noise around learning and help students face schoolwork with more calm and control.
 
-An AI Skill for generating image-rich, printable International GCSE and International AS/A-level revision handbooks from official exam-board sources, with Analyst, Writer, and Reviewer roles kept visible from source evidence to final HTML/PDF output.
+An AI Skill for generating image-rich, printable International GCSE, International AS/A-level, and College Board AP revision handbooks from official sources, with Analyst, Writer, and Reviewer roles kept visible from source evidence to final HTML/PDF output.
 
 > Read [Disclaimer](DISCLAIMER.md) before use. This project is not affiliated with or endorsed by any exam board, and generated study materials must be reviewed against official sources.
 
@@ -40,11 +40,20 @@ An AI Skill for generating image-rich, printable International GCSE and Internat
 
 | Question | Answer |
 |---|---|
-| Who is it for? | Families, tutors, and agent users preparing International GCSE or International AS/A-level revision handbooks. |
+| Who is it for? | Families, tutors, and agent users preparing International GCSE, International AS/A-level, or AP revision handbooks. |
 | What does it generate? | A source-backed handbook package with HTML/PDF output, topic plans, worked examples, visual decisions, and review evidence. |
 | What does the Python package do? | Fetch official source evidence, render outputs, manage assets, and run mechanical validation. |
 | What must the host LLM do? | Write the syllabus outline, teaching explanations, examples, visual decisions, and final product review. |
-| Current board scope | AQA, Edexcel, and CAIE only. |
+| Current source scope | AQA, Edexcel, CAIE, and College Board AP. |
+
+Automatic syllabus acquisition supports both the **International** and
+**UK-domestic** AQA, Edexcel, and CAIE IGCSE/AS/A-Level routes, plus College
+Board AP. The first preflight explicitly records `international` or
+`uk-domestic` for those three boards, then selects and records the matching
+official source route. It never silently substitutes the other market. Other
+curriculum systems or exam boards cannot use automatic acquisition. Manual PDF
+import outside the supported routes is an unverified compatibility path and may
+fail with unknown parsing, extraction, metadata, or rendering errors.
 
 ## What This Project Is
 
@@ -63,19 +72,22 @@ worked-example wording are produced by **the LLM that runs this Skill**:
   collects page evidence and invokes external MarkItDown for structure-readable
   Markdown; it does **not** decide topics or exam points on its own.
 - The host's LLM then performs the **Reviewer** role as a separate review pass:
-  the Reviewer reads the rendered handbook/PDF and source evidence without
-  treating the Writer's validation as approval, then checks for teaching
+  the Reviewer personally opens the rendered HTML and source evidence without
+  treating Python validation or inspection as approval, then checks for teaching
   effectiveness, blank pages, duplicate mastery text, misused visuals, or
-  gap-to-source issues. This may be a separate Agent if the user requests
+  gap-to-source issues. Any problem returns to the Writer for repair, HTML
+  rerendering, and another visible LLM review. PDF export is blocked until the
+  current HTML passes. This may be a separate Agent if the user requests
   multi-agent delegation, but it is not mandatory.
 
 The Python package under `src/intl_exam_guide/` provides:
 
 - Provider adapters that fetch official OxfordAQA / Pearson Edexcel /
-  Cambridge International qualification pages and PDFs, extract page-level evidence,
+  Cambridge International qualification pages and PDFs plus College Board AP
+  Course and Exam Descriptions, extract page-level evidence,
   and create a mandatory MarkItDown Markdown companion for official PDF workflows
   without adding MarkItDown to the main package dependencies.
-- HTML and PDF rendering of the three-role output.
+- HTML rendering plus candidate-PDF export gated by LLM approval of the current HTML hash, followed by technical validation and an immutable current-PDF record.
 - Validation and quality gates (`scripts/import_concept_explanations.py`,
   `scripts/import_infographic_assets.py`).
 - A **CLI-only fallback** (`python -m intl_exam_guide generate …`) that
@@ -85,43 +97,46 @@ The Python package under `src/intl_exam_guide/` provides:
   presented as `final-ready`. **Run the Skill through an LLM agent to get a
   teaching-grade handbook.**
 
-This version is built around the three exam boards most relevant to mainland
-China international-school usage:
+This version automatically supports the International and UK-domestic routes of
+three British-curriculum exam boards plus the College Board AP course system:
 
 | Exam board | Current support |
 |---|---|
-| AQA | Discovers qualifications from OxfordAQA / Oxford International AQA public pages and reads the public specification PDF. |
-| Edexcel | Tries official Pearson Edexcel subject-page candidates from the subject name; falls back to a supplied official subject page or direct specification PDF URL. |
-| CAIE | Searches official Cambridge International subject indexes for candidates; falls back to a supplied official subject page or direct syllabus PDF URL; asks for the exam year when several ranges are listed. |
+| AQA | Uses OxfordAQA / Oxford International AQA for International routes and AQA's official subject catalogue for UK-domestic GCSE and AS/A-Level routes. |
+| Edexcel | Uses the corresponding official Pearson Edexcel International or UK GCSE/AS/A-Level candidate route selected during preflight. |
+| CAIE | Uses Cambridge International's official subject index for the selected qualification family, retaining the requested market in source metadata. |
+| College Board AP | Discovers all 42 official AP subjects, selects the core Course and Exam Description, verifies its official source, and records the CED effective version and target exam year. |
 
-It uses one shared handbook workflow across the three boards: read the official
+It uses one shared handbook workflow across the four source systems: read the official
 syllabus, expand it into teachable topic units, write reviewed concept
 explanations from the current topic/source points, create worked examples,
-decide which points need visuals, and deliver HTML/PDF output.
+decide which points need visuals, visibly review and repair HTML until it passes,
+and only then export the final PDF.
 
 The workflow is a lightweight three-role process: Analyst, Writer, and Reviewer.
 Those names are operating roles, not mandatory separate agents; one host LLM can
 run them step by step unless the user explicitly chooses multi-agent delegation.
-The Reviewer still has to open the visible handbook/PDF and cannot treat machine
-validation as approval. The review includes source traceability, notation spot-checks,
-and cross-page visual repetition checks so repeated image layouts or code-style
-maths do not slip into the student edition. Supporting evidence is written to
-`delivery-contract.json` and `final-review-packet.json`.
+The Reviewer still has to open the visible HTML and cannot treat machine
+validation as approval. Final approval covers every final topic, worked example,
+answer, source anchor, and rendered visual, including notation, visual semantics,
+and cross-page repetition. Supporting diagnostics are written to
+`delivery-contract.json` and `final-review-packet.json`; they are not approval.
 
 Delivery quality claims are tracked in the delivery matrix at
 `tests/fixtures/delivery_matrix.json`. Each route has an explicit claim status
-and a v0.5 release-evidence status. Candidate routes must not be described as
+and a v0.6 release-evidence status. Candidate routes must not be described as
 release-ready until a fresh output passes validation, final review, product
-review, and visual-status checks. The shared workflow is three-board, but the
+review, and visual-status checks. The shared workflow covers four source systems, but the
 matrix evidence defines what is currently deliverable.
 
-v0.5 status words are intentionally conservative:
+v0.6 status words are intentionally conservative:
 
 - `candidate`: route evidence exists, but it is not delivery-grade.
 - `draft`: a fresh output exists, but concepts, visuals, PDF, validation, or
   self-review still block final handoff.
-- `final-ready`: current evidence says the output can be handed off after
-  validation, final review, and asset/status checks.
+- `final-ready`: this handbook has complete hash-bound LLM HTML review, gated
+  PDF export, validation, concept, visual, and package evidence from the current
+  artifacts.
 - `certified`: final-ready evidence has also been reviewed and approved for a
   release. No current route should be called certified unless the
   release-evidence manifest says so.
@@ -135,6 +150,13 @@ to your OpenClaw, Hermes, or other Skill-compatible Agent:
 https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill
 ```
 
+For a Skill store that accepts an uploaded archive, use the purpose-built
+[v0.6.0 Skill package](https://github.com/mianbaofang/igcse-a-level-revision-guide/releases/download/v0.6.0/igcse-a-level-revision-guide-skill-v0.6.0.zip).
+Its archive root contains the authoritative `SKILL.md`, `agents/`, `references/`,
+and bundled assets directly. Do not upload GitHub's repository source ZIP to a
+store that requires `SKILL.md` at archive root; the repository ZIP adds an outer
+folder and is a different artifact.
+
 Then ask:
 
 ```text
@@ -147,12 +169,13 @@ Typical requests:
 Generate an Edexcel Accounting International GCSE revision guide.
 Generate a Cambridge IGCSE Economics guide for the 2027 exam year with a Japanese term glossary.
 Generate an AQA Mathematics 9260 revision handbook with visual worked examples and final review questions.
+Generate an AP Cybersecurity revision handbook for the 2027 exam year.
 ```
 
 Before generation starts, the Agent should confirm:
 
 1. Exam board, qualification level, subject, code, and official URL when needed.
-2. Exam year when the official page lists multiple syllabus ranges.
+2. Exam year when the official page lists multiple syllabus ranges or the AP CED has a future effective version.
 3. Term-support language: `en` for no glossary, or a support language such as
    `zh-CN`, `zh-TW`, or `ja` for a 30-50 item professional term glossary. The
    handbook body, examples, labels, and visual prompts stay in English.
@@ -181,7 +204,7 @@ any unresolved complex visuals as not yet reviewed.
 ```text
 outputs/chemistry-9202/
   <board>-<level>-<subject>-<time>.html  printable student handbook
-  <board>-<level>-<subject>-<time>.pdf   PDF export
+  <board>-<level>-<subject>-<time>.pdf   post-approval PDF export
   sections/                  modular guide sections for review
   images/                    visual manifest, reviewed assets, and pending jobs
   concepts/                  concept-writing jobs and reviewed explanations
@@ -191,6 +214,11 @@ outputs/chemistry-9202/
   validation.json            quality-check report
   final-review-packet.json   Agent/LLM final review evidence
   agent-product-review.json  active Agent product-review and repair evidence
+  current-render.json        explicit current HTML/render snapshot pointer
+  review-ledger/             hash-bound per-Topic, per-Visual, and holistic LLM review
+  current-pdf.json           explicit current approved-PDF pointer
+  pdf-exports/               immutable PDF provenance records
+  current-delivery.json      optional hash-verified delivery-copy pointer
   handbook-package.json      final delivery manifest
 ```
 
@@ -202,47 +230,98 @@ The handbook package includes:
 - per-topic `visual_decision` records, including `text-ok` reasons when a separate visual would not add learning value;
 - reviewed exact-SVG/Kroki/image assets where they fit, plus pending complex-infographic briefs;
 - final revision questions;
-- printable HTML/PDF output.
+- printable HTML plus a PDF exported only after current-HTML LLM approval.
 
 Before presenting an output as final, run
-`python -m intl_exam_guide review --out <output-dir>` and read
-`final-review-packet.json`. Validation is not enough by itself: the Agent must
-inspect the rendered excerpt, topic/source summary, worked-example evidence, and
-concept/image job status, then label the output as draft or final-ready for
-release evidence. A route with only candidate evidence is not delivery-grade.
+`python -m intl_exam_guide review --out <output-dir>`. This rerenders HTML and
+prepares `final-review-packet.json`, but it does not inspect or approve the
+handbook and it does not generate PDF. Validation is not enough by itself: the
+LLM must personally open the complete current HTML and review what a student
+will see. A route with only candidate evidence is not delivery-grade.
 A base run with pending `concepts/concept_jobs.json` entries is a draft until
 reviewed concept explanations are imported.
 
-The user's LLM/Agent must also perform a final product review before handoff:
-read the generated handbook as the student will see it, compare the topic
-sequence and concept explanations with the syllabus outline, inspect sampled
-PDF pages and visuals, and repair fixable problems before giving the file to
-the user. The project must not present "the Skill generated it" or "the gate
-returned ready" as a substitute for this review-and-repair loop. Record that
-pass in `agent-product-review.json`; without complete product-review evidence,
-the package remains review-ready or draft even if validation has no errors.
+The user's LLM/Agent must perform a visible HTML review-and-repair loop before
+handoff: compare the topic sequence and concept explanations with the syllabus
+outline, inspect visuals and responsive layout, and repair every fixable issue.
+After each repair it must rerender and personally inspect the new HTML again.
+The project must not present "the Skill generated it", Python inspection, or a
+passing gate as a substitute. Record approval and the exact HTML SHA-256 in
+`agent-product-review.json`. Then run
+`python -m intl_exam_guide export-pdf --out <output-dir>`. The export command
+rejects missing, non-LLM, stale, incomplete, or revisions-required approval.
+It exports to a temporary candidate, blocks promotion on hard PDF defects, and
+only then updates `current-pdf.json`; older PDFs remain historical rather than
+being deleted or selected by modification time. To create a controlled final
+copy, add `--delivery-dir <directory>`. A differing destination is never
+overwritten unless `--supersede-existing` is explicitly supplied to archive it
+first.
+
+The first response of a handbook run is a blocking preflight form, not a
+generation prompt. It must show fixed choices for external visual capability,
+supported board/level, support language, explanation style, workflow mode, batch
+scope, and output directory in one message. The user replies with `key=value`
+fields; incomplete or invalid fields keep the run blocked. The Agent must not
+download sources, discover providers, split the syllabus, write content, choose
+visuals, render HTML, or generate PDF until the form is complete. A configured
+image provider is not proof that the user supplied an external visual route.
 
 ## Preview
 
-| Mathematics | Economics | Chemistry |
-|---|---|---|
-| <img src="docs/assets/sample-math-guide.png" alt="Mathematics sample guide with a visual worked example" width="100%"> | <img src="docs/assets/sample-economics-guide.png" alt="Economics sample guide with infographic" width="100%"> | <img src="docs/assets/sample-chemistry-guide.png" alt="Chemistry sample guide with infographic" width="100%"> |
+### OxfordAQA IGCSE Biology
 
-These screenshots demonstrate handbook quality. They are not the subject limit.
+<p align="center">
+  <img src="docs/assets/v060-oxfordaqa-biology-p12.jpg" alt="OxfordAQA IGCSE Biology photosynthesis page" width="31%">
+  <img src="docs/assets/v060-oxfordaqa-biology-p21.jpg" alt="OxfordAQA IGCSE Biology carbon cycle page" width="31%">
+  <img src="docs/assets/v060-oxfordaqa-biology-p28.jpg" alt="OxfordAQA IGCSE Biology thermoregulation page" width="31%">
+</p>
 
-## Supported Exam Boards
+### CAIE AS Physics
 
-| Exam board | International GCSE | International AS-A-level | Current behavior |
-|---|---:|---:|---|
-| AQA | yes | yes | Public catalogue discovery through OxfordAQA / Oxford International AQA pages. |
-| Edexcel | yes | yes | Subject-name candidate discovery for common official Pearson Edexcel page patterns; official URL/PDF can override ambiguity. |
-| CAIE | yes | yes | Official Cambridge International subject-index candidate discovery; official URL/PDF can override ambiguity; exam year is required for multi-range pages. |
-| OCR, WJEC/Eduqas, CCEA, and other UK boards | no | no | Outside the current release scope. |
+<p align="center">
+  <img src="docs/assets/v060-caie-physics-p10.jpg" alt="CAIE AS Physics projectile motion page" width="31%">
+  <img src="docs/assets/v060-caie-physics-p25.jpg" alt="CAIE AS Physics stationary wave apparatus page" width="31%">
+  <img src="docs/assets/v060-caie-physics-p30.jpg" alt="CAIE AS Physics internal resistance circuit page" width="31%">
+</p>
 
-The current release focuses on AQA, Edexcel, and CAIE. Full official names are
-OxfordAQA / Oxford International AQA, Pearson Edexcel, and Cambridge
-International. It does not claim support for every UK A-level awarding
-organisation.
+### College Board AP Chemistry
+
+<p align="center">
+  <img src="docs/assets/v060-ap-chemistry-p11.jpg" alt="AP Chemistry photoelectron spectrum page" width="31%">
+  <img src="docs/assets/v060-ap-chemistry-p43.jpg" alt="AP Chemistry titration page" width="31%">
+  <img src="docs/assets/v060-ap-chemistry-p91.jpg" alt="AP Chemistry galvanic cell page" width="31%">
+</p>
+
+### Pearson Edexcel International A Level Mathematics
+
+<p align="center">
+  <img src="docs/assets/v060-edexcel-mathematics-p52.jpg" alt="Edexcel IAL Mathematics exponential model page" width="31%">
+  <img src="docs/assets/v060-edexcel-mathematics-p74.jpg" alt="Edexcel IAL Mathematics mechanics model page" width="31%">
+  <img src="docs/assets/v060-edexcel-mathematics-p99.jpg" alt="Edexcel IAL Mathematics conditional probability page" width="31%">
+</p>
+
+These are pages from four independently reviewed, current handbooks. They
+demonstrate layout and visual teaching quality; they do not limit the supported
+subjects or certify every subject in the source catalogues.
+
+## Supported Curriculum Sources
+
+| Source system | International IGCSE | International AS/A-Level | UK-domestic GCSE/IGCSE | UK-domestic AS/A-Level | AP | Current behavior |
+|---|---:|---:|---:|---:|---:|---|
+| AQA | yes | yes | yes | yes | no | Uses OxfordAQA / Oxford International AQA for International courses and AQA's official subject catalogue for UK-domestic courses. |
+| Edexcel | yes | yes | yes | yes | no | Selects the matching official Pearson International or Pearson UK candidate route; an official URL/PDF can resolve an ambiguous subject match. |
+| CAIE | yes | yes | yes | yes | no | Uses Cambridge International's official subject index for the selected qualification family; the market choice remains explicit in source metadata. |
+| College Board | no | no | no | no | yes | Full AP subject-directory discovery; strict official core CED selection; effective-version and target-exam-year recording. |
+| OCR, WJEC/Eduqas, CCEA, and other UK boards | no | no | no | no | no | Outside the current release scope. |
+
+The current release supports automatic source acquisition for the
+International and UK-domestic AQA, Edexcel, and CAIE IGCSE/AS/A-Level routes,
+plus College Board AP. Before discovery, the Agent must explicitly record the
+market for the first three boards and use that market's official route; it must
+never substitute the other market's source material. This is a source-workflow
+support claim, not a claim that every subject already has a final-ready handbook
+sample. Other systems have no automatic acquisition support; manual imports
+remain unverified and may encounter unknown compatibility errors.
 
 ## Visuals And Writing Styles
 
@@ -334,9 +413,9 @@ The Agent runtime follows the lightweight Skill workflow:
   snippets). Python evidence extraction is a hint, not a substitute.
 - **Writer role**: writes concept explanations, worked examples,
   study-roadmap text, and per-topic `visual_decision` records.
-- **Reviewer role**: reads the rendered handbook/PDF, compares it with the
-  source evidence and outline, and produces `final-review-packet.json` plus
-  `agent-product-review.json`.
+- **Reviewer role**: personally opens the rendered HTML, compares it with the
+  source evidence and outline, sends problems back for rewriting and rerendering,
+  and writes hash-bound `agent-product-review.json` only when the current HTML passes.
 
 These are role labels. They may be separate agents in a runtime that supports
 that, but the Skill does not require a project-manager agent, a mandatory
@@ -369,7 +448,7 @@ pip install -e .
 python -m intl_exam_guide generate --query chemistry --level igcse --out .\outputs\chemistry-9202
 ```
 
-The CLI is for fetching official source material and writing `qualification.json`, `syllabus-evidence.json`, and `source/`. A real teaching handbook still requires Mode 1: an LLM Analyst outline, Writer-authored concepts/visual decisions, rendered HTML/PDF, mechanical checks, and visible-handbook review.
+The CLI is for fetching official source material and writing `qualification.json`, `syllabus-evidence.json`, and `source/`. A real teaching handbook still requires Mode 1: an LLM Analyst outline, Writer-authored concepts/visual decisions, rendered HTML, repeated visible LLM review until approval, and gated PDF export afterward.
 
 Checks:
 
@@ -380,9 +459,12 @@ python -m compileall -q src tests scripts
 python scripts/scan_for_raw_keys.py . ./outputs
 ```
 
-## Quality Metrics
+## Mechanical Quality Metrics
 
-Version 0.4+ includes a quality metrics system that measures **teaching effectiveness** ("孩子可用"), not just format correctness ("格式正确").
+Version 0.4+ includes a quality metrics system for repeatable diagnostics such
+as clarity, example relevance, visual helpfulness, and usability signals. These
+scores can identify material that needs attention, but they cannot certify
+subject accuracy or replace the complete visible review by the active LLM.
 
 ### Measuring Quality
 
@@ -403,9 +485,9 @@ report = gate.check(
 print(report.summary())
 
 if report.passed:
-    print("✓ Quality gate passed - ready for students")
+    print("Mechanical quality thresholds met; LLM review is still required")
 else:
-    print("✗ Quality gate failed")
+    print("Mechanical quality thresholds not met")
     for issue in report.issues:
         print(f"  - {issue}")
 ```
@@ -419,7 +501,8 @@ else:
 | Visual Helpfulness | 0.80 | Do visuals aid understanding (not decoration)? |
 | Overall Usability | 0.85 | Can students actually use this to learn? |
 
-See [docs/QUALITY_METRICS.md](docs/QUALITY_METRICS.md) for detailed documentation.
+See [docs/ACCURACY_POLICY.md](docs/ACCURACY_POLICY.md) for the boundary between
+mechanical diagnostics and handbook approval.
 
 ## Repository Layout
 
@@ -461,7 +544,12 @@ See [DISCLAIMER.md](DISCLAIMER.md) and [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md
 
 ## Status
 
-Current package version: `v0.5.1`. The Skill is public-ready as a framework for source-backed handbook generation, but individual handbook routes must still be reviewed against `tests/fixtures/delivery_matrix.json` and the generated `final-review-packet.json` before being called final-ready.
+Current package version: `v0.6.0`. The Skill is public-ready as a framework for
+source-backed handbook generation. An individual handbook is final-ready only
+after its own complete LLM HTML review is recorded in
+`agent-product-review.json` and `review-ledger/`, the exact HTML passes the hash
+gate, `current-pdf.json` points to a technically valid hash-bound export, and
+any release claim is supported by the delivery matrix and release evidence.
 
 ## Author
 

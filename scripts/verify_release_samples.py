@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
 from pathlib import Path
 
 
-SAMPLES = {
+SAMPLES: dict[str, dict[str, int | str]] = {
     "mathematics-9260-sample": {
         "topics": 90,
         "practice_cards": 180,
@@ -63,7 +64,7 @@ def main() -> int:
     )
     parser.add_argument(
         "--evidence-manifest",
-        default="docs/release-evidence/v0.5/manifest.json",
+        default="docs/release-evidence/v0.6.0/manifest.json",
         help="v0.5+ lightweight release-evidence manifest.",
     )
     parser.add_argument(
@@ -115,8 +116,8 @@ def verify_release_evidence(manifest_path: Path) -> int:
         failures.append(f"{manifest_path}: entries must be a non-empty list")
         entries = []
     release = str(manifest.get("release") or "")
-    if not release.startswith("v0.5"):
-        failures.append(f"{manifest_path}: release must start with v0.5")
+    if not supported_release_version(release):
+        failures.append(f"{manifest_path}: release must be a v0.5.0+ version")
     if str(manifest.get("overall_status") or "") not in RELEASE_STATUSES:
         failures.append(
             f"{manifest_path}: overall_status must be one of {sorted(RELEASE_STATUSES)}"
@@ -150,6 +151,14 @@ def verify_release_evidence(manifest_path: Path) -> int:
             print(f"- {item}", file=sys.stderr)
         return 1
     return 0
+
+
+def supported_release_version(release: str) -> bool:
+    match = re.fullmatch(r"v(\d+)\.(\d+)(?:\.(\d+))?(?:[-+].*)?", release)
+    if not match:
+        return False
+    major, minor = (int(match.group(1)), int(match.group(2)))
+    return (major, minor) >= (0, 5)
 
 
 def verify_evidence_entry(entry: dict[str, object]) -> tuple[dict[str, object], list[str]]:
@@ -251,7 +260,8 @@ def verify_sample(
             failures.append(f"{sample}: missing {path.name}")
 
     validation = read_json(validation_path, {})
-    run_options = read_json(run_options_path, {})
+    raw_run_options = read_json(run_options_path, {})
+    run_options = raw_run_options if isinstance(raw_run_options, dict) else {}
     final_review = read_json(final_review_path, {})
     delivery_contract = read_json(delivery_contract_path, {})
     product_review = read_json(product_review_path, {})
@@ -263,7 +273,8 @@ def verify_sample(
         )
         manifest = []
     html = html_path.read_text(encoding="utf-8", errors="replace") if html_path.exists() else ""
-    review = validation.get("review_summary", {}) if isinstance(validation, dict) else {}
+    raw_review = validation.get("review_summary", {}) if isinstance(validation, dict) else {}
+    review = raw_review if isinstance(raw_review, dict) else {}
     issues = validation.get("issues", []) if isinstance(validation, dict) else []
     issue_errors = [issue for issue in issues if issue.get("severity") == "error"]
     if issue_errors:
@@ -275,6 +286,7 @@ def verify_sample(
             final_review,
             delivery_contract,
             product_review,
+            hashlib.sha256(html.encode("utf-8")).hexdigest(),
         )
         failures.extend(final_failures)
 
@@ -387,6 +399,7 @@ def final_delivery_failures(
     final_review: object,
     delivery_contract: object,
     product_review: object,
+    html_sha256: str,
 ) -> list[str]:
     failures: list[str] = []
     if not isinstance(validation, dict):
@@ -421,10 +434,40 @@ def final_delivery_failures(
         failures.append(f"{sample}: final review is missing complete product-review evidence")
     if not isinstance(product_review, dict):
         failures.append(f"{sample}: agent-product-review.json is not an object")
-    elif product_review.get("schema_version") != "v0.5-visible-handbook-review":
+    elif product_review.get("schema_version") != "v0.6-llm-html-review":
         failures.append(f"{sample}: agent-product-review.json has the wrong schema_version")
-    elif product_review.get("decision") != "final-ready":
-        failures.append(f"{sample}: agent-product-review.json decision is not final-ready")
+    else:
+        if product_review.get("reviewer_type") != "llm":
+            failures.append(f"{sample}: HTML approval was not authored by an LLM reviewer")
+        if product_review.get("html_opened_and_visually_inspected") is not True:
+            failures.append(f"{sample}: current HTML was not visibly inspected by the LLM")
+        if product_review.get("html_review_passed") is not True:
+            failures.append(f"{sample}: current HTML review did not pass")
+        for field in (
+            "all_topics_reviewed",
+            "subject_factual_accuracy_checked",
+            "worked_examples_and_answers_checked",
+            "all_rendered_visuals_reviewed",
+            "visual_semantics_checked",
+            "layout_checked",
+        ):
+            if product_review.get(field) is not True:
+                failures.append(f"{sample}: {field} is not true")
+        for count_field, ids_field in (
+            ("topic_review_count", "reviewed_topic_titles"),
+            ("rendered_visual_review_count", "reviewed_visual_ids"),
+        ):
+            reviewed_ids = product_review.get(ids_field)
+            if not isinstance(reviewed_ids, list):
+                failures.append(f"{sample}: {ids_field} is not a list")
+            elif product_review.get(count_field) != len(reviewed_ids):
+                failures.append(f"{sample}: {count_field} does not match {ids_field}")
+        if product_review.get("decision") != "approved":
+            failures.append(f"{sample}: agent-product-review.json decision is not approved")
+        if product_review.get("reviewed_html_sha256") != html_sha256:
+            failures.append(f"{sample}: LLM review hash does not match the release HTML")
+        if product_review.get("unresolved_fixable_issues") not in (None, []):
+            failures.append(f"{sample}: LLM review still has unresolved fixable issues")
     return failures
 
 

@@ -50,7 +50,7 @@ def default_agent_roles(
             role_id="handbook_writer",
             label="Handbook writer",
             responsibility=(
-                "Create source-bound PedagogicalUnit content, practice, visuals, and HTML/PDF output."
+                "Create source-bound PedagogicalUnit content, practice, visuals, and HTML output."
             ),
             status="complete",
             evidence=["guide-plan.json", "handbook-package.json", "named handbook HTML"],
@@ -71,9 +71,10 @@ def default_agent_roles(
             independent_from=["syllabus_outline_analyst", "handbook_writer"],
             dispatch_brief=[
                 "Run as a distinct review pass from outline analysis and writing when the user requests separate-agent orchestration.",
-                "Read the rendered named HTML/PDF outputs, validation.json, final-review-packet.json, and visual manifest.",
-                "Treat machine validation as supporting evidence only; inspect the visible handbook before handoff.",
-                "Compare the visible handbook with the syllabus outline and repair fixable content, visual, glossary, or PDF issues before handoff.",
+                "Personally open the current rendered HTML; read validation.json, final-review-packet.json, and the visual manifest only as supporting context.",
+                "Treat every Python check as supporting diagnostics only; Python cannot approve the handbook.",
+                "Compare the visible HTML with the syllabus outline, return fixable issues to the Writer, rerender, and visually inspect again until it passes.",
+                "Approve the exact current HTML hash in agent-product-review.json, then allow PDF export; any later HTML change invalidates approval.",
             ],
         ),
     ]

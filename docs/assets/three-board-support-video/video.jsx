@@ -1,494 +1,232 @@
-const { Stage, Sprite, useTime, Easing, interpolate, clamp } = window;
-
-const boardData = [
-  {
-    name: "AQA",
-    note: "自动读取官方目录与公开 specification",
-    status: "官方大纲",
-    accent: "#d89b33",
-  },
-  {
-    name: "Edexcel",
-    note: "按科目候选匹配官方页面或 PDF",
-    status: "候选确认",
-    accent: "#be4750",
-  },
-  {
-    name: "CAIE",
-    note: "从科目索引匹配并确认考试年份",
-    status: "年份确认",
-    accent: "#4fa394",
-  },
-];
-
-const providerData = [
-  {
-    tag: "01",
-    title: "AQA",
-    accent: "#d89b33",
-    points: ["从官网目录发现课程", "读取公开 specification PDF", "把大纲转成 CourseSpec"],
-  },
-  {
-    tag: "02",
-    title: "Edexcel",
-    accent: "#be4750",
-    points: ["按科目名匹配官方候选", "支持官方科目页或 PDF 输入", "不唯一时先让用户选择"],
-  },
-  {
-    tag: "03",
-    title: "CAIE",
-    accent: "#4fa394",
-    points: ["从官方科目索引匹配候选", "多年大纲先确认考试年份", "年份不清楚就停下确认"],
-  },
-];
+const { Stage, Sprite, useTime, Easing, clamp } = window;
 
 const TOTAL_DURATION = 48;
 
-function useSceneMotion(start, end, inY = 36) {
+const boards = [
+  { name: "AQA", note: "International 与英国本土路线", level: "IGCSE · AS · A-Level", accent: "#1666b1" },
+  { name: "Edexcel", note: "Pearson International 与 UK", level: "IGCSE · AS · A-Level", accent: "#007d86" },
+  { name: "CAIE", note: "Cambridge 官方课程目录", level: "IGCSE · AS · A-Level", accent: "#c8323f" },
+  { name: "College Board AP", note: "官方 Course and Exam Description", level: "AP", accent: "#2255a4" },
+];
+
+const sampleBooks = [
+  {
+    title: "OxfordAQA IGCSE Biology",
+    note: "光合作用 · 碳循环 · 体温调节",
+    accent: "#1666b1",
+    pages: ["../v060-oxfordaqa-biology-p12.jpg", "../v060-oxfordaqa-biology-p21.jpg", "../v060-oxfordaqa-biology-p28.jpg"],
+  },
+  {
+    title: "CAIE AS Physics",
+    note: "抛体运动 · 驻波 · 内阻",
+    accent: "#c8323f",
+    pages: ["../v060-caie-physics-p10.jpg", "../v060-caie-physics-p25.jpg", "../v060-caie-physics-p30.jpg"],
+  },
+  {
+    title: "College Board AP Chemistry",
+    note: "PES · 滴定 · 原电池",
+    accent: "#2255a4",
+    pages: ["../v060-ap-chemistry-p11.jpg", "../v060-ap-chemistry-p43.jpg", "../v060-ap-chemistry-p91.jpg"],
+  },
+  {
+    title: "Edexcel IAL Mathematics",
+    note: "指数模型 · 力学模型 · 条件概率",
+    accent: "#007d86",
+    pages: ["../v060-edexcel-mathematics-p52.jpg", "../v060-edexcel-mathematics-p74.jpg", "../v060-edexcel-mathematics-p99.jpg"],
+  },
+];
+
+function useSceneMotion(start, end, lift = 30) {
   const time = useTime();
-  const enter = clamp((time - start) / 0.8, 0, 1);
-  const exit = clamp((end - time) / 0.55, 0, 1);
+  const enter = clamp((time - start) / 0.68, 0, 1);
+  const exit = clamp((end - time) / 0.5, 0, 1);
   const opacity = Math.min(Easing.easeOutCubic(enter), Easing.easeOutCubic(exit));
-  const y = (1 - Easing.easeOutCubic(enter)) * inY + (1 - Easing.easeOutCubic(exit)) * -18;
+  const y = (1 - Easing.easeOutCubic(enter)) * lift - (1 - Easing.easeOutCubic(exit)) * 14;
   return { opacity, transform: `translateY(${y}px)` };
 }
 
-function VideoLabel() {
-  const time = useTime();
-  React.useEffect(() => {
-    const label = `${Math.floor(time).toString().padStart(2, "0")}s`;
-    document.documentElement.setAttribute("data-screen-label", label);
-  }, [Math.floor(time)]);
-  return null;
-}
-
-function Background() {
-  const time = useTime();
-  const drift = interpolate([0, TOTAL_DURATION], [0, -150], Easing.linear)(time);
-  return (
-    <div className="stage">
-      <div className="grid-lines" style={{ transform: `translate3d(${drift}px, ${drift * 0.35}px, 0)` }}></div>
-      <div className="noise"></div>
-    </div>
-  );
-}
-
-function SceneFrame({ start, end, children }) {
-  const motion = useSceneMotion(start, end);
+function Scene({ start, end, className = "", children }) {
   return (
     <Sprite start={start} end={end} keepMounted={true}>
-      <section className="scene" style={motion}>
-        {children}
-      </section>
+      <section className={`scene ${className}`} style={useSceneMotion(start, end)}>{children}</section>
     </Sprite>
   );
 }
 
-function IntroScene() {
+function Stagger({ start, index, children }) {
   const time = useTime();
-  const cardLift = (index) => {
-    const p = clamp((time - 1.2 - index * 0.22) / 0.75, 0, 1);
-    return {
-      opacity: Easing.easeOutCubic(p),
-      transform: `translateY(${(1 - Easing.easeOutBack(p)) * 72}px)`,
-      "--accent": boardData[index].accent,
-    };
-  };
-  const orbit = interpolate([0, 5.0], [0, 38], Easing.easeInOutSine)(time);
+  const p = clamp((time - start - index * 0.12) / 0.55, 0, 1);
+  return <div style={{ opacity: p, transform: `translateY(${(1 - Easing.easeOutCubic(p)) * 34}px)` }}>{children}</div>;
+}
+
+function Background() {
   return (
-    <SceneFrame start={0} end={5.2}>
-      <div className="orbit" style={{ transform: `rotate(${orbit}deg) scale(${1 + Math.sin(time * 0.7) * 0.025})` }}></div>
-      <div className="kicker">复习手册生成 Skill</div>
-      <h1 className="headline">把官方大纲，变成孩子看得下去的复习手册。</h1>
-      <p className="lead">
-        面向 AQA、Edexcel、CAIE：先抓取官方大纲，再由多个 Agent 分工写作、配图和验收。
-      </p>
-      <div className="hero-board-row">
-        {boardData.map((board, index) => (
-          <article className="board-card" key={board.name} style={cardLift(index)}>
-            <strong>{board.name}</strong>
-            <span>{board.note}</span>
-            <div className="status">{board.status}</div>
-          </article>
+    <div className="stage-bg">
+      <div className="color-rail">{Array.from({ length: 8 }, (_, index) => <i key={index}></i>)}</div>
+    </div>
+  );
+}
+
+function IntroScene() {
+  return (
+    <Scene start={0} end={5.6}>
+      <div className="kicker">开源复习手册 Skill</div>
+      <h1 className="headline">把官方课程要求，做成真正能学的图文手册。</h1>
+      <p className="lead">覆盖 IGCSE、AS、A-Level 与 AP；来源、写作、配图、审查和 PDF 交付都有明确边界。</p>
+      <div className="board-strip">
+        {boards.map((board, index) => (
+          <Stagger start={0.9} index={index} key={board.name}>
+            <article className="board-tile" style={{ "--accent": board.accent }}>
+              <strong>{board.name}</strong><span>{board.note}</span><small>{board.level}</small>
+            </article>
+          </Stagger>
         ))}
       </div>
-    </SceneFrame>
-  );
-}
-
-function OriginScene() {
-  const time = useTime();
-  const notes = [
-    ["真实起点", "孩子从中文课堂切换到全英文课堂，不到一年就面对 International GCSE 大考。"],
-    ["AI 的任务", "不是替孩子学习，而是把知识点、例题、图解和检查点整理成能读下去的手册。"],
-    ["开源目标", "把这套方法做成 Skill，让其他家庭和 Agent 也能按科目生成复习手册。"],
-  ];
-  return (
-    <SceneFrame start={4.8} end={9.7}>
-      <div className="kicker">为什么做这个 Skill</div>
-      <h2 className="headline provider-headline">先帮一个真实的孩子，把复习压力拆小。</h2>
-      <div className="origin-layout">
-        <div className="quote-panel">
-          <strong>不是替孩子学习，</strong>
-          <span>而是把学习路上的噪音降下来。</span>
-        </div>
-        <div className="story-points">
-          {notes.map((note, index) => {
-            const p = clamp((time - 5.4 - index * 0.22) / 0.65, 0, 1);
-            return (
-              <article key={note[0]} style={{ opacity: p, transform: `translateY(${(1 - p) * 34}px)` }}>
-                <b>{note[0]}</b>
-                <p>{note[1]}</p>
-              </article>
-            );
-          })}
-        </div>
-      </div>
-    </SceneFrame>
-  );
-}
-
-function UsageScene() {
-  const time = useTime();
-  const steps = [
-    ["01", "大纲分析 Agent", "抓取官方页面/PDF，拆出 CourseSpec 和 LearningUnit。"],
-    ["02", "主编写 Agent", "写讲解、例题、术语表和视觉需求，不直接冒充最终审核。"],
-    ["03", "视觉处理 Agent", "判定 exact SVG、Kroki 或外部信息图任务；复杂图不能用草图冒充完成。"],
-    ["04", "独立验收 Agent", "读最终页面和抽样 PDF，对照大纲，能修就修，不能修就标 draft。"],
-  ];
-  return (
-    <SceneFrame start={9.4} end={14.4}>
-      <div className="kicker">多 Agent 协同</div>
-      <h2 className="headline route-headline">不是一个模型一路写到底，而是分工协作再独立复查。</h2>
-      <div className="usage-steps">
-        {steps.map((step, index) => {
-          const p = clamp((time - 10.0 - index * 0.16) / 0.58, 0, 1);
-          return (
-            <article key={step[0]} style={{ opacity: p, transform: `translateY(${(1 - Easing.easeOutCubic(p)) * 48}px)` }}>
-              <div>{step[0]}</div>
-              <h3>{step[1]}</h3>
-              <p>{step[2]}</p>
-            </article>
-          );
-        })}
-      </div>
-    </SceneFrame>
+    </Scene>
   );
 }
 
 function PreflightScene() {
-  const time = useTime();
-  const sourceT = clamp((time - 14.9) / 3.2, 0, 1);
   const rows = [
-    ["考试局与科目", "AQA / Edexcel / CAIE，或官方页面/PDF"],
-    ["考试年份", "Cambridge 多年份页面必须先确认"],
-    ["术语支持语言", "中文、繁中、日语等只生成术语对照表"],
-    ["讲解风格", "formal、friendly、life、story、detective、adventure"],
-    ["信息图能力", "先问有无 Skill/API/图片目录；没有也可继续 draft"],
+    ["01", "外部生图能力", "先确认可调用路线，不得默认本地生图"],
+    ["02", "考试局与课程阶段", "IGCSE / AS / A-Level / AP"],
+    ["03", "课程市场", "AQA、Edexcel、CAIE 必选 International 或 UK"],
+    ["04", "科目、年份与语言", "来源不唯一时停下让用户选择"],
+    ["05", "工作模式与输出目录", "单宿主角色分离或用户明确要求多 Agent"],
   ];
   return (
-    <SceneFrame start={14.1} end={19.1}>
-      <div className="kicker">先确认，再生成</div>
-      <h2 className="headline">第一次使用先问清楚，不跑完才补问。</h2>
-      <div className="choice-grid">
-        <div className="control-panel">
-          {rows.map((row, index) => {
-            const p = clamp((time - 14.7 - index * 0.18) / 0.55, 0, 1);
-            return (
-                <div className="choice-row" key={row[0]} style={{ opacity: p, transform: `translateX(${(1 - p) * -34}px)` }}>
-                <b>{row[0]}</b>
-                <span>{row[1]}</span>
-              </div>
-            );
-          })}
+    <Scene start={5.3} end={11.0}>
+      <div className="kicker">首轮强制预检</div>
+      <h2 className="headline compact">第一轮只收齐选择；没收齐，后面一步都不能跑。</h2>
+      <div className="preflight-layout">
+        <div className="preflight-form">
+          {rows.map((row, index) => <Stagger start={5.9} index={index} key={row[0]}><div className="form-row"><b>{row[0]}</b><strong>{row[1]}</strong><span>{row[2]}</span></div></Stagger>)}
         </div>
-        <div className="source-stack">
-          <div className="source-card" style={{ left: 34, top: 90, transform: `rotate(${-6 + sourceT * 3}deg) translateY(${(1 - sourceT) * 70}px)` }}>
-            <h3>官方科目页</h3>
-            <div className="fake-lines"><i></i><i></i><i></i><i></i></div>
-          </div>
-          <div className="source-card" style={{ left: 124, top: 44, transform: `rotate(${4 - sourceT * 2}deg) translateY(${(1 - sourceT) * 42}px)` }}>
-            <h3>考试大纲 PDF</h3>
-            <div className="fake-lines"><i></i><i></i><i></i><i></i></div>
-          </div>
-          <div className="source-card" style={{ left: 214, top: 146, transform: `rotate(${-1 + sourceT * 1.5}deg) translateY(${(1 - sourceT) * 90}px)` }}>
-            <h3>来源校验和考试信息</h3>
-            <div className="fake-lines"><i></i><i></i><i></i><i></i></div>
-          </div>
+        <div className="gate-panel">
+          <div className="gate-number">01</div>
+          <h3>外部视觉能力先锁定</h3>
+          <p>图中文字默认允许。真正受限的是错误、不可读、没有来源或不必要的文字，以及未经验证的生图通道。</p>
+          <div className="lock-state">PRECHECK INCOMPLETE → DOWNLOAD / WRITING / RENDER BLOCKED</div>
         </div>
       </div>
-    </SceneFrame>
+    </Scene>
   );
 }
 
 function ProviderScene() {
-  const time = useTime();
+  const data = [
+    ["AQA", "OxfordAQA / AQA", "International 走 OxfordAQA；英国本土走 AQA 官方目录。", ["IGCSE / GCSE", "AS 单列", "A-Level"], "#1666b1"],
+    ["Edexcel", "Pearson", "根据预检选 Pearson International 或 Pearson UK，不混用。", ["International", "UK domestic", "候选不唯一先确认"], "#007d86"],
+    ["CAIE", "Cambridge", "从官方科目目录匹配课程，并保留用户选择的市场元数据。", ["IGCSE", "AS", "A-Level"], "#c8323f"],
+    ["College Board AP", "AP Courses", "自动发现官方 AP 课程，只选择核心 CED 并记录生效版本。", ["42 门官方科目", "核心 CED", "目标考试年份"], "#2255a4"],
+  ];
   return (
-    <SceneFrame start={18.8} end={23.8}>
-      <div className="kicker">三大考试局怎么支持</div>
-      <h2 className="headline provider-headline">自动抓取三大考试局大纲，但不混用来源。</h2>
-      <p className="lead provider-lead">AQA、Edexcel、CAIE 的大纲格式不同，所以先解析官方来源，再统一成可写作、可复查的课程结构。</p>
-      <div className="provider-system">
-        {providerData.map((provider, index) => {
-          const p = clamp((time - 19.2 - index * 0.28) / 0.75, 0, 1);
-          return (
-            <article className="provider-column" key={provider.title} style={{ "--accent": provider.accent, opacity: p, transform: `translateY(${(1 - Easing.easeOutBack(p)) * 86}px)` }}>
-              <div className="tag">{provider.tag}</div>
-              <h3>{provider.title}</h3>
-              <ul>
-                {provider.points.map((point) => <li key={point}>{point}</li>)}
-              </ul>
-            </article>
-          );
-        })}
+    <Scene start={10.7} end={16.4}>
+      <div className="kicker">官方 Provider</div>
+      <h2 className="headline compact">确认用户要哪个版本，就只走那个官方来源。</h2>
+      <div className="provider-grid">
+        {data.map((item, index) => <Stagger start={11.3} index={index} key={item[0]}><article className="provider-card" style={{ "--accent": item[4] }}><div className="code">{item[0]}</div><h3>{item[1]}</h3><p>{item[2]}</p><div className="market-list">{item[3].map((point) => <span key={point}>{point}</span>)}</div></article></Stagger>)}
       </div>
-    </SceneFrame>
+    </Scene>
   );
 }
 
-function SyllabusScene() {
-  const time = useTime();
+function AtomicScene() {
   const steps = [
-    ["官方页面", "找到考试局科目页或用户指定 URL"],
-    ["大纲 PDF", "下载公开 specification / syllabus"],
-    ["主题拆解", "抽取 topic、assessment、页码和来源片段"],
-    ["手册骨架", "生成知识点、例题、复习检查点"],
-    ["质量验证", "topic、例题、来源、图文块缺失都会暴露"],
+    ["01", "官方来源证据", "同时读取 Markdown 结构与逐页证据，保留页码、原文和版本。", "#1666b1"],
+    ["02", "独立可考要求", "Topic 只是容器；继续拆到可以单独教、单独考、单独验证的要求。", "#c8323f"],
+    ["03", "最终教学 Topic", "合并多个要求必须写理由，并保证每一项都在手册中可见。", "#007d86"],
+    ["04", "可追溯位置", "每个考点都能回到官方来源，也能定位到最终手册页面。", "#2255a4"],
   ];
   return (
-    <SceneFrame start={23.5} end={28.3}>
-      <div className="kicker">从大纲到手册</div>
-      <h2 className="headline route-headline">先守住官方来源，再写成学生能预习复习的内容。</h2>
-      <div className="pipeline-board">
-        {steps.map((step, index) => {
-          const p = clamp((time - 24.0 - index * 0.14) / 0.6, 0, 1);
-          return (
-            <article className="pipeline-step" key={step[0]} style={{ opacity: p, transform: `translateY(${(1 - p) * 42}px)` }}>
-              <b>{String(index + 1).padStart(2, "0")}</b>
-              <h3>{step[0]}</h3>
-              <p>{step[1]}</p>
-            </article>
-          );
-        })}
+    <Scene start={16.1} end={21.8}>
+      <div className="kicker">原子级大纲拆解</div>
+      <h2 className="headline compact">不按考试局或学科硬编码，只按“能否独立考查”继续拆。</h2>
+      <div className="atomic-flow">
+        {steps.map((step, index) => <React.Fragment key={step[0]}><Stagger start={16.7} index={index}><article className="flow-card" style={{ "--accent": step[3] }}><b>{step[0]}</b><h3>{step[1]}</h3><p>{step[2]}</p></article></Stagger>{index < steps.length - 1 && <div className="flow-arrow">→</div>}</React.Fragment>)}
       </div>
-    </SceneFrame>
+    </Scene>
   );
 }
 
-function LanguageStyleScene() {
-  const time = useTime();
-  const cards = [
-    ["正文保持英文", "中文、繁中、日语等需求会变成 30-50 个专业词对照表，而不是整本翻译。"],
-    ["多种语言风格", "formal、friendly、life、story、detective、adventure，避免死板教辅腔。"],
-    ["配套例题讲解", "每个 topic 有原创例题、步骤、答案框架和常见失分点。"],
-    ["图文判断", "只给必须靠图说清楚的知识点配图，不把每个 topic 都硬画一张。"],
+function DecisionScene() {
+  const decisions = [
+    ["text-ok", "文字足够", "只有在额外图形不增加学习价值时才选择。", "必须写 no_visual_reason", "#36536d"],
+    ["exact-svg", "精确图解", "坐标、曲线、回路、结构和方向必须由领域图形对象表达。", "纯文字方框不算图解", "#1666b1"],
+    ["kroki", "结构关系", "流程、层级、时序和反馈必须有方向、连接与闭环。", "模板卡片不能冒充关系图", "#007d86"],
+    ["external-infographic", "复杂信息图", "装置、材料、空间结构与复杂过程使用已确认的外部路线。", "逐图语义审查后才能导入", "#c8323f"],
   ];
   return (
-    <SceneFrame start={28.0} end={32.8}>
-      <div className="kicker">语言、风格和例题</div>
-      <h2 className="headline provider-headline">考试是英文，辅助语言应该放在术语表，而不是整本翻译。</h2>
-      <div className="style-grid">
-        {cards.map((card, index) => {
-          const p = clamp((time - 28.6 - index * 0.16) / 0.58, 0, 1);
-          return (
-            <article className="style-card" key={card[0]} style={{ opacity: p, transform: `translateX(${(1 - p) * 42}px)` }}>
-              <h3>{card[0]}</h3>
-              <p>{card[1]}</p>
-            </article>
-          );
-        })}
+    <Scene start={21.5} end={27.2}>
+      <div className="kicker">逐主题教学与视觉决策</div>
+      <h2 className="headline compact">视觉数量是判断结果，不是先分配给每科的配额。</h2>
+      <div className="decision-grid">
+        {decisions.map((item, index) => <Stagger start={22.1} index={index} key={item[0]}><article className="decision-card" style={{ "--accent": item[4] }}><span className="route">{item[0]}</span><h3>{item[1]}</h3><p>{item[2]}</p><div className="rule">{item[3]}</div></article></Stagger>)}
       </div>
-    </SceneFrame>
+    </Scene>
   );
 }
 
 function SamplesScene() {
   const time = useTime();
-  const wallPan = interpolate([38.5, 43.0], [0, -36], Easing.easeInOutSine)(time);
-  const stats = [
-    ["7", "本地回归样例通过，质量检查无错误"],
-    ["357", "跨三大考试局样例生成的知识点讲解"],
-    ["318", "带步骤和检查点的例题卡"],
-    ["0", "复杂信息图不再假装已生成"],
-  ];
   return (
-    <SceneFrame start={38.0} end={43.1}>
-      <div className="sample-scene">
-        <div className="sample-copy">
-          <div className="kicker">真实手册样例</div>
-          <h2 className="headline sample-headline">展示的是能交付的复习手册。</h2>
-          <div className="stat-list">
-            {stats.map((stat, index) => {
-              const p = clamp((time - 38.7 - index * 0.18) / 0.55, 0, 1);
-              return (
-                <div className="stat" key={stat[1]} style={{ opacity: p, transform: `translateX(${(1 - p) * -32}px)` }}>
-                  <b>{stat[0]}</b>
-                  <span>{stat[1]}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className="screenshot-wall" style={{ transform: `translateX(${wallPan}px)` }}>
-          <figure className="shot" style={{ left: 80, top: 20, transform: "rotate(-5deg)" }}>
-            <img src="sample-math-guide.png" alt="数学手册截图" />
-          </figure>
-          <figure className="shot" style={{ left: 250, top: 250, transform: "rotate(3deg)" }}>
-            <img src="sample-economics-guide.png" alt="经济学手册截图" />
-          </figure>
-          <figure className="shot" style={{ left: 0, top: 455, transform: "rotate(-1deg)" }}>
-            <img src="sample-chemistry-guide.png" alt="化学手册截图" />
-          </figure>
-        </div>
+    <Scene start={26.9} end={35.7} className="samples-scene">
+      <div className="kicker">四份当前成品</div>
+      <h2 className="headline">每一本独立拆纲、写作、配图、审查和导出。</h2>
+      <div className="sample-grid">
+        {sampleBooks.map((book, index) => <Stagger start={27.5} index={index} key={book.title}><article className="sample-set" style={{ "--accent": book.accent }}><h3>{book.title}</h3><p>{book.note}</p><div className="sample-pages">{book.pages.map((page, pageIndex) => <img src={page} alt="" key={page} style={{ opacity: clamp((time - 28.0 - index * 0.12 - pageIndex * 0.12) / 0.45, 0, 1) }} />)}</div></article></Stagger>)}
       </div>
-    </SceneFrame>
+    </Scene>
   );
 }
 
-function VisualRouteScene() {
-  const time = useTime();
-  const cards = [
-    {
-      title: "精确复核图：Exact SVG",
-      body: "数轴、坐标轴、简单几何、基础表格必须标记 svg_fit=exact，并复核通过。",
-      visual: <div className="svg-diagram"><span></span><span></span><span></span></div>,
-    },
-    {
-      title: "专业结构图：Kroki",
-      body: "流程、层级、时间线、关系图、概念图等结构图，需要 LLM 判断并复核。",
-      visual: (
-        <svg className="kroki-preview" viewBox="0 0 360 190" aria-label="Kroki 结构图示意">
-          <defs>
-            <marker id="arrow-cn" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" />
-            </marker>
-          </defs>
-          <path d="M180 48 L96 86" />
-          <path d="M180 48 L264 86" />
-          <path d="M96 124 L180 150" />
-          <path d="M264 124 L180 150" />
-          <rect x="126" y="14" width="108" height="42" rx="8" />
-          <rect x="34" y="84" width="124" height="42" rx="8" />
-          <rect x="202" y="84" width="124" height="42" rx="8" />
-          <rect x="120" y="140" width="120" height="42" rx="8" className="output" />
-          <text x="180" y="41">来源</text>
-          <text x="96" y="111">流程</text>
-          <text x="264" y="111">层级</text>
-          <text x="180" y="167">复查图</text>
-        </svg>
-      ),
-    },
-    {
-      title: "复杂信息图：外部生成",
-      body: "实验、经济场景、密集图文解释生成 worksheet 风格信息图，导入后自动替换。",
-      visual: <div className="model-grid"><span>GPT Image 2.0</span><span>Qwen Image 2.0 Pro</span><span>SenseNova U1 Fast</span></div>,
-    },
+function ReviewScene() {
+  const steps = [
+    ["01", "打开当前 HTML", "PDF 尚未生成", "#1666b1"],
+    ["02", "LLM 亲自审每个 topic 与视觉", "机器检查不能批准", "#c8323f"],
+    ["03", "发现问题就重写并重新渲染", "HTML 变更使旧批准失效", "#007d86"],
+    ["04", "当前 HTML 哈希绑定批准后", "才解锁 PDF", "#157347"],
   ];
   return (
-    <SceneFrame start={32.5} end={38.2}>
-      <div className="kicker">专业图形生成处理</div>
-      <h2 className="headline route-headline">Exact SVG、Kroki、外部信息图各有自己的审核边界。</h2>
-      <div className="visual-routing">
-        {cards.map((card, index) => {
-          const p = clamp((time - 33.0 - index * 0.18) / 0.7, 0, 1);
-          return (
-            <article className="route-card" key={card.title} style={{ opacity: p, transform: `translateY(${(1 - Easing.easeOutCubic(p)) * 58}px)` }}>
-              <h3>{card.title}</h3>
-              <div className="route-visual">{card.visual}</div>
-              <p>{card.body}</p>
-            </article>
-          );
-        })}
+    <Scene start={35.4} end={41.2}>
+      <div className="kicker">HTML 优先的完整审查</div>
+      <h2 className="headline compact">先看、再修、再从头看；通过前不生成 PDF。</h2>
+      <div className="review-layout">
+        <div className="review-proof"><img src="../v060-caie-physics-p30.jpg" alt="" /><div className="proof-copy"><strong>FULL HTML REVIEW</strong><h3>页面漂亮不等于教学正确。</h3><p>审查事实、公式、图义、标签、箭头、来源、学习价值和跨页重复；只要有 pending 或旧哈希，就不能批准。</p></div></div>
+        <div className="review-loop">{steps.map((step, index) => <Stagger start={36.1} index={index} key={step[0]}><div className="loop-step" style={{ "--accent": step[3] }}><b>{step[0]}</b><strong>{step[1]}</strong><span>{step[2]}</span></div></Stagger>)}</div>
       </div>
-    </SceneFrame>
+    </Scene>
   );
 }
 
-function QualityScene() {
-  const time = useTime();
-  const metrics = [
-    ["outline", "大纲逐项对照"],
-    ["glossary", "术语表检查"],
-    ["visuals", "图片/图形检查"],
-    ["pdf", "PDF 抽页检查"],
-  ];
+function PackageScene() {
   return (
-    <SceneFrame start={42.8} end={46.2}>
-      <div className="kicker">独立 Agent 验收</div>
-      <h2 className="headline provider-headline">不是生成完就算，最终手册要自己读一遍、修一遍。</h2>
-      <div className="quality-grid">
-        {metrics.map((metric, index) => {
-          const p = clamp((time - 43.3 - index * 0.12) / 0.5, 0, 1);
-          return (
-            <article className="quality-card" key={metric[0]} style={{ opacity: p, transform: `scale(${0.92 + p * 0.08})` }}>
-              <b>{metric[0]}</b>
-              <span>{metric[1]}</span>
-              <i></i>
-            </article>
-          );
-        })}
+    <Scene start={40.9} end={45.7}>
+      <div className="kicker">Skill 商店发布包</div>
+      <h2 className="headline compact">商店解压后的第一层，必须直接看见权威 SKILL.md。</h2>
+      <div className="package-layout">
+        <div className="zip-panel"><div className="zip-header"><strong>revision-guide-skill.zip</strong><span>STORE READY</span></div><div className="tree"><div className="tree-row root"><i></i>SKILL.md</div><div className="tree-row"><i></i>agents/openai.yaml</div><div className="tree-row"><i></i>references/revision_guide_spec.md</div><div className="tree-row"><i></i>assets/...</div><div className="tree-row"><i></i>test-prompts.json</div></div></div>
+        <div className="package-notes" style={{ "--accent": "#2255a4" }}><h3>仓库入口和安装包各司其职。</h3><ul><li>仓库根 SKILL.md 只负责发现并指向 skill/SKILL.md。</li><li>商店 ZIP 以 skill/ 内容为根，不带多余外层目录。</li><li>发布前校验根入口、字节一致性、路径安全与确定性哈希。</li></ul></div>
       </div>
-    </SceneFrame>
+    </Scene>
   );
 }
 
 function ClosingScene() {
-  const time = useTime();
-  const p = clamp((time - 46.0) / 1.0, 0, 1);
-  const boxes = ["官方大纲", "英文正文+术语表", "例题讲解", "复查证据"];
   return (
-    <SceneFrame start={45.8} end={TOTAL_DURATION}>
-      <div className="final-lockup">
-        <div>
-          <div className="kicker">最终交付标准</div>
-          <h2 className="headline">最终交付必须像一份能给孩子用的资料。</h2>
-          <p className="lead">大纲、讲解、术语表、图形、例题和 PDF 都通过最终复查，才允许进入 final-ready。</p>
-        </div>
-        <div className="deliverable" style={{ opacity: p, transform: `rotate(${-1.5 + (1 - p) * -7}deg) translateY(${(1 - p) * 100}px)` }}>
-          <h3>International GCSE / AS-A-level 复习手册</h3>
-          <div className="bar"></div>
-          <div className="paper-grid">
-            {boxes.map((box) => (
-              <div className="paper-box" key={box}>
-                <b>{box}</b>
-                <i></i><i></i><i></i>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </SceneFrame>
+    <Scene start={45.4} end={TOTAL_DURATION} className="closing-scene">
+      <div className="closing-copy"><div className="kicker">Source-backed · LLM-reviewed</div><h2 className="headline">一份手册，一条完整、真实、不可绕过的交付链。</h2><p className="lead">官方来源 → 原子考点 → 教学与视觉 → HTML 审查 → 受控 PDF</p><div className="closing-badges"><span>IGCSE</span><span>AS</span><span>A-Level</span><span>AP</span><span>Open Source Skill</span></div></div>
+      <div className="closing-pages"><img src="../v060-oxfordaqa-biology-p28.jpg" alt="" /><img src="../v060-ap-chemistry-p91.jpg" alt="" /><img src="../v060-edexcel-mathematics-p52.jpg" alt="" /></div>
+    </Scene>
   );
 }
 
 function Footer() {
-  return (
-    <div className="footer-mark">
-      <span>IGCSE & A-Level AI 复习手册 Skill</span>
-      <span>official syllabus → reviewed handbook</span>
-    </div>
-  );
+  return <div className="footer-mark"><span>IGCSE · AS · A-LEVEL · AP REVISION HANDBOOK SKILL</span><span>OFFICIAL SOURCE → REVIEWED HANDBOOK</span></div>;
 }
 
 function App() {
-  return (
-    <Stage width={1920} height={1080} duration={TOTAL_DURATION} background="#080b10">
-      <VideoLabel />
-      <Background />
-      <IntroScene />
-      <OriginScene />
-      <UsageScene />
-      <PreflightScene />
-      <ProviderScene />
-      <SyllabusScene />
-      <LanguageStyleScene />
-      <VisualRouteScene />
-      <SamplesScene />
-      <QualityScene />
-      <ClosingScene />
-      <Footer />
-    </Stage>
-  );
+  return <Stage width={1920} height={1080} duration={TOTAL_DURATION} background="#eef2f5"><Background /><IntroScene /><PreflightScene /><ProviderScene /><AtomicScene /><DecisionScene /><SamplesScene /><ReviewScene /><PackageScene /><ClosingScene /><Footer /></Stage>;
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);

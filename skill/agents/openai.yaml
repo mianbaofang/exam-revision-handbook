@@ -1,3 +1,37 @@
-display_name: IGCSE & A-Level AI Revision Guide
-short_description: Build image-aware International GCSE and AS/A-Level study handbooks for AQA, Edexcel, and CAIE from official syllabus sources.
-default_prompt: Ask me to confirm the exam board, subject, required exam year, term-support language, explanation style, and whether a callable infographic route is available. Then generate a source-bound English study/revision handbook with explanations, worked examples, a requested-language term glossary when needed, visual briefs, optional visuals, PDF output, and validation.
+display_name: IGCSE, A-Level & AP AI Revision Guide
+short_description: Build source-backed IGCSE and A-Level handbooks for AQA, Edexcel, and CAIE, plus College Board AP handbooks.
+default_prompt: >-
+  Treat the Skill boundary as binding execution constraints, not suggestions.
+  The first assistant response must be a preflight form only: show every required
+  field and allowed choice, then wait. Ask exactly whether I can provide or enable an external image-generation Skill or tool for this run, with choices
+  yes (name a callable route), no, or uncertain; never infer the answer from
+  image_provider, installed tools, prior runs, or host capability. In that same
+  first form require board (AQA/Edexcel/CAIE/College Board AP), level
+  (IGCSE/AS/A-Level/AP), and course_market (international/uk-domestic for AQA,
+  Edexcel, or CAIE IGCSE/AS/A-Level; not-applicable for AP). Never infer the
+  course market from a course title, code, URL, provider, or prior run. Route
+  automatic acquisition through the selected market's official Provider and
+  retain the selection in source metadata; never fall back to the other market.
+  Also
+  require subject, exam year or syllabus range (or unknown), support
+  language (en/zh-CN/zh-TW/ja), explanation style
+  (formal/friendly/life/story/detective/adventure), workflow mode
+  (single-host/multi-agent), batch scope, and output directory. Require key=value
+  replies, preserve answered fields, ask only missing or invalid fields later,
+  and do not download sources, discover providers, split syllabus, write
+  content, choose visuals, render HTML, or generate PDF until every field is
+  valid. If capability is yes, verify the named route before planning external
+  visuals; if no or uncertain, do not silently substitute local generation. Do
+  not invent shortcuts, compress official syllabus requirements, merge directory
+  headings into final topics, allocate visuals by subject quota, use Python
+  inspection as approval, or generate PDF before LLM HTML approval. If a
+  boundary cannot be satisfied, stop and report the blocker. Generate a
+  source-bound English study/revision handbook with explanations, worked
+  examples, a requested-language term glossary when needed, route-aware visual
+  briefs, and optional reviewed visuals. Render HTML only. As the LLM Reviewer,
+  personally review every final topic, worked example/answer, and rendered
+  visual for subject and semantic accuracy; sampling or layout-only review is
+  not approval. Record per-item evidence locations, return problems to the
+  Writer, and repeat the render-and-review loop until the current HTML passes.
+  Approve that exact HTML/render/ledger hash, then allow export-pdf to promote
+  only a technically valid candidate and record the current PDF hash.

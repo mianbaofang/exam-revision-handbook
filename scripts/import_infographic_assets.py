@@ -118,6 +118,12 @@ def main() -> int:
         entry["review_status"] = "reviewed" if "reviewed" in args.status else "generated"
         entry["asset"] = build_asset_metadata(target)
         entry["generated_by"] = args.provider
+        visual_need = entry.get("visual_need")
+        if isinstance(visual_need, dict):
+            entry["visual_need"] = {
+                **visual_need,
+                "reviewer_visual_decision": "pending",
+            }
         sync_visual_manifest_entry(entry)
         imported += 1
 
@@ -141,6 +147,21 @@ def main() -> int:
     rerender_result = (
         rerender_handbook(output_dir) if imported and args.rerender else {"rerendered": False}
     )
+    if (
+        imported
+        and args.rerender
+        and not rerender_result.get("rerendered")
+        and rerender_result.get("reason") != "missing guide-plan.json"
+    ):
+        print(
+            json.dumps(
+                {"ok": False, "imported": imported, "rerender": rerender_result},
+                ensure_ascii=False,
+                indent=2,
+            ),
+            file=sys.stderr,
+        )
+        return 1
     print(
         json.dumps(
             {
@@ -206,6 +227,7 @@ def write_manifest_payload(
     original_payload: object,
     entries: list[dict[str, object]],
 ) -> None:
+    payload: object
     if isinstance(original_payload, dict) and original_payload.get("schema_version") == 2:
         payload = dict(original_payload)
         payload.setdefault("visual_contract", VISUAL_CONTRACT)
@@ -244,10 +266,9 @@ def rerender_handbook(output_dir: Path) -> dict[str, object]:
         from intl_exam_guide.rendering.handbook_package import write_handbook_package
         from intl_exam_guide.rendering.html import render_html
         from intl_exam_guide.rendering.output_names import find_handbook_html, find_handbook_pdf
-        from intl_exam_guide.rendering.pdf import PdfExportError, export_pdf
 
-        plan = GuidePlan.from_dict(json.loads(plan_path.read_text(encoding="utf-8")))
-        write_handbook_package(plan, output_dir)
+        plan = GuidePlan.from_dict(json.loads(plan_path.read_text(encoding="utf-8-sig")))
+        write_handbook_package(plan, output_dir, refresh_visual_manifest=False)
         html_path = render_html(
             plan,
             find_handbook_html(output_dir, plan.qualification),
@@ -260,11 +281,20 @@ def rerender_handbook(output_dir: Path) -> dict[str, object]:
         }
         pdf_path = find_handbook_pdf(output_dir, plan.qualification)
         if pdf_path.exists():
-            try:
-                export_pdf(html_path, pdf_path)
-                result["pdf"] = str(pdf_path)
-            except PdfExportError as exc:
-                result["pdf_error"] = str(exc)
+            result["superseded_pdf"] = str(pdf_path)
+        result["pdf_status"] = "blocked_pending_current_html_review"
+        validation_path = output_dir / "validation.json"
+        if validation_path.exists():
+            validation = json.loads(validation_path.read_text(encoding="utf-8"))
+            if isinstance(validation, dict):
+                validation["pdf"] = None
+                validation["pdf_export_gate"] = {
+                    "llm_html_review_required": True,
+                    "status": "pending_current_html_review",
+                }
+                validation_path.write_text(
+                    json.dumps(validation, ensure_ascii=False, indent=2), encoding="utf-8"
+                )
         return result
     except Exception as exc:  # pragma: no cover - defensive script boundary
         return {"rerendered": False, "reason": str(exc)}

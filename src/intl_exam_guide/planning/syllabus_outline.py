@@ -10,6 +10,40 @@ from intl_exam_guide.models import Qualification, SourceSnippet, Topic
 SYLLABUS_OUTLINE_FILE = "syllabus-outline.json"
 SYLLABUS_EVIDENCE_FILE = "syllabus-evidence.json"
 CONTRACT_VERSION = "v0.5-llm-syllabus-outline"
+ATOMIC_COVERAGE_CONTRACT = "atomic-examinable-point-v1"
+ALLOWED_SOURCE_KINDS = {
+    "coded_point",
+    "bullet",
+    "sub_bullet",
+    "table_row",
+    "skill_statement",
+    "formula_requirement",
+    "restriction",
+    "application_statement",
+    "prose_clause",
+    "single_requirement",
+    "knowledge_statement",
+    "conceptual_relationship",
+    "practical_requirement",
+    "data_handling_requirement",
+    "source_analysis_requirement",
+    "extended_response_requirement",
+    "language_requirement",
+    "portfolio_requirement",
+    "other_source_bound_requirement",
+}
+ALLOWED_CONTAINER_DETAIL_MODELS = {
+    "single_examinable_point",
+    "multiple_examinable_points",
+    "no_examinable_content",
+}
+ALLOWED_CLUSTER_RELATIONSHIPS = {
+    "same_concept",
+    "prerequisite_chain",
+    "jointly_assessed_procedure",
+    "definition_and_application",
+    "other_source_justified",
+}
 
 PLACEHOLDER_PATTERNS = [
     r"^topic\s+\d+$",
@@ -153,6 +187,9 @@ def build_syllabus_outline_prompt(
             "     structure_analysis and official_structure may contain a single root or be empty.",
             "",
             "2. Extract source coverage items",
+            "   - Treat every official Topic, Unit, Section, chapter, or table heading as a",
+            "     structural container by default, not as a final teaching topic. Descend below",
+            "     it until you reach the lowest independently teachable or assessable statements.",
             "   - List the actual examinable content items that must be covered: rows, bullets,",
             "     coded syllabus points, skill statements, table cells, formula requirements,",
             "     restrictions, or application statements.",
@@ -160,6 +197,27 @@ def build_syllabus_outline_prompt(
             "     an Additional information column.",
             "   - Do not merge unrelated source items just to make the outline shorter. Do not",
             "     split a single indivisible source item merely to reach a count.",
+            "   - Split when the source contains distinct command-verb/object pairs, bullets,",
+            "     sub-bullets, coded points, formulas, conditions, exceptions, applications,",
+            "     or separately assessable procedures, even when they share one Topic heading.",
+            "   - This rule is provider-, qualification-, and subject-independent. A lowest",
+            "     requirement may be knowledge, a concept or relationship, calculation,",
+            "     practical work, source/data analysis, extended writing, language performance,",
+            "     portfolio evidence, or another source-bound assessable demand.",
+            "   - Do not require a command verb when this source expresses examinable content",
+            "     as a knowledge statement, theme, text, practical outcome, or assessment",
+            "     objective. Do not use a fixed vocabulary or fixed number of items per container.",
+            "",
+            "2A. Prove that you reached source-detail depth",
+            "   - Set coverage_granularity.contract to atomic-examinable-point-v1.",
+            "   - For every lowest official container, write one container_audit entry and",
+            "     classify it as single_examinable_point, multiple_examinable_points, or",
+            "     no_examinable_content. Cite a page and short evidence excerpt.",
+            "   - multiple_examinable_points requires at least two source_coverage_ids.",
+            "   - single_examinable_point requires a source-based explanation of why no deeper",
+            "     split exists. A short heading, shared theme, or LLM preference is not proof.",
+            "   - Every source_coverage item must record source_kind, exam_action, and",
+            "     atomicity='atomic'. A structural heading is not an allowed source_kind.",
             "",
             "3. Audit teaching granularity for every source item",
             "   - For each source_coverage item, decide how it will be treated:",
@@ -174,10 +232,20 @@ def build_syllabus_outline_prompt(
             "   - topics[] is the final list consumed by the handbook writer. Each entry should",
             "     be one teachable knowledge unit or a tightly linked cluster justified by the",
             "     current syllabus evidence.",
+            "   - Use a split-first rule: each final topic maps at least one independently",
+            "     assessable source item. A tightly linked topic may map several independent",
+            "     items when the audit explains why separate teaching would be misleading",
+            "     and records visible treatment for every item. Do not force micro-topics.",
+            "   - If a topic maps multiple source items, add cluster_justification with a",
+            "     relationship and a source-based why_not_separate explanation.",
             "   - A structural label can appear in parent_path, but a topic title should name",
             "     what the student learns, not only where it sits in the PDF.",
             "   - For each topic, include parent_path and source_coverage_ids so the Writer and",
             "     Reviewer can trace it back to your source coverage map.",
+            "   - Do not compress a course into a small number of directory-level themes for",
+            "     speed. Do not make source_coverage one item per broad Topic merely because",
+            "     the PDF uses Topic headings. Before delivery, compare each container audit",
+            "     with the actual rows, bullets, clauses, codes, and requirements beneath it.",
             "",
             "5. Extract exam points and source snippets",
             "   - exam_points should be specific source-bound claims, skills, formula uses,",
@@ -229,12 +297,30 @@ def build_syllabus_outline_prompt(
             '      "page_end": 12',
             "    }",
             "  ],",
+            '  "coverage_granularity": {',
+            '    "contract": "atomic-examinable-point-v1",',
+            '    "unit_definition": "The lowest independently teachable or assessable statement in this source.",',
+            '    "container_audit": [',
+            "      {",
+            '        "container_id": "STRUCTURE_ID_FROM_SOURCE or ROOT for a flat source",',
+            '        "container_title": "Official container title or Flat source",',
+            '        "detail_model": "single_examinable_point | multiple_examinable_points | no_examinable_content",',
+            '        "source_coverage_ids": ["SC001"],',
+            '        "evidence_page": 12,',
+            '        "evidence_excerpt": "Short source excerpt proving the detail found inside this container",',
+            '        "single_point_rationale": "Required for single_examinable_point; explain why no deeper assessable split exists."',
+            "      }",
+            "    ]",
+            "  },",
             '  "source_coverage": [',
             "    {",
             '      "id": "SC001",',
             '      "parent_path": ["Structural heading from this PDF", "Optional subsection from this PDF"],',
             '      "content": "One examinable source item from this PDF",',
             '      "additional_information": "Clarifying source text from the same row, bullet, or linked column",',
+            '      "source_kind": "coded_point | bullet | sub_bullet | table_row | skill_statement | formula_requirement | restriction | application_statement | prose_clause | single_requirement | knowledge_statement | conceptual_relationship | practical_requirement | data_handling_requirement | source_analysis_requirement | extended_response_requirement | language_requirement | portfolio_requirement | other_source_bound_requirement",',
+            '      "exam_action": "The independently assessable demand. Use a source-backed command when present; otherwise state the knowledge, performance, practical, analytical, or portfolio demand without inventing one.",',
+            '      "atomicity": "atomic",',
             '      "page": 12',
             "    }",
             "  ],",
@@ -253,6 +339,7 @@ def build_syllabus_outline_prompt(
             '      "parent_path": ["Structural heading from this PDF", "Optional subsection from this PDF"],',
             '      "source_coverage_ids": ["SC001"],',
             '      "split_rationale": "One source row with its clarification forms one teachable unit.",',
+            '      "cluster_justification": null,',
             '      "exam_points": [',
             '        "Specific examinable claim or skill copied from this PDF",',
             '        "Second source-bound point only if it belongs in the same teachable unit"',
@@ -279,11 +366,13 @@ def build_syllabus_outline_prompt(
             "3. Do not rely on candidate hints or Python guesses. Python did not split topics from Markdown.",
             "",
             "4. Let this syllabus decide the structure. Do not require any preselected layers",
-            "   or provider-specific labels.",
+            "   provider-specific labels, subject template, command-verb list, or fixed split count.",
             "",
             "5. Do not collapse detailed examinable content into container headings. If you list",
             "   multiple source_coverage items under a container, topics[] must show how those",
             "   items are taught or tightly clustered.",
+            "   An official label such as Topic, Unit, Section, or chapter is a parent_path",
+            "   container unless container_audit proves it contains one indivisible exam point.",
             "",
             "6. Do not invent board/subject information. If the evidence is unclear, output",
             "   an issues array explaining the uncertainty instead of guessing.",
@@ -301,7 +390,11 @@ def build_syllabus_outline_prompt(
             "- cross_check records Markdown structure use, page-evidence verification, mismatches, omissions, and unresolved gaps.",
             "- structure_analysis explains how this exact PDF is organized.",
             "- source_coverage records the actual examinable items selected from the source.",
+            "- coverage_granularity audits every lowest source container and every source_coverage",
+            "  item is an atomic assessable statement with source_kind and exam_action.",
             "- topics[] contains final teachable knowledge units or justified tight clusters.",
+            "- No official directory-level heading has been silently promoted to a final topic",
+            "  unless its audit proves that it contains exactly one indivisible requirement.",
             "- Every topic has exam_points, source_snippets, parent_path, and source_coverage_ids.",
             "- schema_version is v0.5-llm-syllabus-outline.",
             "",
@@ -395,6 +488,28 @@ def validate_syllabus_outline(data: dict[str, object]) -> list[SyllabusOutlineIs
                 "Analyst outline must include structure_analysis.rationale explaining the structure found in this PDF.",
             )
         )
+    elif not str(structure_analysis.get("lowest_source_unit") or "").strip():
+        issues.append(
+            SyllabusOutlineIssue(
+                "error",
+                "Analyst outline must name structure_analysis.lowest_source_unit below container headings.",
+            )
+        )
+    if isinstance(structure_analysis, dict):
+        structure_model = str(structure_analysis.get("model") or "").strip().lower()
+        if structure_model in {"nested", "mixed", "route-based", "table-based", "code-based"}:
+            official_structure = data.get("official_structure")
+            if not isinstance(official_structure, list) or not any(
+                isinstance(item, dict) and str(item.get("id") or "").strip()
+                for item in official_structure
+            ):
+                issues.append(
+                    SyllabusOutlineIssue(
+                        "error",
+                        "Non-flat structure_analysis.model requires official_structure entries "
+                        "so container headings cannot silently become final topics.",
+                    )
+                )
 
     coverage = data.get("source_coverage")
     coverage_items = [item for item in coverage if isinstance(item, dict)] if isinstance(coverage, list) else []
@@ -409,11 +524,66 @@ def validate_syllabus_outline(data: dict[str, object]) -> list[SyllabusOutlineIs
     structure_titles = _official_structure_titles(data)
     coverage_ids = {str(item.get("id") or "").strip() for item in coverage_items}
     coverage_ids.discard("")
+    granularity_issues, single_point_coverage_ids = _validate_coverage_granularity(
+        data, coverage_ids
+    )
+    issues.extend(granularity_issues)
     for coverage_index, item in enumerate(coverage_items, start=1):
-        if not str(item.get("id") or "").strip():
+        coverage_id = str(item.get("id") or "").strip()
+        if not coverage_id:
             issues.append(
                 SyllabusOutlineIssue(
                     "error", f"source_coverage item {coverage_index} is missing a stable id."
+                )
+            )
+        source_kind = str(item.get("source_kind") or "").strip()
+        if source_kind not in ALLOWED_SOURCE_KINDS:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error",
+                    f"source_coverage item {coverage_index} has invalid source_kind: "
+                    f"{source_kind or 'missing'}",
+                )
+            )
+        if str(item.get("atomicity") or "").strip() != "atomic":
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error",
+                    f"source_coverage item {coverage_index} must declare atomicity='atomic'.",
+                )
+            )
+        if not str(item.get("exam_action") or "").strip():
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error", f"source_coverage item {coverage_index} is missing exam_action."
+                )
+            )
+        content = str(item.get("content") or "").strip()
+        if not content:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error", f"source_coverage item {coverage_index} is missing content."
+                )
+            )
+        elif (
+            _normalize_text(content) in structure_titles
+            or _normalize_structure_title(content) in structure_titles
+        ) and coverage_id not in single_point_coverage_ids:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error",
+                    f"source_coverage item {coverage_index} reuses a structural container "
+                    "without a single-point container audit.",
+                )
+            )
+        try:
+            page = int(item.get("page", 0))
+        except (TypeError, ValueError):
+            page = 0
+        if page <= 0:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error", f"source_coverage item {coverage_index} has invalid page."
                 )
             )
     used_coverage_ids: set[str] = set()
@@ -500,6 +670,7 @@ def validate_syllabus_outline(data: dict[str, object]) -> list[SyllabusOutlineIs
                     f"source_coverage has {len(unused)} item(s) not mapped to topics: {preview}",
                 )
             )
+    issues.extend(_validate_topic_primary_coverage(data, topics))
     return issues
 
 
@@ -513,9 +684,13 @@ def _validate_source_inputs_cross_check(data: dict[str, object]) -> list[Syllabu
                 "Analyst outline must include source_inputs confirming Markdown companion and page evidence use.",
             )
         ]
-    for field in ("markdown_companion_read", "page_evidence_read"):
-        if source_inputs.get(field) is not True:
-            issues.append(SyllabusOutlineIssue("error", f"source_inputs.{field} must be true."))
+    for input_field in ("markdown_companion_read", "page_evidence_read"):
+        if source_inputs.get(input_field) is not True:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error", f"source_inputs.{input_field} must be true."
+                )
+            )
     status = str(source_inputs.get("markdown_extraction_status") or "").strip()
     if not status:
         issues.append(
@@ -533,14 +708,338 @@ def _validate_source_inputs_cross_check(data: dict[str, object]) -> list[Syllabu
                 "Analyst outline must include cross_check for Markdown/page-evidence comparison.",
             ),
         ]
-    for field in ("markdown_structure_used", "page_evidence_used"):
-        if not str(cross_check.get(field) or "").strip():
-            issues.append(SyllabusOutlineIssue("error", f"cross_check.{field} must be described."))
-    for field in ("mismatches", "markdown_omissions", "unresolved_source_gaps"):
-        if not isinstance(cross_check.get(field), list):
-            issues.append(SyllabusOutlineIssue("error", f"cross_check.{field} must be a list."))
+    for cross_check_field in ("markdown_structure_used", "page_evidence_used"):
+        if not str(cross_check.get(cross_check_field) or "").strip():
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error", f"cross_check.{cross_check_field} must be described."
+                )
+            )
+    for list_field in ("mismatches", "markdown_omissions", "unresolved_source_gaps"):
+        if not isinstance(cross_check.get(list_field), list):
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error", f"cross_check.{list_field} must be a list."
+                )
+            )
     return issues
 
+
+def _validate_coverage_granularity(
+    data: dict[str, object], coverage_ids: set[str]
+) -> tuple[list[SyllabusOutlineIssue], set[str]]:
+    granularity = data.get("coverage_granularity")
+    if not isinstance(granularity, dict):
+        return (
+            [
+                SyllabusOutlineIssue(
+                    "error",
+                    "Analyst outline must include coverage_granularity proving source-detail depth.",
+                )
+            ],
+            set(),
+        )
+
+    issues: list[SyllabusOutlineIssue] = []
+    if str(granularity.get("contract") or "").strip() != ATOMIC_COVERAGE_CONTRACT:
+        issues.append(
+            SyllabusOutlineIssue(
+                "error",
+                f"coverage_granularity.contract must be {ATOMIC_COVERAGE_CONTRACT}.",
+            )
+        )
+    if not str(granularity.get("unit_definition") or "").strip():
+        issues.append(
+            SyllabusOutlineIssue(
+                "error", "coverage_granularity.unit_definition must define an atomic exam point."
+            )
+        )
+
+    raw_audits = granularity.get("container_audit")
+    audits = (
+        [item for item in raw_audits if isinstance(item, dict)]
+        if isinstance(raw_audits, list)
+        else []
+    )
+    if not audits:
+        issues.append(
+            SyllabusOutlineIssue(
+                "error", "coverage_granularity.container_audit must inspect every lowest container."
+            )
+        )
+        return issues, set()
+
+    audited_containers: set[str] = set()
+    audited_coverage_ids: set[str] = set()
+    single_point_coverage_ids: set[str] = set()
+    for index, audit in enumerate(audits, start=1):
+        container_id = str(audit.get("container_id") or "").strip()
+        if not container_id:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error", f"container_audit item {index} is missing container_id."
+                )
+            )
+        elif container_id in audited_containers:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error", f"container_audit repeats container_id: {container_id}."
+                )
+            )
+        audited_containers.add(container_id)
+
+        if not str(audit.get("container_title") or "").strip():
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error", f"container_audit item {index} is missing container_title."
+                )
+            )
+        detail_model = str(audit.get("detail_model") or "").strip()
+        if detail_model not in ALLOWED_CONTAINER_DETAIL_MODELS:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error",
+                    f"container_audit item {index} has invalid detail_model: "
+                    f"{detail_model or 'missing'}.",
+                )
+            )
+        raw_ids = audit.get("source_coverage_ids")
+        item_ids = (
+            [str(value).strip() for value in raw_ids if str(value).strip()]
+            if isinstance(raw_ids, list)
+            else []
+        )
+        unknown = [coverage_id for coverage_id in item_ids if coverage_id not in coverage_ids]
+        if unknown:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error",
+                    f"container_audit item {index} references unknown source_coverage ids: "
+                    + ", ".join(unknown[:8]),
+                )
+            )
+        duplicates = audited_coverage_ids.intersection(item_ids)
+        if duplicates:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error",
+                    "source_coverage items must belong to one lowest container audit; repeated: "
+                    + ", ".join(sorted(duplicates)[:8]),
+                )
+            )
+        audited_coverage_ids.update(item_ids)
+
+        if detail_model == "multiple_examinable_points" and len(item_ids) < 2:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error",
+                    f"container_audit item {index} declares multiple exam points but maps "
+                    f"only {len(item_ids)} source_coverage item(s).",
+                )
+            )
+        if detail_model == "single_examinable_point":
+            if len(item_ids) != 1:
+                issues.append(
+                    SyllabusOutlineIssue(
+                        "error",
+                        f"container_audit item {index} declares one exam point and must map "
+                        "exactly one source_coverage item.",
+                    )
+                )
+            else:
+                single_point_coverage_ids.add(item_ids[0])
+            if not str(audit.get("single_point_rationale") or "").strip():
+                issues.append(
+                    SyllabusOutlineIssue(
+                        "error",
+                        f"container_audit item {index} must justify why no deeper split exists.",
+                    )
+                )
+        if detail_model == "no_examinable_content" and item_ids:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error",
+                    f"container_audit item {index} declares no examinable content but maps "
+                    "source_coverage items.",
+                )
+            )
+        try:
+            evidence_page = int(audit.get("evidence_page", 0))
+        except (TypeError, ValueError):
+            evidence_page = 0
+        if evidence_page <= 0:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error", f"container_audit item {index} has invalid evidence_page."
+                )
+            )
+        if not str(audit.get("evidence_excerpt") or "").strip():
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error", f"container_audit item {index} is missing evidence_excerpt."
+                )
+            )
+
+    expected_containers = _official_leaf_structure_ids(data) or {"ROOT"}
+    missing_containers = sorted(expected_containers - audited_containers)
+    if missing_containers:
+        issues.append(
+            SyllabusOutlineIssue(
+                "error",
+                "container_audit is missing lowest official container(s): "
+                + ", ".join(missing_containers[:8]),
+            )
+        )
+    missing_coverage = sorted(coverage_ids - audited_coverage_ids)
+    if missing_coverage:
+        issues.append(
+            SyllabusOutlineIssue(
+                "error",
+                "container_audit does not account for source_coverage item(s): "
+                + ", ".join(missing_coverage[:8]),
+            )
+        )
+    return issues, single_point_coverage_ids
+
+
+def _validate_topic_primary_coverage(
+    data: dict[str, object], topics: list[object]
+) -> list[SyllabusOutlineIssue]:
+    topic_entries = [topic for topic in topics if isinstance(topic, dict)]
+    topic_by_title: dict[str, dict[str, object]] = {}
+    issues: list[SyllabusOutlineIssue] = []
+    coverage_to_topics: dict[str, list[str]] = {}
+    for index, topic in enumerate(topic_entries, start=1):
+        title = str(topic.get("title") or "").strip()
+        normalized = _normalize_text(title)
+        if normalized in topic_by_title:
+            issues.append(
+                SyllabusOutlineIssue("error", f"Topic {index} duplicates topic title: {title}")
+            )
+        topic_by_title[normalized] = topic
+        raw_ids = topic.get("source_coverage_ids") or topic.get("coverage_ids")
+        topic_ids = (
+            [str(value).strip() for value in raw_ids if str(value).strip()]
+            if isinstance(raw_ids, list)
+            else []
+        )
+        for coverage_id in topic_ids:
+            coverage_to_topics.setdefault(coverage_id, []).append(title)
+
+        if len(topic_ids) > 1:
+            cluster = topic.get("cluster_justification")
+            if not isinstance(cluster, dict):
+                issues.append(
+                    SyllabusOutlineIssue(
+                        "error",
+                        f"Topic {index} maps multiple atomic source items and requires "
+                        "cluster_justification.",
+                    )
+                )
+            else:
+                relationship = str(cluster.get("relationship") or "").strip()
+                if relationship not in ALLOWED_CLUSTER_RELATIONSHIPS:
+                    issues.append(
+                        SyllabusOutlineIssue(
+                            "error",
+                            f"Topic {index} has invalid cluster relationship: "
+                            f"{relationship or 'missing'}.",
+                        )
+                    )
+                if not str(cluster.get("why_not_separate") or "").strip():
+                    issues.append(
+                        SyllabusOutlineIssue(
+                            "error",
+                            f"Topic {index} cluster_justification must explain why the "
+                            "atomic items should not be separate topics.",
+                        )
+                    )
+
+    for coverage_id, target_titles in coverage_to_topics.items():
+        if len(target_titles) > 1:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error",
+                    f"source_coverage item {coverage_id} is mapped to multiple topics: "
+                    + ", ".join(target_titles),
+                )
+            )
+
+    raw_audit = data.get("granularity_audit")
+    audit_entries = (
+        [item for item in raw_audit if isinstance(item, dict)]
+        if isinstance(raw_audit, list)
+        else []
+    )
+    audit_by_topic: dict[str, list[dict[str, object]]] = {}
+    for index, item in enumerate(audit_entries, start=1):
+        target = str(item.get("target_topic_title") or "").strip()
+        target_key = _normalize_text(target)
+        coverage_id = str(
+            item.get("source_coverage_id") or item.get("coverage_id") or ""
+        ).strip()
+        target_topic = topic_by_title.get(target_key)
+        if target_topic is None:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error",
+                    f"granularity_audit item {index} targets unknown topic: "
+                    f"{target or 'missing'}.",
+                )
+            )
+            continue
+        raw_target_topic_ids = target_topic.get(
+            "source_coverage_ids"
+        ) or target_topic.get("coverage_ids")
+        target_topic_ids = (
+            {str(value).strip() for value in raw_target_topic_ids if str(value).strip()}
+            if isinstance(raw_target_topic_ids, list)
+            else set()
+        )
+        if coverage_id and coverage_id not in target_topic_ids:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error",
+                    f"granularity_audit item {index} targets {target} but that topic does "
+                    f"not map {coverage_id}.",
+                )
+            )
+        audit_by_topic.setdefault(target_key, []).append(item)
+
+    for index, topic in enumerate(topic_entries, start=1):
+        title = str(topic.get("title") or "").strip()
+        entries = audit_by_topic.get(_normalize_text(title), [])
+        primary_count = sum(
+            str(item.get("teaching_treatment") or "").strip() == "independent_topic"
+            for item in entries
+        )
+        if primary_count < 1:
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error",
+                    f"Topic {index} must map at least one independent_topic source item; "
+                    f"found {primary_count}.",
+                )
+            )
+    return issues
+
+
+def _official_leaf_structure_ids(data: dict[str, object]) -> set[str]:
+    structure = data.get("official_structure")
+    if not isinstance(structure, list):
+        return set()
+    ids: set[str] = set()
+    parent_ids: set[str] = set()
+    for item in structure:
+        if not isinstance(item, dict):
+            continue
+        item_id = str(item.get("id") or "").strip()
+        parent_id = str(item.get("parent_id") or "").strip()
+        if item_id:
+            ids.add(item_id)
+        if parent_id:
+            parent_ids.add(parent_id)
+    return ids - parent_ids
 
 
 def _validate_granularity_audit(

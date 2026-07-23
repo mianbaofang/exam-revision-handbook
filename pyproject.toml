@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "igcse-a-level-revision-guide"
-version = "0.5.1"
-description = "Generate image-rich IGCSE and A-Level revision guides with worked examples, infographics, and PDF output."
+version = "0.6.0"
+description = "Generate source-backed IGCSE, A-Level, and AP revision guides with reviewed visuals and PDF output."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
@@ -16,6 +16,7 @@ dependencies = [
 
 [project.optional-dependencies]
 pdf = ["playwright>=1.45"]
+audit = ["beautifulsoup4>=4.12", "requests>=2.31"]
 dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.5", "mypy>=1.10"]
 
 [project.scripts]

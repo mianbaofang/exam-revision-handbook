@@ -19,6 +19,16 @@ def sample_visual_spec() -> VisualSpec:
         source_points=("draw a bar chart",),
         source_pages=(8,),
         source_terms=("bar chart",),
+        semantic_contract={
+            "schema_version": "v1-visual-semantic-contract",
+            "learning_claim": "Compare category values.",
+            "intended_inference": "Bar height represents category magnitude.",
+            "visual_kind": "graph",
+            "required_elements": ["bars", "axis"],
+            "required_relationships": ["height maps to value"],
+            "required_labels": ["category", "value"],
+            "forbidden_misconceptions": ["bar width represents value"],
+        },
     )
 
 
@@ -69,6 +79,7 @@ def test_build_visual_manifest_v2_generates_contract_and_asset_metadata(tmp_path
     assert entry["rendered_asset"]["asset_status"] == "draft"
     assert entry["rendered_asset"]["renders_in_html"] is False
     assert entry["visual_need"]["visual_teaching_value"] == "student-preview"
+    assert entry["semantic_contract"]["visual_kind"] == "graph"
 
 
 def test_load_visual_manifest_accepts_v2_and_legacy_list(tmp_path):

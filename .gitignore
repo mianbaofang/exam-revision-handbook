@@ -11,11 +11,15 @@ dist/
 build/
 *.egg-info/
 outputs/
+review-approvals/
+visual-prompts/
+visual-review/
+MP4/
+NUL
 source/*.pdf
 source/*.txt
 docs/preview-*.png
 designs/
-AGENTS.md
 .agents/
 .specify/
 .superpowers/

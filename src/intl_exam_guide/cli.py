@@ -21,11 +21,15 @@ from intl_exam_guide.planning.syllabus_outline import (
     write_syllabus_evidence,
     write_syllabus_outline,
 )
-from intl_exam_guide.providers import PROVIDER_NAMES, get_provider, infer_provider_from_url
+from intl_exam_guide.providers import (
+    PROVIDER_NAMES,
+    get_provider,
+    infer_provider_from_url,
+    provider_for_course_market,
+)
 from intl_exam_guide.rendering.handbook_package import write_handbook_package
 from intl_exam_guide.rendering.html import render_html
 from intl_exam_guide.rendering.output_names import default_handbook_paths
-from intl_exam_guide.rendering.pdf import PdfExportError, export_pdf
 from intl_exam_guide.validation.checks import (
     delivery_status_from_issues,
     issues_to_dict,
@@ -70,12 +74,17 @@ def main(argv: list[str] | None = None) -> int:
     )
     generate.add_argument(
         "--level",
-        choices=["gcse", "igcse", "as", "as-level", "a-level", "alevel", "as-a-level"],
+        choices=["gcse", "igcse", "as", "as-level", "a-level", "alevel", "as-a-level", "ap"],
         help="Qualification level.",
     )
     generate.add_argument(
+        "--course-market",
+        choices=["international", "uk-domestic", "not-applicable"],
+        help="Maps AQA, Edexcel, and CAIE to the selected official course-market route.",
+    )
+    generate.add_argument(
         "--exam-year",
-        help="Exam year used by year-ranged syllabuses, especially Cambridge subject pages.",
+        help="Target exam year used for Cambridge syllabus ranges and AP CED applicability.",
     )
     generate.add_argument("--out", required=True, help="Output directory.")
 
@@ -93,12 +102,17 @@ def main(argv: list[str] | None = None) -> int:
     )
     extract_evidence.add_argument(
         "--level",
-        choices=["gcse", "igcse", "as", "as-level", "a-level", "alevel", "as-a-level"],
+        choices=["gcse", "igcse", "as", "as-level", "a-level", "alevel", "as-a-level", "ap"],
         help="Qualification level.",
     )
     extract_evidence.add_argument(
+        "--course-market",
+        choices=["international", "uk-domestic", "not-applicable"],
+        help="Maps AQA, Edexcel, and CAIE to the selected official course-market route.",
+    )
+    extract_evidence.add_argument(
         "--exam-year",
-        help="Exam year used by year-ranged syllabuses, especially Cambridge subject pages.",
+        help="Target exam year used for Cambridge syllabus ranges and AP CED applicability.",
     )
     extract_evidence.add_argument("--out", required=True, help="Output directory.")
 
@@ -110,9 +124,38 @@ def main(argv: list[str] | None = None) -> int:
 
     review = subcommands.add_parser(
         "review",
-        help="Build a final Agent/LLM review packet for an output directory.",
+        help="Prepare the current HTML for mandatory visual review by the host LLM.",
     )
     review.add_argument("--out", required=True, help="Existing handbook output directory.")
+
+    export_reviewed = subcommands.add_parser(
+        "export-pdf",
+        help="Export PDF only after the host LLM approved the current HTML hash.",
+    )
+    export_reviewed.add_argument("--out", required=True, help="Reviewed handbook output directory.")
+    export_reviewed.add_argument(
+        "--delivery-dir",
+        help="Optional directory for a hash-verified copy of the approved PDF.",
+    )
+    export_reviewed.add_argument(
+        "--supersede-existing",
+        action="store_true",
+        help="Archive a differing delivery file before replacing it; requires --delivery-dir.",
+    )
+
+    audit_delivery_command = subcommands.add_parser(
+        "audit-delivery",
+        help="Read-only audit of the current handbook delivery state and next action.",
+    )
+    audit_delivery_command.add_argument(
+        "--out", required=True, help="Existing handbook output directory."
+    )
+
+    index_review = subcommands.add_parser(
+        "index-review-ledger",
+        help="Hash LLM-authored review shards for the current render.",
+    )
+    index_review.add_argument("--out", required=True, help="Reviewed handbook output directory.")
 
     inspect = subcommands.add_parser(
         "inspect",
@@ -149,6 +192,51 @@ def main(argv: list[str] | None = None) -> int:
         print_json_payload({"final_review_packet": str(path)})
         return 0
 
+    if args.command == "export-pdf":
+        from intl_exam_guide.auditing.final_review import (
+            HtmlReviewRequiredError,
+            export_reviewed_pdf,
+        )
+
+        try:
+            if args.supersede_existing and not args.delivery_dir:
+                raise HtmlReviewRequiredError(
+                    "--supersede-existing requires an explicit --delivery-dir."
+                )
+            pdf_path = export_reviewed_pdf(
+                Path(args.out),
+                Path(args.delivery_dir) if args.delivery_dir else None,
+                supersede_existing=args.supersede_existing,
+            )
+        except (HtmlReviewRequiredError, OSError, RuntimeError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+        print_json_payload(
+            {
+                "pdf": str(pdf_path),
+                "review_gate": "current-html-approved-by-llm",
+            }
+        )
+        return 0
+
+    if args.command == "audit-delivery":
+        from intl_exam_guide.auditing.delivery_gate import audit_delivery
+
+        report = audit_delivery(Path(args.out))
+        print_json_payload(report)
+        return 0 if report["delivery_eligible"] is True else 2
+
+    if args.command == "index-review-ledger":
+        from intl_exam_guide.auditing.review_ledger import write_review_ledger_index
+
+        try:
+            index_path = write_review_ledger_index(Path(args.out))
+        except (OSError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+        print_json_payload({"review_ledger_index": str(index_path)})
+        return 0
+
     if args.command == "inspect":
         path = write_quality_inspection(Path(args.out))
         print_json_payload({"quality_inspection": str(path)})
@@ -161,6 +249,7 @@ def main(argv: list[str] | None = None) -> int:
                 args.provider,
                 args.level,
                 args.exam_year,
+                args.course_market,
                 Path(args.out) / "source",
             )
         except (ValueError, NotImplementedError) as exc:
@@ -178,7 +267,7 @@ def main(argv: list[str] | None = None) -> int:
                 "message": (
                     "Evidence ready. The host LLM must write syllabus-outline.json, "
                     "concepts/concept_explanations.json, mastery_summary values, and visual decisions "
-                    "before rendering HTML/PDF."
+                    "before rendering HTML. The LLM must visually approve that HTML before PDF export."
                 ),
             }
         )
@@ -193,6 +282,7 @@ def main(argv: list[str] | None = None) -> int:
                 args.provider,
                 args.level,
                 args.exam_year,
+                args.course_market,
                 out_dir / "source",
             )
         except (ValueError, NotImplementedError) as exc:
@@ -205,7 +295,7 @@ def main(argv: list[str] | None = None) -> int:
                 "mode": "evidence-only",
                 "syllabus_evidence": str(evidence_path),
                 "qualification_json": str(out_dir / "qualification.json"),
-                "message": "Evidence ready. Run the Skill host LLM workflow to write syllabus-outline.json, concepts/concept_explanations.json, and render the named HTML/PDF outputs.",
+                "message": "Evidence ready. Run the Skill host LLM workflow to write syllabus-outline.json and concepts/concept_explanations.json, render HTML, complete the visible LLM review-and-repair loop, and only then export PDF.",
             }
         )
         return 0
@@ -290,13 +380,21 @@ def validate_generation_choices(parser: argparse.ArgumentParser, args: argparse.
         )
 
 
-def resolve_provider(provider: str | None, query: str) -> str:
+def resolve_provider(
+    provider: str | None,
+    query: str,
+    course_market: str | None = None,
+) -> str:
     """Return provider name: explicit choice, URL inference, or OxfordAQA default."""
     if provider:
-        return provider
-    if query.lower().startswith(("http://", "https://")):
-        return infer_provider_from_url(query) or "oxfordaqa"
-    return "oxfordaqa"
+        selected = provider
+    elif query.lower().startswith(("http://", "https://")):
+        selected = infer_provider_from_url(query) or "oxfordaqa"
+    elif query.lower().startswith("ap ") or "college board" in query.lower():
+        selected = "collegeboard"
+    else:
+        selected = "oxfordaqa"
+    return provider_for_course_market(selected, course_market)
 
 
 def resolve_and_download_qualification(
@@ -304,9 +402,10 @@ def resolve_and_download_qualification(
     provider_name: str | None,
     level: str | None,
     exam_year: str | None,
+    course_market: str | None,
     source_dir: Path,
 ) -> Qualification:
-    provider = get_provider(resolve_provider(provider_name, query))
+    provider = get_provider(resolve_provider(provider_name, query, course_market))
     link = provider.find_qualification(query, level, exam_year)
     qualification = provider.parse_qualification(link.href, level, exam_year)
     qualification = provider.apply_listing_metadata(qualification, link)
@@ -405,13 +504,10 @@ def write_guide_outputs(
 
     qualification_path = out_dir / "qualification.json"
     plan_path = out_dir / "guide-plan.json"
-    html_path, pdf_path = default_handbook_paths(out_dir, plan.qualification)
+    html_path, _ = default_handbook_paths(out_dir, plan.qualification)
     validation_path = out_dir / "validation.json"
     delivery_contract_path = out_dir / "delivery-contract.json"
     run_options_path = out_dir / "run-options.json"
-    if pdf_path.exists():
-        pdf_path.unlink()
-
     qualification_path.write_text(
         json.dumps(plan.qualification.to_dict(), ensure_ascii=False, indent=2),
         encoding="utf-8",
@@ -492,25 +588,18 @@ def write_guide_outputs(
     package_manifest = write_handbook_package(plan, out_dir)
     render_html(plan, html_path, out_dir / "images" / "visual_manifest.json")
 
-    pdf_error: str | None = None
-    if not skip_pdf:
-        try:
-            export_pdf(html_path, pdf_path)
-        except PdfExportError as exc:  # pragma: no cover - depends on local browser
-            pdf_error = str(exc)
-
     quality_inspection_path = write_quality_inspection(out_dir)
 
     issues = validate_plan(
         plan,
         html_path=html_path,
-        pdf_path=None if skip_pdf else pdf_path,
+        pdf_path=None,
         output_dir=out_dir,
     )
     summary = review_summary(
         plan,
         html_path=html_path,
-        pdf_path=None if skip_pdf else pdf_path,
+        pdf_path=None,
         output_dir=out_dir,
     )
     delivery_status = delivery_status_from_issues(issues, summary)
@@ -526,8 +615,13 @@ def write_guide_outputs(
     payload = {
         "qualification": qualification.title,
         "html": str(html_path),
-        "pdf": str(pdf_path) if pdf_path.exists() else None,
-        "pdf_error": pdf_error,
+        "pdf": None,
+        "pdf_error": None,
+        "pdf_export_gate": {
+            "llm_html_review_required": True,
+            "status": "pending_current_html_review",
+            "command_after_approval": "python -m intl_exam_guide export-pdf --out <output-dir>",
+        },
         "package": package_manifest,
         "delivery_contract": str(delivery_contract_path),
         "quality_inspection": str(quality_inspection_path),

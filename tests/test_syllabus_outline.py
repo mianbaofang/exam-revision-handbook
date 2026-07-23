@@ -32,17 +32,41 @@ def outline_base() -> dict[str, object]:
             "lowest_source_unit": "skill statements",
         },
         "official_structure": [],
+        "coverage_granularity": {
+            "contract": "atomic-examinable-point-v1",
+            "unit_definition": (
+                "The lowest complete requirement that can be taught and assessed independently."
+            ),
+            "container_audit": [
+                {
+                    "container_id": "ROOT",
+                    "container_title": "Flat source",
+                    "detail_model": "multiple_examinable_points",
+                    "source_coverage_ids": ["SC001", "SC002"],
+                    "evidence_page": 4,
+                    "evidence_excerpt": (
+                        "Use ratios to compare quantities. Solve direct proportion problems."
+                    ),
+                }
+            ],
+        },
         "source_coverage": [
             {
                 "id": "SC001",
                 "parent_path": [],
                 "content": "Use ratios to compare quantities.",
+                "source_kind": "skill_statement",
+                "exam_action": "Use ratios to compare quantities",
+                "atomicity": "atomic",
                 "page": 4,
             },
             {
                 "id": "SC002",
                 "parent_path": [],
                 "content": "Solve direct proportion problems.",
+                "source_kind": "skill_statement",
+                "exam_action": "Solve direct proportion problems",
+                "atomicity": "atomic",
                 "page": 4,
             },
         ],
@@ -126,6 +150,9 @@ def test_syllabus_outline_prompt_includes_dual_track_inputs_and_page_priority():
     assert "syllabus-evidence.json" in prompt
     assert "page-level evidence wins" in prompt
     assert "Python must not parse Markdown to split topics" in prompt
+    assert "provider-, qualification-, and subject-independent" in prompt
+    assert "fixed vocabulary or fixed number of items per container" in prompt
+    assert "Do not compress a course into a small number of directory-level themes" in prompt
 
 
 
@@ -147,6 +174,19 @@ def test_outline_validation_requires_dual_track_audit_fields():
     assert any("cross_check" in message for message in messages)
 
 
+def test_outline_validation_rejects_non_flat_structure_without_declared_containers():
+    outline = outline_base()
+    outline["structure_analysis"] = {
+        "model": "nested",
+        "rationale": "The PDF groups requirements under official section headings.",
+        "lowest_source_unit": "content rows",
+    }
+
+    messages = [issue.message for issue in validate_syllabus_outline(outline)]
+
+    assert any("requires official_structure entries" in message for message in messages)
+
+
 
 def test_outline_validation_requires_granularity_audit_for_each_source_item():
     outline = outline_base()
@@ -165,7 +205,7 @@ def test_outline_validation_requires_granularity_audit_for_each_source_item():
     assert any("granularity_audit is missing 1 source_coverage" in message for message in messages)
 
 
-
+def test_outline_validation_rejects_collapsed_declared_structure_title_with_code():
     outline = outline_base()
     outline["structure_analysis"] = {
         "model": "nested",
@@ -182,6 +222,10 @@ def test_outline_validation_requires_granularity_audit_for_each_source_item():
             "page_end": 4,
         }
     ]
+    outline["coverage_granularity"]["container_audit"][0]["container_id"] = "S1"
+    outline["coverage_granularity"]["container_audit"][0][
+        "container_title"
+    ] = "1.1 Ratio and proportion"
     outline["topics"] = [
         {
             "title": "1.1 Ratio and proportion",
@@ -221,6 +265,10 @@ def test_outline_validation_rejects_collapsed_declared_structure_title_without_c
             "page_end": 4,
         }
     ]
+    outline["coverage_granularity"]["container_audit"][0]["container_id"] = "S1"
+    outline["coverage_granularity"]["container_audit"][0][
+        "container_title"
+    ] = "1.1 Ratio and proportion"
     outline["topics"] = [
         {
             "title": "Ratio and proportion",
@@ -274,6 +322,8 @@ def test_outline_validation_rejects_source_coverage_without_stable_ids():
     assert "source_coverage item 1 is missing a stable id." in messages
     assert any("references unknown source_coverage id: SC001" in message for message in messages)
 
+
+def test_apply_syllabus_outline_response_uses_validated_topics():
     qualification = Qualification(
         title="Test Mathematics",
         code="9999",
@@ -295,3 +345,190 @@ def test_outline_validation_rejects_source_coverage_without_stable_ids():
         "Direct proportion problems",
     ]
     assert "outline-source:llm-analyst" in result.qualification.route_tags
+
+
+def test_outline_validation_rejects_multi_point_container_with_one_coverage_item():
+    outline = outline_base()
+    outline["official_structure"] = [
+        {
+            "id": "TOPIC_1",
+            "title": "Ratio and proportion",
+            "role": "source-structure",
+            "parent_id": None,
+            "page_start": 4,
+            "page_end": 4,
+        }
+    ]
+    outline["coverage_granularity"]["container_audit"] = [
+        {
+            "container_id": "TOPIC_1",
+            "container_title": "Ratio and proportion",
+            "detail_model": "multiple_examinable_points",
+            "source_coverage_ids": ["SC001"],
+            "evidence_page": 4,
+            "evidence_excerpt": (
+                "Use ratios to compare quantities. Solve direct proportion problems."
+            ),
+        }
+    ]
+    outline["source_coverage"] = [outline["source_coverage"][0]]
+    outline["granularity_audit"] = [outline["granularity_audit"][0]]
+    outline["topics"] = [outline["topics"][0]]
+
+    messages = [issue.message for issue in validate_syllabus_outline(outline)]
+
+    assert any("declares multiple exam points but maps only 1" in message for message in messages)
+
+
+def test_outline_validation_accepts_multi_point_container_split_into_atomic_items():
+    outline = outline_base()
+    outline["official_structure"] = [
+        {
+            "id": "TOPIC_1",
+            "title": "Ratio and proportion",
+            "role": "source-structure",
+            "parent_id": None,
+            "page_start": 4,
+            "page_end": 4,
+        }
+    ]
+    outline["coverage_granularity"]["container_audit"][0]["container_id"] = "TOPIC_1"
+    outline["coverage_granularity"]["container_audit"][0][
+        "container_title"
+    ] = "Ratio and proportion"
+    for item in outline["source_coverage"]:
+        item["parent_path"] = ["Ratio and proportion"]
+    for topic in outline["topics"]:
+        topic["parent_path"] = ["Ratio and proportion"]
+
+    issues = validate_syllabus_outline(outline)
+
+    assert [issue for issue in issues if issue.severity == "error"] == []
+
+
+def test_outline_validation_accepts_genuine_single_point_container_with_rationale():
+    outline = outline_base()
+    outline["official_structure"] = [
+        {
+            "id": "TOPIC_1",
+            "title": "Use ratios to compare quantities",
+            "role": "source-structure",
+            "parent_id": None,
+            "page_start": 4,
+            "page_end": 4,
+        }
+    ]
+    outline["coverage_granularity"]["container_audit"] = [
+        {
+            "container_id": "TOPIC_1",
+            "container_title": "Use ratios to compare quantities",
+            "detail_model": "single_examinable_point",
+            "source_coverage_ids": ["SC001"],
+            "evidence_page": 4,
+            "evidence_excerpt": "Use ratios to compare quantities.",
+            "single_point_rationale": (
+                "The source contains one complete action-object requirement and no bullets, "
+                "conditions, applications, or separately assessable procedures below it."
+            ),
+        }
+    ]
+    outline["source_coverage"] = [outline["source_coverage"][0]]
+    outline["source_coverage"][0]["parent_path"] = ["Use ratios to compare quantities"]
+    outline["granularity_audit"] = [outline["granularity_audit"][0]]
+    outline["topics"] = [outline["topics"][0]]
+    outline["topics"][0]["parent_path"] = ["Use ratios to compare quantities"]
+
+    issues = validate_syllabus_outline(outline)
+
+    assert [issue for issue in issues if issue.severity == "error"] == []
+
+
+def test_outline_validation_accepts_two_justified_independent_items_in_one_topic():
+    outline = outline_base()
+    outline["granularity_audit"][1]["target_topic_title"] = "Ratio and proportion skills"
+    outline["granularity_audit"][0]["target_topic_title"] = "Ratio and proportion skills"
+    outline["topics"] = [
+        {
+            "title": "Ratio and proportion skills",
+            "parent_path": [],
+            "source_coverage_ids": ["SC001", "SC002"],
+            "split_rationale": "Comparison and calculation form one teaching sequence.",
+            "cluster_justification": {
+                "relationship": "same_concept",
+                "why_not_separate": (
+                    "The comparison establishes the ratio used immediately by the direct "
+                    "proportion calculation, so splitting would duplicate the setup."
+                ),
+            },
+            "exam_points": [
+                "Use ratios to compare quantities.",
+                "Solve direct proportion problems.",
+            ],
+            "source_snippets": [
+                {
+                    "page": 4,
+                    "text": "Use ratios to compare quantities. Solve direct proportion problems.",
+                    "matched_term": "ratio and proportion",
+                }
+            ],
+        }
+    ]
+
+    messages = [issue.message for issue in validate_syllabus_outline(outline)]
+
+    assert not any("independent_topic source item" in message for message in messages)
+
+
+def test_outline_validation_rejects_topic_without_an_independent_source_item():
+    outline = outline_base()
+    for item in outline["granularity_audit"]:
+        item["teaching_treatment"] = "merged_into_topic"
+        item["merge_rationale"] = "Both items are taught inside the target topic."
+
+    messages = [issue.message for issue in validate_syllabus_outline(outline)]
+
+    assert any("must map at least one independent_topic" in message for message in messages)
+
+
+def test_outline_validation_accepts_primary_item_with_justified_sub_skill():
+    outline = outline_base()
+    outline["granularity_audit"][0]["target_topic_title"] = "Ratio comparison procedure"
+    outline["granularity_audit"][1] = {
+        "source_coverage_id": "SC002",
+        "teaching_treatment": "sub_skill",
+        "target_topic_title": "Ratio comparison procedure",
+        "merge_rationale": (
+            "The second statement is the application step of the same assessed procedure."
+        ),
+        "visible_treatment": "A named sub-skill with its own worked step and practice item.",
+    }
+    outline["topics"] = [
+        {
+            "title": "Ratio comparison procedure",
+            "parent_path": [],
+            "source_coverage_ids": ["SC001", "SC002"],
+            "split_rationale": "One procedure with a separately visible application sub-skill.",
+            "cluster_justification": {
+                "relationship": "jointly_assessed_procedure",
+                "why_not_separate": (
+                    "The source assesses the second action only as the application step of "
+                    "the first procedure."
+                ),
+            },
+            "exam_points": [
+                "Use ratios to compare quantities.",
+                "Solve direct proportion problems.",
+            ],
+            "source_snippets": [
+                {
+                    "page": 4,
+                    "text": "Use ratios to compare quantities. Solve direct proportion problems.",
+                    "matched_term": "ratio and proportion",
+                }
+            ],
+        }
+    ]
+
+    issues = validate_syllabus_outline(outline)
+
+    assert [issue for issue in issues if issue.severity == "error"] == []

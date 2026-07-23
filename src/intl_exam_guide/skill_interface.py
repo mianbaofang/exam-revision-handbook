@@ -37,7 +37,6 @@ from intl_exam_guide.planning.syllabus_outline import (
 from intl_exam_guide.rendering.handbook_package import write_handbook_package
 from intl_exam_guide.rendering.html import render_html
 from intl_exam_guide.rendering.output_names import default_handbook_paths
-from intl_exam_guide.rendering.pdf import PdfExportError, export_pdf
 from intl_exam_guide.validation.checks import (
     delivery_status_from_issues,
     issues_to_dict,
@@ -122,26 +121,21 @@ class SkillHandbookGenerator:
         self._report_progress("package", 4, 7, "Writing handbook package...")
         write_handbook_package(plan, output_path)
 
-        self._report_progress("rendering", 5, 7, "Rendering HTML and PDF...")
-        html_output, pdf_output = default_handbook_paths(output_path, plan.qualification)
+        self._report_progress("rendering", 5, 7, "Rendering HTML for LLM visual review...")
+        html_output, _ = default_handbook_paths(output_path, plan.qualification)
         html_path = render_html(
             plan, html_output, output_path / "images" / "visual_manifest.json"
         )
-        pdf_path = pdf_output
-        pdf_error: str | None = None
-        if not skip_pdf:
-            try:
-                export_pdf(html_path, pdf_path)
-            except PdfExportError as exc:
-                pdf_error = str(exc)
-                logger.warning("PDF generation failed: %s", exc)
 
-        self._report_progress("validation", 6, 7, "Running quality checks...")
+        self._report_progress("validation", 6, 7, "Preparing HTML review diagnostics...")
         write_quality_inspection(output_path)
-        self._write_validation(
-            plan, output_path, html_path, None if skip_pdf else pdf_path, pdf_error
+        self._write_validation(plan, output_path, html_path, None, None)
+        self._report_progress(
+            "complete",
+            7,
+            7,
+            "HTML ready for mandatory LLM visual review; PDF export remains blocked.",
         )
-        self._report_progress("complete", 7, 7, "Generation complete.")
         return html_path
 
     async def _apply_analyst_outline(
@@ -221,6 +215,11 @@ class SkillHandbookGenerator:
                 "Stay inside the topic title and source points. Do not write a procedural checklist.",
                 "Use print-ready math/science notation in student-facing text: b², t³, x<sup>−1/2</sup>, √(...), ≤, ≥, ≠, θ, μ. Do not leave b^2, t^3, x^(-1/2), sqrt(...), <=, >=, or !=.",
                 "Always include visual_decision. Use recommended_route='text-ok' only with a clear no_visual_reason explaining why a diagram would not improve learning.",
+                "Make this visual decision independently for this topic after reading its explanation and worked example. There is no one-visual-per-subject quota, no requirement that every topic has an image, and no limit that only one topic may use external generation.",
+                "External generation may create a source-bound teaching infographic or a realistic/reference/example image when realism, apparatus, scene, material appearance, process detail, or rich annotation improves the learning claim. It is not limited to formal diagrams.",
+                "Exact SVG/Kroki is preferred for geometry-, axis-, table-, label-, or relationship-first meaning that must be exact; choose text-ok when a separate image would not improve this topic.",
+                "Visuals may contain text labels, callouts, legends, axes, captions, or short example annotations. The rule is not 'images must contain no text': all visible text must be accurate, legible, source-bound, and consistent with the handbook.",
+                "Never create a generic subject poster or reuse one visual plan across unrelated topics. Each visual_spec must name the topic-specific learning claim and source points.",
                 "Prefer exact SVG for coordinate models, processes, tables, curves, simple flows, trees, timelines, and other label/geometry-first visuals.",
                 "Prefer infographic for abstract mechanisms, multiple factors, policy transmission, pros/cons, realism, rich annotation, apparatus, scenes, or modelling assumptions.",
                 "Add visual_spec only when the visual_decision route is exact-svg, kroki-diagram, or external-infographic.",
@@ -338,6 +337,10 @@ class SkillHandbookGenerator:
             "html": str(html_path),
             "pdf": str(pdf_path) if pdf_path and pdf_path.exists() else None,
             "pdf_error": pdf_error,
+            "pdf_export_gate": {
+                "llm_html_review_required": True,
+                "status": "pending_current_html_review",
+            },
             "quality_inspection": str(output_dir / "quality-inspection.json"),
             "review_summary": summary,
             "delivery_status": delivery_status,
@@ -480,32 +483,26 @@ class IncrementalGenerator:
             json.dumps(self.plan.to_dict(), ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
-        write_handbook_package(self.plan, self.output_dir)
-        html_output, pdf_output = default_handbook_paths(self.output_dir, self.plan.qualification)
+        write_handbook_package(self.plan, self.output_dir, refresh_visual_manifest=False)
+        html_output, _ = default_handbook_paths(self.output_dir, self.plan.qualification)
         html_path = render_html(
             self.plan,
             html_output,
             self.output_dir / "images" / "visual_manifest.json",
         )
         result: dict[str, object] = {"html_path": str(html_path)}
-        pdf_path = pdf_output
-        if not skip_pdf:
-            try:
-                export_pdf(html_path, pdf_path)
-                result["pdf_path"] = str(pdf_path)
-            except PdfExportError as exc:
-                result["pdf_error"] = str(exc)
+        result["pdf_status"] = "blocked_pending_llm_html_review"
         issues = validate_plan(
             self.plan,
             html_path=html_path,
-            pdf_path=None if skip_pdf else pdf_path,
+            pdf_path=None,
             output_dir=self.output_dir,
         )
         write_quality_inspection(self.output_dir)
         summary = review_summary(
             self.plan,
             html_path=html_path,
-            pdf_path=None if skip_pdf else pdf_path,
+            pdf_path=None,
             output_dir=self.output_dir,
         )
         delivery_status = delivery_status_from_issues(issues, summary)
@@ -522,8 +519,12 @@ class IncrementalGenerator:
             json.dumps(
                 {
                     "html": str(html_path),
-                    "pdf": result.get("pdf_path"),
-                    "pdf_error": result.get("pdf_error"),
+                    "pdf": None,
+                    "pdf_error": None,
+                    "pdf_export_gate": {
+                        "llm_html_review_required": True,
+                        "status": "pending_current_html_review",
+                    },
                     "quality_inspection": str(self.output_dir / "quality-inspection.json"),
                     "review_summary": summary,
                     "delivery_status": delivery_status,

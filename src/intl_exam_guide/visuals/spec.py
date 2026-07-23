@@ -23,6 +23,7 @@ class VisualSpec:
     source_pages: tuple[int, ...] = field(default_factory=tuple)
     source_terms: tuple[str, ...] = field(default_factory=tuple)
     svg_fit: str = ""
+    semantic_contract: dict[str, object] = field(default_factory=dict)
 
     @classmethod
     def from_brief(cls, brief: VisualBrief, visual_id: str) -> "VisualSpec":
@@ -40,6 +41,7 @@ class VisualSpec:
             source_pages=tuple(snippet.page for snippet in snippets),
             source_terms=tuple(snippet.matched_term for snippet in snippets),
             svg_fit=str(getattr(brief, "svg_fit", "") or ""),
+            semantic_contract=dict(getattr(brief, "semantic_contract", {}) or {}),
         )
 
     def spec_hash(self) -> str:
@@ -57,6 +59,7 @@ class VisualSpec:
             "source_points": list(self.source_points),
             "source_pages": list(self.source_pages),
             "source_terms": list(self.source_terms),
+            "semantic_contract": self.semantic_contract,
         }
 
 

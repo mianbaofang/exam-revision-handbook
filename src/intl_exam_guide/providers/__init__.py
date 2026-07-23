@@ -5,6 +5,7 @@ from intl_exam_guide.providers.base import (
     Link,
     get_provider,
     infer_provider_from_url,
+    provider_for_course_market,
 )
 
 __all__ = [
@@ -14,4 +15,5 @@ __all__ = [
     "PROVIDER_NAMES",
     "get_provider",
     "infer_provider_from_url",
+    "provider_for_course_market",
 ]

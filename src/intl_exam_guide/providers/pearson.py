@@ -7,6 +7,7 @@ from pathlib import Path
 from intl_exam_guide.models import Qualification, SourceRecord
 from intl_exam_guide.providers.base import ExamBoardProvider, Link
 from intl_exam_guide.providers.common import (
+    BasicPageParser,
     attach_pdf_content,
     clean_text,
     code_from_text,
@@ -22,6 +23,7 @@ from intl_exam_guide.providers.common import (
     normalize_level,
     parse_page,
     qualification_family,
+    subject_terms_from_query,
     subject_slug_from_query,
     title_from_url,
 )
@@ -30,13 +32,14 @@ from intl_exam_guide.providers.common import (
 class PearsonEdexcelProvider(ExamBoardProvider):
     name = "pearson"
     supported_levels = ("international_gcse", "international_as_a_level")
+    course_market = "international"
 
     def find_qualification(
         self, query: str, level: str | None = None, exam_year: str | None = None
     ) -> Link:
         if not is_url(query):
             return self._find_candidate_by_subject(query, level)
-        qtype = infer_qualification_type(query, query, level)
+        qtype = self._qualification_type(query, query, level)
         return Link(text=title_from_url(query), href=query, qualification_type=qtype)
 
     def parse_qualification(
@@ -44,7 +47,7 @@ class PearsonEdexcelProvider(ExamBoardProvider):
     ) -> Qualification:
         if is_pdf_url(page_url):
             title = title_from_url(page_url)
-            qtype = infer_qualification_type(title, page_url, level)
+            qtype = self._qualification_type(title, page_url, level)
             return self._qualification_from_parts(
                 title=title,
                 page_url=page_url,
@@ -58,20 +61,8 @@ class PearsonEdexcelProvider(ExamBoardProvider):
         title = clean_text(
             first_node_text(parser, "h1") or parser.title or title_from_url(page_url)
         )
-        qtype = infer_qualification_type(title, page_url, level)
-        specification_url = find_pdf_link(
-            parser,
-            include_terms=("specification", "download"),
-            exclude_terms=(
-                "past-paper",
-                "past paper",
-                "mark-scheme",
-                "mark scheme",
-                "guide",
-                "welcome",
-                "onboarding",
-            ),
-        )
+        qtype = self._qualification_type(title, page_url, level)
+        specification_url = pearson_specification_url(parser, level)
         if specification_url and not pearson_is_specification_pdf(specification_url):
             specification_url = None
         if not specification_url:
@@ -106,7 +97,7 @@ class PearsonEdexcelProvider(ExamBoardProvider):
 
     def _find_candidate_by_subject(self, query: str, level: str | None) -> Link:
         candidates = []
-        for url in pearson_candidate_urls(query, level):
+        for url in self.candidate_urls(query, level):
             link = self._validate_candidate_url(url, level)
             if link:
                 candidates.append(link)
@@ -129,8 +120,16 @@ class PearsonEdexcelProvider(ExamBoardProvider):
         lower_title = title.lower()
         if "page not found" in lower_title or "404" in lower_title:
             return None
-        qtype = infer_qualification_type(title, url, level)
+        qtype = self._qualification_type(title, url, level)
         return Link(text=title, href=url, qualification_type=qtype)
+
+    def candidate_urls(self, query: str, level: str | None) -> list[str]:
+        return pearson_candidate_urls(query, level)
+
+    def _qualification_type(self, title: str, url: str, level: str | None) -> str:
+        if self.course_market == "uk-domestic":
+            return uk_qualification_type(title, url, level)
+        return infer_qualification_type(title, url, level)
 
     def _qualification_from_parts(
         self,
@@ -144,11 +143,13 @@ class PearsonEdexcelProvider(ExamBoardProvider):
         title = pearson_clean_title(title)
         code = pearson_code_from_title_or_url(title, page_url)
         subject_area = pearson_subject_area(title, page_url)
+        family = pearson_qualification_family(self.course_market, qtype)
         source = SourceRecord(
             provider=self.name,
             page_url=page_url,
+            course_market=self.course_market,
             specification_url=specification_url,
-            qualification_family=qualification_family(self.name, qtype),
+            qualification_family=family,
             first_teaching=first_teaching,
             first_assessment=first_assessment,
         )
@@ -158,15 +159,28 @@ class PearsonEdexcelProvider(ExamBoardProvider):
             qualification_type=qtype,
             subject_area=subject_area,
             page_url=page_url,
-            summary=pearson_summary(qtype, first_teaching, first_assessment),
+            summary=pearson_summary_for_market(
+                self.course_market, qtype, first_teaching, first_assessment
+            ),
             topics=[],
             assessments=[],
             source=source,
-            audience_note=pearson_audience_note(qtype),
+            audience_note=pearson_audience_note_for_market(self.course_market, qtype),
             provider=self.name,
-            qualification_family=qualification_family(self.name, qtype),
-            route_tags=pearson_route_tags(qtype, page_url),
+            qualification_family=family,
+            route_tags=pearson_route_tags_for_market(self.course_market, qtype, page_url),
         )
+
+
+class PearsonEdexcelUKProvider(PearsonEdexcelProvider):
+    """Official Pearson Edexcel GCSE and AS/A-Level source route for UK centres."""
+
+    name = "pearson_uk"
+    supported_levels = ("uk_gcse", "uk_as_a_level")
+    course_market = "uk-domestic"
+
+    def candidate_urls(self, query: str, level: str | None) -> list[str]:
+        return pearson_uk_candidate_urls(query, level)
 
 
 def pearson_clean_title(title: str) -> str:
@@ -259,6 +273,88 @@ def pearson_route_tags(qtype: str, url: str) -> list[str]:
     return list(dict.fromkeys(tags))
 
 
+def pearson_specification_url(parser: BasicPageParser, level: str | None) -> str | None:
+    """Choose the official PDF matching the requested AS or A-Level route."""
+
+    normalized = normalize_level(level)
+    candidates: list[tuple[int, str]] = []
+    for link in getattr(parser, "links", []):
+        combined = f"{link.text} {link.href}".lower()
+        if not pearson_is_specification_pdf(link.href):
+            continue
+        if any(term in combined for term in ("past-paper", "past paper", "mark-scheme", "guide")):
+            continue
+        score = 10
+        if normalized in {"as", "as-level"} and re.search(r"(?:^|[-_/ ])as(?:[-_/ ])", combined):
+            score += 20
+        if normalized in {"a-level", "alevel", "as-a-level"} and "a-level" in combined:
+            score += 20
+        candidates.append((score, link.href))
+    if not candidates:
+        return find_pdf_link(
+            parser,
+            include_terms=("specification", "download"),
+            exclude_terms=("past-paper", "past paper", "mark-scheme", "mark scheme", "guide"),
+        )
+    candidates.sort(key=lambda item: item[0], reverse=True)
+    return candidates[0][1]
+
+
+def uk_qualification_type(title: str, url: str, level: str | None) -> str:
+    combined = f"{title} {url} {level or ''}".lower()
+    if normalize_level(level) in {"as", "as-level", "a-level", "alevel", "as-a-level"}:
+        return "uk_as_a_level"
+    if "as and a level" in combined or "a-level" in combined or "a level" in combined:
+        return "uk_as_a_level"
+    if "gcse" in combined:
+        return "uk_gcse"
+    return "unknown"
+
+
+def pearson_qualification_family(course_market: str, qtype: str) -> str:
+    if course_market == "uk-domestic":
+        return "Pearson Edexcel AS & A Level" if qtype == "uk_as_a_level" else "Pearson Edexcel GCSE"
+    return qualification_family("pearson", qtype)
+
+
+def pearson_summary_for_market(
+    course_market: str,
+    qtype: str,
+    first_teaching: str | None,
+    first_assessment: str | None,
+) -> list[str]:
+    if course_market != "uk-domestic":
+        return pearson_summary(qtype, first_teaching, first_assessment)
+    structure = (
+        "Pearson Edexcel UK AS and A Level assessment follows the selected UK specification."
+        if qtype == "uk_as_a_level"
+        else "Pearson Edexcel UK GCSE assessment follows the selected UK specification."
+    )
+    values = [structure]
+    if first_teaching:
+        values.append(f"First teaching: {first_teaching}")
+    if first_assessment:
+        values.append(f"First external assessment: {first_assessment}")
+    return values
+
+
+def pearson_audience_note_for_market(course_market: str, qtype: str) -> str:
+    if course_market != "uk-domestic":
+        return pearson_audience_note(qtype)
+    if qtype == "uk_as_a_level":
+        return "Pearson Edexcel AS and A Levels are UK qualifications. Confirm the selected specification and exam series with the school or exam centre."
+    return "Pearson Edexcel GCSEs are UK qualifications. Confirm the selected specification, tier, and exam series with the school or exam centre."
+
+
+def pearson_route_tags_for_market(course_market: str, qtype: str, url: str) -> list[str]:
+    if course_market != "uk-domestic":
+        return pearson_route_tags(qtype, url)
+    tags = ["Pearson Edexcel", "uk-domestic"]
+    if qtype == "uk_as_a_level":
+        tags.append("AS/A Level")
+    return tags
+
+
 def pearson_candidate_urls(query: str, level: str | None) -> list[str]:
     slugs = pearson_subject_slugs(query, level)
     if not slugs:
@@ -283,6 +379,39 @@ def pearson_candidate_urls(query: str, level: str | None) -> list[str]:
                 f"edexcel-international-advanced-levels/{slug}-2018.html"
             )
     return urls
+
+
+def pearson_uk_candidate_urls(query: str, level: str | None) -> list[str]:
+    """Return official Pearson UK course-page candidates for a subject query."""
+
+    slugs = pearson_subject_slugs(query, level)
+    if not slugs:
+        return []
+    normalized = normalize_level(level)
+    urls: list[str] = []
+    if normalized in {None, "gcse", "igcse"}:
+        base = "https://qualifications.pearson.com/en/qualifications/edexcel-gcses"
+        for slug in slugs:
+            urls.extend(
+                [
+                    f"{base}/{slug}-2015.html",
+                    f"{base}/{slug}-2016.html",
+                    f"{base}/{slug}-2017.html",
+                ]
+            )
+        if any(term in {"biology", "chemistry", "physics"} for term in subject_terms_from_query(query)):
+            urls.append(f"{base}/sciences-2016.html")
+    if normalized in {None, "as", "as-level", "a-level", "alevel", "as-a-level"}:
+        base = "https://qualifications.pearson.com/en/qualifications/edexcel-a-levels"
+        for slug in slugs:
+            urls.extend(
+                [
+                    f"{base}/{slug}-2015.html",
+                    f"{base}/{slug}-2017.html",
+                    f"{base}/{slug}-a-2015.html",
+                ]
+            )
+    return list(dict.fromkeys(urls))
 
 
 def pearson_subject_slugs(query: str, level: str | None) -> list[str]:

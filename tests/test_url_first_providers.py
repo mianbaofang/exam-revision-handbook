@@ -59,6 +59,7 @@ def test_pearson_metadata_cleans_site_chrome_and_does_not_use_year_as_code():
     coded_title = "Pearson Edexcel International GCSE Accounting (4AC1)"
     assert pearson_code_from_title_or_url(coded_title, url) == "4AC1"
 
+class FakeParser:
     def __init__(self, title="", links=None, nodes=None):
         self.title = title
         self.links = links or []

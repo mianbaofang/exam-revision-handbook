@@ -207,6 +207,9 @@ class TestSkillHandbookGenerator:
         assert "IGCSE" in prompt
         assert "mastery_summary" in prompt
         assert "What to master" in prompt
+        assert "no one-visual-per-subject quota" in prompt
+        assert "Visuals may contain text labels" in prompt
+        assert "Never create a generic subject poster" in prompt
 
     def test_parse_concept_response_json(
         self,

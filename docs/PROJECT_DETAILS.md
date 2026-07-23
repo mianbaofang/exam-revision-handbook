@@ -2,7 +2,7 @@
 
 ## English
 
-IGCSE & A-Level AI Revision Guide Skill is an open-source Skill and Python pipeline for
+IGCSE, A-Level & AP AI Revision Guide Skill is an open-source Skill and Python pipeline for
 generating image-rich study/revision handbooks from official International GCSE
 and International AS-A-level syllabus/specification sources.
 
@@ -21,13 +21,14 @@ then turn the official syllabus into a reusable revision-handbook framework.
 8. let the host LLM/Agent decide whether each item is text-only, an exact SVG
    candidate, or an external infographic brief; Python records the manifest and
    renders only reviewed or approved visual assets;
-9. render the handbook package: HTML, PDF, `sections/`, `images/`, manifests,
-   source metadata, and validation;
-10. validate that the output is complete enough for final review;
-11. require the user's active LLM/Agent to read the final rendered handbook,
-    compare it with the syllabus outline and visible PDF/HTML quality, repair
-    fixable problems, record `agent-product-review.json`, rerender, and rerun
-    final review before handoff;
+9. render the handbook package as HTML with `sections/`, `images/`, manifests,
+   source metadata, and supporting diagnostics, but no PDF yet;
+10. require the user's active LLM/Agent to personally open the current HTML,
+    compare it with the syllabus outline, and return every fixable problem to
+    the Writer;
+11. rerender and repeat the visible LLM review until the current HTML passes,
+    then record hash-bound approval in `agent-product-review.json` and export
+    the final PDF through the approval gate;
 12. use Analyst, Writer, and Reviewer as lightweight operating roles; separate
     agents are optional when the user explicitly wants that orchestration.
 
@@ -52,10 +53,10 @@ then turn the official syllabus into a reusable revision-handbook framework.
   avoiding protected-IP copying by default.
 - **Child-safety mindset**: examples are original and source-bound, and should
   be reviewed by a subject specialist before high-stakes exam preparation.
-- **LLM review before handoff**: the user's Agent must inspect and repair the
-  final visible handbook instead of treating generated files or validation
+- **LLM HTML review before PDF**: the user's Agent must personally inspect and
+  repair the current visible HTML instead of treating generated files or Python
   gates as proof of student-usable quality. Complete `agent-product-review.json`
-  evidence is required before final-ready handoff.
+  evidence bound to the current HTML hash is required before PDF export.
 - **LLM-owned workflow boundary**: Python provides evidence extraction,
   validation, rendering, and manifests; the host LLM owns analysis, writing,
   visual judgment, and final visible-handbook review. Multi-agent orchestration is
@@ -94,8 +95,9 @@ For v0.5 release evidence, use four status words:
 No current route should be described as certified unless
 `docs/release-evidence/` contains the matching manifest entry. v0.3 ready
 evidence remains a historical release fact, not a standing certification.
-The project-level rebuild plan for 95%+ student-usable delivery quality is
-recorded in `docs/DELIVERY_QUALITY_REBUILD_PLAN.md`.
+The project-level rebuild plan for 95%+ student-usable delivery quality is a
+historical planning note recorded in `docs/DELIVERY_QUALITY_REBUILD_PLAN.md`.
+It does not override the current Skill contract.
 
 - Offline synthetic demo: no network, no copyrighted PDF, handbook package
   output, validation issues: none.
@@ -113,13 +115,14 @@ recorded in `docs/DELIVERY_QUALITY_REBUILD_PLAN.md`.
   lookup, assessment extraction, HTML/PDF output, and validation checks. This verifies code
   lookup when the subject listing omits the qualification code.
 
-The three public release showcase guides are treated as final only after their
-selected image provider has generated all infographic assets, those assets have
-been merged into `guide.html`, `guide.pdf` has been exported, and
-`scripts/verify_release_samples.py --outputs-root <outputs>` passes without
-`--allow-pending`. For v0.5+, the same claim also needs a concise
-`docs/release-evidence/<version>/manifest.json` entry; the generated output
-folder itself remains untracked.
+The public release showcase guides are treated as final only after each guide's
+own active LLM has completely reviewed the current HTML, recorded its exact
+topic/visual coverage and HTML hash in `agent-product-review.json`, exported
+the PDF through `export-pdf`, and passed
+`scripts/verify_release_samples.py --outputs-root <outputs>` without
+`--allow-pending`. One guide's review cannot authorize another guide. For v0.5+,
+the same claim also needs a concise `docs/release-evidence/<version>/manifest.json`
+entry; the generated output folder itself remains untracked.
 
 The repository commits the source, skill package, documentation, screenshots,
 and intro animation. Full `outputs/*-sample/` folders are reproducible release
@@ -139,16 +142,20 @@ components.
 
 ### Provider Scope
 
-The current product covers the three China-market provider families in staged
-form. Do not describe it as covering all International GCSE or International
-AS-A-level providers, and do not claim full Pearson/Cambridge catalogue
-crawling yet.
+The current product covers three China-market British-curriculum provider
+families plus the College Board AP course system in staged form. Do not
+describe it as covering all International GCSE or International AS/A-level
+providers, and do not claim full Pearson/Cambridge catalogue crawling yet.
+This scope means automatic official-syllabus acquisition. Other curriculum
+systems and exam boards do not have an automatic provider; manual imports are
+unverified and may fail with unknown compatibility errors.
 
 | Provider / exam board | Status | Notes |
 |---|---|---|
 | AQA | implemented | Catalogue discovery through OxfordAQA / Oxford International AQA pages plus qualification parsing. |
 | Edexcel | implemented baseline | Subject-name candidate discovery for common official Pearson Edexcel page patterns; official URL/PDF fallback. |
 | CAIE | implemented baseline | Official Cambridge International subject-index discovery; official URL/PDF fallback; `exam_year` required for multi-range pages. |
+| College Board AP | implemented | Full 42-subject directory discovery, strict core CED selection, official-domain validation, and effective-version/exam-year recording. |
 | OCR, WJEC/Eduqas, CCEA, and other UK boards | out of scope | Do not promise support in README or generated examples. |
 
 Market comments about relative exam difficulty, vocabulary load, or scoring
@@ -172,8 +179,8 @@ They are useful positioning context, but they are not official provider facts.
 
 ## 中文
 
-IGCSE & A-Level AI Revision Guide Skill 是一个开源流水线，用来为 AQA、Edexcel、CAIE 的 International
-GCSE 与 International AS-A-level 学科生成可追溯来源的复习指南。按国内常用习惯，文档主称使用 AQA、Edexcel、CAIE；对应全称分别是 OxfordAQA / Oxford International AQA、Pearson Edexcel、Cambridge International / CAIE。
+IGCSE、A-Level 与 AP AI Revision Guide Skill 是一个开源流水线，用来为 AQA、Edexcel、CAIE 的 International
+GCSE / International AS-A-level 学科以及 College Board AP 课程生成可追溯来源的复习指南。按国内常用习惯，文档主称使用 AQA、Edexcel、CAIE 和 AP；对应全称分别是 OxfordAQA / Oxford International AQA、Pearson Edexcel、Cambridge International / CAIE 与 College Board Advanced Placement。
 
 它不是泛泛的 AI 教育平台。核心原理对各学科通用：以官方 specification 为输入，
 再把大纲内容融合进统一的学习复习手册框架。
@@ -221,7 +228,7 @@ v0.5 发布证据只使用四个状态词：
 
 - `candidate`：有路线证据，但不是交付级。
 - `draft`：有当前输出，但概念、图片、PDF/export、validation 或 Agent 自查仍有阻塞。
-- `final-ready`：当前证据通过 validation、最终复查、概念状态、视觉状态和 package 检查。
+- `final-ready`：当前证据通过 validation、概念状态、视觉状态和 package 检查，并且当前 LLM 已完整审查该手册的 HTML、记录准确 topic/视觉覆盖和 HTML 哈希，再通过门禁导出 PDF。
 - `certified`：在 final-ready 之上，又经过发布负责人或熟悉学科的人确认，并写入 release-evidence manifest。
 
 除非 `docs/release-evidence/` 里有对应 manifest 条目，否则不要把任何路线称为 certified。
@@ -241,11 +248,7 @@ v0.3 的 ready 证据是历史发布事实，不等于 v0.5 长期认证。
   lookup 抽取 assessment structure，生成 HTML/PDF 并通过 validation。这个样例验证
   subject listing 没有代码时，代码查询仍然会进入详情页精确匹配。
 
-三份公开发布用 showcase guides 只有在所选生图 provider 生成全部信息图、
-图片合并进 `guide.html`、导出 `guide.pdf`，并且
-`scripts/verify_release_samples.py --outputs-root <outputs>` 不带
-`--allow-pending` 通过之后，才算最终完成。v0.5 起还需要在
-`docs/release-evidence/<version>/manifest.json` 中记录精简证据；完整输出目录仍不提交到 Git。
+公开发布用 showcase guides 只有在各自完成当前 HTML 的全量 LLM 审查、分别写入与自身 HTML 哈希绑定的 `agent-product-review.json`、通过 `export-pdf` 导出 PDF，并且 `scripts/verify_release_samples.py --outputs-root <outputs>` 不带 `--allow-pending` 通过之后，才算最终完成。一份手册的审查不能授权另一份。v0.5 起还需要在 `docs/release-evidence/<version>/manifest.json` 中记录精简证据；完整输出目录仍不提交到 Git。
 这三份是首页展示和发布验收样例，不是生成器的科目支持上限。
 
 仓库提交源码、Skill 包、文档、截图和介绍动画；完整的
@@ -265,8 +268,10 @@ Literature 的 text-list 标签、History/Sociology 从 assessment 回推 topic 
 
 ### Provider 范围
 
-当前产品聚焦国内常用的 AQA、Edexcel、CAIE，不应写成覆盖全部 International GCSE 或
-International AS-A-level provider。
+当前产品支持国内常用的 AQA、Edexcel、CAIE，以及 College Board AP；不应写成覆盖全部
+International GCSE、International AS/A-level 或其他课程体系 provider。
+这里的支持特指 AQA、Edexcel、CAIE 的 IGCSE / A-Level 与 College Board AP 官方大纲自动获取。
+其他考试体系或考试局没有自动 Provider；手动导入未经完整验证，可能出现未知兼容错误。
 
 | Provider / exam board | 状态 | 备注 |
 |---|---|---|

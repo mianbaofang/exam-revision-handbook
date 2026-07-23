@@ -10,7 +10,7 @@
       - This is the GitHub repository home-page preview, not the student guide.
       - Audience: open-source maintainers, tutors, international-school families.
       - Tone: practical study-skill project, visual, warm, and clear.
-      - Current exam-board support: AQA, Edexcel, and CAIE.
+      - Current source support: AQA, Edexcel, CAIE, and College Board AP.
     */
     :root {
       --ink: #111927;
@@ -470,6 +470,7 @@
       display: grid;
       align-content: space-between;
       gap: 28px;
+      min-width: 0;
     }
     .scope-copy h2 {
       color: var(--white);
@@ -478,6 +479,8 @@
     .scope-copy p { color: rgba(255,255,255,.78); }
     .scope-table {
       width: 100%;
+      min-width: 0;
+      table-layout: fixed;
       border-collapse: collapse;
       background: var(--white);
       border: 1px solid var(--line);
@@ -488,6 +491,7 @@
       border-bottom: 1px solid var(--line);
       text-align: left;
       vertical-align: top;
+      overflow-wrap: anywhere;
     }
     .scope-table th {
       background: #edf2f4;
@@ -780,9 +784,9 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div>
-          <div class="kicker">三大考试局支持 · v0.5</div>
-          <h1>三大考试局复习手册，一句话生成。</h1>
-          <p class="lead">支持 AQA、Edexcel、CAIE。把 Skill 链接交给你的 OpenClaw、Hermes 或其他 Agent，说一句“帮我生成某个科目的复习手册”，确认考试局、科目、语言和讲解风格后，它会生成知识点讲解、例题、图文学习单元和可打印 PDF。</p>
+          <div class="kicker">四个课程来源体系 · v0.6</div>
+          <h1>AQA、Edexcel、CAIE 与 AP 复习手册，一句话生成。</h1>
+          <p class="lead">支持自动获取 AQA、Edexcel、CAIE 的 IGCSE / A-Level 大纲与 College Board AP CED。把 Skill 链接交给你的 Agent，先完成外部生图能力预检，再确认来源体系、科目、语言和讲解风格；LLM 完成全量 HTML 审查后，才会导出可打印 PDF。其他体系不能自动获取，手动导入也可能出现未知兼容错误。</p>
           <div class="action-row">
             <a class="button" href="https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill">安装 Skill</a>
             <a class="button secondary" href="../README.md">English</a>
@@ -792,7 +796,7 @@
           <div class="proof-row" aria-label="Verified progress">
             <div class="proof">
               <strong>3</strong>
-              <span>国内常用考试局路线：AQA、Edexcel、CAIE</span>
+              <span>当前官方来源路线：AQA、Edexcel、CAIE、College Board AP</span>
             </div>
             <div class="proof">
               <strong>95</strong>
@@ -873,7 +877,7 @@
         <div>
           <div class="kicker" style="color:#f0cf84;">介绍动画</div>
           <h2>48 秒看懂这个 Skill 怎么用。</h2>
-          <p>动画放在项目初衷后面：先知道为什么做，再看它如何支持 AQA、Edexcel、CAIE 三大考试局生成复习手册。</p>
+          <p>动画记录最初的 AQA、Edexcel、CAIE 三局路线；College Board AP 是后续新增的第四个官方来源体系。</p>
           <div class="motion-actions">
             <a class="button" href="project-intro-animation.html">打开动画 HTML</a>
           </div>
@@ -894,14 +898,14 @@
       <div class="shell">
         <div class="section-head">
           <h2>当前核心能力，不只是把文字排成 PDF。</h2>
-          <p>v0.5 的重点是把 Skill 重新收束成“框架 + LLM 操作指南”：Python 只负责下载、抽取、验证和渲染；内容理解、判断、写作、每个 topic 的视觉决策和复查都交给宿主 LLM 的 Analyst、Writer、Reviewer 轻量角色完成。</p>
+          <p>v0.6 在“框架 + LLM 操作指南”的边界上补齐了四路官方来源、首轮强制预检、原子级大纲拆解、逐 topic 视觉决策、HTML 先审后修，以及技能商店根目录安装包；Python 仍只负责下载、抽取、验证、渲染和阻断，教学判断与批准仍由宿主 LLM 完成。</p>
         </div>
         <div class="flow capability-flow">
           <article class="flow-item">
             <div class="num">01 · 大纲</div>
             <div>
               <h3>自动读取官方来源</h3>
-              <p>围绕 AQA、Edexcel、CAIE 的官方 syllabus / specification 工作；无法唯一确认时先返回候选，不猜测考试局或课程版本。</p>
+              <p>围绕 AQA、Edexcel、CAIE 的官方 syllabus / specification 与 College Board AP CED 工作；无法唯一确认时先返回候选，不猜测考试局、课程或版本。</p>
             </div>
           </article>
           <article class="flow-item">
@@ -936,7 +940,7 @@
             <div class="num">06 · 验收</div>
             <div>
               <h3>可见成品复查</h3>
-              <p>最终交付前检查大纲覆盖、解释质量、术语表、图形和 PDF 抽页；机器验证只是辅助证据，问题能修就修，不能修就保留 draft 状态。</p>
+              <p>最终交付前由 LLM 亲自检查每个 topic、例题、答案、来源锚点和每个实际渲染视觉；机器验证只是辅助证据，问题能修就重写、重渲染、再完整查看，不能修就保留 draft 状态。</p>
             </div>
           </article>
         </div>
@@ -947,44 +951,39 @@
       <div class="shell scope-grid">
         <div class="scope-copy">
           <div>
-            <div class="kicker">考试局范围</div>
-            <h2>三大常用国际考试局，分阶段支持。</h2>
+            <div class="kicker">课程来源范围</div>
+            <h2>四个官方来源体系，统一证据流程。</h2>
           </div>
-          <p>当前版本围绕国内常用的 AQA、Edexcel、CAIE 设计。AQA 可从官网目录发现课程；Edexcel 会按官方页面规则尝试匹配候选；CAIE 会从官方科目索引匹配候选。无法唯一确认时，返回候选让用户自己选定。</p>
+          <p>当前自动获取范围是 AQA、Edexcel、CAIE 的 IGCSE / A-Level，以及 College Board AP。AQA 可从官网目录发现课程；Edexcel 会按官方页面规则尝试匹配候选；CAIE 会从官方科目索引匹配候选；AP 会发现 42 门官方课程并严格选择核心 CED。其他体系不能自动获取，手动导入也可能出现未知兼容错误。</p>
         </div>
         <table class="scope-table">
           <thead>
             <tr>
-              <th>考试局</th>
-              <th>International GCSE</th>
-              <th>International AS-A-level</th>
-              <th>当前说明</th>
+              <th>来源体系</th>
+              <th>支持课程</th>
+              <th>当前路线</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>AQA</td>
-              <td>支持</td>
-              <td>支持</td>
+              <td>International GCSE / AS-A-level</td>
               <td><span class="status">官网目录发现</span></td>
             </tr>
             <tr>
               <td>Edexcel</td>
-              <td>支持</td>
-              <td>支持</td>
+              <td>International GCSE / AS-A-level</td>
               <td><span class="status">候选发现 + URL/PDF</span></td>
             </tr>
             <tr>
               <td>CAIE</td>
-              <td>支持</td>
-              <td>支持</td>
+              <td>International GCSE / AS-A-level</td>
               <td><span class="status">科目索引 + 年份确认</span></td>
             </tr>
             <tr>
-              <td>OCR、WJEC/Eduqas、CCEA 等其他英国考试局</td>
-              <td>暂不支持</td>
-              <td>暂不支持</td>
-              <td><span class="status no">当前不覆盖</span></td>
+              <td>College Board</td>
+              <td>Advanced Placement (AP)</td>
+              <td><span class="status">42 科目录 + 核心 CED</span></td>
             </tr>
           </tbody>
         </table>
@@ -1032,7 +1031,7 @@
       <div class="shell">
         <div class="section-head">
           <h2>孩子愿意看的手册，不能只有文字。</h2>
-          <p>流程是：先根据大纲生成基础知识点和例题；再由 AI 判断哪些知识点或例题需要图文结合；exact SVG 必须复核通过，复杂信息图先进入待生成队列，有可调用生图能力时由 Agent 自动生成和导入。</p>
+          <p>流程是：先在预检中确认是否有可调用的外部生图能力，再根据官方大纲生成知识点和例题；Writer 为每个 topic 独立判断是否需要图文结合；exact SVG 必须复核通过，复杂信息图先进入待生成队列，有可调用能力时由 Agent 自动生成和导入。</p>
         </div>
         <div class="language">
           <article>
@@ -1085,35 +1084,35 @@
       <div class="shell">
         <div class="section-head">
           <h2>当前交付流程：先确认，再生成，最后独立复查。</h2>
-          <p>用户第一次使用时先确认考试局、科目、年份、术语支持语言、讲解风格和可用生图方式；生成过程中按官方大纲拆分学习单元，简单图本地生成，结构图走 Kroki，复杂信息图进入外部生成与导入；交付前由独立复查步骤读页面和抽样 PDF，有问题先修，不能修就标记为 draft。</p>
+          <p>用户第一次使用时先回答是否有可调用的外部生图 Skill 或工具，再确认考试局、科目、年份、术语支持语言和讲解风格；LLM 按官方证据拆分学习单元，逐 topic 做视觉决策；交付前由 LLM 完整查看当前 HTML，有问题就重写、重渲染、再查看，只有通过后才导出 PDF。</p>
         </div>
         <div class="flow">
           <article class="flow-item">
             <div class="num">01 · 确认</div>
             <div>
               <h3>先问清楚</h3>
-              <p>确认 AQA / Edexcel / CAIE、科目、考试年份、术语表语言和讲解风格；如果需要复杂信息图，先确认用户是否有可调用的生图 Skill、API 或图片目录。</p>
+              <p>先确认用户是否有可调用的外部生图 Skill、API、脚本或图片目录，再确认 AQA / Edexcel / CAIE / AP、科目、考试年份、术语表语言和讲解风格。</p>
             </div>
           </article>
           <article class="flow-item">
             <div class="num">02 · 大纲</div>
             <div>
               <h3>只围绕官方来源</h3>
-              <p>抓取或读取官方 syllabus / specification，把不同考试局的大纲格式整理成 CourseSpec、LearningUnit 和可写作的教学单元。</p>
+              <p>抓取或读取官方 syllabus / specification，保留 Markdown 结构和逐页证据，由 LLM Analyst 判断可独立考查的教学单元。</p>
             </div>
           </article>
           <article class="flow-item">
             <div class="num">03 · 图形</div>
             <div>
               <h3>图形各走合适路线</h3>
-              <p>数轴、坐标轴等简单精确图留在本地；流程、层级、关系等专业结构图走 Kroki；大量文字和场景结合的信息图走外部生成并自动导入。</p>
+              <p>数轴、坐标轴等简单精确图只有在 LLM 标记 exact-fit 且复核后才能使用；流程、层级、关系等专业结构图走 Kroki；大量文字和场景结合的信息图走外部生成并复核导入。</p>
             </div>
           </article>
           <article class="flow-item">
             <div class="num">04 · 复查</div>
             <div>
               <h3>不是生成完就交付</h3>
-              <p>最终文件需要 Agent 自己全盘复查：大纲覆盖、解释质量、例题、术语表、图形和 PDF 页面都要看；通过后才进入 final-ready。</p>
+              <p>最终文件需要 LLM 自己全盘复查当前 HTML：大纲覆盖、解释、每道例题与答案、术语表、每个视觉和排版都要看；记录当前 HTML 哈希并通过后，才进入 PDF 导出和 final-ready。</p>
             </div>
           </article>
         </div>

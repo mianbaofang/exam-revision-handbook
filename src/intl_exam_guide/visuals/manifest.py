@@ -86,6 +86,7 @@ def build_visual_manifest_entry_v2(
         "source_pages": list(spec.source_pages),
         "visual_need": build_visual_need(spec),
         "recommended_route": build_recommended_route(spec),
+        "semantic_contract": dict(spec.semantic_contract),
     }
     return sync_visual_manifest_entry(entry)
 
@@ -117,7 +118,7 @@ def build_recommended_route(spec: VisualSpec) -> dict[str, Any]:
 def sync_visual_manifest_entry(entry: dict[str, Any]) -> dict[str, Any]:
     """Populate v0.5 nested visual fields from the legacy flat manifest fields."""
 
-    route = entry.get("recommended_route") if isinstance(entry.get("recommended_route"), dict) else {}
+    route = dict_or_empty(entry.get("recommended_route"))
     legacy_complexity = str(route.get("legacy_complexity") or entry.get("complexity") or "")
     renderer_id = str(route.get("renderer_id") or entry.get("renderer_id") or entry.get("image_provider") or "")
     route_name = str(route.get("route") or recommended_route_name(legacy_complexity, renderer_id))
@@ -132,13 +133,16 @@ def sync_visual_manifest_entry(entry: dict[str, Any]) -> dict[str, Any]:
     }
     entry["recommended_route"] = route
 
-    asset = entry.get("asset") if isinstance(entry.get("asset"), dict) else {}
+    semantic_contract = entry.get("semantic_contract")
+    entry["semantic_contract"] = (
+        dict(semantic_contract) if isinstance(semantic_contract, dict) else {}
+    )
+
+    asset = dict_or_empty(entry.get("asset"))
     file_name = str(entry.get("file") or asset.get("file") or "") or None
     workflow_asset_status = str(entry.get("asset_status") or "").lower()
     review_status = str(entry.get("review_status") or "pending").lower()
-    rendered_asset = (
-        entry.get("rendered_asset") if isinstance(entry.get("rendered_asset"), dict) else {}
-    )
+    rendered_asset = dict_or_empty(entry.get("rendered_asset"))
     rendered_asset = {
         **rendered_asset,
         "file": file_name,
@@ -155,7 +159,7 @@ def sync_visual_manifest_entry(entry: dict[str, Any]) -> dict[str, Any]:
     }
     entry["rendered_asset"] = rendered_asset
 
-    visual_need = entry.get("visual_need") if isinstance(entry.get("visual_need"), dict) else {}
+    visual_need = dict_or_empty(entry.get("visual_need"))
     entry["visual_need"] = {
         "learning_claim": str(
             visual_need.get("learning_claim")
@@ -294,6 +298,10 @@ def delivery_blocker(
 
 def list_or_empty(value: object) -> list[Any]:
     return value if isinstance(value, list) else []
+
+
+def dict_or_empty(value: object) -> dict[str, Any]:
+    return dict(value) if isinstance(value, dict) else {}
 
 
 def _status_for(review_status: str | Mapping[str, str], visual_id: str) -> str:

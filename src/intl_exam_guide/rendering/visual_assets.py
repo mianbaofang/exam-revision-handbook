@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from intl_exam_guide.visuals.manifest import sync_visual_manifest_entry
+from intl_exam_guide.visuals.spec import VisualSpec
 
 
 GENERATED_ASSET_STATUSES = {
@@ -109,6 +110,52 @@ def load_visual_manifest(path_or_dir: Path) -> list[dict[str, Any]]:
 
 def build_visual_asset_lookup(entries: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     return {visual_asset_key_from_entry(entry): entry for entry in entries}
+
+
+def visual_manifest_matches_plan(
+    plan: Any,
+    entries: list[dict[str, Any]],
+) -> bool:
+    """Return whether the manifest is the exact visual-spec set for ``plan``.
+
+    A render can otherwise succeed with a stale manifest because HTML lookup is
+    keyed by the visual brief rather than by list position.  Keep this check in
+    the shared visual module so package rendering and the final delivery gate use
+    the same source-bound contract.
+    """
+
+    briefs = getattr(plan, "visual_briefs", None)
+    if not isinstance(briefs, list):
+        return False
+    expected: list[tuple[str, str]] = []
+    try:
+        for index, brief in enumerate(briefs, start=1):
+            spec = VisualSpec.from_brief(brief, f"visual_{index:03d}")
+            expected.append((visual_asset_key_from_brief(brief), spec.spec_hash()))
+    except (AttributeError, TypeError, ValueError):
+        return False
+
+    actual: list[tuple[str, str]] = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        key = str(entry.get("key") or "")
+        derived_key = visual_asset_key(
+            str(entry.get("topic_title") or ""),
+            str(entry.get("focus_point") or ""),
+            str(entry.get("visual_type") or ""),
+            str(entry.get("complexity") or ""),
+        )
+        if not key or key != derived_key:
+            return False
+        actual.append((key, str(entry.get("spec_hash") or "")))
+    if len(actual) != len(expected):
+        return False
+    if len({key for key, _ in actual}) != len(actual):
+        return False
+    if any(not key or not spec_hash for key, spec_hash in actual):
+        return False
+    return dict(expected) == dict(actual)
 
 
 def is_generated_asset(entry: dict[str, Any]) -> bool:

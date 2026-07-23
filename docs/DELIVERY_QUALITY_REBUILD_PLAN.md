@@ -2,6 +2,14 @@
 
 Date: 2026-07-01
 
+> Historical planning note. The implementation described here has been
+> superseded in several areas, including the mandatory capability preflight,
+> per-topic visual decisions, and the complete LLM review of the current HTML
+> before PDF export. The sampling matrix below is release-portfolio evidence,
+> not a substitute for reviewing every topic and rendered visual in each
+> handbook. For the current contract, use `skill/SKILL.md` and
+> `docs/ARCHITECTURE_DECISION_SKILL_WORKFLOW.md`.
+
 ## Verdict
 
 The current project is safer than the earlier flat generator because it marks
@@ -227,8 +235,10 @@ evidence should include:
   Physics, Chemistry, Economics, Biology, Accounting.
 - Supporting matrix: at least one current sample for Business and History.
 
-Each sample must be opened and manually inspected at the rendered HTML/PDF
-level. Machine validation alone is not enough.
+Each sample's HTML must be personally opened and visually inspected by the LLM.
+Every repair requires HTML rerendering and another visible review. Machine
+validation alone is not enough, and PDF must not be exported until the exact
+current HTML hash has LLM approval.
 
 ## Definition Of 95% Student-Usable
 

@@ -22,6 +22,7 @@ from intl_exam_guide.rendering.cover import (
     stripped_subject_title,
 )
 from intl_exam_guide.rendering.handbook_package import (
+    optimize_raster_assets_for_pdf,
     slugify,
     write_handbook_package,
     write_visual_assets,
@@ -54,6 +55,7 @@ from intl_exam_guide.rendering.html import (
     style_display,
     topic_anchor,
 )
+from intl_exam_guide.visuals import VisualSpec
 from intl_exam_guide.rendering.styles import stylesheet
 from intl_exam_guide.rendering.visual_assets import (
     build_visual_asset_lookup,
@@ -65,6 +67,7 @@ from intl_exam_guide.rendering.visual_assets import (
     scientific_vector_route,
     visual_asset_key_from_brief,
     visual_asset_key_from_entry,
+    visual_manifest_matches_plan,
 )
 
 
@@ -161,6 +164,10 @@ def sample_topic_guide(topic_title: str = "3.1 - Source documents") -> TopicGuid
             "Use ledger totals when preparing statements.",
         ],
         diagram_brief="Show source documents feeding books of prime entry and then ledgers.",
+        explanations=[
+            "A source document is evidence of a transaction and determines the first accounting record.",
+            "Books of prime entry group similar transactions before totals are posted to ledger accounts.",
+        ],
         source_snippets=[
             SourceSnippet(
                 page=12,
@@ -235,8 +242,6 @@ def test_stylesheet_keeps_handbook_cover_responsive_and_print_contracts():
         ".cover-template-caie",
         ".cover-mast",
         ".cover-main",
-        ".cover-edexcel-body",
-        ".cover-caie-body",
         ".cover-signature-card",
         ".cover-spec-card",
         ".cover-identity-grid",
@@ -246,18 +251,21 @@ def test_stylesheet_keeps_handbook_cover_responsive_and_print_contracts():
         ".practice-block",
         ".generated-infographic-grid",
         ".story-modes",
-        "@media (max-width: 760px)",
+        "@media screen and (max-width: 760px)",
         "@media print",
     ]:
         assert selector in css
 
     assert "--cover-primary: #1354a5" in css
-    assert "--cover-primary: #007b83" in css
-    assert "--cover-primary: #b42c35" in css
-    assert ".cover-template-edexcel .cover-edexcel-body" in css
-    assert ".cover-template-caie .cover-caie-header" in css
+    assert "--cover-primary: #00838a" in css
+    assert "--cover-primary: #c3313e" in css
+    assert ".cover-template-edexcel .cover-edexcel-body" not in css
+    assert ".cover-template-caie .cover-caie-body" not in css
 
-    assert "min-height: 220mm" in css
+    assert "height: 290mm" in css
+    assert "min-height: 290mm" in css
+    assert "break-inside: avoid-page" in css
+    assert "page-break-inside: avoid" in css
     assert "print-color-adjust: exact" in css
     assert "letter-spacing: 0" in css
 
@@ -287,7 +295,7 @@ def test_cover_helpers_identify_three_boards_and_neutral_unknown_sources():
     assert exam_board_identity(qualification)["class_name"] == "board-neutral"
 
 
-def test_render_cover_applies_distinct_three_board_theme_classes():
+def test_render_cover_applies_distinct_themes_to_the_shared_cover_structure():
     options = GuideRunOptions(
         requested_subject="Accounting",
         image_provider="prompt-queue",
@@ -301,7 +309,7 @@ def test_render_cover_applies_distinct_three_board_theme_classes():
             "Pearson Edexcel",
             "board-edexcel",
             "cover-template-edexcel",
-            "cover-edexcel-body",
+            "cover-edexcel-main",
             "Edexcel",
         ),
         (
@@ -309,7 +317,7 @@ def test_render_cover_applies_distinct_three_board_theme_classes():
             "Cambridge International",
             "board-caie",
             "cover-template-caie",
-            "cover-caie-body",
+            "cover-caie-main",
             "CAIE",
         ),
     ]
@@ -322,8 +330,10 @@ def test_render_cover_applies_distinct_three_board_theme_classes():
 
         assert f'class="cover {class_name} {template_class}"' in html
         assert f'class="exam-board-theme-strip {class_name}"' in html
-        assert structure_class in html
-        assert f"{short_name} handbook" in html
+        assert 'class="cover-mast ' in html
+        assert f'class="cover-main {structure_class}"' in html
+        assert short_name in html
+        assert "study guide" in html
 
     assert "cover-template-edexcel" not in render_cover(sample_rendering_qualification(), options)
 
@@ -608,16 +618,14 @@ def test_html_helpers_keep_source_policy_and_setup_copy_readable():
     assert "Writing style: Detective" in overview
     assert "Audience and Sources" in source_note
     assert "Business and Accounting" in source_note
-    assert "blue International GCSE subject listing" in source_note
+    assert "Detected class" not in source_note
     assert "PDF SHA-256" in source_note
     assert "handbook body stays in English" in policy
     assert style_display("life", "en") == "Life Scene"
     assert image_provider_display(options, "en") == "custom illustration model: SenseNova U1 Fast"
     assert "warning" in link_or_missing(None, "en")
     assert render_listing_note(qualification, "en") == (
-        '<p class="listing-note">Subject group: Business and Accounting · '
-        "Website group: blue International GCSE subject listing · "
-        "Detected class: btn btn--type-8</p>"
+        '<p class="listing-note">Qualification subject: Business and Accounting</p>'
     )
     assert topic_anchor(12) == "topic-12"
 
@@ -660,7 +668,7 @@ def test_chinese_html_helpers_have_direct_contracts():
 
     assert "Subject group" not in listing_note
     assert "Accounting" in listing_note
-    assert "AQA International GCSE" in listing_note
+    assert "subject-card" not in listing_note
     assert "Audience and Sources" not in source_note
     assert "Qualification page" not in source_note
     assert "https://example.test/accounting/" in source_note
@@ -747,6 +755,7 @@ def test_topic_renderers_cover_guides_practice_story_and_visual_blocks():
     assert "Key Ideas" in rendered_topics
     assert "Exam Logic" in rendered_topics
     assert "One-Sentence Essence" in rendered_topics
+    assert "Teaching Explanation" in rendered_topics
     assert "Concept Map" not in rendered_topics
     assert "Visual Worked Example" in rendered_topics
     assert "Life Scene" not in rendered_topics
@@ -765,6 +774,8 @@ def test_topic_renderers_cover_guides_practice_story_and_visual_blocks():
     assert "Life Scene" in story_topics
 
     assert "Everyday Analogy" in render_topic_guide(guide, "en")
+    guide.analogy = "Reasoning anchor: retain the relationship at each step."
+    assert "Reasoning Anchor" in render_topic_guide(guide, "en")
     assert "Concept map for 3.1 - Source documents" in render_topic_diagram(topic, guide, 1, "en")
     local_visual_html = render_visual_example(topic, guide, visual, 1, {}, "en")
     assert "Source anchor" in local_visual_html
@@ -1065,6 +1076,12 @@ def test_source_snippet_display_text_removes_student_instruction_shell():
     assert "understand the nature of an economic resource" in cleaned
 
 
+def test_source_snippet_display_text_hides_unreadable_pdf_extraction():
+    cleaned = source_snippet_display_text("Requirement \ufffd corrupted extraction")
+
+    assert cleaned == "Official source text is retained in the evidence package."
+
+
 def test_source_snippet_display_text_cleans_split_pearson_bullets():
     text = (
         "1.1 Types of business organisation a) Explain the characteristics of: "
@@ -1266,6 +1283,9 @@ def test_write_visual_assets_preserves_generated_raster_and_rebuilds_svg_manifes
                     "key": visual_asset_key_from_brief(raster_brief),
                     "file": "ledger.png",
                     "asset_status": "reviewed-generated",
+                    "review_status": "approved",
+                    "spec_hash": VisualSpec.from_brief(raster_brief, "visual_002").spec_hash(),
+                    "visual_need": {"reviewer_visual_decision": "approved"},
                     "image_provider": "external-reviewed-workflow",
                 }
             ],
@@ -1274,13 +1294,13 @@ def test_write_visual_assets_preserves_generated_raster_and_rebuilds_svg_manifes
         encoding="utf-8",
     )
 
-    written = write_visual_assets(plan, images_dir)
+    written = write_visual_assets(plan, images_dir, allow_manifest_rebuild=True)
     manifest_payload = json.loads((images_dir / "visual_manifest.json").read_text(encoding="utf-8"))
     assert manifest_payload["schema_version"] == 2
     manifest = manifest_payload["visuals"]
 
-    assert not (images_dir / "old.svg").exists()
-    assert not (images_dir / "stale.png").exists()
+    assert (images_dir / "old.svg").exists()
+    assert (images_dir / "stale.png").exists()
     assert len(written) == 1
     assert [entry["asset_status"] for entry in manifest] == [
         "llm-svg-required",
@@ -1290,6 +1310,7 @@ def test_write_visual_assets_preserves_generated_raster_and_rebuilds_svg_manifes
     assert manifest[0]["file"] is None
     assert manifest[0]["fallback_route"] == "external-infographic-required"
     assert manifest[1]["file"] == "ledger.png"
+    assert manifest[1]["visual_need"]["reviewer_visual_decision"] == "approved"
     assert manifest[2]["file"] is None
     assert manifest[2]["fallback_route"] == "external-infographic-required"
 
@@ -1337,7 +1358,7 @@ def test_write_visual_assets_preserves_reviewed_raster_for_svg_basic(tmp_path):
         encoding="utf-8",
     )
 
-    written = write_visual_assets(plan, images_dir)
+    written = write_visual_assets(plan, images_dir, allow_manifest_rebuild=True)
     manifest_payload = json.loads((images_dir / "visual_manifest.json").read_text(encoding="utf-8"))
     assert manifest_payload["schema_version"] == 2
     manifest = manifest_payload["visuals"]
@@ -1345,7 +1366,247 @@ def test_write_visual_assets_preserves_reviewed_raster_for_svg_basic(tmp_path):
     assert written == [images_dir / "quadratic-reviewed.png"]
     assert manifest[0]["file"] == "quadratic-reviewed.png"
     assert manifest[0]["asset_status"] == "reviewed-generated"
-    assert not list(images_dir.glob("*.svg"))
+    assert (images_dir / "old.svg").exists()
+
+
+def test_existing_visual_manifest_is_render_only_by_default_and_rebuild_requires_explicit_refresh(
+    tmp_path,
+) -> None:
+    visual = VisualBrief(
+        topic_title="Cell transport",
+        focus_point="osmosis",
+        trigger="water moves down a water potential gradient",
+        visual_type="process diagram",
+        complexity="infographic",
+        image_provider="external-generation-required",
+        prompt="Draw a labelled osmosis process diagram.",
+        source_points=["Explain osmosis."],
+    )
+    plan = GuidePlan(
+        qualification=sample_rendering_qualification(),
+        run_options=GuideRunOptions(
+            requested_subject="Biology",
+            image_provider="prompt-queue",
+            explanation_style="friendly",
+            output_language="en",
+        ),
+        topic_guides=[],
+        practice_items=[],
+        visual_briefs=[visual],
+        diagram_briefs=[],
+        revision_stages=[],
+    )
+
+    write_handbook_package(plan, tmp_path)
+    manifest_path = tmp_path / "images" / "visual_manifest.json"
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    payload["visuals"][0]["visual_need"]["reviewer_visual_decision"] = "approved"
+    manifest_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    write_handbook_package(plan, tmp_path)
+    unchanged = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert unchanged["visuals"][0]["visual_need"]["reviewer_visual_decision"] == "approved"
+
+    plan.visual_briefs[0].focus_point = "active transport"
+    with pytest.raises(RuntimeError, match="does not match the current plan"):
+        write_handbook_package(plan, tmp_path)
+
+
+def test_visual_spec_change_does_not_reuse_reviewed_asset_or_approval(tmp_path) -> None:
+    visual = VisualBrief(
+        topic_title="Cell transport",
+        focus_point="osmosis",
+        trigger="water moves down a water potential gradient",
+        visual_type="process diagram",
+        complexity="infographic",
+        image_provider="external-generation-required",
+        prompt="Draw a labelled osmosis process diagram.",
+        source_points=["Explain osmosis."],
+    )
+    plan = GuidePlan(
+        qualification=sample_rendering_qualification(),
+        run_options=GuideRunOptions(
+            requested_subject="Biology",
+            image_provider="prompt-queue",
+            explanation_style="friendly",
+            output_language="en",
+        ),
+        topic_guides=[],
+        practice_items=[],
+        visual_briefs=[visual],
+        diagram_briefs=[],
+        revision_stages=[],
+    )
+
+    write_handbook_package(plan, tmp_path)
+    manifest_path = tmp_path / "images" / "visual_manifest.json"
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    images_dir = tmp_path / "images"
+    old_asset = images_dir / "visual_001-reviewed.png"
+    old_asset.write_bytes(b"reviewed old asset")
+    entry = payload["visuals"][0]
+    entry.update(
+        {
+            "file": old_asset.name,
+            "asset_status": "reviewed-generated",
+            "review_status": "reviewed",
+            "asset": {"file": old_asset.name, "sha256": "0" * 64},
+            "visual_need": {"reviewer_visual_decision": "approved"},
+        }
+    )
+    entry["spec_hash"] = VisualSpec.from_brief(visual, "visual_001").spec_hash()
+    manifest_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    visual.prompt = "Draw a labelled active-transport process diagram."
+    write_handbook_package(plan, tmp_path, refresh_visual_manifest=True)
+    refreshed = json.loads(manifest_path.read_text(encoding="utf-8"))["visuals"][0]
+
+    assert refreshed["file"] is None
+    assert refreshed["asset_status"] == "external-generation-required"
+    assert refreshed["review_status"] == "pending"
+    assert refreshed["visual_need"]["reviewer_visual_decision"] == "pending"
+    assert old_asset.exists()
+
+
+def test_existing_manifest_duplicate_visual_keys_are_not_rendered_as_current(tmp_path) -> None:
+    visual = VisualBrief(
+        topic_title="Cell transport",
+        focus_point="osmosis",
+        trigger="water moves down a water potential gradient",
+        visual_type="process diagram",
+        complexity="infographic",
+        image_provider="external-generation-required",
+        prompt="Draw a labelled osmosis process diagram.",
+        source_points=["Explain osmosis."],
+    )
+    plan = GuidePlan(
+        qualification=sample_rendering_qualification(),
+        run_options=GuideRunOptions(
+            requested_subject="Biology",
+            image_provider="prompt-queue",
+            explanation_style="friendly",
+            output_language="en",
+        ),
+        topic_guides=[],
+        practice_items=[],
+        visual_briefs=[visual],
+        diagram_briefs=[],
+        revision_stages=[],
+    )
+    write_handbook_package(plan, tmp_path)
+    manifest_path = tmp_path / "images" / "visual_manifest.json"
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    payload["visuals"].append(dict(payload["visuals"][0]))
+    manifest_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    with pytest.raises(RuntimeError, match="does not match the current plan"):
+        write_handbook_package(plan, tmp_path)
+
+
+def test_shared_visual_manifest_binding_rejects_changed_plan(tmp_path) -> None:
+    visual = VisualBrief(
+        topic_title="Cell transport",
+        focus_point="osmosis",
+        trigger="water moves down a water potential gradient",
+        visual_type="process diagram",
+        complexity="infographic",
+        image_provider="external-generation-required",
+        prompt="Draw a labelled osmosis process diagram.",
+        source_points=["Explain osmosis."],
+    )
+    plan = GuidePlan(
+        qualification=sample_rendering_qualification(),
+        run_options=GuideRunOptions(
+            requested_subject="Biology",
+            image_provider="prompt-queue",
+            explanation_style="friendly",
+            output_language="en",
+        ),
+        topic_guides=[],
+        practice_items=[],
+        visual_briefs=[visual],
+        diagram_briefs=[],
+        revision_stages=[],
+    )
+
+    write_handbook_package(plan, tmp_path)
+    manifest = load_visual_manifest(tmp_path / "images")
+    assert visual_manifest_matches_plan(plan, manifest)
+
+    visual.prompt = "Draw a labelled active-transport process diagram."
+    assert not visual_manifest_matches_plan(plan, manifest)
+
+
+def test_pdf_raster_optimization_does_not_reprocess_its_own_derivative(tmp_path) -> None:
+    images_dir = tmp_path / "images"
+    images_dir.mkdir()
+    derivative = images_dir / "visual_001-print.jpg"
+    derivative.write_bytes(b"already optimized")
+    entries = [
+        {
+            "file": derivative.name,
+            "asset_optimized_for_pdf": True,
+        }
+    ]
+
+    assert optimize_raster_assets_for_pdf(entries, images_dir) == []
+    assert derivative.exists()
+
+
+def test_changed_asset_bytes_reset_reuse_and_visual_approval(tmp_path) -> None:
+    visual = VisualBrief(
+        topic_title="Cell transport",
+        focus_point="osmosis",
+        trigger="water moves down a water potential gradient",
+        visual_type="process diagram",
+        complexity="infographic",
+        image_provider="external-generation-required",
+        prompt="Draw a labelled osmosis process diagram.",
+        source_points=["Explain osmosis."],
+    )
+    plan = GuidePlan(
+        qualification=sample_rendering_qualification(),
+        run_options=GuideRunOptions(
+            requested_subject="Biology",
+            image_provider="prompt-queue",
+            explanation_style="friendly",
+            output_language="en",
+        ),
+        topic_guides=[],
+        practice_items=[],
+        visual_briefs=[visual],
+        diagram_briefs=[],
+        revision_stages=[],
+    )
+    write_handbook_package(plan, tmp_path)
+    manifest_path = tmp_path / "images" / "visual_manifest.json"
+    images_dir = tmp_path / "images"
+    asset = images_dir / "visual_001-reviewed.png"
+    asset.write_bytes(b"old asset")
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    entry = payload["visuals"][0]
+    entry.update(
+        {
+            "file": asset.name,
+            "asset_status": "reviewed-generated",
+            "review_status": "reviewed",
+            "asset": {"file": asset.name, "sha256": ""},
+            "visual_need": {"reviewer_visual_decision": "approved"},
+        }
+    )
+    from intl_exam_guide.visuals.manifest import build_asset_metadata
+
+    entry["asset"] = build_asset_metadata(asset)
+    manifest_path.write_text(json.dumps(payload), encoding="utf-8")
+    asset.write_bytes(b"replacement asset")
+
+    write_handbook_package(plan, tmp_path, refresh_visual_manifest=True)
+    refreshed = json.loads(manifest_path.read_text(encoding="utf-8"))["visuals"][0]
+
+    assert refreshed["file"] is None
+    assert refreshed["review_status"] == "pending"
+    assert refreshed["visual_need"]["reviewer_visual_decision"] == "pending"
+    assert asset.exists()
 
 
 @pytest.mark.skip(reason="Test needs update after architecture refactor.")

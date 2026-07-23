@@ -2,17 +2,17 @@
   {
     "id": "aqa-accounting-zh",
     "prompt": "帮我生成 AQA IGCSE 会计复习手册，附中文专业词对照表。",
-    "expected": "The agent treats AQA as the OxfordAQA international route, confirms term-support language and explanation style, does not ask for an image model before generation, then validates that detailed syllabus units, concept jobs/review status, worked examples, visual briefs, HTML, and PDF exist."
+    "expected": "The agent treats AQA as the OxfordAQA international route and, in the first response, shows a complete fixed-choice preflight form that asks whether the user can provide or enable an external image-generation Skill or tool and also covers board, level, subject, year/range, support language, explanation style, workflow mode, batch scope, and output directory. It requires key=value replies, waits, and does not download, split, write, render, or generate PDF while any field is missing or invalid. It never infers the external route from image_provider, then prepares detailed syllabus units, concept jobs/review status, worked examples, route-aware visual briefs, and HTML. The LLM personally opens the current HTML, returns problems for rewriting and rerendering until it passes, records per-item evidence and approval for the exact HTML/render/ledger hashes, and only then allows a technically valid PDF candidate to become current; Python inspection cannot approve it."
   },
   {
     "id": "edexcel-ambiguous-subject",
     "prompt": "我需要 Edexcel IGCSE Accounting 复习手册。",
-    "expected": "The agent first resolves official Edexcel candidates. If more than one official route matches, it returns the candidates and waits for the user instead of silently reusing an AQA syllabus or guessing a URL."
+    "expected": "In the first response, the agent asks whether the user can provide or enable an external image-generation Skill or tool inside the complete fixed-choice preflight form, requires key=value replies, and waits instead of defaulting to local generation or beginning discovery. It then resolves official Edexcel candidates. If more than one official route matches, it returns the candidates and waits for the user instead of silently reusing an AQA syllabus or guessing a URL."
   },
   {
     "id": "caie-exam-year",
     "prompt": "帮我生成 CAIE IGCSE Economics 复习手册，附中文专业词对照表。",
-    "expected": "The agent checks whether the CAIE page exposes multiple syllabus year ranges. If so, it asks for exam year before selecting the syllabus, then keeps the handbook body English and adds the requested term glossary."
+    "expected": "In the first response, the agent asks whether the user can provide or enable an external image-generation Skill or tool inside the complete fixed-choice preflight form and waits with the project blocked until all fields are valid. It checks whether the CAIE page exposes multiple syllabus year ranges. If so, it asks for exam year before selecting the syllabus, then keeps the handbook body English and adds the requested term glossary."
   },
   {
     "id": "image-model-not-callable",

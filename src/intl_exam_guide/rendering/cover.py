@@ -16,6 +16,8 @@ def render_cover(qualification: Qualification, options: GuideRunOptions) -> str:
         return render_edexcel_cover(context, language)
     if board["class_name"] == "board-caie":
         return render_cambridge_cover(context, language)
+    if board["class_name"] == "board-ap":
+        return render_ap_cover(context, language)
     return render_aqa_cover(context, language)
 
 
@@ -38,6 +40,7 @@ def cover_context(
         "board_full": board["full"],
         "qtype": qualification_type_display(qualification),
         "subject": cover_subject_title(qualification, language),
+        "study_title": cover_study_title(qualification, language),
         "code_html": cover_course_code(code, language),
         "identity_html": cover_identity_grid(version, year, language),
         "signal_html": cover_signal_grid(language),
@@ -45,205 +48,65 @@ def cover_context(
 
 
 def render_aqa_cover(context: dict[str, str], language: str) -> str:
-    board_class = context["board_class"]
-    if language == "en":
-        return f"""
-<section class="cover {board_class} cover-template-aqa">
-  <div class="exam-board-theme-strip {board_class}" aria-hidden="true"></div>
-  <div class="cover-mast cover-aqa-mast">
-    <div class="exam-board-name">
-      <span>Exam board</span>
-      <strong>{html_escape(context["board_full"])}</strong>
-    </div>
-    <div class="cover-signature-card">
-      <span>{html_escape(context["board_short"])}</span>
-      <strong>Revision Guide</strong>
-      <em>{html_escape(context["qtype"])}</em>
-    </div>
-  </div>
-  <div class="cover-main cover-aqa-main">
-    <div class="cover-title-lockup">
-      <div class="qualification-pill">{html_escape(context["qtype"])}</div>
-      <h1>{html_escape(context["subject"])}</h1>
-      {context["code_html"]}
-    </div>
-    <div class="cover-spec-card">
-      <span>Course identity</span>
-      <strong>{html_escape(context["board_short"])} handbook</strong>
-      <p>Specification-led revision guide</p>
-    </div>
-  </div>
-  <div class="cover-footer cover-aqa-footer">
-    {context["identity_html"]}
-    {context["signal_html"]}
-  </div>
-</section>
-"""
-    return f"""
-<section class="cover {board_class} cover-template-aqa">
-  <div class="exam-board-theme-strip {board_class}" aria-hidden="true"></div>
-  <div class="cover-mast cover-aqa-mast">
-    <div class="exam-board-name">
-      <span>考试局</span>
-      <strong>{html_escape(context["board_full"])}</strong>
-    </div>
-    <div class="cover-signature-card">
-      <span>{html_escape(context["board_short"])}</span>
-      <strong>复习手册</strong>
-      <em>{html_escape(context["qtype"])}</em>
-    </div>
-  </div>
-  <div class="cover-main cover-aqa-main">
-    <div class="cover-title-lockup">
-      <div class="qualification-pill">{html_escape(context["qtype"])}</div>
-      <h1>{html_escape(context["subject"])}</h1>
-      {context["code_html"]}
-    </div>
-    <div class="cover-spec-card">
-      <span>课程身份</span>
-      <strong>{html_escape(context["board_short"])} 手册</strong>
-      <p>基于官方考试大纲的复习手册</p>
-    </div>
-  </div>
-  <div class="cover-footer cover-aqa-footer">
-    {context["identity_html"]}
-    {context["signal_html"]}
-  </div>
-</section>
-"""
+    return render_fixed_cover(context, language, "aqa")
 
 
 def render_edexcel_cover(context: dict[str, str], language: str) -> str:
-    board_class = context["board_class"]
-    if language == "en":
-        return f"""
-<section class="cover {board_class} cover-template-edexcel">
-  <div class="exam-board-theme-strip {board_class}" aria-hidden="true"></div>
-  <div class="cover-edexcel-header">
-    <div class="cover-signature-card">
-      <span>{html_escape(context["board_short"])}</span>
-      <strong>Revision Guide</strong>
-      <em>{html_escape(context["qtype"])}</em>
-    </div>
-    <div class="exam-board-name">
-      <span>Exam board</span>
-      <strong>{html_escape(context["board_full"])}</strong>
-    </div>
-  </div>
-  <div class="cover-edexcel-body">
-    <div class="cover-spec-card">
-      <span>Course identity</span>
-      <strong>{html_escape(context["board_short"])} handbook</strong>
-      <p>Specification-led revision guide</p>
-    </div>
-    <div class="cover-title-lockup">
-      <div class="qualification-pill">{html_escape(context["qtype"])}</div>
-      <h1>{html_escape(context["subject"])}</h1>
-      {context["code_html"]}
-    </div>
-  </div>
-  <div class="cover-footer cover-edexcel-footer">
-    {context["identity_html"]}
-    {context["signal_html"]}
-  </div>
-</section>
-"""
-    return f"""
-<section class="cover {board_class} cover-template-edexcel">
-  <div class="exam-board-theme-strip {board_class}" aria-hidden="true"></div>
-  <div class="cover-edexcel-header">
-    <div class="cover-signature-card">
-      <span>{html_escape(context["board_short"])}</span>
-      <strong>复习手册</strong>
-      <em>{html_escape(context["qtype"])}</em>
-    </div>
-    <div class="exam-board-name">
-      <span>考试局</span>
-      <strong>{html_escape(context["board_full"])}</strong>
-    </div>
-  </div>
-  <div class="cover-edexcel-body">
-    <div class="cover-spec-card">
-      <span>课程身份</span>
-      <strong>{html_escape(context["board_short"])} 手册</strong>
-      <p>基于官方考试大纲的复习手册</p>
-    </div>
-    <div class="cover-title-lockup">
-      <div class="qualification-pill">{html_escape(context["qtype"])}</div>
-      <h1>{html_escape(context["subject"])}</h1>
-      {context["code_html"]}
-    </div>
-  </div>
-  <div class="cover-footer cover-edexcel-footer">
-    {context["identity_html"]}
-    {context["signal_html"]}
-  </div>
-</section>
-"""
+    return render_fixed_cover(context, language, "edexcel")
 
 
 def render_cambridge_cover(context: dict[str, str], language: str) -> str:
+    return render_fixed_cover(context, language, "caie")
+
+
+def render_ap_cover(context: dict[str, str], language: str) -> str:
+    return render_fixed_cover(context, language, "ap")
+
+
+def render_fixed_cover(
+    context: dict[str, str],
+    language: str,
+    template_name: str,
+) -> str:
     board_class = context["board_class"]
     if language == "en":
-        return f"""
-<section class="cover {board_class} cover-template-caie">
-  <div class="exam-board-theme-strip {board_class}" aria-hidden="true"></div>
-  <div class="cover-caie-header">
-    <div class="cover-signature-card">
-      <span>{html_escape(context["board_short"])}</span>
-      <strong>Revision Guide</strong>
-      <em>{html_escape(context["qtype"])}</em>
-    </div>
-    <div class="exam-board-name">
-      <span>Exam board</span>
-      <strong>{html_escape(context["board_full"])}</strong>
-    </div>
-  </div>
-  <div class="cover-caie-body">
-    <div class="cover-title-lockup">
-      <div class="qualification-pill">{html_escape(context["qtype"])}</div>
-      <h1>{html_escape(context["subject"])}</h1>
-      {context["code_html"]}
-    </div>
-    <div class="cover-spec-card">
-      <span>Course identity</span>
-      <strong>{html_escape(context["board_short"])} handbook</strong>
-      <p>Specification-led revision guide</p>
-    </div>
-  </div>
-  <div class="cover-footer cover-caie-footer">
-    {context["identity_html"]}
-    {context["signal_html"]}
-  </div>
-</section>
-"""
+        exam_board_label = "Exam board"
+        guide_label = "Revision Guide"
+        identity_label = "Course identity"
+        description = "Specification-led revision guide"
+    else:
+        exam_board_label = "考试局"
+        guide_label = "复习手册"
+        identity_label = "课程身份"
+        description = "基于官方考试大纲的复习手册"
+
     return f"""
-<section class="cover {board_class} cover-template-caie">
+<section class="cover {board_class} cover-template-{template_name}">
   <div class="exam-board-theme-strip {board_class}" aria-hidden="true"></div>
-  <div class="cover-caie-header">
-    <div class="cover-signature-card">
-      <span>{html_escape(context["board_short"])}</span>
-      <strong>复习手册</strong>
-      <em>{html_escape(context["qtype"])}</em>
-    </div>
+  <div class="cover-mast cover-{template_name}-mast">
     <div class="exam-board-name">
-      <span>考试局</span>
+      <span>{exam_board_label}</span>
       <strong>{html_escape(context["board_full"])}</strong>
     </div>
+    <div class="cover-signature-card">
+      <span>{html_escape(context["board_short"])}</span>
+      <strong>{guide_label}</strong>
+      <em>{html_escape(context["qtype"])}</em>
+    </div>
   </div>
-  <div class="cover-caie-body">
+  <div class="cover-main cover-{template_name}-main">
     <div class="cover-title-lockup">
       <div class="qualification-pill">{html_escape(context["qtype"])}</div>
       <h1>{html_escape(context["subject"])}</h1>
       {context["code_html"]}
     </div>
     <div class="cover-spec-card">
-      <span>课程身份</span>
-      <strong>{html_escape(context["board_short"])} 手册</strong>
-      <p>基于官方考试大纲的复习手册</p>
+      <span>{identity_label}</span>
+      <strong>{html_escape(context["study_title"])}</strong>
+      <p>{description}</p>
     </div>
   </div>
-  <div class="cover-footer cover-caie-footer">
+  <div class="cover-footer cover-{template_name}-footer">
     {context["identity_html"]}
     {context["signal_html"]}
   </div>
@@ -316,10 +179,15 @@ def exam_board_identity(qualification: Qualification) -> dict[str, str]:
         ]
         if part
     ).lower()
+    course_market = qualification.source.course_market
     if "pearson" in source or "edexcel" in source:
         return {
             "short": "Edexcel",
-            "full": "Pearson Edexcel International Qualifications",
+            "full": (
+                "Pearson Edexcel Qualifications"
+                if course_market == "uk-domestic"
+                else "Pearson Edexcel International Qualifications"
+            ),
             "class_name": "board-edexcel",
         }
     if "cambridge" in source or "caie" in source:
@@ -328,10 +196,16 @@ def exam_board_identity(qualification: Qualification) -> dict[str, str]:
             "full": "Cambridge International Education",
             "class_name": "board-caie",
         }
+    if "collegeboard" in source or "college board" in source or "advanced placement" in source:
+        return {
+            "short": "AP",
+            "full": "College Board Advanced Placement",
+            "class_name": "board-ap",
+        }
     if "oxfordaqa" in source or "oxford international aqa" in source or "aqa" in source:
         return {
             "short": "AQA",
-            "full": "Oxford International AQA Examinations",
+            "full": "AQA Qualifications" if course_market == "uk-domestic" else "Oxford International AQA Examinations",
             "class_name": "board-aqa",
         }
     return {
@@ -348,6 +222,12 @@ def qualification_type_display(qualification: Qualification) -> str:
         return qualification.source.qualification_family
     if qualification.qualification_type == "international_gcse":
         return "International GCSE"
+    if qualification.qualification_type == "uk_gcse":
+        return "GCSE"
+    if qualification.qualification_type == "uk_as_a_level":
+        return "AS & A Level"
+    if qualification.qualification_type == "advanced_placement":
+        return "Advanced Placement (AP)"
     return "International AS-A-level"
 
 
@@ -360,6 +240,28 @@ def cover_subject_title(qualification: Qualification, language: str) -> str:
     return stripped_subject_title(qualification)
 
 
+def cover_study_title(qualification: Qualification, language: str) -> str:
+    subject = cover_subject_title(qualification, language)
+    if language != "en":
+        return f"{subject} 复习手册"
+
+    qtype = qualification_type_display(qualification)
+    normalized = qtype.lower().replace("-", " ")
+    if "igcse" in normalized or "international gcse" in normalized:
+        level = "IGCSE"
+    elif "advanced placement" in normalized:
+        level = "AP"
+    elif "as only" in normalized:
+        level = "AS"
+    elif re.search(r"\bas\b", normalized) and "a level" in normalized:
+        level = "AS & A Level"
+    elif "a level" in normalized:
+        level = "A Level"
+    else:
+        level = qtype
+    return f"{level} {subject} study guide"
+
+
 def stripped_subject_title(qualification: Qualification) -> str:
     title = re.sub(r"\s*\([^)]*\)\s*$", "", qualification.title).strip()
     for prefix in (
@@ -370,6 +272,8 @@ def stripped_subject_title(qualification: Qualification) -> str:
         "Cambridge International AS & A Level",
         "Edexcel International GCSE",
         "Pearson Edexcel International GCSE",
+        "College Board Advanced Placement (AP)",
+        "AP",
     ):
         if title.lower().startswith(prefix.lower()):
             title = title[len(prefix) :].strip(" -–—:")

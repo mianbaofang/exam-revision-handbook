@@ -22,12 +22,12 @@ def extract_pdf_pages(pdf_path: Path, max_pages: int | None = None) -> list[tupl
 
     if getattr(reader, "is_encrypted", False):
         try:
-            reader.decrypt("")
+            decrypt_result = reader.decrypt("")
         except (NotImplementedError, PdfReadError, ValueError) as exc:
             raise PdfTextExtractionError(
                 f"Encrypted PDF could not be decrypted: {pdf_path}"
             ) from exc
-        if getattr(reader, "is_encrypted", False):
+        if not decrypt_result:
             raise PdfTextExtractionError(f"Encrypted PDF could not be decrypted: {pdf_path}")
 
     pages = reader.pages[:max_pages] if max_pages else reader.pages

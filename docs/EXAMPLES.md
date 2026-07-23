@@ -9,27 +9,20 @@ does not download OxfordAQA content and does not include copyrighted PDFs.
 python -m intl_exam_guide demo --out ./outputs/demo-science
 ```
 
-With local Chrome/Edge PDF export:
-
-```bash
-python -m intl_exam_guide demo --out ./outputs/demo-science
-```
-
 Expected files:
 
 ```text
 outputs/demo-science/
   <board>-<level>-<subject>-<time>.html
-  <board>-<level>-<subject>-<time>.pdf  optional if browser export succeeds
+  <board>-<level>-<subject>-<time>.html  HTML preview; demo stops before PDF
   guide-plan.json
   qualification.json
   validation.json
 ```
 
-Open `validation.json` after each run. The `issues` list must not contain
-errors, and `review_summary` should show the expected topic count, one diagram
-per topic, practice-card coverage for every topic, and source-snippet coverage
-where the PDF text matched.
+Open `validation.json` after each run. The `issues` list is a mechanical
+diagnostic, not a teaching or approval decision. The demo is a framework preview
+and cannot replace an LLM Analyst/Writer/Reviewer run.
 
 The HTML records visual slots from the manifest. Exact SVG appears only when an
 LLM-authored visual spec marks `svg_fit: "exact"` and the asset has been
@@ -117,7 +110,9 @@ without that flag:
 python scripts/import_infographic_assets.py ./outputs/mathematics-9260-sample --asset-dir ./generated-infographics/mathematics-9260-sample --provider "external-reviewed-workflow"
 python scripts/import_infographic_assets.py ./outputs/economics-9214-sample --asset-dir ./generated-infographics/economics-9214-sample --provider "external-reviewed-workflow"
 python scripts/import_infographic_assets.py ./outputs/chemistry-9202-sample --asset-dir ./generated-infographics/chemistry-9202-sample --provider "external-reviewed-workflow"
-python scripts/finalize_release_samples.py --outputs-root ./outputs
+# Repeat review -> complete visible LLM inspection -> export-pdf for each sample.
+python -m intl_exam_guide review --out ./outputs/<sample>
+python -m intl_exam_guide export-pdf --out ./outputs/<sample>
 python scripts/verify_release_samples.py --outputs-root ./outputs
 python scripts/capture_release_assets.py --outputs-root ./outputs --docs-assets docs/assets
 python scripts/render_intro_animation.py --html docs/project-intro-animation.html --mp4 outputs/project-intro-animation.mp4 --gif docs/assets/intro-animation-preview.gif
@@ -125,7 +120,9 @@ python scripts/render_intro_animation.py --html docs/project-intro-animation-en.
 ```
 
 If your image provider or image-generation Skill writes files outside the guide
-package, the Agent should import them before finalizing the HTML/PDF.
+package, the Agent should import them before rerendering HTML. The active LLM
+must then review the complete current HTML and record approval before any PDF
+export.
 Generated filenames should start with the manifest ID, such as
 `visual_001.png` or `visual_001_lab-apparatus.png`:
 
@@ -138,11 +135,11 @@ python scripts/import_infographic_assets.py ./outputs/chemistry-9202 \
 ## 中文说明
 
 离线 demo 使用仓库内置的合成 qualification，不下载 OxfordAQA 内容，也不包含任何
-受版权限制的 PDF。它适合用于测试安装环境、查看 HTML/PDF 样式、验证
-`validation.json` 的结构。
+受版权限制的 PDF。它适合用于测试安装环境、查看 HTML 样式、验证
+`validation.json` 的结构；它不会替代 LLM 审查，也不会自动导出 PDF。
 
-每次生成后都应打开 `validation.json`：`issues` 不能有 error，
-`review_summary` 应显示 topic、diagram、practice card 和 source snippet 覆盖情况。
+每次生成后都可以打开 `validation.json` 查看机械诊断；它不是教学质量或
+最终交付的自动通过结论。离线 demo 只用于检查框架和 HTML，不是教学级手册。
 
 HTML 会记录 manifest 中的视觉槽位。只有 LLM 写明 `svg_fit="exact"` 且资产经过复核时，exact SVG 才能进入手册；复杂视觉内容会保持为待处理任务，直到导入已复核的 raster 图片。
 
@@ -163,9 +160,7 @@ points 描述 syllabus summary。
 Business 9725 示例用于覆盖修订版 A-level 页面结构：subject listing 的文字不带
 代码，但 qualification 详情页带代码，因此可以验证代码查询不会被同级别科目带偏。
 
-发布前应使用 release verifier 检查 Mathematics 9260、Economics 9214、Chemistry
-9202 三份样板。`--allow-pending` 只适合信息图还没生成时做预检查；最终发布前必须
-去掉这个参数，并确认三份手册都已经导出 PDF、导入外部生成且已复核的信息图、截图更新到 `docs/assets/`。
+发布前应使用 release verifier 检查各份样板。`--allow-pending` 只适合信息图还没生成时做预检查；最终发布前必须去掉这个参数，并确认每份手册都分别完成当前 HTML 的全量 LLM 审查、写入自己的 `agent-product-review.json`，再通过 `export-pdf` 导出 PDF。不能把一份样板的审查结论共用于另一份手册。
 这三份只是公开展示和回归验证样例，不是 OxfordAQA 科目支持上限。
 截图更新后，再用 `scripts/render_intro_animation.py` 重新导出介绍动画 GIF；MP4 仅在需要视频文件时导出到 `outputs/`。
 

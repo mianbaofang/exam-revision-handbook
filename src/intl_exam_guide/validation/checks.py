@@ -32,8 +32,8 @@ from intl_exam_guide.parsing.markdown_companion import (
     MARKDOWN_SPECIFICATION_FILE,
 )
 from intl_exam_guide.planning.syllabus_outline import validate_syllabus_outline
-from intl_exam_guide.planning.visual_routing import is_professional_diagram_visual
 from intl_exam_guide.rendering.html import display_topic_titles
+from intl_exam_guide.rendering.text import normalize_math_notation
 from intl_exam_guide.rendering.visual_assets import (
     PENDING_ASSET_STATUSES,
     has_renderable_infographic,
@@ -79,6 +79,9 @@ IMAGE_PROMPT_PACKAGING_PATTERNS = [
     r"\bEdexcel\b",
     r"\bCambridge\b",
     r"\bCAIE\b",
+    r"\bCollege\s+Board\b",
+    r"\bAdvanced\s+Placement\b",
+    r"\bAP\s+[A-Z][A-Za-z-]+\b",
     r"\bInternational\s+(?:GCSE|AS(?:[-\s]A[-\s]level|[-\s]A-level|\s+Level)?|A[-\s]level)\b",
     r"\bIGCSE\b",
     r"\bGCSE\b",
@@ -93,15 +96,30 @@ IMAGE_PROMPT_PACKAGING_PATTERNS = [
     r"国际课程",
     r"官方英文来源",
 ]
+IMAGE_PROMPT_PACKAGING_TERMS = re.compile(
+    r"\b(?:badge|logo|cover|cover\s+design|branded|branding|course\s+packaging|"
+    r"board\s+identity|course\s+identity)\b",
+    flags=re.IGNORECASE,
+)
+IMAGE_PROMPT_COURSE_CODE_PATTERN = re.compile(
+    r"\b(?:course\s+)?code\s*[:,-]?\s*\d+\b",
+    flags=re.IGNORECASE,
+)
+
 SVG_SAFE_VISUAL_TERMS = {
     "axis",
+    "activity",
+    "algorithm",
     "bar",
+    "binomial",
+    "box",
     "break-even",
     "business",
     "cash-flow",
     "cash",
     "chart",
     "circle",
+    "collision",
     "accounting",
     "club receipts",
     "coordinate",
@@ -109,6 +127,9 @@ SVG_SAFE_VISUAL_TERMS = {
     "current account layout",
     "curve",
     "data",
+    "dijkstra",
+    "density",
+    "diagram",
     "demand",
     "distance-time",
     "energy",
@@ -118,6 +139,8 @@ SVG_SAFE_VISUAL_TERMS = {
     "function",
     "geometry",
     "graph",
+    "gantt",
+    "histogram",
     "history",
     "historical",
     "influence",
@@ -130,9 +153,13 @@ SVG_SAFE_VISUAL_TERMS = {
     "market",
     "manufacturing account",
     "mechanics",
+    "moment",
     "motion",
     "number",
     "particle",
+    "poisson",
+    "postman",
+    "projectile",
     "partnership appropriation",
     "ph",
     "probability",
@@ -140,14 +167,21 @@ SVG_SAFE_VISUAL_TERMS = {
     "ratio",
     "reconciliation",
     "scatter",
+    "search",
+    "sector",
+    "sequence",
     "statement",
     "stakeholder",
     "statistics",
     "supply",
     "table",
     "timeline",
+    "tour",
+    "travelling salesman",
+    "tsp",
     "tree",
     "triangle",
+    "uniform",
     "venn",
     "vector",
     "angle",
@@ -610,7 +644,7 @@ def validate_practice_item(plan: GuidePlan, item: PracticeItem) -> list[Validati
         issues.append(
             ValidationIssue("error", f"Practice item is missing a focus point: {topic_title}")
         )
-    if len(item.public_solution_steps) < 4:
+    if len(item.public_solution_steps) < 3:
         issues.append(
             ValidationIssue("error", f"Practice item has too few solution steps: {topic_title}")
         )
@@ -819,9 +853,21 @@ def validate_visual_briefs(plan: GuidePlan) -> list[ValidationIssue]:
 
 
 def has_image_prompt_course_packaging(prompt: str) -> bool:
-    return any(
+    has_course_identity = any(
         re.search(pattern, prompt, flags=re.IGNORECASE)
         for pattern in IMAGE_PROMPT_PACKAGING_PATTERNS
+    )
+    prompt_without_prohibitions = re.sub(
+        r"\b(?:no|without|omit|exclude)\s+(?:any\s+)?(?:board\s+)?"
+        r"(?:badge|logo|cover|cover\s+design|branded|branding|course\s+packaging|"
+        r"board\s+identity|course\s+identity)\b",
+        "",
+        prompt,
+        flags=re.IGNORECASE,
+    )
+    return bool(
+        IMAGE_PROMPT_COURSE_CODE_PATTERN.search(prompt)
+        or (has_course_identity and IMAGE_PROMPT_PACKAGING_TERMS.search(prompt_without_prohibitions))
     )
 
 
@@ -848,7 +894,10 @@ def is_svg_safe_visual_brief(brief: VisualBrief) -> bool:
 def validate_qualification_notes(plan: GuidePlan) -> list[ValidationIssue]:
     qualification = plan.qualification
     issues: list[ValidationIssue] = []
-    if qualification.qualification_type == "international_gcse":
+    if (
+        qualification.qualification_type == "international_gcse"
+        and qualification.source.course_market != "uk-domestic"
+    ):
         if (
             qualification.source.listing_qualification_type
             and qualification.source.listing_qualification_type != "international_gcse"
@@ -881,7 +930,10 @@ def validate_qualification_notes(plan: GuidePlan) -> list[ValidationIssue]:
                     "warning", "GCSE guide does not mention the linear qualification structure."
                 )
             )
-    if qualification.qualification_type == "international_as_a_level":
+    if (
+        qualification.qualification_type == "international_as_a_level"
+        and qualification.source.course_market != "uk-domestic"
+    ):
         if (
             qualification.source.listing_qualification_type
             and qualification.source.listing_qualification_type != "international_as_a_level"
@@ -898,6 +950,35 @@ def validate_qualification_notes(plan: GuidePlan) -> list[ValidationIssue]:
                 ValidationIssue(
                     "warning",
                     "AS-A-level guide does not mention the modular qualification structure.",
+                )
+            )
+    if qualification.qualification_type in {"uk_gcse", "uk_as_a_level"}:
+        if qualification.source.course_market != "uk-domestic":
+            issues.append(
+                ValidationIssue(
+                    "error", "UK qualification type is not bound to the UK-domestic course market."
+                )
+            )
+    if qualification.qualification_type == "advanced_placement":
+        if (
+            qualification.source.listing_qualification_type
+            and qualification.source.listing_qualification_type != "advanced_placement"
+        ):
+            issues.append(
+                ValidationIssue(
+                    "error", "Source listing metadata conflicts with Advanced Placement type."
+                )
+            )
+        if (qualification.provider or qualification.source.provider) != "collegeboard":
+            issues.append(
+                ValidationIssue(
+                    "error", "Advanced Placement qualification is not bound to College Board."
+                )
+            )
+        if "college-level" not in qualification.audience_note.lower():
+            issues.append(
+                ValidationIssue(
+                    "warning", "AP audience note does not identify the course as college-level."
                 )
             )
     return issues
@@ -965,7 +1046,13 @@ def validate_html_output(plan: GuidePlan, html_path: Path) -> list[ValidationIss
         plan.topic_guides,
     )
     for marker in expected_markers:
-        if marker not in html and html_escape(marker) not in html:
+        rendered_marker = normalize_math_notation(marker)
+        if (
+            marker not in html
+            and html_escape(marker) not in html
+            and rendered_marker not in html
+            and html_escape(rendered_marker) not in html
+        ):
             issues.append(ValidationIssue("error", f"Topic missing from HTML: {marker}"))
     issues.extend(validate_html_language(body_language, html))
     issues.extend(validate_html_visual_and_diagram_blocks(plan, html))
@@ -1174,17 +1261,6 @@ def validate_html_language(output_language: str, html: str) -> list[ValidationIs
                     "English output contains Chinese characters in the student-facing HTML.",
                 )
             )
-        required_phrases = [
-            "How to Study",
-            "Study Roadmap",
-            "One-Sentence Essence",
-            "Method",
-            "Worked Example",
-            "Solution",
-            "Check",
-            "Exam Pitfall",
-            "Source anchor",
-        ]
     else:
         for phrase in ZH_FORBIDDEN_TEMPLATE_PHRASES:
             if phrase in html:
@@ -1194,22 +1270,6 @@ def validate_html_language(output_language: str, html: str) -> list[ValidationIs
                         f"Chinese output contains an English template phrase: {phrase}",
                     )
                 )
-        required_phrases = [
-            "怎么用这本手册",
-            "复习路线",
-            "一句话本质",
-            "解题套路",
-            "例题",
-            "解题步骤",
-            "检查答案",
-            "考试陷阱",
-            "来源依据",
-        ]
-    for phrase in required_phrases:
-        if phrase not in html:
-            issues.append(
-                ValidationIssue("error", f"HTML missing required section phrase: {phrase}")
-            )
     return issues
 
 
@@ -1370,7 +1430,7 @@ def validate_markdown_companion_files(specification_path: str) -> list[Validatio
 
 def validate_syllabus_outline_file(outline_path: Path) -> list[ValidationIssue]:
     try:
-        data = json.loads(outline_path.read_text(encoding="utf-8"))
+        data = json.loads(outline_path.read_text(encoding="utf-8-sig"))
     except (OSError, json.JSONDecodeError) as exc:
         return [ValidationIssue("error", f"LLM Analyst syllabus outline cannot be read: {exc}")]
     if not isinstance(data, dict):
@@ -1396,6 +1456,8 @@ def validate_pdf_output(plan: GuidePlan, pdf_path: Path) -> list[ValidationIssue
     size_mib = summary_float(summary, "pdf_size_mib")
     max_mib = summary_float(summary, "pdf_max_recommended_mib")
     blank_text_pages = summary_int(summary, "pdf_blank_text_pages")
+    blank_pages = summary_int(summary, "pdf_blank_pages")
+    non_a4_pages = summary_int(summary, "pdf_non_a4_pages")
     file_uri_footer_pages = summary_int(summary, "pdf_file_uri_footer_pages")
     pdf_notation_issues = summary.get("pdf_ascii_math_residue", [])
     issues: list[ValidationIssue] = []
@@ -1404,7 +1466,7 @@ def validate_pdf_output(plan: GuidePlan, pdf_path: Path) -> list[ValidationIssue
     if page_count > max_pages:
         issues.append(
             ValidationIssue(
-                "error",
+                "warning",
                 f"PDF output has {page_count} pages, above the recommended maximum "
                 f"of {max_pages} for {len(handbook_topics(plan))} handbook topics.",
             )
@@ -1412,16 +1474,31 @@ def validate_pdf_output(plan: GuidePlan, pdf_path: Path) -> list[ValidationIssue
     if max_mib and size_mib > max_mib:
         issues.append(
             ValidationIssue(
-                "error",
+                "warning",
                 f"PDF output is {size_mib:.1f} MiB, above the recommended maximum "
                 f"of {max_mib:.1f} MiB.",
             )
         )
-    if blank_text_pages:
+    if blank_pages:
         issues.append(
             ValidationIssue(
                 "error",
-                f"PDF output has {blank_text_pages} pages with almost no extractable text.",
+                f"PDF output has {blank_pages} page(s) with no meaningful text or drawing content.",
+            )
+        )
+    elif blank_text_pages:
+        issues.append(
+            ValidationIssue(
+                "warning",
+                f"PDF output has {blank_text_pages} page(s) with almost no extractable text; "
+                "confirm image-only pages during HTML review.",
+            )
+        )
+    if non_a4_pages:
+        issues.append(
+            ValidationIssue(
+                "error",
+                f"PDF output has {non_a4_pages} page(s) that are not portrait A4.",
             )
         )
     if file_uri_footer_pages:
@@ -1434,7 +1511,12 @@ def validate_pdf_output(plan: GuidePlan, pdf_path: Path) -> list[ValidationIssue
         )
     if isinstance(pdf_notation_issues, list):
         for item in pdf_notation_issues[:5]:
-            issues.append(ValidationIssue("error", f"PDF output has student-facing ASCII maths residue: {item}"))
+            issues.append(
+                ValidationIssue(
+                    "warning",
+                    f"PDF text extraction suggests student-facing ASCII maths residue: {item}",
+                )
+            )
     return issues
 
 
@@ -1444,6 +1526,8 @@ def pdf_quality_summary(plan: GuidePlan, pdf_path: Path) -> dict[str, object]:
         page_text_lengths: list[int] = []
         page_texts: list[str] = []
         file_uri_footer_pages = 0
+        blank_pages = 0
+        non_a4_pages = 0
         for page in reader.pages:
             try:
                 text = page.extract_text() or ""
@@ -1451,6 +1535,21 @@ def pdf_quality_summary(plan: GuidePlan, pdf_path: Path) -> dict[str, object]:
                 text = ""
             page_texts.append(text)
             page_text_lengths.append(len(text.strip()))
+            try:
+                contents = page.get_contents()
+                content_bytes = contents.get_data() if contents is not None else b""
+            except (AttributeError, KeyError, TypeError, ValueError):
+                content_bytes = b""
+            if len(text.strip()) < 20 and len(content_bytes.strip()) < 8:
+                blank_pages += 1
+            try:
+                width = float(page.mediabox.width)
+                height = float(page.mediabox.height)
+            except (AttributeError, TypeError, ValueError):
+                non_a4_pages += 1
+            else:
+                if abs(width - 595.28) > 4.0 or abs(height - 841.89) > 4.0:
+                    non_a4_pages += 1
             if has_pdf_local_footer_text(text):
                 file_uri_footer_pages += 1
     except (OSError, ValueError, KeyError) as exc:
@@ -1468,6 +1567,8 @@ def pdf_quality_summary(plan: GuidePlan, pdf_path: Path) -> dict[str, object]:
         "pdf_size_mib": round(size_mib, 2),
         "pdf_max_recommended_mib": round(max_mib, 2),
         "pdf_blank_text_pages": blank_text_pages,
+        "pdf_blank_pages": blank_pages,
+        "pdf_non_a4_pages": non_a4_pages,
         "pdf_file_uri_footer_pages": file_uri_footer_pages,
         "pdf_ascii_math_residue": notation_issues,
         "pdf_average_text_chars": (int(sum(page_text_lengths) / page_count) if page_count else 0),

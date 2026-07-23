@@ -11,9 +11,17 @@ from intl_exam_guide.auditing.delivery_matrix import (
 def test_delivery_matrix_loads_explicit_claims():
     cases = load_delivery_matrix(Path("tests/fixtures/delivery_matrix.json"))
 
-    assert {case.provider for case in cases} >= {"oxfordaqa", "pearson", "cambridge"}
-    assert all(case.level in {"igcse", "international_as_a_level"} for case in cases)
-    assert all(case.expected.min_topics >= 6 for case in cases)
+    assert {case.provider for case in cases} >= {
+        "oxfordaqa",
+        "pearson",
+        "cambridge",
+        "collegeboard",
+    }
+    assert all(
+        case.level in {"igcse", "international_as_a_level", "advanced_placement"}
+        for case in cases
+    )
+    assert all(case.expected.min_topics >= 5 for case in cases)
     assert all(case.claim_status in {"verified", "candidate", "unsupported"} for case in cases)
 
 

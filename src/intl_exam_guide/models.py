@@ -36,6 +36,7 @@ class AssessmentPaper:
 class SourceRecord:
     provider: str
     page_url: str
+    course_market: str | None = None
     specification_url: str | None = None
     listing_subject: str | None = None
     listing_qualification_type: str | None = None
@@ -162,8 +163,10 @@ class TopicGuide:
     pitfall: str
     checklist: list[str]
     diagram_brief: str
+    explanations: list[str] = field(default_factory=list)
     source_snippets: list[SourceSnippet] = field(default_factory=list)
     mastery_summary: str = ""
+    source_points: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -179,6 +182,7 @@ class VisualBrief:
     source_snippets: list[SourceSnippet] = field(default_factory=list)
     llm_visual_spec: bool = False
     svg_fit: str = ""
+    semantic_contract: dict[str, object] = field(default_factory=dict)
 
 
 @dataclass
@@ -190,6 +194,7 @@ class GuidePlan:
     visual_briefs: list[VisualBrief]
     diagram_briefs: list[str]
     revision_stages: list[str]
+    content_provenance: str = "python-draft"
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -212,8 +217,10 @@ class GuidePlan:
                     pitfall=item["pitfall"],
                     checklist=item.get("checklist", []),
                     diagram_brief=item["diagram_brief"],
+                    explanations=item.get("explanations", []),
                     source_snippets=snippets(item.get("source_snippets")),
                     mastery_summary=str(item.get("mastery_summary", "") or ""),
+                    source_points=item.get("source_points", []),
                 )
                 for item in data.get("topic_guides", [])
             ],
@@ -245,9 +252,15 @@ class GuidePlan:
                     source_snippets=snippets(item.get("source_snippets")),
                     llm_visual_spec=bool(item.get("llm_visual_spec", False)),
                     svg_fit=str(item.get("svg_fit", "") or ""),
+                    semantic_contract=(
+                        dict(item.get("semantic_contract", {}))
+                        if isinstance(item.get("semantic_contract"), dict)
+                        else {}
+                    ),
                 )
                 for item in data.get("visual_briefs", [])
             ],
             diagram_briefs=data.get("diagram_briefs", []),
             revision_stages=data.get("revision_stages", []),
+            content_provenance=str(data.get("content_provenance", "python-draft") or "python-draft"),
         )

@@ -192,10 +192,7 @@ GENERIC_TERMS: tuple[TermRow, ...] = (
     ("Cause", "原因", "原因", "原因", "A factor that produces an effect."),
     ("Effect", "结果", "結果", "結果", "What happens because of a cause."),
     ("Risk", "风险", "風險", "リスク", "The possibility of an unwanted outcome."),
-    ("Opportunity cost", "机会成本", "機會成本", "機会費用", "The next best alternative given up."),
     ("Efficiency", "效率", "效率", "効率", "Using resources with minimal waste."),
-    ("Profit", "利润", "利潤", "利益", "Revenue minus costs."),
-    ("Demand", "需求", "需求", "需要", "The willingness and ability to buy."),
 )
 
 ECONOMICS_TERMS: tuple[TermRow, ...] = (
@@ -531,13 +528,10 @@ def professional_glossary_terms(
     qualification: Qualification,
     support_language: str,
 ) -> list[dict[str, str]]:
+    # The qualification's declared subject is authoritative. Topic titles can
+    # include cross-curricular appendices such as mathematical requirements.
     subject = " ".join(
-        [
-            qualification.subject_area or "",
-            qualification.title,
-            *qualification.summary,
-            " ".join(topic.title for topic in qualification.topics[:8]),
-        ]
+        [qualification.subject_area or "", qualification.title]
     ).lower()
     source_terms = glossary_bank_for_subject(subject)
     language_index = {"zh-CN": 1, "zh-TW": 2, "ja": 3}.get(support_language, 1)

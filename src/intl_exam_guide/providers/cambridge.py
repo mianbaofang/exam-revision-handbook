@@ -27,6 +27,7 @@ from intl_exam_guide.providers.common import (
 class CambridgeInternationalProvider(ExamBoardProvider):
     name = "cambridge"
     supported_levels = ("international_gcse", "international_as_a_level")
+    course_market = "international"
     igcse_subjects_url = (
         "https://www.cambridgeinternational.org/programmes-and-qualifications/"
         "cambridge-upper-secondary/cambridge-igcse/subjects"
@@ -119,6 +120,7 @@ class CambridgeInternationalProvider(ExamBoardProvider):
         source = SourceRecord(
             provider=self.name,
             page_url=page_url,
+            course_market=self.course_market,
             specification_url=specification_url,
             qualification_family=qualification_family(self.name, qtype),
             syllabus_year_range=year_range,
@@ -141,6 +143,45 @@ class CambridgeInternationalProvider(ExamBoardProvider):
             selected_exam_year=exam_year,
             route_tags=cambridge_route_tags(qtype),
         )
+
+
+class CambridgeUKProvider(CambridgeInternationalProvider):
+    """Cambridge International route selected by a UK-centre user.
+
+    Cambridge publishes this qualification family from the same official
+    Cambridge International catalogue for UK and international centres. The
+    market choice is still retained so the selected source route is auditable.
+    """
+
+    name = "cambridge_uk"
+    course_market = "uk-domestic"
+
+    def _qualification_from_parts(
+        self,
+        title: str,
+        page_url: str,
+        specification_url: str,
+        qtype: str,
+        year_range: str | None,
+        exam_year: str | None,
+    ) -> Qualification:
+        qualification = super()._qualification_from_parts(
+            title,
+            page_url,
+            specification_url,
+            qtype,
+            year_range,
+            exam_year,
+        )
+        family = qualification_family("cambridge", qtype)
+        qualification.qualification_family = family
+        qualification.source.qualification_family = family
+        qualification.audience_note = (
+            "Cambridge International qualifications use the official Cambridge syllabus selected "
+            "for this UK-centre request. Confirm centre availability, components, and exam series."
+        )
+        qualification.route_tags = [*qualification.route_tags, "uk-domestic"]
+        return qualification
 
 
 def select_syllabus_link(links: list[Link], exam_year: str | None) -> Link:

@@ -35,10 +35,9 @@ def _render_generated_infographic(
         if language == "en"
         else "用这张信息图解释或应用："
     )
-    prompt_label = "Generation prompt" if language == "en" else "生图提示词"
     visual_steps = (
         [
-            "Read the labels and locate the key relationship.",
+            "Inspect the visual evidence and locate the key relationship.",
             "Match the visual evidence to one precise syllabus term.",
             "Write the final answer in the command word's form.",
         ]

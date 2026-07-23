@@ -23,6 +23,7 @@ from intl_exam_guide.rendering.visual_assets import (
     has_renderable_infographic,
     is_raster_asset,
     load_visual_manifest,
+    visual_manifest_matches_plan as _visual_manifest_matches_plan,
     visual_asset_key_from_brief,
 )
 from intl_exam_guide.planning.language_policy import (
@@ -45,14 +46,39 @@ PRINT_RASTER_MIN_BYTES = 1_000_000
 VISUAL_ASSET_EXTENSIONS = {".jpg", ".jpeg", ".png", ".svg", ".webp"}
 
 
-def write_handbook_package(plan: GuidePlan, output_dir: Path) -> dict[str, object]:
-    """Write the modular handbook artifacts expected by the original Skill."""
+def write_handbook_package(
+    plan: GuidePlan,
+    output_dir: Path,
+    *,
+    refresh_visual_manifest: bool | None = None,
+) -> dict[str, object]:
+    """Write package artifacts without silently rebuilding an existing manifest."""
     sections_dir = output_dir / "sections"
     images_dir = output_dir / "images"
     sections_dir.mkdir(parents=True, exist_ok=True)
     images_dir.mkdir(parents=True, exist_ok=True)
 
-    image_files = write_visual_assets(plan, images_dir)
+    manifest_path = images_dir / "visual_manifest.json"
+    existing_entries = load_visual_manifest(images_dir)
+    if refresh_visual_manifest is None:
+        refresh_visual_manifest = not manifest_path.exists()
+    if refresh_visual_manifest:
+        image_files = write_visual_assets(
+            plan,
+            images_dir,
+            allow_manifest_rebuild=manifest_path.exists(),
+        )
+    else:
+        if not visual_manifest_matches_plan(plan, existing_entries):
+            raise RuntimeError(
+                "Existing visual_manifest.json does not match the current plan. "
+                "Refresh the visual manifest explicitly before rendering."
+            )
+        image_files = [
+            images_dir / str(entry["file"])
+            for entry in existing_entries
+            if entry.get("file") and (images_dir / str(entry["file"])).exists()
+        ]
     concept_jobs = write_concept_jobs(plan, output_dir)
     visual_assets = build_visual_asset_lookup(load_visual_manifest(images_dir))
     section_files = write_sections(plan, sections_dir, visual_assets)
@@ -140,7 +166,18 @@ def write_sections(
     return written
 
 
-def write_visual_assets(plan: GuidePlan, images_dir: Path) -> list[Path]:
+def write_visual_assets(
+    plan: GuidePlan,
+    images_dir: Path,
+    *,
+    allow_manifest_rebuild: bool = False,
+) -> list[Path]:
+    manifest_path = images_dir / "visual_manifest.json"
+    if manifest_path.exists() and not allow_manifest_rebuild:
+        raise RuntimeError(
+            "Refusing to rebuild an existing visual manifest. "
+            "Use pure rendering or explicitly start a new visual-manifest cycle."
+        )
     existing_entries = load_visual_manifest(images_dir)
     existing_by_key = build_visual_asset_lookup(existing_entries)
     manifest = []
@@ -148,22 +185,32 @@ def write_visual_assets(plan: GuidePlan, images_dir: Path) -> list[Path]:
     for index, brief in enumerate(plan.visual_briefs, start=1):
         visual_id = f"visual_{index:03d}"
         spec = VisualSpec.from_brief(brief, visual_id)
+        current_spec_hash = spec.spec_hash()
         key = visual_asset_key_from_brief(brief)
         previous = existing_by_key.get(key, {})
+        previous_spec_hash = str(previous.get("spec_hash") or "")
+        # Legacy manifests may not have a spec hash. Preserve their reviewed
+        # asset for compatibility, but never reuse a current v2 asset after
+        # its source-bound visual specification has changed.
+        same_spec = not previous_spec_hash or previous_spec_hash == current_spec_hash
+        previous_for_entry = previous if same_spec else {}
+        asset_changed = same_spec and _asset_bytes_changed(previous, images_dir)
         filename = None
         asset_status = "external-generation-required"
         review_status = "pending"
-        if has_renderable_infographic(previous, images_dir):
+        if same_spec and not asset_changed and has_renderable_infographic(previous, images_dir):
             filename = str(previous.get("file"))
             asset_status = str(previous.get("asset_status") or "generated")
             written.append(images_dir / filename)
             review_status = str(previous.get("review_status") or "reviewed")
         elif brief.complexity == "svg-basic":
-            previous_file = str(previous.get("file") or "")
-            previous_status = str(previous.get("asset_status") or "").lower()
-            previous_review = str(previous.get("review_status") or "").lower()
+            previous_file = str(previous_for_entry.get("file") or "")
+            previous_status = str(previous_for_entry.get("asset_status") or "").lower()
+            previous_review = str(previous_for_entry.get("review_status") or "").lower()
             if (
-                previous_status in {"reviewed-generated", "generated"}
+                same_spec
+                and not asset_changed
+                and previous_status in {"reviewed-generated", "generated"}
                 and previous_review in {"reviewed", "approved"}
                 and previous_file.lower().endswith(".svg")
                 and (images_dir / previous_file).exists()
@@ -184,7 +231,7 @@ def write_visual_assets(plan: GuidePlan, images_dir: Path) -> list[Path]:
                     filename = None
                     asset_status = "professional-diagram-required"
                     review_status = "pending"
-                    previous = {**previous, "kroki_error": str(exc)}
+                    previous_for_entry = {**previous_for_entry, "kroki_error": str(exc)}
             else:
                 filename = None
                 asset_status = "llm-svg-required"
@@ -194,13 +241,34 @@ def write_visual_assets(plan: GuidePlan, images_dir: Path) -> list[Path]:
             asset_status = "external-generation-required"
         asset_path = images_dir / filename if filename else None
         entry = {
-            **previous,
+            **previous_for_entry,
             **build_visual_manifest_entry_v2(
                 spec,
                 asset_path=asset_path,
                 review_status=review_status,
             ),
         }
+        if (
+            same_spec
+            and not asset_changed
+            and previous.get("spec_hash") == entry.get("spec_hash")
+        ):
+            previous_need = previous_for_entry.get("visual_need")
+            previous_decision = (
+                str(previous_need.get("reviewer_visual_decision") or "").lower()
+                if isinstance(previous_need, dict)
+                else ""
+            )
+            if previous_decision in {"reviewed", "approved"}:
+                entry["visual_need"] = previous_need
+            previous_review = str(previous_for_entry.get("review_status") or "").lower()
+            same_asset = (
+                bool(previous.get("file"))
+                and previous.get("file") == entry.get("file")
+                and (images_dir / str(entry.get("file"))).exists()
+            )
+            if same_asset and previous_review in {"reviewed", "approved"}:
+                entry["review_status"] = previous.get("review_status")
         entry["id"] = visual_id
         entry["key"] = key
         entry["file"] = filename
@@ -210,10 +278,10 @@ def write_visual_assets(plan: GuidePlan, images_dir: Path) -> list[Path]:
             if brief.image_provider == "kroki"
             else "external-infographic-required"
         )
-        if previous.get("generated_by"):
-            entry["generated_by"] = previous["generated_by"]
-        if previous.get("source_asset_file"):
-            entry["source_asset_file"] = previous["source_asset_file"]
+        if previous_for_entry.get("generated_by"):
+            entry["generated_by"] = previous_for_entry["generated_by"]
+        if previous_for_entry.get("source_asset_file"):
+            entry["source_asset_file"] = previous_for_entry["source_asset_file"]
         manifest.append(sync_visual_manifest_entry(entry))
 
     optimize_raster_assets_for_pdf(manifest, images_dir)
@@ -264,12 +332,46 @@ def refresh_manifest_asset_metadata(
 def cleanup_unreferenced_visual_assets(
     images_dir: Path,
     referenced_files: set[str],
+    *,
+    allow_delete: bool = False,
 ) -> None:
+    """Keep unreferenced review assets unless an explicit cleanup is requested."""
+    if not allow_delete:
+        return
     for path in images_dir.iterdir():
         if not path.is_file() or path.suffix.lower() not in VISUAL_ASSET_EXTENSIONS:
             continue
         if path.name not in referenced_files:
             path.unlink(missing_ok=True)
+
+
+def visual_manifest_matches_plan(
+    plan: GuidePlan,
+    entries: list[dict[str, object]],
+) -> bool:
+    """Compatibility export for callers that used the package helper."""
+
+    return _visual_manifest_matches_plan(plan, entries)
+
+
+def _asset_bytes_changed(previous: dict[str, object], images_dir: Path) -> bool:
+    filename = str(previous.get("file") or "")
+    if not filename:
+        return False
+    path = images_dir / filename
+    if not path.is_file():
+        return False
+    previous_asset = previous.get("asset")
+    previous_rendered = previous.get("rendered_asset")
+    previous_hash = ""
+    if isinstance(previous_rendered, dict):
+        previous_hash = str(previous_rendered.get("sha256") or "")
+    if not previous_hash and isinstance(previous_asset, dict):
+        previous_hash = str(previous_asset.get("sha256") or "")
+    if not previous_hash:
+        return False
+    current_hash = str(build_asset_metadata(path).get("sha256") or "")
+    return bool(current_hash and current_hash != previous_hash)
 
 
 def optimize_raster_assets_for_pdf(
@@ -285,6 +387,8 @@ def optimize_raster_assets_for_pdf(
     for entry in manifest:
         filename = str(entry.get("file") or "")
         if not is_raster_asset(filename):
+            continue
+        if entry.get("asset_optimized_for_pdf") is True:
             continue
         source = images_dir / filename
         if not source.exists():

@@ -277,12 +277,17 @@ def build_topic_guide(
             ]
     primary = visible_points[0]
     if output_language == "en":
-        level_hint = (
-            "AS-A-level unit" if qualification_type == "international_as_a_level" else "GCSE topic"
-        )
+        if qualification_type in {"international_as_a_level", "uk_as_a_level"}:
+            level_hint = "AS-A-level unit"
+        elif qualification_type == "advanced_placement":
+            level_hint = "AP course topic"
+        else:
+            level_hint = "GCSE topic"
     else:
         level_hint = (
-            "AS-A-level 单元" if qualification_type == "international_as_a_level" else "GCSE 知识点"
+            "AS-A-level 单元"
+            if qualification_type in {"international_as_a_level", "uk_as_a_level"}
+            else "GCSE 知识点"
         )
     essence, analogy, mini_worked_example, pitfall = styled_explanation(
         topic=topic,
@@ -337,12 +342,13 @@ def build_topic_guide(
         checklist=polish_texts(checklist, output_language),
         diagram_brief=polish_ai_language(diagram_brief, output_language),
         source_snippets=topic.source_snippets[:3],
+        source_points=points,
     )
 
 
 def build_revision_stages(qualification_type: str, output_language: str = "en") -> list[str]:
     if output_language == "zh-CN":
-        if qualification_type == "international_as_a_level":
+        if qualification_type in {"international_as_a_level", "uk_as_a_level"}:
             return [
                 "第 1 阶段 - 单元地图：先分清 AS、A2 或模块单元，再做综合题。",
                 "第 2 阶段 - 建构：把每个单元点整理成短讲解、一道应用题和一个易错点。",
@@ -353,11 +359,17 @@ def build_revision_stages(qualification_type: str, output_language: str = "en") 
             "第 2 阶段 - 建构：把每个大纲点整理成一页笔记、一道例题和一个易错点。",
             "第 3 阶段 - 测试：练习整卷混合题，复盘错题，并每周更新检查清单。",
         ]
-    if qualification_type == "international_as_a_level":
+    if qualification_type in {"international_as_a_level", "uk_as_a_level"}:
         return [
             "Stage 1 - Unit map: separate AS and A2 or modular units before mixing questions.",
             "Stage 2 - Build: turn each unit point into a short explanation, one application prompt, and one pitfall.",
             "Stage 3 - Test: practise by unit first, then combine units in mixed questions.",
+        ]
+    if qualification_type == "advanced_placement":
+        return [
+            "Stage 1 - Course framework: map the official AP units, skills, and weighting before mixing questions.",
+            "Stage 2 - Build: connect each course topic to the AP skills and evidence required by the exam.",
+            "Stage 3 - Test: practise the relevant AP question formats, review errors, and revisit weak units.",
         ]
     return [
         "Stage 1 - Linear map: learn the full-course topic structure before doing mixed papers.",

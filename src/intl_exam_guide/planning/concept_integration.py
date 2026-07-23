@@ -8,6 +8,7 @@ from typing import Any
 
 from intl_exam_guide.llm.provider import ConceptExplanation, ConceptJob
 from intl_exam_guide.models import GuidePlan, Topic, TopicGuide, VisualBrief
+from intl_exam_guide.planning.identifiers import normalized_identifier_text, stable_requirement_id
 from intl_exam_guide.planning.source_points import visible_source_points
 
 VISUAL_DECISION_ROUTES = {"text-ok", "exact-svg", "kroki-diagram", "external-infographic"}
@@ -35,7 +36,7 @@ def collect_concept_jobs(
         context_snippet = " | ".join(context_parts)[:200]
         concept_jobs.append(
             ConceptJob(
-                topic_id=f"topic_{hash(topic.title) % 10000:04d}",
+                topic_id=stable_requirement_id(topic),
                 topic_title=topic.title,
                 concept_term=concept_term,
                 subject=subject,
@@ -54,32 +55,29 @@ def apply_concept_explanations(
     """Apply provider-generated explanations to topic guides."""
 
     explanation_map: dict[str, ConceptExplanation] = {
-        exp.concept_term: exp for exp in explanations if exp.status == "generated"
+        normalized_identifier_text(exp.concept_term): exp
+        for exp in explanations
+        if exp.status == "generated"
     }
 
     updated_guides: list[TopicGuide] = []
 
     for guide in topic_guides:
-        matching_explanation = None
-        if guide.topic_title in explanation_map:
-            matching_explanation = explanation_map[guide.topic_title]
-        else:
-            for concept_term, explanation in explanation_map.items():
-                if (
-                    concept_term.lower() in guide.topic_title.lower()
-                    or guide.topic_title.lower() in concept_term.lower()
-                ):
-                    matching_explanation = explanation
-                    break
-                if concept_term.lower() in guide.essence.lower():
-                    matching_explanation = explanation
-                    break
-                for checklist_item in guide.checklist:
-                    if concept_term.lower() in checklist_item.lower():
-                        matching_explanation = explanation
-                        break
-                if matching_explanation:
-                    break
+        exact_keys = {
+            normalized_identifier_text(guide.topic_title),
+            *{
+                normalized_identifier_text(point)
+                for point in guide.source_points
+                if point.strip()
+            },
+            *{
+                normalized_identifier_text(snippet.text)
+                for snippet in guide.source_snippets
+                if snippet.text.strip()
+            },
+        }
+        matches = [explanation_map[key] for key in exact_keys if key in explanation_map]
+        matching_explanation = matches[0] if len(matches) == 1 else None
 
         if matching_explanation:
             updated_guides.append(
@@ -123,10 +121,13 @@ def concept_entry_from_explanation(
         return None
 
     entry: dict[str, object] = {
+        "topic_id": job.topic_id,
         "topic_title": job.topic_title,
         "concept_term": job.concept_term,
         "explanations": bullets[:4],
         "essence": explanation.explanation.strip(),
+        "content_provenance": "llm-authored",
+        "delivery_eligible": True,
     }
     if explanation.analogy:
         entry["analogy"] = explanation.analogy.strip()
@@ -142,6 +143,8 @@ def concept_entry_from_explanation(
         entry["visual_decision"] = fallback_visual_decision(
             "The Writer did not request a separate visual for this topic."
         )
+        entry["provenance"] = "python-fallback"
+        entry["delivery_eligible"] = False
     visual_spec = metadata.get("visual_spec")
     if isinstance(visual_spec, dict):
         entry["visual_spec"] = visual_spec
@@ -170,13 +173,31 @@ def apply_concept_entries(
     """Apply canonical concept explanation entries to a GuidePlan in place."""
 
     guides = {guide.topic_title: guide for guide in plan.topic_guides}
+    practice_items = {
+        item.topic_title: item for item in getattr(plan, "practice_items", [])
+    }
+    qualification = getattr(plan, "qualification", None)
+    qualification_topics = getattr(qualification, "topics", [])
+    topic_ids = {
+        stable_requirement_id(topic): topic.title for topic in qualification_topics
+    }
     imported = 0
     missing: list[str] = []
     for entry in entries:
         topic_title = str(entry.get("topic_title") or "")
+        topic_id = str(entry.get("topic_id") or "").strip()
         values = normalized_explanation_values(entry.get("explanations"))
         if not topic_title or len(values) < 2:
             continue
+        if topic_id:
+            expected_title = topic_ids.get(topic_id)
+            if expected_title is None:
+                missing.append(topic_title or topic_id)
+                continue
+            if topic_title and topic_title != expected_title:
+                missing.append(topic_title)
+                continue
+            topic_title = expected_title
         guide = guides.get(topic_title)
         if not guide:
             missing.append(topic_title)
@@ -186,16 +207,24 @@ def apply_concept_entries(
             guide.mastery_summary = mastery_summary
         if force or values:
             guide.checklist = values[:4]
+            guide.explanations = values[:4]
         apply_optional_text(entry, guide, "essence")
         apply_optional_text(entry, guide, "analogy")
         apply_optional_text(entry, guide, "mini_worked_example")
         apply_optional_text(entry, guide, "pitfall")
         guide.diagram_brief = build_clean_diagram_brief(topic_title, values)
         steps = entry.get("worked_solution_steps")
+        clean_steps: list[str] = []
         if isinstance(steps, list):
             clean_steps = [str(value).strip() for value in steps if str(value).strip()]
             if clean_steps:
                 guide.worked_solution_steps = clean_steps[:5]
+        practice_item = practice_items.get(topic_title)
+        worked_example = str(entry.get("mini_worked_example") or "").strip()
+        if practice_item and worked_example:
+            practice_item.question = worked_example
+        if practice_item and clean_steps:
+            practice_item.public_solution_steps = clean_steps[:5]
         validate_visual_decision_entry(entry, allow_fallback=True)
         visual = visual_brief_from_entry(plan, topic_title, entry)
         if visual:
@@ -307,6 +336,11 @@ def visual_brief_from_entry(
         source_snippets=(topic.source_snippets[:2] if topic else []),
         llm_visual_spec=True,
         svg_fit=str(visual_spec.get("svg_fit") or "").strip(),
+        semantic_contract=(
+            dict(visual_spec.get("semantic_contract", {}))
+            if isinstance(visual_spec.get("semantic_contract"), dict)
+            else {}
+        ),
     )
 
 

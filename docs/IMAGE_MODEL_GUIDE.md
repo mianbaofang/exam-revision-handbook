@@ -33,10 +33,11 @@ one of four recommended routes:
 - `external-infographic`: the visual becomes a source-bound external infographic
   job until a callable route or reviewed imported asset exists.
 
-The base handbook pipeline does not require an image model. Do not ask users to
-choose an image model before the base guide exists. After the guide has a visual
-manifest, report the complex visual IDs and use only a route the user actually
-has:
+The base handbook pipeline does not require an image model, but the first
+preflight exchange must ask whether the user can provide or enable an external image-generation Skill or tool that is callable. This is a capability gate, not a model
+menu: do not choose a provider or silently default to local image generation.
+After the guide has a visual manifest, report the complex visual IDs and use
+only the route the user confirmed:
 
 - installed image-generation Skill;
 - project script;
@@ -88,7 +89,9 @@ official specification
   -> LLM records visual_decision: text-ok / exact-svg / kroki-diagram / external-infographic
   -> Python records visual manifest and pending jobs
   -> reviewed exact SVG or reviewed raster asset is imported
-  -> Python renders HTML/PDF guide
+  -> Python renders HTML only
+  -> LLM personally reviews and repairs the current HTML until it passes
+  -> PDF export runs only after hash-bound LLM HTML approval
 ```
 
 Recommended interface:
@@ -153,8 +156,11 @@ python scripts/import_infographic_assets.py ./outputs/chemistry-9202 \
 
 The script copies matching raster images into `images/`, updates
 `images/visual_manifest.json`, replaces pending infographic slots that share the
-same visual ID, and marks imported entries as generated. After a successful
-import it prints the exact handbook review command to run:
+same visual ID, and marks imported entries as generated. Importing or replacing
+an asset resets that entry's visual-level LLM decision to `pending`; the file's
+asset `review_status` is separate. The import rerender uses the existing
+manifest only and never rebuilds it. After a successful import it prints the
+exact handbook review command to run:
 
 ```bash
 python -m intl_exam_guide review --out ./outputs/chemistry-9202
@@ -198,6 +204,13 @@ accurate diagrams or icons, and a small Quick Q&A or practice box. Keep the
 design printable and student-friendly. Do not add institutional logos, exam
 board branding, course-cover headers, watermarks, new syllabus facts, named
 examples, equations, or exam claims beyond the source point.
+
+Visual text is allowed: labels, callouts, legends, axes, captions, and short
+example annotations may be included when they are accurate, legible, and
+source-bound. The Skill does not require text-free images. Visual selection is
+made independently for each final topic; there is no one-image-per-subject
+quota. An external image may be a realistic/reference/example image when that
+improves the topic's learning claim, not only a formal diagram.
 ```
 
 ## 中文
@@ -220,7 +233,7 @@ examples, equations, or exam claims beyond the source point.
 - `kroki-diagram`：适合专业正式图表，生成后也必须复核。
 - `external-infographic`：进入外部信息图任务，直到有可调用路线或已复核导入资产。
 
-基础手册生成不要求用户先提供生图服务。不要把模型列表做成生成前菜单。基础手册有 visual manifest 后，再报告复杂视觉 ID，并只使用用户真实拥有的路线：已安装生图 Skill、项目脚本、已复核图片目录，或带模型名、接口 URL、API key 环境变量名的 `custom` 配置。不要在聊天、文档、截图或仓库里暴露真实 key。
+第一次预检必须先询问用户是否能提供或启用本次可调用的外部生图 Skill 或工具；在得到明确回答前，不得下载来源、写手册或默认使用本地生图。不要把模型列表做成生成前菜单。完成每个 topic 的 `visual_decision` 后，再报告复杂视觉 ID，并只使用用户确认且实际可调用的路线：已安装生图 Skill、项目脚本、已复核图片目录，或带模型名、接口 URL、API key 环境变量名的 `custom` 配置。不要在聊天、文档、截图或仓库里暴露真实 key。
 
 ## Exact SVG 复核规则
 

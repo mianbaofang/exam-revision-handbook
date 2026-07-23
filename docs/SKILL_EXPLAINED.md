@@ -1,4 +1,4 @@
-﻿# Skill Explained / Skill 图解说明
+# Skill Explained / Skill 图解说明
 
 <p align="center">
   <img src="assets/skill-system.svg" alt="Skill system" width="100%">
@@ -6,104 +6,105 @@
 
 ## English
 
-The repository includes an AI Agent skill wrapper in `skill/`. The skill is designed
-with progressive disclosure:
+The authoritative Agent entry is `skill/SKILL.md`. Its references provide the
+handbook contract and provider notes:
 
-- `skill/SKILL.md` stays short and tells an agent when to use the tool.
-- `skill/references/revision_guide_spec.md` stores the handbook output
-  contract inherited from the original revision-guide Skill.
-- `skill/references/oxfordaqa.md` stores AQA-specific provider notes; Edexcel
-  and CAIE use the shared provider workflow and candidate-selection gates.
-- The Python package performs deterministic work: discovery, PDF download,
-  page-text extraction, JSON/schema validation, artifact management, rendering,
-  packaging, and review checks. The host LLM/Agent writes the syllabus outline,
-  concept explanations, practice judgment, visual specs, and final review.
+- `skill/references/revision_guide_spec.md`: artifact and delivery contract;
+- `skill/references/oxfordaqa.md`: AQA-specific source notes;
+- `skill/references/collegeboard-ap.md`: AP directory, CED, and effective-version rules;
+- Edexcel and CAIE use the shared provider and candidate-confirmation workflow.
 
-This keeps the agent from re-writing fragile scraping or rendering code every
-time. The agent reads the skill, runs the CLI, and inspects `validation.json`
-before reporting success.
+The host LLM owns syllabus interpretation, teaching content, worked examples,
+per-topic visual judgment, and final visible review. Python performs mechanical
+work: source acquisition, evidence extraction, artifact validation, rendering,
+hashing, and enforcement of the recorded LLM decision.
 
 ## Skill Workflow
 
 ```mermaid
 flowchart LR
-  A["User asks for an International GCSE or International AS-A-level guide"] --> B["AI Agent loads skill/SKILL.md"]
-  B --> C["Confirm subject/provider, required exam year, term-support language, and explanation style"]
-  C --> D["Read handbook spec and provider reference"]
-  D --> E["Run intl_exam_guide generate"]
-  E --> F["Inspect run-options.json, handbook-package.json, and validation.json"]
-  F --> G{"Any error?"}
-  G -->|yes| H["Report exact failure and stop"]
-  G -->|no| I["Present HTML/PDF, sections, images, and source notes"]
+  A["User requests a supported handbook"] --> B["Load skill/SKILL.md"]
+  B --> C["Blocking preflight: confirm external image capability and run choices"]
+  C --> D["Extract official Markdown and page evidence"]
+  D --> E["LLM Analyst writes atomic syllabus outline"]
+  E --> F["LLM Writer writes teaching content and per-topic visual decisions"]
+  F --> G["Render HTML only"]
+  G --> H["LLM reviews every topic and rendered visual"]
+  H -->|"issues"| F
+  H -->|"approved exact HTML hash"| I["Render and validate PDF candidate"]
+  I --> J["Write current-pdf record and controlled delivery copy"]
 ```
 
-## Quality Gates
+The initial image question is about capability, not model preference: **Can the
+user provide or enable a callable external image-generation Skill or tool for
+this run?** The Agent must wait for the answer and must not silently default to
+local generation. Actual visual jobs are still chosen later, independently for
+each final topic.
 
-The skill treats a guide as incomplete unless all of these are true:
+## Completion Gates
 
-1. The source page URL is present.
-2. The specification PDF URL is present.
-3. The PDF SHA-256 hash is recorded.
-4. Topics were extracted.
-5. Every topic has an authored guide block.
-6. Every topic has practice cards with command words, solution steps, and answer checkpoints.
-7. HTML exists and contains required guide sections.
-8. `sections/` and `images/` exist.
-9. `run-options.json` records the confirmed subject, term-support language, optional
-   image-provider metadata, and explanation style. The user is not asked to
-   choose an image model before the base handbook exists.
-10. PDF exists unless `--skip-pdf` was intentionally used.
-11. `validation.json.review_summary` shows topic, diagram, practice-card, and
-   source-snippet coverage.
+A handbook is not final unless all applicable gates pass:
 
-For installation checks or CI demonstrations, run:
+1. Official source identity is verified, or an unsupported manual import is explicitly described as experimental.
+2. The LLM Analyst reads both Markdown structure and page-level evidence and writes source-backed, independently assessable syllabus points.
+3. The LLM Writer supplies teaching content, worked answers, `mastery_summary`, and one `visual_decision` for every final topic.
+4. Rendered visuals are real reviewed assets; pending complex visuals remain draft work.
+5. The current HTML exists and no PDF has been generated for that HTML before approval.
+6. The active LLM personally reviews every final topic, worked example, answer, source anchor, and rendered visual, repairing and rerendering until no fixable issue remains.
+7. LLM-authored `review-ledger/` shards cover every current Topic/Visual ID, record visible evidence locations, and bind to the render snapshot and HTML SHA-256; compact `agent-product-review.json` uses `v0.7-llm-html-review-ledger` and references the ledger hash.
+8. `python -m intl_exam_guide export-pdf --out <output-dir>` promotes only a technically valid candidate and writes `current-pdf.json` after approval.
+
+`validation.json`, `quality-inspection.json`, and `final-review-packet.json` are
+supporting diagnostics. They cannot approve content or replace visible review.
+
+For an installation smoke check only:
 
 ```bash
 python -m intl_exam_guide demo --out ./outputs/demo-science --language en --image-provider prompt-queue --explanation-style friendly --skip-pdf
 ```
 
+The demo stops at HTML and is not a teaching-grade handbook.
+
 ## 中文
 
-仓库内置 `skill/` 目录，用来作为 AI Agent skill。它遵循 progressive disclosure：
+Agent 的唯一权威入口是 `skill/SKILL.md`。相关 reference 分别保存手册交付合同和来源说明：
 
-- `skill/SKILL.md` 保持简洁，只告诉 agent 什么时候使用、怎么运行。
-- `skill/references/revision_guide_spec.md` 存放从原复习册 Skill 继承下来的
-  手册交付标准。
-- `skill/references/oxfordaqa.md` 存放 AQA 路线说明；Edexcel 和 CAIE 走共享
-  provider 流程与候选确认门槛。
-- Python 包负责稳定且容易出错的部分：发现页面、下载 PDF、解析、规划、
-  图文需求分析、渲染、打包、校验。
+- `skill/references/revision_guide_spec.md`：产物与交付合同；
+- `skill/references/oxfordaqa.md`：AQA 来源说明；
+- `skill/references/collegeboard-ap.md`：AP 课程目录、CED 与生效版本规则；
+- Edexcel 和 CAIE 使用共享 provider 与候选确认流程。
 
-这样做的好处是：agent 不需要每次重新写爬取和渲染代码；Python 只做下载、文本抽取、JSON/schema 校验、渲染、打包和复查检查。大纲 outline、概念解释、例题判断、视觉 spec 和最终产品复查都由宿主 LLM/Agent 完成。
+宿主 LLM 负责解释大纲、编写教学内容与例题、逐 topic 做配图判断，并亲自完成最终可视审查。Python 只负责抓取来源、提取证据、校验产物结构、渲染、计算哈希和执行已记录的 LLM 决定。
 
 ## Skill 执行流程
 
 ```mermaid
 flowchart LR
-  A["用户要求生成 International GCSE 或 International AS-A-level 指南"] --> B["AI Agent 加载 skill/SKILL.md"]
-  B --> C["确认考试局、科目、必要考试年份、术语辅助语言和讲解风格"]
-  C --> D["读取手册规范和 provider reference"]
-  D --> E["运行 intl_exam_guide generate"]
-  E --> F["检查 run-options.json、handbook-package.json 与 validation.json"]
-  F --> G{"是否有 error?"}
-  G -->|是| H["报告具体失败原因并停止"]
-  G -->|否| I["交付 HTML/PDF、sections、images 与来源说明"]
+  A["用户要求生成受支持课程手册"] --> B["加载 skill/SKILL.md"]
+  B --> C["阻塞式预检：确认外部生图能力与本次选项"]
+  C --> D["提取官方 Markdown 与逐页证据"]
+  D --> E["LLM Analyst 写原子化大纲"]
+  E --> F["LLM Writer 写教学内容和逐 topic 配图决策"]
+  F --> G["只渲染 HTML"]
+  G --> H["LLM 审查每个 topic 和实际渲染视觉"]
+  H -->|"发现问题"| F
+  H -->|"批准当前 HTML 哈希"| I["生成并技术校验 PDF 候选文件"]
+  I --> J["交付 PDF 与事实记录"]
 ```
 
-## 质量门槛
+第一次生图问题只确认“有没有可调用能力”，不是让用户先选具体模型。Agent 必须等待明确回答，不能默认使用本地生图。实际需要哪些视觉，要等 Writer 完成每个最终 topic 的独立判断后再确定。
 
-除非满足以下条件，否则 skill 不应把指南当作完成品：
+## 完成门槛
 
-1. 有 source page URL。
-2. 有 specification PDF URL。
-3. 记录了 PDF SHA-256。
-4. 成功抽取 topics。
-5. 每个 topic 都有 guide block。
-6. 每个 topic 都有练习卡片，并包含指令词、解题步骤和答案检查点。
-7. HTML 存在，并包含必要 sections。
-8. `sections/` 和 `images/` 存在。
-9. `run-options.json` 记录用户确认的科目、术语辅助语言、讲解风格，以及可选的
-   生图 provider 元数据；基础手册生成前不要求用户选择生图模型。
-10. 除非明确使用 `--skip-pdf`，否则 PDF 必须存在。
-11. `validation.json.review_summary` 显示 topic、diagram、practice card 和
-   source snippet 覆盖度。
+除非所有适用门槛都满足，否则手册不能称为最终成品：
+
+1. 官方来源身份已经核实；不受支持的手动导入必须明确标为实验性路径。
+2. LLM Analyst 同时读取 Markdown 结构和逐页证据，写出有来源、可独立考查的考点。
+3. LLM Writer 为每个最终 topic 写完整教学内容、例题答案、`mastery_summary` 和一份 `visual_decision`。
+4. 实际渲染视觉必须是已复核资产；复杂视觉仍 pending 时只能算 draft。
+5. 当前 HTML 已生成，而且在它通过审查前没有提前生成 PDF。
+6. 当前 LLM 逐一审查所有最终 topic、例题、答案、来源锚点和实际渲染视觉；发现问题后重写、重渲染、重新完整查看，直到没有可修复问题。
+7. LLM 编写的 `review-ledger/` 分片逐项覆盖当前 Topic/Visual ID，记录可见审查位置，并绑定渲染快照与 HTML SHA-256；精简的 `agent-product-review.json` 使用 `v0.7-llm-html-review-ledger` 并引用账本哈希。
+8. 审查通过后，`python -m intl_exam_guide export-pdf --out <output-dir>` 只提升通过技术检查的候选 PDF，并写入 `current-pdf.json`。
+
+`validation.json`、`quality-inspection.json` 和 `final-review-packet.json` 只是辅助诊断，不能代替 LLM 的可视审查，也不能自动批准手册。

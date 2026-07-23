@@ -1,494 +1,112 @@
-const { Stage, Sprite, useTime, Easing, interpolate, clamp } = window;
-
-const boardData = [
-  {
-    name: "AQA",
-    note: "Reads the official catalogue and public specification",
-    status: "Official source",
-    accent: "#d89b33",
-  },
-  {
-    name: "Edexcel",
-    note: "Matches official subject pages or specification PDFs",
-    status: "Candidate check",
-    accent: "#be4750",
-  },
-  {
-    name: "CAIE",
-    note: "Matches the subject index and confirms the exam year",
-    status: "Year check",
-    accent: "#4fa394",
-  },
-];
-
-const providerData = [
-  {
-    tag: "01",
-    title: "AQA",
-    accent: "#d89b33",
-    points: ["Discover courses from the official catalogue", "Read public specification PDFs", "Turn syllabus detail into CourseSpec"],
-  },
-  {
-    tag: "02",
-    title: "Edexcel",
-    accent: "#be4750",
-    points: ["Match official candidates by subject name", "Accept official pages or PDFs", "Ask the user when candidates are not unique"],
-  },
-  {
-    tag: "03",
-    title: "CAIE",
-    accent: "#4fa394",
-    points: ["Match candidates from the official subject index", "Confirm exam year on multi-year pages", "Stop when the year is unclear"],
-  },
-];
+const { Stage, Sprite, useTime, Easing, clamp } = window;
 
 const TOTAL_DURATION = 48;
 
-function useSceneMotion(start, end, inY = 36) {
+const boards = [
+  { name: "AQA", note: "International and UK routes", level: "IGCSE · AS · A-Level", accent: "#1666b1" },
+  { name: "Edexcel", note: "Pearson International and UK", level: "IGCSE · AS · A-Level", accent: "#007d86" },
+  { name: "CAIE", note: "Official Cambridge catalogue", level: "IGCSE · AS · A-Level", accent: "#c8323f" },
+  { name: "College Board AP", note: "Official Course and Exam Description", level: "AP", accent: "#2255a4" },
+];
+
+const sampleBooks = [
+  {
+    title: "OxfordAQA IGCSE Biology",
+    note: "Photosynthesis · carbon cycle · thermoregulation",
+    accent: "#1666b1",
+    pages: ["../v060-oxfordaqa-biology-p12.jpg", "../v060-oxfordaqa-biology-p21.jpg", "../v060-oxfordaqa-biology-p28.jpg"],
+  },
+  {
+    title: "CAIE AS Physics",
+    note: "Projectiles · stationary waves · internal resistance",
+    accent: "#c8323f",
+    pages: ["../v060-caie-physics-p10.jpg", "../v060-caie-physics-p25.jpg", "../v060-caie-physics-p30.jpg"],
+  },
+  {
+    title: "College Board AP Chemistry",
+    note: "PES · titration · galvanic cells",
+    accent: "#2255a4",
+    pages: ["../v060-ap-chemistry-p11.jpg", "../v060-ap-chemistry-p43.jpg", "../v060-ap-chemistry-p91.jpg"],
+  },
+  {
+    title: "Edexcel IAL Mathematics",
+    note: "Exponential models · mechanics · probability",
+    accent: "#007d86",
+    pages: ["../v060-edexcel-mathematics-p52.jpg", "../v060-edexcel-mathematics-p74.jpg", "../v060-edexcel-mathematics-p99.jpg"],
+  },
+];
+
+function useSceneMotion(start, end, lift = 30) {
   const time = useTime();
-  const enter = clamp((time - start) / 0.8, 0, 1);
-  const exit = clamp((end - time) / 0.55, 0, 1);
+  const enter = clamp((time - start) / 0.68, 0, 1);
+  const exit = clamp((end - time) / 0.5, 0, 1);
   const opacity = Math.min(Easing.easeOutCubic(enter), Easing.easeOutCubic(exit));
-  const y = (1 - Easing.easeOutCubic(enter)) * inY + (1 - Easing.easeOutCubic(exit)) * -18;
+  const y = (1 - Easing.easeOutCubic(enter)) * lift - (1 - Easing.easeOutCubic(exit)) * 14;
   return { opacity, transform: `translateY(${y}px)` };
 }
 
-function VideoLabel() {
+function Scene({ start, end, className = "", children }) {
+  return <Sprite start={start} end={end} keepMounted={true}><section className={`scene ${className}`} style={useSceneMotion(start, end)}>{children}</section></Sprite>;
+}
+
+function Stagger({ start, index, children }) {
   const time = useTime();
-  React.useEffect(() => {
-    const label = `${Math.floor(time).toString().padStart(2, "0")}s`;
-    document.documentElement.setAttribute("data-screen-label", label);
-  }, [Math.floor(time)]);
-  return null;
+  const p = clamp((time - start - index * 0.12) / 0.55, 0, 1);
+  return <div style={{ opacity: p, transform: `translateY(${(1 - Easing.easeOutCubic(p)) * 34}px)` }}>{children}</div>;
 }
 
 function Background() {
-  const time = useTime();
-  const drift = interpolate([0, TOTAL_DURATION], [0, -150], Easing.linear)(time);
-  return (
-    <div className="stage">
-      <div className="grid-lines" style={{ transform: `translate3d(${drift}px, ${drift * 0.35}px, 0)` }}></div>
-      <div className="noise"></div>
-    </div>
-  );
-}
-
-function SceneFrame({ start, end, children }) {
-  const motion = useSceneMotion(start, end);
-  return (
-    <Sprite start={start} end={end} keepMounted={true}>
-      <section className="scene" style={motion}>
-        {children}
-      </section>
-    </Sprite>
-  );
+  return <div className="stage-bg"><div className="color-rail">{Array.from({ length: 8 }, (_, index) => <i key={index}></i>)}</div></div>;
 }
 
 function IntroScene() {
-  const time = useTime();
-  const cardLift = (index) => {
-    const p = clamp((time - 1.2 - index * 0.22) / 0.75, 0, 1);
-    return {
-      opacity: Easing.easeOutCubic(p),
-      transform: `translateY(${(1 - Easing.easeOutBack(p)) * 72}px)`,
-      "--accent": boardData[index].accent,
-    };
-  };
-  const orbit = interpolate([0, 5.0], [0, 38], Easing.easeInOutSine)(time);
-  return (
-    <SceneFrame start={0} end={5.2}>
-      <div className="orbit" style={{ transform: `rotate(${orbit}deg) scale(${1 + Math.sin(time * 0.7) * 0.025})` }}></div>
-      <div className="kicker">Revision Handbook Skill</div>
-      <h1 className="headline">Turn official syllabuses into revision handbooks students can actually use.</h1>
-      <p className="lead">
-        For AQA, Edexcel, and CAIE: fetch the official syllabus first, then let agents split writing, visuals, and final review.
-      </p>
-      <div className="hero-board-row">
-        {boardData.map((board, index) => (
-          <article className="board-card" key={board.name} style={cardLift(index)}>
-            <strong>{board.name}</strong>
-            <span>{board.note}</span>
-            <div className="status">{board.status}</div>
-          </article>
-        ))}
-      </div>
-    </SceneFrame>
-  );
-}
-
-function OriginScene() {
-  const time = useTime();
-  const notes = [
-    ["Real origin", "A student moved from Chinese-medium classes into English-medium international courses before the exam year."],
-    ["What AI helps with", "It does not study for the child; it turns topics, examples, visuals, and checkpoints into readable pages."],
-    ["Open-source goal", "Package the method as a Skill so other families and agents can generate subject handbooks too."],
-  ];
-  return (
-    <SceneFrame start={4.8} end={9.7}>
-      <div className="kicker">Why This Skill Exists</div>
-      <h2 className="headline provider-headline">It started by making exam revision feel smaller for one real student.</h2>
-      <div className="origin-layout">
-        <div className="quote-panel">
-          <strong>Not replacing study,</strong>
-          <span>but reducing the noise around it.</span>
-        </div>
-        <div className="story-points">
-          {notes.map((note, index) => {
-            const p = clamp((time - 5.4 - index * 0.22) / 0.65, 0, 1);
-            return (
-              <article key={note[0]} style={{ opacity: p, transform: `translateY(${(1 - p) * 34}px)` }}>
-                <b>{note[0]}</b>
-                <p>{note[1]}</p>
-              </article>
-            );
-          })}
-        </div>
-      </div>
-    </SceneFrame>
-  );
-}
-
-function UsageScene() {
-  const time = useTime();
-  const steps = [
-    ["01", "Syllabus analyst agent", "Fetch official pages/PDFs and split CourseSpec into LearningUnits."],
-    ["02", "Handbook writer agent", "Write explanations, examples, glossary support, and visual needs."],
-    ["03", "Visual routing agent", "Choose exact SVG, Kroki, or external infographic jobs; complex visuals cannot be replaced by drafts."],
-    ["04", "Independent review agent", "Read final pages and sampled PDFs against the outline; fix what can be fixed before handoff."],
-  ];
-  return (
-    <SceneFrame start={9.4} end={14.4}>
-      <div className="kicker">Multi-Agent Collaboration</div>
-      <h2 className="headline route-headline">Not one model writing straight through: separate roles write, route, and review.</h2>
-      <div className="usage-steps">
-        {steps.map((step, index) => {
-          const p = clamp((time - 10.0 - index * 0.16) / 0.58, 0, 1);
-          return (
-            <article key={step[0]} style={{ opacity: p, transform: `translateY(${(1 - Easing.easeOutCubic(p)) * 48}px)` }}>
-              <div>{step[0]}</div>
-              <h3>{step[1]}</h3>
-              <p>{step[2]}</p>
-            </article>
-          );
-        })}
-      </div>
-    </SceneFrame>
-  );
+  return <Scene start={0} end={5.6}><div className="kicker">Open-source revision handbook Skill</div><h1 className="headline">Turn official course requirements into handbooks students can really learn from.</h1><p className="lead">IGCSE, AS, A-Level, and AP with explicit boundaries for sources, writing, visuals, review, and PDF delivery.</p><div className="board-strip">{boards.map((board, index) => <Stagger start={0.9} index={index} key={board.name}><article className="board-tile" style={{ "--accent": board.accent }}><strong>{board.name}</strong><span>{board.note}</span><small>{board.level}</small></article></Stagger>)}</div></Scene>;
 }
 
 function PreflightScene() {
-  const time = useTime();
-  const sourceT = clamp((time - 14.9) / 3.2, 0, 1);
-  const rows = [
-    ["Board and subject", "AQA / Edexcel / CAIE, or an official page/PDF"],
-    ["Exam year", "Cambridge multi-year pages must be confirmed first"],
-    ["Term-support language", "Chinese, Traditional Chinese, Japanese, or another glossary language"],
-    ["Explanation style", "formal, friendly, life, story, detective, or adventure"],
-    ["Infographic capability", "Ask whether a Skill/API/asset folder exists; continue as draft if not"],
-  ];
-  return (
-    <SceneFrame start={14.1} end={19.1}>
-      <div className="kicker">Confirm first, then generate</div>
-      <h2 className="headline">Ask the first-run questions before the handbook starts.</h2>
-      <div className="choice-grid">
-        <div className="control-panel">
-          {rows.map((row, index) => {
-            const p = clamp((time - 14.7 - index * 0.18) / 0.55, 0, 1);
-            return (
-              <div className="choice-row" key={row[0]} style={{ opacity: p, transform: `translateX(${(1 - p) * -34}px)` }}>
-                <b>{row[0]}</b>
-                <span>{row[1]}</span>
-              </div>
-            );
-          })}
-        </div>
-        <div className="source-stack">
-          <div className="source-card" style={{ left: 34, top: 90, transform: `rotate(${-6 + sourceT * 3}deg) translateY(${(1 - sourceT) * 70}px)` }}>
-            <h3>Official subject page</h3>
-            <div className="fake-lines"><i></i><i></i><i></i><i></i></div>
-          </div>
-          <div className="source-card" style={{ left: 124, top: 44, transform: `rotate(${4 - sourceT * 2}deg) translateY(${(1 - sourceT) * 42}px)` }}>
-            <h3>Specification PDF</h3>
-            <div className="fake-lines"><i></i><i></i><i></i><i></i></div>
-          </div>
-          <div className="source-card" style={{ left: 214, top: 146, transform: `rotate(${-1 + sourceT * 1.5}deg) translateY(${(1 - sourceT) * 90}px)` }}>
-            <h3>Source checks and exam metadata</h3>
-            <div className="fake-lines"><i></i><i></i><i></i><i></i></div>
-          </div>
-        </div>
-      </div>
-    </SceneFrame>
-  );
+  const rows = [["01", "External image capability", "Confirm a callable route; never default to local generation"], ["02", "Board and level", "IGCSE / AS / A-Level / AP"], ["03", "Course market", "AQA, Edexcel, and CAIE require International or UK"], ["04", "Subject, year, and language", "Stop for user choice when sources are ambiguous"], ["05", "Workflow and output", "Single-host role passes or user-requested multi-agent mode"]];
+  return <Scene start={5.3} end={11.0}><div className="kicker">Hard first-turn preflight</div><h2 className="headline compact">The first turn collects every choice. Until then, nothing downstream may run.</h2><div className="preflight-layout"><div className="preflight-form">{rows.map((row, index) => <Stagger start={5.9} index={index} key={row[0]}><div className="form-row"><b>{row[0]}</b><strong>{row[1]}</strong><span>{row[2]}</span></div></Stagger>)}</div><div className="gate-panel"><div className="gate-number">01</div><h3>Lock the visual route first</h3><p>Text inside teaching visuals is allowed. What is blocked is incorrect, unreadable, unsourced, or unnecessary text and any image route that has not actually been verified.</p><div className="lock-state">PRECHECK INCOMPLETE → DOWNLOAD / WRITING / RENDER BLOCKED</div></div></div></Scene>;
 }
 
 function ProviderScene() {
-  const time = useTime();
-  return (
-    <SceneFrame start={18.8} end={23.8}>
-      <div className="kicker">How The Three Boards Are Supported</div>
-      <h2 className="headline provider-headline">Automatically fetch three-board syllabuses without mixing sources.</h2>
-      <p className="lead provider-lead">AQA, Edexcel, and CAIE publish syllabuses in different shapes, so the workflow parses each official source first, then normalizes it into a reviewable course structure.</p>
-      <div className="provider-system">
-        {providerData.map((provider, index) => {
-          const p = clamp((time - 19.2 - index * 0.28) / 0.75, 0, 1);
-          return (
-            <article className="provider-column" key={provider.title} style={{ "--accent": provider.accent, opacity: p, transform: `translateY(${(1 - Easing.easeOutBack(p)) * 86}px)` }}>
-              <div className="tag">{provider.tag}</div>
-              <h3>{provider.title}</h3>
-              <ul>
-                {provider.points.map((point) => <li key={point}>{point}</li>)}
-              </ul>
-            </article>
-          );
-        })}
-      </div>
-    </SceneFrame>
-  );
+  const data = [["AQA", "OxfordAQA / AQA", "International uses OxfordAQA; UK domestic uses the official AQA catalogue.", ["IGCSE / GCSE", "AS as a distinct level", "A-Level"], "#1666b1"], ["Edexcel", "Pearson", "Preflight selects Pearson International or Pearson UK, without source mixing.", ["International", "UK domestic", "Ask when candidates differ"], "#007d86"], ["CAIE", "Cambridge", "Match the official subject catalogue and retain the selected market in metadata.", ["IGCSE", "AS", "A-Level"], "#c8323f"], ["College Board AP", "AP Courses", "Discover official AP courses, select the core CED, and record its effective version.", ["42 official subjects", "Core CED only", "Target exam year"], "#2255a4"]];
+  return <Scene start={10.7} end={16.4}><div className="kicker">Official Providers</div><h2 className="headline compact">Use the exact market the user selected and only its official source route.</h2><div className="provider-grid">{data.map((item, index) => <Stagger start={11.3} index={index} key={item[0]}><article className="provider-card" style={{ "--accent": item[4] }}><div className="code">{item[0]}</div><h3>{item[1]}</h3><p>{item[2]}</p><div className="market-list">{item[3].map((point) => <span key={point}>{point}</span>)}</div></article></Stagger>)}</div></Scene>;
 }
 
-function SyllabusScene() {
-  const time = useTime();
-  const steps = [
-    ["Official page", "Find the exam-board subject page or use the URL supplied by the user"],
-    ["Syllabus PDF", "Download the public specification or syllabus"],
-    ["Topic extraction", "Extract topics, assessment structure, page numbers, and source snippets"],
-    ["Handbook plan", "Generate explanations, examples, revision checks, and visual briefs"],
-    ["Quality checks", "Missing topics, examples, sources, or visual blocks are surfaced"],
-  ];
-  return (
-    <SceneFrame start={23.5} end={28.3}>
-      <div className="kicker">From Syllabus To Handbook</div>
-      <h2 className="headline route-headline">Protect the official source first, then make it usable for preview and revision.</h2>
-      <div className="pipeline-board">
-        {steps.map((step, index) => {
-          const p = clamp((time - 24.0 - index * 0.14) / 0.6, 0, 1);
-          return (
-            <article className="pipeline-step" key={step[0]} style={{ opacity: p, transform: `translateY(${(1 - p) * 42}px)` }}>
-              <b>{String(index + 1).padStart(2, "0")}</b>
-              <h3>{step[0]}</h3>
-              <p>{step[1]}</p>
-            </article>
-          );
-        })}
-      </div>
-    </SceneFrame>
-  );
+function AtomicScene() {
+  const steps = [["01", "Official evidence", "Read the Markdown structure and page evidence together, retaining page, quote, and version anchors.", "#1666b1"], ["02", "Independently assessable requirement", "A Topic is only a container. Continue until each requirement can be taught, assessed, and checked on its own.", "#c8323f"], ["03", "Final teaching topic", "Combining requirements needs a reason and visible treatment for every mapped source demand.", "#007d86"], ["04", "Traceable handbook location", "Every point maps back to its official source and forward to a visible handbook location.", "#2255a4"]];
+  return <Scene start={16.1} end={21.8}><div className="kicker">Atomic syllabus analysis</div><h2 className="headline compact">No board- or subject-specific hard coding: split by independent assessability.</h2><div className="atomic-flow">{steps.map((step, index) => <React.Fragment key={step[0]}><Stagger start={16.7} index={index}><article className="flow-card" style={{ "--accent": step[3] }}><b>{step[0]}</b><h3>{step[1]}</h3><p>{step[2]}</p></article></Stagger>{index < steps.length - 1 && <div className="flow-arrow">→</div>}</React.Fragment>)}</div></Scene>;
 }
 
-function LanguageStyleScene() {
-  const time = useTime();
-  const cards = [
-    ["English body", "Support languages add a 30-50 term glossary instead of translating the whole handbook."],
-    ["Style modes", "formal, friendly, life, story, detective, or adventure, so the prose is not painfully stiff."],
-    ["Worked examples", "Each topic gets original questions, steps, answer frames, and common pitfalls."],
-    ["Visual judgment", "Only concepts that genuinely need visuals get diagrams or infographics."],
-  ];
-  return (
-    <SceneFrame start={28.0} end={32.8}>
-      <div className="kicker">Language, Style, Examples</div>
-      <h2 className="headline provider-headline">The exam is in English; support languages belong in the glossary.</h2>
-      <div className="style-grid">
-        {cards.map((card, index) => {
-          const p = clamp((time - 28.6 - index * 0.16) / 0.58, 0, 1);
-          return (
-            <article className="style-card" key={card[0]} style={{ opacity: p, transform: `translateX(${(1 - p) * 42}px)` }}>
-              <h3>{card[0]}</h3>
-              <p>{card[1]}</p>
-            </article>
-          );
-        })}
-      </div>
-    </SceneFrame>
-  );
+function DecisionScene() {
+  const decisions = [["text-ok", "Text is enough", "Use only when an extra visual would not improve learning.", "Requires a specific no_visual_reason", "#36536d"], ["exact-svg", "Exact diagram", "Axes, curves, circuits, structures, and direction require domain graphic objects.", "Text boxes alone are not diagrams", "#1666b1"], ["kroki", "Structured relationship", "Processes, hierarchies, sequences, and feedback need connections and direction.", "A card layout cannot stand in for a relationship", "#007d86"], ["external-infographic", "Rich infographic", "Apparatus, materials, spatial structures, and complex processes use the confirmed external route.", "Semantic review is required before import", "#c8323f"]];
+  return <Scene start={21.5} end={27.2}><div className="kicker">Per-topic teaching and visual decisions</div><h2 className="headline compact">Visual count is the outcome of judgment, never a subject quota.</h2><div className="decision-grid">{decisions.map((item, index) => <Stagger start={22.1} index={index} key={item[0]}><article className="decision-card" style={{ "--accent": item[4] }}><span className="route">{item[0]}</span><h3>{item[1]}</h3><p>{item[2]}</p><div className="rule">{item[3]}</div></article></Stagger>)}</div></Scene>;
 }
 
 function SamplesScene() {
   const time = useTime();
-  const wallPan = interpolate([38.5, 43.0], [0, -36], Easing.easeInOutSine)(time);
-  const stats = [
-    ["7", "local regression samples pass with clean quality checks"],
-    ["357", "knowledge explanations generated across the three boards"],
-    ["318", "worked-example cards with steps and checkpoints"],
-    ["0", "complex infographics are no longer pretended as generated"],
-  ];
-  return (
-    <SceneFrame start={38.0} end={43.1}>
-      <div className="sample-scene">
-        <div className="sample-copy">
-          <div className="kicker">Real Handbook Samples</div>
-          <h2 className="headline sample-headline">The samples are deliverable revision handbooks.</h2>
-          <div className="stat-list">
-            {stats.map((stat, index) => {
-              const p = clamp((time - 38.7 - index * 0.18) / 0.55, 0, 1);
-              return (
-                <div className="stat" key={stat[1]} style={{ opacity: p, transform: `translateX(${(1 - p) * -32}px)` }}>
-                  <b>{stat[0]}</b>
-                  <span>{stat[1]}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className="screenshot-wall" style={{ transform: `translateX(${wallPan}px)` }}>
-          <figure className="shot" style={{ left: 80, top: 20, transform: "rotate(-5deg)" }}>
-            <img src="../three-board-support-video/sample-math-guide.png" alt="Mathematics handbook screenshot" />
-          </figure>
-          <figure className="shot" style={{ left: 250, top: 250, transform: "rotate(3deg)" }}>
-            <img src="../three-board-support-video/sample-economics-guide.png" alt="Economics handbook screenshot" />
-          </figure>
-          <figure className="shot" style={{ left: 0, top: 455, transform: "rotate(-1deg)" }}>
-            <img src="../three-board-support-video/sample-chemistry-guide.png" alt="Chemistry handbook screenshot" />
-          </figure>
-        </div>
-      </div>
-    </SceneFrame>
-  );
+  return <Scene start={26.9} end={35.7} className="samples-scene"><div className="kicker">Four current handbooks</div><h2 className="headline">Each one has its own outline, writing, visuals, review, and export.</h2><div className="sample-grid">{sampleBooks.map((book, index) => <Stagger start={27.5} index={index} key={book.title}><article className="sample-set" style={{ "--accent": book.accent }}><h3>{book.title}</h3><p>{book.note}</p><div className="sample-pages">{book.pages.map((page, pageIndex) => <img src={page} alt="" key={page} style={{ opacity: clamp((time - 28.0 - index * 0.12 - pageIndex * 0.12) / 0.45, 0, 1) }} />)}</div></article></Stagger>)}</div></Scene>;
 }
 
-function VisualRouteScene() {
-  const time = useTime();
-  const cards = [
-    {
-      title: "Reviewed exact visuals: SVG",
-      body: "Number lines, axes, simple geometry, and compact tables need svg_fit=exact plus review.",
-      visual: <div className="svg-diagram"><span></span><span></span><span></span></div>,
-    },
-    {
-      title: "Structured diagrams: Kroki",
-      body: "Flows, hierarchies, timelines, relationship maps, and concept maps need LLM routing and review.",
-      visual: (
-        <svg className="kroki-preview" viewBox="0 0 360 190" aria-label="Kroki structured diagram preview">
-          <defs>
-            <marker id="arrow-en" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" />
-            </marker>
-          </defs>
-          <path d="M180 48 L96 86" />
-          <path d="M180 48 L264 86" />
-          <path d="M96 124 L180 150" />
-          <path d="M264 124 L180 150" />
-          <rect x="126" y="14" width="108" height="42" rx="8" />
-          <rect x="34" y="84" width="124" height="42" rx="8" />
-          <rect x="202" y="84" width="124" height="42" rx="8" />
-          <rect x="120" y="140" width="120" height="42" rx="8" className="output" />
-          <text x="180" y="41">source</text>
-          <text x="96" y="111">flow</text>
-          <text x="264" y="111">hierarchy</text>
-          <text x="180" y="167">reviewed</text>
-        </svg>
-      ),
-    },
-    {
-      title: "Rich infographics: external generation",
-      body: "Labs, economics scenes, and dense text-plus-diagram explanations become worksheet-style image jobs and auto-imported assets.",
-      visual: <div className="model-grid"><span>GPT Image 2.0</span><span>Qwen Image 2.0 Pro</span><span>SenseNova U1 Fast</span></div>,
-    },
-  ];
-  return (
-    <SceneFrame start={32.5} end={38.2}>
-      <div className="kicker">Professional Visual Handling</div>
-      <h2 className="headline route-headline">Exact SVG, Kroki, and external infographics each have their own review boundary.</h2>
-      <div className="visual-routing">
-        {cards.map((card, index) => {
-          const p = clamp((time - 33.0 - index * 0.18) / 0.7, 0, 1);
-          return (
-            <article className="route-card" key={card.title} style={{ opacity: p, transform: `translateY(${(1 - Easing.easeOutCubic(p)) * 58}px)` }}>
-              <h3>{card.title}</h3>
-              <div className="route-visual">{card.visual}</div>
-              <p>{card.body}</p>
-            </article>
-          );
-        })}
-      </div>
-    </SceneFrame>
-  );
+function ReviewScene() {
+  const steps = [["01", "Open the current HTML", "No PDF exists yet", "#1666b1"], ["02", "LLM reviews every topic and visual", "Machine checks cannot approve", "#c8323f"], ["03", "Repair source artifacts and rerender", "HTML changes invalidate old approval", "#007d86"], ["04", "Bind approval to the current HTML hash", "Only then unlock PDF", "#157347"]];
+  return <Scene start={35.4} end={41.2}><div className="kicker">Complete HTML-first review</div><h2 className="headline compact">Inspect, repair, and inspect again. Do not generate PDF until HTML passes.</h2><div className="review-layout"><div className="review-proof"><img src="../v060-caie-physics-p30.jpg" alt="" /><div className="proof-copy"><strong>FULL HTML REVIEW</strong><h3>A polished page is not proof of correct teaching.</h3><p>Review facts, notation, visual meaning, labels, arrows, sources, learning value, and cross-page repetition. Any pending item or stale hash blocks approval.</p></div></div><div className="review-loop">{steps.map((step, index) => <Stagger start={36.1} index={index} key={step[0]}><div className="loop-step" style={{ "--accent": step[3] }}><b>{step[0]}</b><strong>{step[1]}</strong><span>{step[2]}</span></div></Stagger>)}</div></div></Scene>;
 }
 
-function QualityScene() {
-  const time = useTime();
-  const metrics = [
-    ["outline", "syllabus comparison"],
-    ["glossary", "term table check"],
-    ["visuals", "image/diagram check"],
-    ["pdf", "sampled PDF pages"],
-  ];
-  return (
-    <SceneFrame start={42.8} end={46.2}>
-      <div className="kicker">Independent Agent Review</div>
-      <h2 className="headline provider-headline">Generation is not the finish line; the final handbook must be read and repaired.</h2>
-      <div className="quality-grid">
-        {metrics.map((metric, index) => {
-          const p = clamp((time - 43.3 - index * 0.12) / 0.5, 0, 1);
-          return (
-            <article className="quality-card" key={metric[0]} style={{ opacity: p, transform: `scale(${0.92 + p * 0.08})` }}>
-              <b>{metric[0]}</b>
-              <span>{metric[1]}</span>
-              <i></i>
-            </article>
-          );
-        })}
-      </div>
-    </SceneFrame>
-  );
+function PackageScene() {
+  return <Scene start={40.9} end={45.7}><div className="kicker">Skill-store package</div><h2 className="headline compact">The extracted archive must expose the authoritative SKILL.md at its root.</h2><div className="package-layout"><div className="zip-panel"><div className="zip-header"><strong>revision-guide-skill.zip</strong><span>STORE READY</span></div><div className="tree"><div className="tree-row root"><i></i>SKILL.md</div><div className="tree-row"><i></i>agents/openai.yaml</div><div className="tree-row"><i></i>references/revision_guide_spec.md</div><div className="tree-row"><i></i>assets/...</div><div className="tree-row"><i></i>test-prompts.json</div></div></div><div className="package-notes" style={{ "--accent": "#2255a4" }}><h3>Repository discovery and store installation have separate jobs.</h3><ul><li>The repository-root SKILL.md only points to skill/SKILL.md.</li><li>The store ZIP promotes the contents of skill/ to archive root.</li><li>Release checks verify the root entry, byte equality, path safety, and deterministic hash.</li></ul></div></div></Scene>;
 }
 
 function ClosingScene() {
-  const time = useTime();
-  const p = clamp((time - 46.0) / 1.0, 0, 1);
-  const boxes = ["Official syllabus", "English body + glossary", "Worked examples", "Review evidence"];
-  return (
-    <SceneFrame start={45.8} end={TOTAL_DURATION}>
-      <div className="final-lockup">
-        <div>
-          <div className="kicker">Final Delivery Standard</div>
-          <h2 className="headline">The final file should feel like material a student can really use.</h2>
-          <p className="lead">Syllabus, explanations, glossary, visuals, examples, and PDF pages must pass the final product review before final-ready.</p>
-        </div>
-        <div className="deliverable" style={{ opacity: p, transform: `rotate(${-1.5 + (1 - p) * -7}deg) translateY(${(1 - p) * 100}px)` }}>
-          <h3>International GCSE / AS-A-level Revision Handbook</h3>
-          <div className="bar"></div>
-          <div className="paper-grid">
-            {boxes.map((box) => (
-              <div className="paper-box" key={box}>
-                <b>{box}</b>
-                <i></i><i></i><i></i>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </SceneFrame>
-  );
+  return <Scene start={45.4} end={TOTAL_DURATION} className="closing-scene"><div className="closing-copy"><div className="kicker">Source-backed · LLM-reviewed</div><h2 className="headline">One handbook, one complete and non-bypassable delivery chain.</h2><p className="lead">Official source → atomic requirements → teaching and visuals → HTML review → controlled PDF</p><div className="closing-badges"><span>IGCSE</span><span>AS</span><span>A-Level</span><span>AP</span><span>Open Source Skill</span></div></div><div className="closing-pages"><img src="../v060-oxfordaqa-biology-p28.jpg" alt="" /><img src="../v060-ap-chemistry-p91.jpg" alt="" /><img src="../v060-edexcel-mathematics-p52.jpg" alt="" /></div></Scene>;
 }
 
 function Footer() {
-  return (
-    <div className="footer-mark">
-      <span>IGCSE & A-Level AI Revision Handbook Skill</span>
-      <span>official syllabus → reviewed handbook</span>
-    </div>
-  );
+  return <div className="footer-mark"><span>IGCSE · AS · A-LEVEL · AP REVISION HANDBOOK SKILL</span><span>OFFICIAL SOURCE → REVIEWED HANDBOOK</span></div>;
 }
 
 function App() {
-  return (
-    <Stage width={1920} height={1080} duration={TOTAL_DURATION} background="#080b10">
-      <VideoLabel />
-      <Background />
-      <IntroScene />
-      <OriginScene />
-      <UsageScene />
-      <PreflightScene />
-      <ProviderScene />
-      <SyllabusScene />
-      <LanguageStyleScene />
-      <VisualRouteScene />
-      <SamplesScene />
-      <QualityScene />
-      <ClosingScene />
-      <Footer />
-    </Stage>
-  );
+  return <Stage width={1920} height={1080} duration={TOTAL_DURATION} background="#eef2f5"><Background /><IntroScene /><PreflightScene /><ProviderScene /><AtomicScene /><DecisionScene /><SamplesScene /><ReviewScene /><PackageScene /><ClosingScene /><Footer /></Stage>;
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);

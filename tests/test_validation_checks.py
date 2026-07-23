@@ -673,6 +673,24 @@ def test_visual_prompt_rejects_board_or_course_packaging():
     )
 
 
+def test_visual_prompt_allows_course_identity_without_packaging_request():
+    plan = valid_plan()
+    plan.visual_briefs[0].prompt = "Create a clear OxfordAQA Biology diagram of a source document flow."
+
+    visual_messages = [issue.message for issue in validate_visual_briefs(plan)]
+
+    assert not any("board or course packaging" in message for message in visual_messages)
+
+
+def test_visual_prompt_allows_an_explicit_no_logo_constraint():
+    plan = valid_plan()
+    plan.visual_briefs[0].prompt = "Create an OxfordAQA Biology diagram, no logo or watermark."
+
+    visual_messages = [issue.message for issue in validate_visual_briefs(plan)]
+
+    assert not any("board or course packaging" in message for message in visual_messages)
+
+
 def test_visual_provider_contract_requires_exact_fit_svg_and_rejects_local_rendering():
     plan = valid_plan()
     plan.visual_briefs = [
@@ -1000,10 +1018,7 @@ def test_html_language_output_assets_and_summary_helpers_have_direct_contracts(t
     assert summary["pending_concept_explanations"] == 1
     assert mixed_language_label_matches("<p>复习路线 / Study Roadmap</p>")
     assert expected_topic_marker("3.1 Source documents", 1, "zh-CN") == "第 3.1 节"
-    assert issues_to_dict(validate_html_language("en", ""))[0] == {
-        "severity": "error",
-        "message": "HTML missing required section phrase: How to Study",
-    }
+    assert issues_to_dict(validate_html_language("en", "")) == []
     assert duplicate_practice_question_topics([plan.practice_items[0], plan.practice_items[0]]) == [
         "3.1 Source documents"
     ]
@@ -1267,7 +1282,7 @@ def test_pdf_validation_rejects_excessive_blank_output(tmp_path):
     summary = review_summary(plan, pdf_path=pdf_path)
 
     assert any("above the recommended maximum" in message for message in messages)
-    assert any("almost no extractable text" in message for message in messages)
+    assert any("no meaningful text or drawing content" in message for message in messages)
     assert summary["pdf_pages"] == 30
     assert summary["pdf_blank_text_pages"] == 30
 
@@ -1282,7 +1297,20 @@ def test_pdf_validation_rejects_any_blank_text_page(tmp_path):
 
     messages = [issue.message for issue in validate_pdf_output(plan, pdf_path)]
 
-    assert "PDF output has 1 pages with almost no extractable text." in messages
+    assert "PDF output has 1 page(s) with no meaningful text or drawing content." in messages
+
+
+def test_pdf_validation_rejects_non_a4_page_geometry(tmp_path):
+    plan = valid_plan()
+    pdf_path = tmp_path / "letter.pdf"
+    writer = PdfWriter()
+    writer.add_blank_page(width=612, height=792)
+    with pdf_path.open("wb") as handle:
+        writer.write(handle)
+
+    messages = [issue.message for issue in validate_pdf_output(plan, pdf_path)]
+
+    assert "PDF output has 1 page(s) that are not portrait A4." in messages
 
 
 def test_pdf_local_footer_text_detection_covers_file_urls_and_local_guide_paths():

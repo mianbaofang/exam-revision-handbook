@@ -32,6 +32,7 @@ from intl_exam_guide.rendering.glossary import render_professional_glossary
 from intl_exam_guide.rendering.icons import render_icon
 from intl_exam_guide.rendering.infographics import render_infographic_required
 from intl_exam_guide.rendering.output_names import default_handbook_paths
+from intl_exam_guide.rendering.render_snapshot import write_render_snapshot
 from intl_exam_guide.rendering.styles import stylesheet
 from intl_exam_guide.rendering.story_modes import chinese_story_lines, english_story_lines
 from intl_exam_guide.rendering.text import html_attribute_escape, html_escape, subject_display_name
@@ -87,6 +88,7 @@ def render_html(
         "</body></html>",
     ]
     output_path.write_text("\n".join(parts), encoding="utf-8")
+    write_render_snapshot(output_path.parent, output_path, plan, manifest_path)
     return output_path
 
 
@@ -157,7 +159,7 @@ def image_provider_display(options: GuideRunOptions, language: str = "en") -> st
         )
     if options.image_provider == "prompt-queue":
         return (
-            "complex visuals are tracked in the manifest; unfinished items stay in the image job queue"
+            "selected diagrams and illustrations appear where they improve understanding"
             if language == "en"
             else "复杂图按清单生成与复核；未完成项会列入配图任务"
         )
@@ -212,17 +214,8 @@ def render_listing_note(qualification: Qualification, language: str = "en") -> s
     source = qualification.source
     if not source.listing_subject:
         return ""
-    pieces = []
-    if source.listing_subject:
-        label = "Subject group" if language == "en" else "科目组"
-        pieces.append(f"{label}: {html_escape(source.listing_subject)}")
-    if source.listing_group_label:
-        label = "Website group" if language == "en" else "Website group"
-        pieces.append(f"{label}: {html_escape(source.listing_group_label)}")
-    if source.listing_style_class:
-        label = "Detected class" if language == "en" else "Detected class"
-        pieces.append(f"{label}: {html_escape(source.listing_style_class)}")
-    return f'<p class="listing-note">{" · ".join(pieces)}</p>'
+    label = "Qualification subject" if language == "en" else "Subject"
+    return f'<p class="listing-note">{label}: {html_escape(source.listing_subject)}</p>'
 
 
 def render_summary(qualification: Qualification, language: str = "en") -> str:
@@ -558,29 +551,39 @@ def render_topics(
 
 
 def render_topic_guide(guide: TopicGuide, language: str) -> str:
-    steps = "".join(f"<li>{html_escape(step)}</li>" for step in guide.worked_solution_steps)
-    checklist = "".join(f"<li>{html_escape(item)}</li>" for item in guide.checklist)
     labels = (
         {
             "essence": "One-Sentence Essence",
             "analogy": "Everyday Analogy",
-            "worked": "Method",
             "pitfall": "Exam Pitfall",
         }
         if language == "en"
         else {
             "essence": "一句话本质",
             "analogy": "生活化类比",
-            "worked": "解题套路",
             "pitfall": "考试陷阱",
         }
+    )
+    if language == "en" and guide.analogy.strip().lower().startswith("reasoning anchor:"):
+        labels["analogy"] = "Reasoning Anchor"
+    explanation_heading = "Teaching Explanation" if language == "en" else "核心解释"
+    explanation_items = "".join(
+        f"<li>{html_escape(explanation)}</li>"
+        for explanation in guide.explanations
+        if explanation.strip()
+    )
+    explanation_block = (
+        f'<article class="teaching-explanations"><h3>{explanation_heading}</h3>'
+        f"<ul>{explanation_items}</ul></article>"
+        if explanation_items
+        else ""
     )
     return f"""
 <div class="guide-grid">
   <article class="essence"><h3>{render_icon("target")}<span>{labels["essence"]}</span></h3><p>{html_escape(guide.essence)}</p></article>
   <article class="analogy"><h3>{render_icon("bridge")}<span>{labels["analogy"]}</span></h3><p>{html_escape(guide.analogy)}</p></article>
-  <article class="worked"><h3>{render_icon("steps")}<span>{labels["worked"]}</span></h3><p>{html_escape(guide.mini_worked_example)}</p><ol>{steps}</ol></article>
-  <article class="pitfall"><h3>{render_icon("alert")}<span>{labels["pitfall"]}</span></h3><p>{html_escape(guide.pitfall)}</p><ul>{checklist}</ul></article>
+  <article class="pitfall"><h3>{render_icon("alert")}<span>{labels["pitfall"]}</span></h3><p>{html_escape(guide.pitfall)}</p></article>
+  {explanation_block}
 </div>
 """
 
@@ -775,9 +778,7 @@ def render_story_modes(topic: Topic, guide: TopicGuide, language: str, index: in
 
 
 def render_practice(item: PracticeItem, language: str, display_title: str | None = None) -> str:
-    frame = "".join(f"<li>{html_escape(step)}</li>" for step in item.answer_frame)
     solution = "".join(f"<li>{html_escape(step)}</li>" for step in item.public_solution_steps)
-    checkpoints = "".join(f"<li>{html_escape(point)}</li>" for point in item.answer_checkpoints)
     source = render_source_snippets(item.source_snippets, compact=True, language=language)
     labels = (
         {
@@ -785,9 +786,7 @@ def render_practice(item: PracticeItem, language: str, display_title: str | None
             "command": "Command",
             "difficulty": "Difficulty",
             "focus": "Focus",
-            "try": "Try First",
             "solution": "Solution",
-            "check": "Check",
         }
         if language == "en"
         else {
@@ -795,9 +794,7 @@ def render_practice(item: PracticeItem, language: str, display_title: str | None
             "command": "指令词",
             "difficulty": "难度",
             "focus": "聚焦",
-            "try": "先自己想",
             "solution": "解题步骤",
-            "check": "检查答案",
         }
     )
     title = item.topic_title if language == "en" else (display_title or "本节内容")
@@ -810,12 +807,8 @@ def render_practice(item: PracticeItem, language: str, display_title: str | None
     <span>{render_icon("focus")}{labels["focus"]}: {html_escape(item.focus_point)}</span>
   </div>
   <p class="practice-question">{html_escape(item.question)}</p>
-  <h4>{render_icon("frame")}{labels["try"]}</h4>
-  <ol>{frame}</ol>
   <h4>{render_icon("steps")}{labels["solution"]}</h4>
   <ol>{solution}</ol>
-  <h4>{render_icon("check")}{labels["check"]}</h4>
-  <ul>{checkpoints}</ul>
   {source}
 </article>
 """
@@ -895,6 +888,8 @@ def render_source_snippets(
 
 
 def source_snippet_display_text(text: str) -> str:
+    if has_unreadable_source_text(text):
+        return "Official source text is retained in the evidence package."
     source = re.sub(r"\s*•\s*", "; ", text)
     parts = re.split(r"\s+(?=[a-z]\)\s+)", source, flags=re.IGNORECASE)
     if len(parts) > 1:
@@ -907,6 +902,13 @@ def source_snippet_display_text(text: str) -> str:
         cleaned = clean_source_point(source)
     cleaned = re.sub(r"\s+", " ", cleaned).strip(" ;")
     return cleaned or "Source text recorded in the structured source files."
+
+
+def has_unreadable_source_text(text: str) -> bool:
+    """Keep PDF extraction corruption out of the student-facing source anchor."""
+    if "\ufffd" in text or re.search(r"[\u4e00-\u9fff]", text):
+        return True
+    return any(marker in text for marker in ("Ã", "Â", "â€", "â€™"))
 
 
 def format_source_reference(

@@ -1,0 +1,214 @@
+{
+  "release": "v0.6.0",
+  "generated_at": "2026-07-24",
+  "git_revision": "v0.6.0",
+  "overall_status": "final-ready",
+  "notes": [
+    "This manifest records four independently completed handbook samples. It does not certify every subject, level, provider route, or manually imported syllabus.",
+    "Each sample has its own complete LLM HTML review, review ledger, current HTML hash, reviewed visual state, gated PDF record, and PDF hash.",
+    "Only the 12 selected A4 preview JPGs are committed. Generated handbooks, PDFs, official source PDFs, local review evidence, and machine-specific paths remain outside the repository."
+  ],
+  "entries": [
+    {
+      "id": "oxfordaqa-igcse-biology-2027",
+      "status": "final-ready",
+      "provider": "oxfordaqa",
+      "course_market": "international",
+      "level": "igcse",
+      "subject": "Biology",
+      "language": "en",
+      "commands": [
+        "python -m intl_exam_guide review --out outputs/oxfordaqa-igcse-biology",
+        "complete current-HTML LLM review and repair loop",
+        "python -m intl_exam_guide export-pdf --out outputs/oxfordaqa-igcse-biology"
+      ],
+      "topics": 32,
+      "practice_cards": 32,
+      "validation_summary": {
+        "error_count": 0,
+        "topics": 32,
+        "practice_cards": 32,
+        "pending_concept_explanations": 0,
+        "pending_infographic_assets": 0
+      },
+      "final_review": {
+        "must_not_present_as_final": false,
+        "complete_html_reviewed": true
+      },
+      "product_review": {
+        "complete": true,
+        "artifact": "agent-product-review.json",
+        "decision": "final-ready",
+        "source_decision": "approved",
+        "html_sha256": "c8e87d3cc4a70064690671a3779208ebcade7fee8f998e620fc9492843ca81df",
+        "review_ledger_sha256": "3759974b66bbbed799940fda5a0f0987e93d16b63b51362ea02b136294c157e5",
+        "unresolved_fixable_issues": 0
+      },
+      "visual_summary": {
+        "reviewed_visuals": 21,
+        "pending_visuals": 0
+      },
+      "pdf_summary": {
+        "pages": 43,
+        "parent_html_hash_matches": true,
+        "pdf_sha256": "4f5955bee1decc8629ba05b9450ca2521d34f6aab937c0c5c790d4dd81e66a69"
+      },
+      "sample_assets": [
+        "docs/assets/v060-oxfordaqa-biology-p12.jpg",
+        "docs/assets/v060-oxfordaqa-biology-p21.jpg",
+        "docs/assets/v060-oxfordaqa-biology-p28.jpg"
+      ]
+    },
+    {
+      "id": "cambridge-as-physics-9702-2027",
+      "status": "final-ready",
+      "provider": "cambridge",
+      "course_market": "international",
+      "level": "as",
+      "subject": "Physics 9702",
+      "language": "en",
+      "commands": [
+        "python -m intl_exam_guide review --out outputs/cambridge-as-physics-9702",
+        "complete current-HTML LLM review and repair loop",
+        "python -m intl_exam_guide export-pdf --out outputs/cambridge-as-physics-9702"
+      ],
+      "topics": 35,
+      "practice_cards": 35,
+      "validation_summary": {
+        "error_count": 0,
+        "topics": 35,
+        "practice_cards": 35,
+        "pending_concept_explanations": 0,
+        "pending_infographic_assets": 0
+      },
+      "final_review": {
+        "must_not_present_as_final": false,
+        "complete_html_reviewed": true
+      },
+      "product_review": {
+        "complete": true,
+        "artifact": "agent-product-review.json",
+        "decision": "final-ready",
+        "source_decision": "approved",
+        "html_sha256": "a611b8a9d8758f53bb470e350ba58663d632386d195450ddcf254415ca5cdd0c",
+        "review_ledger_sha256": "8f27d3e473500bbbcd6193ee6b646a6cf6682e192a9ce4220f424e5a3f4be24d",
+        "unresolved_fixable_issues": 0
+      },
+      "visual_summary": {
+        "reviewed_visuals": 13,
+        "pending_visuals": 0
+      },
+      "pdf_summary": {
+        "pages": 39,
+        "parent_html_hash_matches": true,
+        "pdf_sha256": "548b2d99d6f584d91ac28205d4a2538fa613756aea7b0094ca52ebf3019eeefd"
+      },
+      "sample_assets": [
+        "docs/assets/v060-caie-physics-p10.jpg",
+        "docs/assets/v060-caie-physics-p25.jpg",
+        "docs/assets/v060-caie-physics-p30.jpg"
+      ]
+    },
+    {
+      "id": "collegeboard-ap-chemistry-2027",
+      "status": "final-ready",
+      "provider": "collegeboard",
+      "course_market": "not-applicable",
+      "level": "ap",
+      "subject": "AP Chemistry",
+      "language": "en",
+      "commands": [
+        "python -m intl_exam_guide review --out outputs/collegeboard-ap-chemistry",
+        "complete current-HTML LLM review and repair loop",
+        "python -m intl_exam_guide export-pdf --out outputs/collegeboard-ap-chemistry"
+      ],
+      "topics": 91,
+      "practice_cards": 91,
+      "validation_summary": {
+        "error_count": 0,
+        "topics": 91,
+        "practice_cards": 91,
+        "pending_concept_explanations": 0,
+        "pending_infographic_assets": 0
+      },
+      "final_review": {
+        "must_not_present_as_final": false,
+        "complete_html_reviewed": true
+      },
+      "product_review": {
+        "complete": true,
+        "artifact": "agent-product-review.json",
+        "decision": "final-ready",
+        "source_decision": "approved",
+        "html_sha256": "1afeb4f7d29f3c79a58525acb83eacab036dec52e0ad870dcf8a2cf8f78f699b",
+        "review_ledger_sha256": "cf3cf1326d141f8a5ed16a1a633df45360fb2e8884499efce44331f507853e7e",
+        "unresolved_fixable_issues": 0
+      },
+      "visual_summary": {
+        "reviewed_visuals": 38,
+        "pending_visuals": 0
+      },
+      "pdf_summary": {
+        "pages": 94,
+        "parent_html_hash_matches": true,
+        "pdf_sha256": "2f319fb6400ee0142002daf2428b08976d3996f23f735bb7de09a65e0f2d441e"
+      },
+      "sample_assets": [
+        "docs/assets/v060-ap-chemistry-p11.jpg",
+        "docs/assets/v060-ap-chemistry-p43.jpg",
+        "docs/assets/v060-ap-chemistry-p91.jpg"
+      ]
+    },
+    {
+      "id": "pearson-edexcel-ial-mathematics-yma01",
+      "status": "final-ready",
+      "provider": "pearson",
+      "course_market": "international",
+      "level": "a-level",
+      "subject": "Mathematics YMA01",
+      "language": "en",
+      "commands": [
+        "python -m intl_exam_guide review --out outputs/pearson-edexcel-ial-mathematics",
+        "complete current-HTML LLM review and repair loop",
+        "python -m intl_exam_guide export-pdf --out outputs/pearson-edexcel-ial-mathematics"
+      ],
+      "topics": 103,
+      "practice_cards": 103,
+      "validation_summary": {
+        "error_count": 0,
+        "topics": 103,
+        "practice_cards": 103,
+        "pending_concept_explanations": 0,
+        "pending_infographic_assets": 0
+      },
+      "final_review": {
+        "must_not_present_as_final": false,
+        "complete_html_reviewed": true
+      },
+      "product_review": {
+        "complete": true,
+        "artifact": "agent-product-review.json",
+        "decision": "final-ready",
+        "source_decision": "approved",
+        "html_sha256": "8dfbab8dd3bdbaf128835ae728e31276933f2b240777a36519d4da098e059b56",
+        "review_ledger_sha256": "444c00db7148e4d296f737fd3e5f33ab38882b6dcc1a726d9f9b871ace893220",
+        "unresolved_fixable_issues": 0
+      },
+      "visual_summary": {
+        "reviewed_visuals": 74,
+        "pending_visuals": 0
+      },
+      "pdf_summary": {
+        "pages": 131,
+        "parent_html_hash_matches": true,
+        "pdf_sha256": "2d379b02a13fb033a6efc733cc5ce072bdbab15673f437ffa7ace8edde55fd0a"
+      },
+      "sample_assets": [
+        "docs/assets/v060-edexcel-mathematics-p52.jpg",
+        "docs/assets/v060-edexcel-mathematics-p74.jpg",
+        "docs/assets/v060-edexcel-mathematics-p99.jpg"
+      ]
+    }
+  ],
+  "scope_warning": "Four final-ready handbooks are recorded. Other subjects and provider routes remain governed by their own output-specific evidence and must not inherit these approvals."
+}

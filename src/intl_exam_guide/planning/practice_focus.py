@@ -43,11 +43,12 @@ def choose_command_word(number: int, qualification_type: str, output_language: s
             else ["写出", "描述", "解释", "提出"]
         )
         return words[number % len(words)]
-    words = (
-        ["explain", "analyse", "compare", "evaluate"]
-        if qualification_type == "international_as_a_level"
-        else ["state", "describe", "explain", "suggest"]
-    )
+    if qualification_type == "international_as_a_level":
+        words = ["explain", "analyse", "compare", "evaluate"]
+    elif qualification_type == "advanced_placement":
+        words = ["identify", "explain", "analyze", "evaluate"]
+    else:
+        words = ["state", "describe", "explain", "suggest"]
     return words[number % len(words)]
 
 

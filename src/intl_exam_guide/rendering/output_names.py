@@ -36,6 +36,9 @@ def default_handbook_paths(
 
 
 def find_handbook_html(output_dir: Path, qualification: Qualification | None = None) -> Path:
+    current = path_from_current_render(output_dir)
+    if current:
+        return current
     path = path_from_validation(output_dir, "html")
     if path:
         return path
@@ -50,7 +53,31 @@ def find_handbook_html(output_dir: Path, qualification: Qualification | None = N
     return legacy
 
 
+def path_from_current_render(output_dir: Path) -> Path | None:
+    pointer_path = output_dir / "current-render.json"
+    if not pointer_path.exists():
+        return None
+    try:
+        payload = json.loads(pointer_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+    value = payload.get("html_path") if isinstance(payload, dict) else None
+    if not isinstance(value, str) or not value.strip():
+        return None
+    candidate = Path(value)
+    path = candidate if candidate.is_absolute() else output_dir / candidate
+    try:
+        resolved = path.resolve()
+        resolved.relative_to(output_dir.resolve())
+    except (OSError, ValueError):
+        return None
+    return resolved if resolved.is_file() else None
+
+
 def find_handbook_pdf(output_dir: Path, qualification: Qualification | None = None) -> Path:
+    current = find_current_handbook_pdf(output_dir)
+    if current is not None:
+        return current
     path = path_from_validation(output_dir, "pdf")
     if path:
         return path
@@ -63,6 +90,31 @@ def find_handbook_pdf(output_dir: Path, qualification: Qualification | None = No
     if qualification:
         return default_handbook_paths(output_dir, qualification)[1]
     return legacy
+
+
+def find_current_handbook_pdf(output_dir: Path) -> Path | None:
+    """Return only the PDF selected by a current formal export pointer."""
+
+    pointer_path = output_dir / "current-pdf.json"
+    if not pointer_path.is_file():
+        return None
+    try:
+        payload = json.loads(pointer_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+    if not isinstance(payload, dict) or payload.get("status") != "current":
+        return None
+    value = payload.get("pdf_path")
+    if not isinstance(value, str) or not value.strip():
+        return None
+    candidate = Path(value)
+    path = candidate if candidate.is_absolute() else output_dir / candidate
+    try:
+        resolved = path.resolve()
+        resolved.relative_to(output_dir.resolve())
+    except (OSError, ValueError):
+        return None
+    return resolved if resolved.is_file() else None
 
 
 def path_from_validation(output_dir: Path, key: str) -> Path | None:
@@ -99,6 +151,8 @@ def board_slug(qualification: Qualification) -> str:
         return "pearson-edexcel"
     if "cambridge" in lowered or "caie" in lowered:
         return "cambridge"
+    if "collegeboard" in lowered or "college board" in lowered or "advanced placement" in lowered:
+        return "collegeboard-ap"
     return slugify(provider) or "exam-board"
 
 
@@ -109,6 +163,7 @@ def level_slug(qualification: Qualification) -> str:
         "gcse": "gcse",
         "igcse": "igcse",
         "international_as_a_level": "as-a-level",
+        "advanced_placement": "ap",
         "as_a_level": "as-a-level",
         "as-level": "as-level",
         "a-level": "a-level",

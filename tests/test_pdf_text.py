@@ -63,3 +63,14 @@ def test_extract_pdf_pages_reports_encrypted_pdf_that_stays_locked(tmp_path):
         assert "Encrypted PDF could not be decrypted" in str(exc)
     else:
         raise AssertionError("Expected PdfTextExtractionError")
+
+
+def test_extract_pdf_pages_reads_empty_password_encrypted_pdf(tmp_path):
+    pdf_path = tmp_path / "readable-encrypted.pdf"
+    writer = PdfWriter()
+    writer.add_blank_page(width=72, height=72)
+    writer.encrypt("")
+    with pdf_path.open("wb") as handle:
+        writer.write(handle)
+
+    assert extract_pdf_pages(pdf_path) == [(1, "")]

@@ -231,6 +231,8 @@ def qualification_family(provider: str, qtype: str) -> str:
             if qtype == "international_as_a_level"
             else "Cambridge IGCSE"
         )
+    if provider == "collegeboard":
+        return "College Board Advanced Placement (AP)"
     return provider
 
 
@@ -292,11 +294,12 @@ def attach_pdf_content(
     pdf_url: str,
     provider_prefix: str,
     exam_year: str | None = None,
+    filename_label: str | None = None,
 ) -> Qualification:
     output_dir.mkdir(parents=True, exist_ok=True)
     pdf_bytes = fetch_bytes(pdf_url)
     digest = hashlib.sha256(pdf_bytes).hexdigest()
-    code = qualification.code or provider_prefix
+    code = filename_label or qualification.code or provider_prefix
     pdf_path = output_dir / f"{provider_prefix}-{code}-specification.pdf"
     text_path = output_dir / f"{provider_prefix}-{code}-specification.txt"
     pdf_path.write_bytes(pdf_bytes)

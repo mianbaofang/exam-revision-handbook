@@ -1,19 +1,29 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from pathlib import Path
+import tempfile
 
 from intl_exam_guide.auditing.quality_inspector import (
     QUALITY_INSPECTION_FILE,
-    write_quality_inspection,
+)
+from intl_exam_guide.auditing.pdf_delivery import (
+    ControlledDeliveryError,
+    PdfTechnicalValidationError,
+    copy_current_pdf_to_delivery,
+    inspect_current_pdf,
+    inspect_pdf_candidate,
+    invalidate_current_pdf,
+    promote_pdf_candidate,
+    write_pdf_export_record,
 )
 from intl_exam_guide.core import DeliveryState, course_contract_payload
-from intl_exam_guide.models import GuidePlan
+from intl_exam_guide.models import GuidePlan, Qualification
 from intl_exam_guide.rendering.output_names import (
     default_handbook_paths,
     find_handbook_html,
-    find_handbook_pdf,
 )
 from intl_exam_guide.rendering.pdf import PdfExportError, export_pdf
 from intl_exam_guide.rendering.text import strip_internal_review_panel
@@ -34,7 +44,8 @@ PENDING_INFOGRAPHIC_STATUSES = {
     "svg-fallback-needs-review",
 }
 PRODUCT_REVIEW_FILE = "agent-product-review.json"
-PRODUCT_REVIEW_SCHEMA_VERSION = "v0.5-visible-handbook-review"
+LEGACY_PRODUCT_REVIEW_SCHEMA_VERSION = "v0.6-llm-html-review"
+PRODUCT_REVIEW_SCHEMA_VERSION = "v0.7-llm-html-review-ledger"
 FINAL_CONTENT_BLOCKER_PATTERNS = [
     "formulaic AI-style wording",
     "Topic map mastery summary is duplicated",
@@ -47,6 +58,10 @@ FINAL_CONTENT_BLOCKER_PATTERNS = [
     "Python evidence extraction cannot be treated as final topic/exam-point analysis",
     "topics and exam points must come from the LLM syllabus_outline_analyst",
 ]
+
+
+class HtmlReviewRequiredError(RuntimeError):
+    """Raised when PDF export is attempted before current-HTML LLM approval."""
 
 
 def build_final_review_packet(output_dir: Path) -> dict[str, object]:
@@ -82,7 +97,11 @@ def build_final_review_packet(output_dir: Path) -> dict[str, object]:
     workflow = {
         "mode": "lightweight-three-role",
         "roles": ["analyst", "writer", "reviewer"],
-        "reviewer_instruction": "Open the rendered handbook/PDF yourself. Machine validation and quality inspection are supporting evidence only; they are not approval.",
+        "reviewer_instruction": (
+            "Open and visually inspect the current rendered HTML yourself. Python validation "
+            "and quality inspection are supporting diagnostics only and cannot approve it. "
+            "Do not export PDF until the LLM HTML review passes."
+        ),
     }
     quality_inspection = quality_inspection_evidence(output_dir)
     product_review = product_review_evidence(output_dir)
@@ -90,12 +109,31 @@ def build_final_review_packet(output_dir: Path) -> dict[str, object]:
         "agent_review_required": True,
         "workflow": workflow,
         "quality_inspection": quality_inspection,
+        "html_review_gate": {
+            "html_path": product_review.get("html_path"),
+            "html_sha256": product_review.get("current_html_sha256"),
+            "llm_review_complete": product_review.get("complete", False),
+            "pdf_export_allowed": product_review.get("complete", False),
+            "rule": (
+                "LLM must inspect this exact HTML. Repair and rerender until approved; "
+                "only then may export-pdf run."
+            ),
+        },
+        "required_full_review_coverage": {
+            "topic_count": product_review.get("expected_topic_count", 0),
+            "topic_titles": product_review.get("expected_topic_titles", []),
+            "rendered_visual_count": product_review.get("expected_rendered_visual_count", 0),
+            "rendered_visual_ids": product_review.get("expected_rendered_visual_ids", []),
+            "sampling_allowed": False,
+        },
         "review_questions": [
             "Does the rendered handbook match the requested board, level, subject, language, and style?",
             "Are topic titles teachable rather than parser fragments, broad container labels, or generic syllabus headings?",
+            "Does coverage_granularity prove that every lowest official container was checked for one, several, or no independently assessable requirements?",
             "Can every official source_coverage item be traced from the handbook table of contents to visible teaching treatment, not just JSON coverage?",
-            "Do merged official bullets have a defensible teaching reason and visible explanation, worked-example, practice, or sub-skill coverage?",
-            "Do sampled worked examples contain concrete questions, solution steps, final answers, and source anchors?",
+            "Does every final topic trace to one or more independent source items, with a defensible merge reason and visible treatment for every mapped item?",
+            "Were every topic's teaching claims, worked examples, solution steps, final answers, and source anchors checked for subject accuracy?",
+            "Was every rendered visual inspected for factual meaning, including labels, arrows, positions, relationships, scales, units, and correspondence with its topic?",
             "Are complex infographics either reviewed/generated or clearly listed as pending with replacement instructions?",
             "Should this output be presented as final, draft, or blocked?",
         ],
@@ -113,31 +151,32 @@ def build_final_review_packet(output_dir: Path) -> dict[str, object]:
             "required": True,
             "required_artifact": PRODUCT_REVIEW_FILE,
             "instruction": (
-                "Before user handoff, the Agent/LLM must read this packet, inspect the rendered handbook, "
-                "classify any content, visual, PDF, or language problems, fix the generation logic or "
-                "reviewed assets when possible, rerun review, and only then present the output according "
-                "to agent_self_review.status."
+                "Before PDF export or user handoff, the active LLM must open and visually inspect the "
+                "current HTML. If it finds any content, layout, visual, notation, source, or language "
+                "problem, it must return to the Writer, repair the source artifacts, rerender HTML, and "
+                "personally inspect the new HTML again. Repeat until no fixable issue remains. Python "
+                "diagnostics cannot supply the approval decision."
             ),
             "must_fix_before_final": [
                 "blocking validation errors",
+                "broad official containers passed through without a source-detail audit",
                 "collapsed official bullets that are only covered in JSON and not visibly taught",
+                "teaching topics with zero or multiple primary independent source items",
                 "duplicated mastery requirements across independent topics",
                 "worked examples that do not match the topic",
                 "pending complex infographic assets",
-                "near-blank PDF pages",
                 "language/style mismatch in student-facing sections",
             ],
             "required_product_review_fields": [
-                "visible_handbook_inspected",
+                "reviewer_type",
+                "html_opened_and_visually_inspected",
+                "reviewed_html_sha256",
+                "render_snapshot_id",
+                "review_ledger_index_sha256",
+                "review_iteration",
+                "html_review_passed",
+                "complete_html_reviewed",
                 "machine_validation_used_only_as_supporting_evidence",
-                "syllabus_outline_compared",
-                "granularity_audit_checked",
-                "merged_bullets_visible_in_handbook",
-                "pdf_pages_sampled",
-                "visuals_inspected",
-                "cross_page_visual_repetition_checked",
-                "notation_spot_check_completed",
-                "glossary_policy_checked",
                 "repair_loop_completed",
                 "decision",
             ],
@@ -183,25 +222,13 @@ def build_agent_self_review(
     if not rendered_text.strip():
         status = "blocked"
         reasons.append("Rendered student-facing text is empty or unreadable.")
-    if not quality_inspection_is_passed(quality_inspection):
-        if quality_inspection_has_failed(quality_inspection):
-            status = "blocked"
-            reasons.append(
-                "Quality inspection failed and must be repaired before final review handoff."
-            )
-        elif status != "blocked":
-            status = "draft"
-            reasons.append(
-                f"Quality inspection evidence is missing or incomplete. Write {QUALITY_INSPECTION_FILE} "
-                "after the handbook writer renders the package and before final review."
-            )
     if not product_review_is_complete(product_review):
         if status != "blocked":
             status = "draft"
         reasons.append(
-            "Final product review evidence is missing or incomplete. "
-            f"Write {PRODUCT_REVIEW_FILE} after the active Agent/LLM has compared the visible handbook "
-            "with the syllabus outline and repaired fixable issues."
+            "Current-HTML LLM review evidence is missing, stale, or incomplete. "
+            f"Write {PRODUCT_REVIEW_FILE} only after the active LLM has opened this exact HTML, "
+            "repaired every fixable issue, rerendered, and reviewed again."
         )
 
     pending_concepts = summary_int(summary, "pending_concept_explanations")
@@ -221,15 +248,10 @@ def build_agent_self_review(
             + ("..." if len(pending_visual_ids) > 8 else "")
         )
 
-    blank_pages = summary_int(summary, "pdf_blank_text_pages")
-    if blank_pages:
-        if status != "blocked":
-            status = "draft"
-        reasons.append(f"PDF inspection found {blank_pages} near-blank text page(s).")
-
     if not reasons:
         reasons.append(
-            "No blocking validation, concept-review, image-review, or rendered-text gaps were detected."
+            "The active LLM approved the current HTML after visual inspection and no blocking "
+            "content, concept, image, or rendered-text gaps remain. PDF export is now allowed."
         )
     return {
         "status": status,
@@ -257,7 +279,8 @@ def quality_inspection_evidence(output_dir: Path) -> dict[str, object]:
     path = output_dir / QUALITY_INSPECTION_FILE
     if not path.exists():
         return {
-            "required": True,
+            "required": False,
+            "supporting_diagnostic_only": True,
             "file": QUALITY_INSPECTION_FILE,
             "present": False,
             "complete": False,
@@ -267,7 +290,8 @@ def quality_inspection_evidence(output_dir: Path) -> dict[str, object]:
     inspection = read_json(path)
     issues = quality_inspection_issues(inspection)
     return {
-        "required": True,
+        "required": False,
+        "supporting_diagnostic_only": True,
         "file": QUALITY_INSPECTION_FILE,
         "present": True,
         "complete": not issues,
@@ -314,7 +338,16 @@ def quality_inspection_was_run(output_dir: Path) -> bool:
 
 def product_review_evidence(output_dir: Path) -> dict[str, object]:
     review = read_json(output_dir / PRODUCT_REVIEW_FILE)
-    issues = product_review_issues(review)
+    html_path = find_handbook_html(output_dir)
+    current_html_sha256 = file_sha256(html_path) if html_path.exists() else None
+    expected_topic_titles, expected_visual_ids = expected_review_coverage(output_dir)
+    issues = product_review_issues(
+        review,
+        current_html_sha256,
+        expected_topic_titles=expected_topic_titles,
+        expected_visual_ids=expected_visual_ids,
+        output_dir=output_dir,
+    )
     return {
         "required": True,
         "file": PRODUCT_REVIEW_FILE,
@@ -322,6 +355,12 @@ def product_review_evidence(output_dir: Path) -> dict[str, object]:
         "complete": not issues,
         "issues": issues,
         "review": review if isinstance(review, dict) else {},
+        "html_path": str(html_path) if html_path.exists() else None,
+        "current_html_sha256": current_html_sha256,
+        "expected_topic_count": len(expected_topic_titles),
+        "expected_topic_titles": expected_topic_titles,
+        "expected_rendered_visual_count": len(expected_visual_ids),
+        "expected_rendered_visual_ids": expected_visual_ids,
     }
 
 
@@ -329,14 +368,100 @@ def product_review_is_complete(product_review: dict[str, object] | None) -> bool
     return bool(isinstance(product_review, dict) and product_review.get("complete") is True)
 
 
-def product_review_issues(review: object) -> list[str]:
+def product_review_issues(
+    review: object,
+    current_html_sha256: str | None = None,
+    *,
+    expected_topic_titles: list[str] | None = None,
+    expected_visual_ids: list[str] | None = None,
+    output_dir: Path | None = None,
+) -> list[str]:
     if not isinstance(review, dict) or not review:
         return [f"Missing {PRODUCT_REVIEW_FILE}."]
+    if review.get("schema_version") == LEGACY_PRODUCT_REVIEW_SCHEMA_VERSION:
+        return legacy_product_review_issues(
+            review,
+            current_html_sha256,
+            expected_topic_titles=expected_topic_titles,
+            expected_visual_ids=expected_visual_ids,
+        )
     issues: list[str] = []
     if review.get("schema_version") != PRODUCT_REVIEW_SCHEMA_VERSION:
         issues.append(f"schema_version must be {PRODUCT_REVIEW_SCHEMA_VERSION}.")
+    if review.get("reviewer_type") != "llm":
+        issues.append("reviewer_type must be llm; Python inspection cannot approve HTML.")
+    for field in [
+        "html_opened_and_visually_inspected",
+        "complete_html_reviewed",
+        "html_review_passed",
+        "machine_validation_used_only_as_supporting_evidence",
+        "repair_loop_completed",
+    ]:
+        if review.get(field) is not True:
+            issues.append(f"{field} must be true.")
+    reviewed_html_sha256 = str(review.get("reviewed_html_sha256") or "").strip()
+    if not re.fullmatch(r"[0-9a-f]{64}", reviewed_html_sha256):
+        issues.append("reviewed_html_sha256 must be the inspected HTML SHA-256.")
+    elif current_html_sha256 and reviewed_html_sha256 != current_html_sha256:
+        issues.append(
+            "reviewed_html_sha256 does not match the current HTML; rerendered or edited HTML "
+            "must be opened and reviewed again by the LLM."
+        )
+    try:
+        review_iteration = int(review.get("review_iteration", 0))
+    except (TypeError, ValueError):
+        review_iteration = 0
+    if review_iteration < 1:
+        issues.append("review_iteration must be a positive integer.")
+    if not isinstance(review.get("issues_found"), list):
+        issues.append("issues_found must be a list.")
+    if review.get("unresolved_fixable_issues") not in (None, []):
+        issues.append("unresolved_fixable_issues must be empty before final handoff.")
+    if review.get("decision") != "approved":
+        issues.append("decision must be approved before PDF export.")
+    if output_dir is None:
+        issues.append("output_dir is required to validate the v0.7 review ledger.")
+        return issues
+    from intl_exam_guide.auditing.review_ledger import review_ledger_evidence
+
+    ledger = review_ledger_evidence(output_dir)
+    raw_ledger_issues = ledger.get("issues")
+    if isinstance(raw_ledger_issues, list):
+        issues.extend(
+            str(item.get("message") or item.get("code"))
+            for item in raw_ledger_issues
+            if isinstance(item, dict)
+        )
+    if review.get("review_ledger_index_sha256") != ledger.get("index_sha256"):
+        issues.append("review_ledger_index_sha256 does not match the current review ledger index.")
+    if review.get("render_snapshot_id") != ledger.get("render_snapshot_id"):
+        issues.append("render_snapshot_id does not match the current render snapshot.")
+    return issues
+
+
+def legacy_product_review_issues(
+    review: object,
+    current_html_sha256: str | None = None,
+    *,
+    expected_topic_titles: list[str] | None = None,
+    expected_visual_ids: list[str] | None = None,
+) -> list[str]:
+    if not isinstance(review, dict) or not review:
+        return [f"Missing {PRODUCT_REVIEW_FILE}."]
+    issues: list[str] = []
+    if review.get("schema_version") != LEGACY_PRODUCT_REVIEW_SCHEMA_VERSION:
+        issues.append(f"schema_version must be {LEGACY_PRODUCT_REVIEW_SCHEMA_VERSION}.")
+    if review.get("reviewer_type") != "llm":
+        issues.append("reviewer_type must be llm; Python inspection cannot approve HTML.")
     required_true_fields = [
-        "visible_handbook_inspected",
+        "html_opened_and_visually_inspected",
+        "html_review_passed",
+        "all_topics_reviewed",
+        "subject_factual_accuracy_checked",
+        "worked_examples_and_answers_checked",
+        "all_rendered_visuals_reviewed",
+        "visual_semantics_checked",
+        "layout_checked",
         "machine_validation_used_only_as_supporting_evidence",
         "syllabus_outline_compared",
         "granularity_audit_checked",
@@ -350,26 +475,139 @@ def product_review_issues(review: object) -> list[str]:
     for field in required_true_fields:
         if review.get(field) is not True:
             issues.append(f"{field} must be true.")
-    sampled_pages = review.get("pdf_pages_sampled")
-    if not isinstance(sampled_pages, list) or not sampled_pages:
-        issues.append("pdf_pages_sampled must list at least one inspected PDF page.")
+    reviewed_html_sha256 = str(review.get("reviewed_html_sha256") or "").strip()
+    if not re.fullmatch(r"[0-9a-f]{64}", reviewed_html_sha256):
+        issues.append("reviewed_html_sha256 must be the 64-character SHA-256 of the inspected HTML.")
+    elif current_html_sha256 and reviewed_html_sha256 != current_html_sha256:
+        issues.append(
+            "reviewed_html_sha256 does not match the current HTML; rerendered or edited HTML "
+            "must be opened and reviewed again by the LLM."
+        )
+    try:
+        review_iteration = int(review.get("review_iteration", 0))
+    except (TypeError, ValueError):
+        review_iteration = 0
+    if review_iteration < 1:
+        issues.append("review_iteration must be a positive integer.")
+    issues_found = review.get("issues_found")
+    if not isinstance(issues_found, list):
+        issues.append("issues_found must be a list.")
+    issues.extend(
+        review_coverage_issues(
+            review,
+            "topic",
+            expected_topic_titles,
+            count_field="topic_review_count",
+            ids_field="reviewed_topic_titles",
+        )
+    )
+    issues.extend(
+        review_coverage_issues(
+            review,
+            "rendered visual",
+            expected_visual_ids,
+            count_field="rendered_visual_review_count",
+            ids_field="reviewed_visual_ids",
+        )
+    )
     unresolved = review.get("unresolved_fixable_issues")
     if unresolved not in (None, []):
         issues.append("unresolved_fixable_issues must be empty before final handoff.")
     repairs = review.get("repairs_made")
     if isinstance(repairs, list) and repairs:
-        if review.get("rerendered_after_repairs") is not True:
-            issues.append("rerendered_after_repairs must be true when repairs_made is non-empty.")
-        if review.get("final_review_rerun_after_repairs") is not True:
+        if review.get("html_rerendered_after_repairs") is not True:
             issues.append(
-                "final_review_rerun_after_repairs must be true when repairs_made is non-empty."
+                "html_rerendered_after_repairs must be true when repairs_made is non-empty."
+            )
+        if review.get("html_review_rerun_after_repairs") is not True:
+            issues.append(
+                "html_review_rerun_after_repairs must be true when repairs_made is non-empty."
             )
     elif repairs is not None and not isinstance(repairs, list):
         issues.append("repairs_made must be a list when provided.")
     decision = review.get("decision")
-    if not isinstance(decision, str) or not decision.strip():
-        issues.append("decision must describe the reviewer handoff decision.")
+    if decision != "approved":
+        issues.append("decision must be approved before PDF export.")
     return issues
+
+
+def review_coverage_issues(
+    review: dict[object, object],
+    label: str,
+    expected_ids: list[str] | None,
+    *,
+    count_field: str,
+    ids_field: str,
+) -> list[str]:
+    issues: list[str] = []
+    raw_reviewed_ids = review.get(ids_field)
+    reviewed_ids = (
+        [str(value).strip() for value in raw_reviewed_ids if str(value).strip()]
+        if isinstance(raw_reviewed_ids, list)
+        else []
+    )
+    if not isinstance(raw_reviewed_ids, list):
+        issues.append(f"{ids_field} must be a list covering every {label}.")
+    try:
+        review_count = int(str(review.get(count_field, -1)))
+    except (TypeError, ValueError):
+        review_count = -1
+    if review_count != len(reviewed_ids):
+        issues.append(f"{count_field} must equal the number of entries in {ids_field}.")
+    if len(set(reviewed_ids)) != len(reviewed_ids):
+        issues.append(f"{ids_field} must not contain duplicates.")
+    if expected_ids is not None:
+        missing = sorted(set(expected_ids) - set(reviewed_ids))
+        extra = sorted(set(reviewed_ids) - set(expected_ids))
+        if missing:
+            issues.append(
+                f"{ids_field} is missing {len(missing)} required {label}(s): "
+                + ", ".join(missing[:8])
+            )
+        if extra:
+            issues.append(
+                f"{ids_field} contains {len(extra)} unknown {label}(s): "
+                + ", ".join(extra[:8])
+            )
+    return issues
+
+
+def expected_review_coverage(output_dir: Path) -> tuple[list[str], list[str]]:
+    topic_titles: list[str] = []
+    plan_data = read_json(output_dir / "guide-plan.json")
+    if isinstance(plan_data, dict):
+        try:
+            plan = GuidePlan.from_dict(plan_data)
+        except (KeyError, TypeError, ValueError):
+            plan = None
+        if plan is not None:
+            topic_titles = [
+                str(guide.topic_title).strip()
+                for guide in plan.topic_guides
+                if str(guide.topic_title).strip()
+            ]
+    visual_ids: list[str] = []
+    for entry in load_visual_manifest(output_dir / "images"):
+        rendered_asset = entry.get("rendered_asset")
+        nested_rendered = (
+            isinstance(rendered_asset, dict)
+            and rendered_asset.get("renders_in_html") is True
+        )
+        flat_status = str(entry.get("asset_status") or "").strip().lower()
+        flat_rendered = bool(str(entry.get("file") or "").strip()) and flat_status in {
+            "generated",
+            "reviewed",
+            "reviewed-generated",
+            "provider-selected-generated",
+            "sensenova-generated",
+            "svg-fallback-needs-review",
+        }
+        if not nested_rendered and not flat_rendered:
+            continue
+        visual_id = str(entry.get("id") or entry.get("visual_id") or "").strip()
+        if visual_id:
+            visual_ids.append(visual_id)
+    return topic_titles, visual_ids
 
 
 
@@ -387,8 +625,17 @@ def build_refreshed_validation(
 
     html_path = find_handbook_html(output_dir, plan.qualification)
     stored_pdf = stored_validation.get("pdf") if isinstance(stored_validation, dict) else None
-    pdf_path = Path(str(stored_pdf)) if stored_pdf else find_handbook_pdf(output_dir, plan.qualification)
-    if not pdf_path.exists():
+    current_pdf = inspect_current_pdf(output_dir)
+    pdf_path: Path | None = (
+        Path(str(stored_pdf))
+        if stored_pdf and current_pdf.get("complete") is True
+        else (
+            Path(str(current_pdf.get("pdf_path")))
+            if current_pdf.get("complete") is True
+            else None
+        )
+    )
+    if pdf_path is not None and not pdf_path.exists():
         pdf_path = None
     issues = validate_plan(plan, html_path=html_path, pdf_path=pdf_path, output_dir=output_dir)
     summary = review_summary(plan, html_path=html_path, pdf_path=pdf_path, output_dir=output_dir)
@@ -413,15 +660,8 @@ def stored_validation_with_flag(stored_validation: object, refreshed: bool) -> d
 
 def write_final_review_packet(output_dir: Path) -> Path:
     rerender_html(output_dir)
-    write_quality_inspection(output_dir)
-    rerender_pdf(output_dir)
     packet = build_final_review_packet(output_dir)
     path = output_dir / "final-review-packet.json"
-    write_review_artifacts(output_dir, packet, path)
-    rerender_html(output_dir)
-    write_quality_inspection(output_dir)
-    rerender_pdf(output_dir)
-    packet = build_final_review_packet(output_dir)
     write_review_artifacts(output_dir, packet, path)
     return path
 
@@ -475,33 +715,152 @@ def rerender_html(output_dir: Path) -> None:
             html_path, _ = default_handbook_paths(output_dir, plan.qualification)
         render_html(plan, html_path, output_dir / "images" / "visual_manifest.json")
         strip_internal_review_panel_from_file(html_path)
-    except (KeyError, TypeError, ValueError, json.JSONDecodeError, OSError):
-        return
+        invalidate_pdf_export(output_dir, plan.qualification)
+    except (KeyError, TypeError, ValueError, json.JSONDecodeError, OSError) as exc:
+        # A legacy/draft directory may not have a valid plan yet. Once a current
+        # render snapshot exists, however, silently reviewing the previous HTML
+        # would create misleading evidence for a different input version.
+        if not (output_dir / "current-render.json").exists():
+            return
+        raise RuntimeError(
+            "Unable to rerender the current HTML for review; the existing HTML was not approved."
+        ) from exc
 
 
-def rerender_pdf(output_dir: Path) -> None:
+def export_reviewed_pdf(
+    output_dir: Path,
+    delivery_dir: Path | None = None,
+    *,
+    supersede_existing: bool = False,
+) -> Path:
     plan_path = output_dir / "guide-plan.json"
-    qualification = None
-    if plan_path.exists():
-        try:
-            qualification = GuidePlan.from_dict(json.loads(plan_path.read_text(encoding="utf-8"))).qualification
-        except (KeyError, TypeError, ValueError, json.JSONDecodeError, OSError):
-            qualification = None
+    if not plan_path.exists():
+        raise HtmlReviewRequiredError("Missing guide-plan.json; cannot locate reviewed HTML.")
+    try:
+        plan = GuidePlan.from_dict(json.loads(plan_path.read_text(encoding="utf-8")))
+    except (KeyError, TypeError, ValueError, json.JSONDecodeError, OSError) as exc:
+        raise HtmlReviewRequiredError(
+            "guide-plan.json is invalid; PDF export remains blocked."
+        ) from exc
+    qualification = plan.qualification
     html_path = find_handbook_html(output_dir, qualification)
     if not html_path.exists():
-        return
-    strip_internal_review_panel_from_file(html_path)
+        raise HtmlReviewRequiredError("Rendered HTML is missing; PDF export remains blocked.")
+    from intl_exam_guide.auditing.delivery_gate import audit_delivery
+
+    gate = audit_delivery(output_dir)
+    if gate.get("delivery_eligible") is not True:
+        raw_blockers = gate.get("blockers")
+        blocker_messages = (
+            [
+                str(item.get("message") or item.get("code") or "Delivery blocker")
+                for item in raw_blockers
+                if isinstance(item, dict)
+            ]
+            if isinstance(raw_blockers, list)
+            else ["Delivery audit is incomplete."]
+        )
+        raise HtmlReviewRequiredError(
+            "PDF export requires LLM approval of the current HTML and a clean delivery gate: "
+            + "; ".join(blocker_messages)
+        )
+    artifacts = gate.get("artifacts")
+    reviewed_html_sha256 = (
+        artifacts.get("html_sha256") if isinstance(artifacts, dict) else None
+    )
+    if reviewed_html_sha256 != file_sha256(html_path):
+        raise HtmlReviewRequiredError(
+            "Current HTML changed after delivery audit; it must be reviewed and audited again."
+        )
+    current_pdf = inspect_current_pdf(output_dir)
+    if current_pdf.get("complete") is True:
+        current_path = Path(str(current_pdf.get("pdf_path")))
+        if delivery_dir is not None:
+            copy_current_pdf_to_delivery(
+                output_dir,
+                delivery_dir,
+                supersede_existing=supersede_existing,
+            )
+        return current_path
     validation_path = output_dir / "validation.json"
     stored = read_json(validation_path)
     payload = dict(stored) if isinstance(stored, dict) else {}
-    pdf_path = find_handbook_pdf(output_dir, qualification)
+    desired_pdf_path = html_path.with_suffix(".pdf")
+    handle = tempfile.NamedTemporaryFile(
+        dir=output_dir,
+        prefix=f".{desired_pdf_path.stem}.",
+        suffix=".candidate.pdf",
+        delete=False,
+    )
+    candidate_path = Path(handle.name)
+    handle.close()
     try:
-        export_pdf(html_path, pdf_path)
-    except PdfExportError as exc:
+        export_pdf(html_path, candidate_path)
+        technical_report = inspect_pdf_candidate(plan, candidate_path)
+        if technical_report.get("status") != "passed":
+            raw_blockers = technical_report.get("blockers")
+            messages = [
+                str(item.get("message") or "PDF technical validation failed.")
+                for item in raw_blockers
+                if isinstance(item, dict)
+            ] if isinstance(raw_blockers, list) else []
+            raise PdfTechnicalValidationError("; ".join(messages) or "PDF technical validation failed.")
+        pdf_path = promote_pdf_candidate(candidate_path, desired_pdf_path)
+        current_pointer = write_pdf_export_record(output_dir, pdf_path, technical_report)
+    except (PdfExportError, PdfTechnicalValidationError) as exc:
+        candidate_path.unlink(missing_ok=True)
         payload["pdf_error"] = str(exc)
-    else:
-        payload["pdf"] = str(pdf_path)
-        payload["pdf_error"] = None
+        validation_path.write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+        raise
+    payload["pdf"] = str(pdf_path)
+    payload["pdf_error"] = None
+    payload["pdf_export_gate"] = {
+        "llm_html_review_required": True,
+        "delivery_audit_schema_version": gate.get("schema_version"),
+        "reviewed_html_sha256": reviewed_html_sha256,
+        "review_artifact": PRODUCT_REVIEW_FILE,
+        "render_snapshot_id": current_pointer.get("render_snapshot_id"),
+        "pdf_sha256": current_pointer.get("pdf_sha256"),
+        "pdf_export_id": current_pointer.get("export_id"),
+        "status": "passed",
+    }
+    if delivery_dir is not None:
+        try:
+            delivered = copy_current_pdf_to_delivery(
+                output_dir,
+                delivery_dir,
+                supersede_existing=supersede_existing,
+            )
+        except ControlledDeliveryError as exc:
+            payload["delivery_error"] = str(exc)
+            validation_path.write_text(
+                json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+            raise
+        payload["delivery_copy"] = str(delivered)
+        payload["delivery_error"] = None
+    validation_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    return pdf_path
+
+
+def invalidate_pdf_export(
+    output_dir: Path,
+    qualification: Qualification | None = None,
+) -> None:
+    invalidate_current_pdf(output_dir, "HTML or a render input changed")
+    validation_path = output_dir / "validation.json"
+    stored = read_json(validation_path)
+    if not isinstance(stored, dict):
+        return
+    payload = dict(stored)
+    payload["pdf"] = None
+    payload["pdf_error"] = None
+    payload["pdf_export_gate"] = {
+        "llm_html_review_required": True,
+        "status": "pending_current_html_review",
+    }
     validation_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
@@ -538,7 +897,7 @@ def read_json(path: Path, default: object | None = None) -> object:
     if not path.exists():
         return {} if default is None else default
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError:
         return {} if default is None else default
 
@@ -547,6 +906,10 @@ def read_text(path: Path) -> str:
     if not path.exists():
         return ""
     return path.read_text(encoding="utf-8", errors="replace")
+
+
+def file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def student_visible_text_from_html(html: str) -> str:
@@ -590,6 +953,10 @@ def build_final_review_prompt(
     guide_html = (
         read_text(guide_html_path) if guide_html_path.exists() else "[named handbook HTML not found]"
     )
+    guide_html_sha256 = file_sha256(guide_html_path) if guide_html_path.exists() else ""
+    from intl_exam_guide.auditing.review_ledger import expected_review_items
+
+    expected_topic_items, expected_visual_items = expected_review_items(guide_html_path.parent)
     syllabus_evidence = (
         read_text(syllabus_evidence_path) if syllabus_evidence_path.exists() else "{}"
     )
@@ -605,42 +972,55 @@ def build_final_review_prompt(
         [
             "# Reviewer Visible-Handbook Audit",
             "",
-            "You are the Reviewer in a lightweight three-role workflow. The Analyst and Writer may have made mistakes; inspect the rendered handbook directly.",
-            "Machine validation, quality-inspection.json, and final-review-packet.json are supporting evidence only. They are not approval and must not replace visible HTML/PDF review.",
+            "You are the LLM Reviewer in a lightweight three-role workflow. The Analyst and Writer may have made mistakes; open and visually inspect the rendered HTML directly.",
+            "Machine validation, quality-inspection.json, and final-review-packet.json are supporting diagnostics only. Python cannot approve the handbook and must not replace your visible HTML review.",
+            "Do not generate or inspect a PDF during this stage. PDF export is blocked until you approve this exact HTML hash.",
             "",
             "Required checks:",
             "",
             "1. Open or inspect the named HTML output as the student-facing handbook.",
-            "2. Compare the topic sequence and source anchors with syllabus-evidence.json, syllabus-outline.json, and granularity_audit when present.",
-            "3. Check that official source_coverage items are visibly taught in the handbook, especially bullets merged into larger topics.",
-            "4. Check concept explanations, mastery summaries, worked examples, glossary policy, and visuals.",
-            "5. Check cross-page visual repetition: repeated SVG layouts, reused raster infographics, same visual title/structure across different topics, and repeated decorative pages that make students feel every topic looks the same.",
-            "6. Spot-check notation in HTML/PDF for code-style maths: b^2, t^3, x^(-1/2), sqrt(...), <=, >=, !=. Confirm superscripts, negative exponents, roots, fractions, statistics formulae, and physics/chemistry symbols are print-ready and readable.",
-            "7. If the named PDF exists, sample pages for blank pages, broken images, overflow, cut-off content, visual repetition, and notation residue.",
-            "8. Report repairable issues concretely; do not rubber-stamp the output because validation passed.",
+            "2. Compare the topic sequence and source anchors with syllabus-evidence.json, syllabus-outline.json, coverage_granularity, and granularity_audit when present.",
+            "3. Confirm every lowest official container was audited for one, several, or no independently assessable requirements; reject broad headings passed through without source proof.",
+            "4. Check that every final topic maps to one or more independent source items. When closely related items are combined, require a source-based merge reason and visible teaching treatment for every mapped item; do not force artificial one-item micro-topics.",
+            "5. Review every topic listed below. For each one, verify the teaching claims, definitions, causal relationships, worked question, solution steps, final answer, units, and source anchor for subject accuracy. Sampling is not allowed.",
+            "6. Review every rendered visual ID listed below. Verify the subject meaning, not only loading or formatting: labels, arrows, positions, structures, relationships, scales, units, captions, and correspondence with the topic must all be correct. Sampling is not allowed.",
+            "7. Check mastery summaries, glossary policy, and cross-page visual repetition: repeated SVG layouts, reused raster infographics, same visual title/structure across different topics, and repeated decorative pages that make students feel every topic looks the same.",
+            "8. Check notation throughout the HTML for code-style maths: b^2, t^3, x^(-1/2), sqrt(...), <=, >=, !=. Confirm superscripts, negative exponents, roots, fractions, statistics formulae, and physics/chemistry symbols are print-ready and readable.",
+            "9. Inspect the full HTML at representative desktop and mobile widths for blank sections, broken images, overflow, cut-off content, visual repetition, and notation residue.",
+            "10. If any issue is found, return to the Writer, repair the source artifact, rerender HTML, and personally repeat every check on the new hash. Do not approve a repaired handbook from code or diffs alone.",
+            "11. Set decision to approved only when the current HTML has no unresolved fixable issue. Python diagnostics cannot make that decision.",
             "",
-            "Return JSON only:",
+            "Required topic titles (review every entry):",
+            json.dumps(expected_topic_items, ensure_ascii=False, indent=2),
+            "",
+            "Required rendered visual IDs (review every entry):",
+            json.dumps(expected_visual_items, ensure_ascii=False, indent=2),
+            "",
+            "Write LLM-authored review-ledger/topics-NNN.json and visuals-NNN.json shards with at most 25 reviews each, plus review-ledger/holistic.json. Every review entry must record evidence_locations pointing to the screenshot or browser viewport position actually inspected. Bind every file to the current render_snapshot_id and HTML SHA-256. Then run index-review-ledger and return the compact agent-product-review.json only.",
+            "Do not prefill approval booleans. Set each field only after that exact check was personally completed.",
+            "",
+            "Compact product-review JSON shape:",
             "",
             "{",
             f'  "schema_version": "{PRODUCT_REVIEW_SCHEMA_VERSION}",',
-            '  "visible_handbook_inspected": true,',
-            '  "machine_validation_used_only_as_supporting_evidence": true,',
-            '  "syllabus_outline_compared": true,',
-            '  "granularity_audit_checked": true,',
-            '  "merged_bullets_visible_in_handbook": true,',
-            '  "concepts_checked": true,',
-            '  "visuals_checked": true,',
-            '  "cross_page_visual_repetition_checked": true,',
-            '  "notation_spot_check_completed": true,',
-            '  "glossary_policy_checked": true,',
-            '  "pdf_pages_sampled": [],',
-            '  "repairable_issues": [],',
+            '  "reviewer_type": "llm",',
+            '  "html_opened_and_visually_inspected": "<true only after direct inspection>",',
+            f'  "reviewed_html_sha256": "{guide_html_sha256}",',
+            '  "render_snapshot_id": "<current snapshot ID>",',
+            '  "review_ledger_index_sha256": "<current ledger index SHA-256>",',
+            '  "review_iteration": "<positive integer>",',
+            '  "html_review_passed": "<true only when all shards and holistic review pass>",',
+            '  "complete_html_reviewed": "<true only after the complete assembled HTML was inspected>",',
+            '  "machine_validation_used_only_as_supporting_evidence": "<true only when not used as approval>",',
+            '  "repair_loop_completed": "<true only after all repairs were rerendered and re-reviewed>",',
+            '  "issues_found": [],',
             '  "repairs_made": [],',
-            '  "unresolved_issues": [],',
-            '  "decision": "complete" | "draft" | "blocked"',
+            '  "unresolved_fixable_issues": [],',
+            '  "decision": "<approved or revisions_required>"',
             "}",
             "",
-            "The decision is the Reviewer's handoff decision, not a Python-generated certification state.",
+            "When repairs_made is non-empty, also set html_rerendered_after_repairs and html_review_rerun_after_repairs to true, and increment review_iteration for each visible review pass.",
+            "The decision is the LLM Reviewer's current-HTML decision, not a Python-generated certification state.",
             "",
             "# Named handbook HTML",
             "",

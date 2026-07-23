@@ -370,6 +370,7 @@ class OxfordAQAProvider(ExamBoardProvider):
             source = SourceRecord(
                 provider=self.name,
                 page_url=page_url,
+                course_market="international",
                 specification_url=page_url,
             )
             return Qualification(
@@ -402,6 +403,7 @@ class OxfordAQAProvider(ExamBoardProvider):
         source = SourceRecord(
             provider=self.name,
             page_url=page_url,
+            course_market="international",
             specification_url=specification_url,
         )
         route_tags = [f"level-scope:{normalize_level_scope(level)}"] if level else []

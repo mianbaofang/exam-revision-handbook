@@ -84,3 +84,24 @@ def test_rendered_icon_names_are_registered():
 
 def test_unknown_render_icon_falls_back_to_target_icon():
     assert render_icon("missing-icon") == render_icon("target")
+
+
+def test_core_render_paths_do_not_delete_historical_pdfs():
+    for relative in [
+        "src/intl_exam_guide/cli.py",
+        "src/intl_exam_guide/skill_interface.py",
+        "src/intl_exam_guide/auditing/final_review.py",
+    ]:
+        source = (REPO_ROOT / relative).read_text(encoding="utf-8")
+        assert not re.search(r"pdf_(?:path|output)\.unlink\(", source)
+
+
+def test_low_level_pdf_export_has_one_governed_runtime_caller():
+    callers = []
+    for path in (REPO_ROOT / "src" / "intl_exam_guide").rglob("*.py"):
+        if path.as_posix().endswith("rendering/pdf.py"):
+            continue
+        if re.search(r"\bexport_pdf\(", path.read_text(encoding="utf-8")):
+            callers.append(path.relative_to(REPO_ROOT).as_posix())
+
+    assert callers == ["src/intl_exam_guide/auditing/final_review.py"]

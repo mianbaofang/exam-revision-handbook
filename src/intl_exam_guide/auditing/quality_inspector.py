@@ -22,8 +22,8 @@ QUALITY_INSPECTION_SCHEMA_VERSION = "v0.5-quality-inspection"
 
 PLACEHOLDER_PATTERNS = [
     r"\[\s*(?:insert|llm fills?|todo|placeholder)[^\]]*\]",
-    r"\bundefined\b",
-    r"\bnull\b",
+    r"(?<!is )\bundefined\b",
+    r"(?:value|field|result)\s*[:=]\s*null\b",
     r"TODO:",
 ]
 
@@ -325,7 +325,7 @@ def check_visible_modules(visible_text: str) -> dict[str, bool]:
     }
 
 
-def check_concept_explanations(output_dir: Path, topic_count: int) -> dict[str, object]:
+def check_concept_explanations(output_dir: Path, topic_count: int) -> dict[str, Any]:
     path = output_dir / "concepts" / "concept_explanations.json"
     data = read_json(path)
     if isinstance(data, dict):
@@ -351,8 +351,7 @@ def check_concept_explanations(output_dir: Path, topic_count: int) -> dict[str, 
     for index, entry in enumerate(concept_entries, start=1):
         title = str(entry.get("topic_title") or entry.get("concept_term") or f"entry {index}")
         visual_decision = entry.get("visual_decision")
-        has_visual_decision = isinstance(visual_decision, dict)
-        if not has_visual_decision:
+        if not isinstance(visual_decision, dict):
             missing_visual_decisions.append(title)
             continue
         visual_decision_count += 1
@@ -387,7 +386,7 @@ def check_concept_explanations(output_dir: Path, topic_count: int) -> dict[str, 
     }
 
 
-def check_visual_manifest(output_dir: Path) -> dict[str, object]:
+def check_visual_manifest(output_dir: Path) -> dict[str, Any]:
     path = output_dir / "images" / "visual_manifest.json"
     data = read_json(path)
     visuals = data.get("visuals", data) if isinstance(data, dict) else data
@@ -403,8 +402,10 @@ def check_visual_manifest(output_dir: Path) -> dict[str, object]:
         if prompt:
             prompts[prompt] = prompts.get(prompt, 0) + 1
         legacy_status = str(entry.get("asset_status") or "").lower()
-        route = entry.get("recommended_route") if isinstance(entry.get("recommended_route"), dict) else {}
-        asset = entry.get("rendered_asset") if isinstance(entry.get("rendered_asset"), dict) else {}
+        route_value = entry.get("recommended_route")
+        route = route_value if isinstance(route_value, dict) else {}
+        asset_value = entry.get("rendered_asset")
+        asset = asset_value if isinstance(asset_value, dict) else {}
         review_status = str(asset.get("review_status") or entry.get("review_status") or "").lower()
         complexity = str(route.get("legacy_complexity") or entry.get("complexity") or "").lower()
         route_name = str(route.get("route") or "").lower()
@@ -460,7 +461,7 @@ def read_json(path: Path, default: object | None = None) -> Any:
     if not path.exists():
         return {} if default is None else default
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError:
         return {} if default is None else default
 

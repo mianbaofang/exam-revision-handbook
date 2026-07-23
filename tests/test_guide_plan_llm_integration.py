@@ -16,6 +16,7 @@ from intl_exam_guide.planning.concept_integration import (
     concept_entries_from_explanations,
 )
 from intl_exam_guide.planning.guide_plan import build_guide_plan
+from intl_exam_guide.planning.identifiers import stable_requirement_id
 from intl_exam_guide.rendering.output_names import default_handbook_stem
 from intl_exam_guide.skill_interface import SkillHandbookGenerator
 
@@ -96,6 +97,8 @@ class TestCollectConceptJobs:
         assert jobs[0].level == "IGCSE"
         assert jobs[0].topic_title == "Newton's Laws of Motion"
         assert jobs[0].concept_term == "Newton's first law (inertia)"
+        assert jobs[0].topic_id == stable_requirement_id(sample_topics[0])
+        assert jobs == collect_concept_jobs(sample_topics, "Physics", "international_gcse")
 
     def test_collect_concept_jobs_a_level(self, sample_topics):
         jobs = collect_concept_jobs(sample_topics, "Physics", "international_as_a_level")
@@ -147,6 +150,26 @@ class TestApplyProviderExplanations:
 
         assert updated[0].essence == original_essence
 
+    def test_apply_concept_explanations_does_not_use_substring_matching(
+        self, sample_qualification
+    ):
+        plan = build_guide_plan(sample_qualification, questions_per_topic=1)
+        original = plan.topic_guides[0].analogy
+
+        updated = apply_concept_explanations(
+            plan.topic_guides,
+            [
+                ConceptExplanation(
+                    concept_term="Newton's first law",
+                    explanation="A near match must not be guessed onto a topic.",
+                    analogy="This must not be imported.",
+                    status="generated",
+                )
+            ],
+        )
+
+        assert updated[0].analogy == original
+
 
 class TestCanonicalConceptEntries:
     def test_provider_results_convert_to_importable_entries(
@@ -169,9 +192,13 @@ class TestCanonicalConceptEntries:
         assert entries[0]["topic_title"] == "Newton's Laws of Motion"
         assert entries[0]["visual_decision"]["recommended_route"] == "text-ok"
         assert entries[0]["visual_decision"]["source"] == "python-draft-fallback"
+        assert entries[0]["provenance"] == "python-fallback"
+        assert entries[0]["delivery_eligible"] is False
         assert "no_visual_reason" in entries[0]["visual_decision"]
         assert len(entries[0]["explanations"]) >= 2
         assert "resultant external force" in plan.topic_guides[0].checklist[0]
+        assert plan.practice_items[0].question == generated_explanations[0].example
+        assert plan.practice_items[0].public_solution_steps
 
     def test_apply_concept_entries_imports_writer_visual_spec(self, sample_qualification):
         plan = build_guide_plan(sample_qualification, questions_per_topic=1)

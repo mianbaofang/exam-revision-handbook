@@ -15,16 +15,18 @@ asset.
   pending complex images, PDF/export gaps, validation errors, or an Agent
   self-review block.
 - `final-ready`: fresh evidence from the current code shows validation success,
-  `final-review-packet.json` reports ready, concepts and visuals are reviewed
-  or explicitly nonblocking, `agent-product-review.json` records the active
-  Agent's visible-handbook review and repair pass, and the manifest records the
-  exact commands and summaries.
+  concepts and visuals are reviewed or explicitly nonblocking, and the active
+  LLM has completely reviewed the current HTML. `agent-product-review.json`
+  must be bound to that HTML hash, list every reviewed final topic and rendered
+  visual, and record no unresolved fixable issue. The PDF is then exported
+  through the approval gate. `final-review-packet.json` is supporting evidence,
+  not approval.
 - `certified`: final-ready evidence has also been reviewed and approved by the
   release owner or a subject-aware reviewer, with no code or asset drift after
   the evidence was captured.
 
 No route is certified by default. A v0.3 `delivery_status: ready` packet is a
-historical fact, not a standing v0.5 certification.
+historical fact, not a standing certification for the current release.
 
 ## Manifest Shape
 
@@ -56,13 +58,13 @@ small manifest such as `docs/release-evidence/v0.5/manifest.json`.
         "practice_cards": 0
       },
       "final_review": {
-        "delivery_status": "ready",
-        "must_not_present_as_final": false
+        "delivery_status": "draft",
+        "must_not_present_as_final": true
       },
       "product_review": {
-        "complete": true,
+        "complete": false,
         "artifact": "agent-product-review.json",
-        "decision": "final-ready"
+        "decision": "pending"
       },
       "visual_summary": {
         "pending_infographic_assets": 0,

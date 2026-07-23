@@ -1,9 +1,11 @@
-import pytest
+import hashlib
 import json
 import re
 import subprocess
 import sys
 from pathlib import Path
+
+import pytest
 
 from intl_exam_guide.models import (
     AssessmentPaper,
@@ -92,7 +94,7 @@ def test_verify_release_samples_rejects_mixed_language_slash_labels(tmp_path):
     assert "mixed-language label remains" in result.stderr
 
 
-def test_verify_release_samples_defaults_to_lightweight_v05_evidence():
+def test_verify_release_samples_defaults_to_current_release_evidence():
     script = Path(__file__).resolve().parents[1] / "scripts" / "verify_release_samples.py"
 
     result = subprocess.run(
@@ -105,8 +107,10 @@ def test_verify_release_samples_defaults_to_lightweight_v05_evidence():
     assert result.returncode == 0
     payload = json.loads(result.stdout)
     assert payload["evidence_manifest"].endswith(
-        "docs\\release-evidence\\v0.5\\manifest.json"
-    ) or payload["evidence_manifest"].endswith("docs/release-evidence/v0.5/manifest.json")
+        "docs\\release-evidence\\v0.6.0\\manifest.json"
+    ) or payload["evidence_manifest"].endswith(
+        "docs/release-evidence/v0.6.0/manifest.json"
+    )
     assert payload["entries"]
     assert all(
         entry["status"] in {"candidate", "draft", "final-ready", "certified"}
@@ -428,9 +432,18 @@ def test_import_infographic_assets_rerenders_html_with_imported_image(tmp_path):
         encoding="utf-8",
     )
     write_visual_assets(plan, images_dir)
+    manifest_path = images_dir / "visual_manifest.json"
+    manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest_payload["visuals"][0]["visual_need"]["reviewer_visual_decision"] = "approved"
+    manifest_path.write_text(json.dumps(manifest_payload), encoding="utf-8")
     (output_dir / "guide.html").write_text(
         '<img src="images/visual_001_old-svg-fallback.svg">',
         encoding="utf-8",
+    )
+    old_pdf = output_dir / "guide.pdf"
+    old_pdf.write_bytes(b"%PDF-1.4\n")
+    (output_dir / "validation.json").write_text(
+        json.dumps({"pdf": str(old_pdf)}), encoding="utf-8"
     )
 
     result = run_import(output_dir, asset_dir)
@@ -440,6 +453,19 @@ def test_import_infographic_assets_rerenders_html_with_imported_image(tmp_path):
     assert 'src="images/visual_001.png"' in html
     assert "svg-fallback.svg" not in html
     assert "Re-rendered handbook HTML" in result.stdout
+    manifest_after = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert manifest_after["visuals"][0]["visual_need"]["reviewer_visual_decision"] == "pending"
+    assert old_pdf.exists()
+    validation = json.loads((output_dir / "validation.json").read_text(encoding="utf-8"))
+    assert validation["pdf"] is None
+    assert validation["pdf_export_gate"]["status"] == "pending_current_html_review"
+
+
+def test_import_scripts_cannot_bypass_reviewed_pdf_export():
+    root = Path(__file__).resolve().parents[1]
+    for name in ["import_infographic_assets.py", "import_concept_explanations.py"]:
+        source = (root / "scripts" / name).read_text(encoding="utf-8")
+        assert "export_pdf(" not in source
 
 
 def test_import_infographic_assets_fails_when_required_asset_missing(tmp_path):
@@ -523,6 +549,51 @@ def test_intro_animation_does_not_hardcode_release_version_labels():
         assert release_labels == [], (animation_file, release_labels)
 
 
+def test_intro_animation_embedded_sources_are_current():
+    repo_root = Path(__file__).resolve().parents[1]
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(repo_root / "scripts" / "sync_intro_animation_sources.py"),
+            "--check",
+        ],
+        cwd=repo_root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_intro_animation_uses_all_four_current_handbook_samples():
+    repo_root = Path(__file__).resolve().parents[1]
+    asset_root = repo_root / "docs" / "assets"
+    sample_names = [
+        "v060-oxfordaqa-biology-p12.jpg",
+        "v060-oxfordaqa-biology-p21.jpg",
+        "v060-oxfordaqa-biology-p28.jpg",
+        "v060-caie-physics-p10.jpg",
+        "v060-caie-physics-p25.jpg",
+        "v060-caie-physics-p30.jpg",
+        "v060-ap-chemistry-p11.jpg",
+        "v060-ap-chemistry-p43.jpg",
+        "v060-ap-chemistry-p91.jpg",
+        "v060-edexcel-mathematics-p52.jpg",
+        "v060-edexcel-mathematics-p74.jpg",
+        "v060-edexcel-mathematics-p99.jpg",
+    ]
+    video_files = [
+        asset_root / "three-board-support-video" / "video.jsx",
+        asset_root / "three-board-support-video-en" / "video.jsx",
+    ]
+
+    for sample_name in sample_names:
+        assert (asset_root / sample_name).is_file()
+        for video_file in video_files:
+            assert sample_name in video_file.read_text(encoding="utf-8")
+
+
 @pytest.mark.skip(reason="Test needs update after architecture refactor.")
 def test_public_repo_does_not_ship_built_in_image_router():
     repo_root = Path(__file__).resolve().parents[1]
@@ -559,6 +630,36 @@ def test_skill_instructions_include_required_preflight_choices():
     assert "Do not generate a fully translated handbook body" in text
 
 
+def test_skill_blocks_until_external_image_capability_is_confirmed():
+    repo_root = Path(__file__).resolve().parents[1]
+    skill_text = (repo_root / "skill" / "SKILL.md").read_text(encoding="utf-8")
+    agent_text = (repo_root / "skill" / "agents" / "openai.yaml").read_text(
+        encoding="utf-8"
+    )
+    image_guide = (repo_root / "docs" / "IMAGE_MODEL_GUIDE.md").read_text(
+        encoding="utf-8"
+    )
+    prompt_records = json.loads(
+        (repo_root / "skill" / "test-prompts.json").read_text(encoding="utf-8")
+    )
+
+    required_question = "provide or enable an external image-generation Skill or tool"
+    assert required_question in skill_text
+    assert "This is a blocking question" in skill_text
+    assert "do not infer" in skill_text.lower()
+    assert "Do not silently select local generation" in skill_text
+    assert "keeps the run at preflight" in skill_text
+    assert required_question in agent_text
+    assert required_question in image_guide
+    handbook_prompts = {
+        record["id"]: record["expected"]
+        for record in prompt_records
+        if record["id"] in {"aqa-accounting-zh", "edexcel-ambiguous-subject", "caie-exam-year"}
+    }
+    assert len(handbook_prompts) == 3
+    assert all(required_question in expected for expected in handbook_prompts.values())
+
+
 def test_public_docs_explain_delivery_matrix_and_final_review():
     readme = Path("README.md").read_text(encoding="utf-8")
     chinese_readme = Path("README.zh-CN.md").read_text(encoding="utf-8")
@@ -573,6 +674,25 @@ def test_public_docs_explain_delivery_matrix_and_final_review():
     assert "交付矩阵" in chinese_readme
     assert "final-review-packet.json" in chinese_readme
     assert "候选路线" in chinese_readme
+
+
+def test_public_skill_and_docs_state_the_automatic_acquisition_boundary():
+    root_skill = Path("SKILL.md").read_text(encoding="utf-8")
+    packaged_skill = Path("skill/SKILL.md").read_text(encoding="utf-8")
+    readme = Path("README.md").read_text(encoding="utf-8")
+    chinese_readme = Path("README.zh-CN.md").read_text(encoding="utf-8")
+
+    for text in (root_skill, packaged_skill, readme):
+        normalized = " ".join(text.split())
+        assert "AQA, Edexcel, and CAIE" in normalized
+        assert "College Board AP" in normalized
+        assert "cannot use automatic acquisition" in normalized
+        assert "unknown compatibility errors" in normalized
+
+    assert "AQA、Edexcel、CAIE" in chinese_readme
+    assert "College Board AP" in chinese_readme
+    assert "不能使用自动获取功能" in chinese_readme
+    assert "未知" in chinese_readme and "兼容" in chinese_readme
 
 
 def test_release_checklist_requires_matrix_review_and_visual_job_ids():
@@ -699,24 +819,6 @@ def write_sample_outputs(outputs: Path, completed: bool) -> None:
                 ),
                 encoding="utf-8",
             )
-            (sample_dir / "agent-product-review.json").write_text(
-                json.dumps(
-                    {
-                        "schema_version": "v0.5-visible-handbook-review",
-                        "visible_handbook_inspected": True,
-                        "syllabus_outline_compared": True,
-                        "pdf_pages_sampled": [1],
-                        "visuals_inspected": True,
-                        "glossary_policy_checked": True,
-                        "repair_loop_completed": True,
-                        "repairs_made": [],
-                        "unresolved_fixable_issues": [],
-                        "decision": "final-ready",
-                    },
-                    indent=2,
-                ),
-                encoding="utf-8",
-            )
         manifest = []
         html_images = []
         for index in range(1, infographics + 1):
@@ -741,9 +843,44 @@ def write_sample_outputs(outputs: Path, completed: bool) -> None:
             encoding="utf-8",
         )
         pending = "" if completed else "<section>Infographic Pending</section>"
-        (sample_dir / "guide.html").write_text(
-            f'<html lang="en"><body><h1>{sample}</h1>{"".join(html_images)}{pending}</body></html>',
-            encoding="utf-8",
-        )
+        html = f'<html lang="en"><body><h1>{sample}</h1>{"".join(html_images)}{pending}</body></html>'
+        (sample_dir / "guide.html").write_text(html, encoding="utf-8")
         if completed:
+            (sample_dir / "agent-product-review.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": "v0.6-llm-html-review",
+                        "reviewer_type": "llm",
+                        "html_opened_and_visually_inspected": True,
+                        "reviewed_html_sha256": hashlib.sha256(html.encode("utf-8")).hexdigest(),
+                        "review_iteration": 1,
+                        "html_review_passed": True,
+                        "all_topics_reviewed": True,
+                        "topic_review_count": topics,
+                        "reviewed_topic_titles": [
+                            f"Topic {index}" for index in range(topics)
+                        ],
+                        "subject_factual_accuracy_checked": True,
+                        "worked_examples_and_answers_checked": True,
+                        "all_rendered_visuals_reviewed": True,
+                        "rendered_visual_review_count": infographics,
+                        "reviewed_visual_ids": [
+                            f"visual_{index:03d}"
+                            for index in range(1, infographics + 1)
+                        ],
+                        "visual_semantics_checked": True,
+                        "layout_checked": True,
+                        "syllabus_outline_compared": True,
+                        "visuals_inspected": True,
+                        "glossary_policy_checked": True,
+                        "repair_loop_completed": True,
+                        "issues_found": [],
+                        "repairs_made": [],
+                        "unresolved_fixable_issues": [],
+                        "decision": "approved",
+                    },
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
             (sample_dir / "guide.pdf").write_bytes(b"%PDF-1.4\n")

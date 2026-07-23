@@ -4,7 +4,7 @@ Please read this before using IGCSE & A-Level AI Revision Guide Skill. By using 
 
 ## English
 
-This project is an independent open-source learning and workflow framework. It is not affiliated with, endorsed by, sponsored by, or certified by OxfordAQA, Oxford International AQA, Pearson Edexcel, Cambridge International, CAIE, AQA, Edexcel, OCR, WJEC/Eduqas, CCEA, or any other exam board, school, publisher, or qualification provider.
+This project is an independent open-source learning and workflow framework. It is not affiliated with, endorsed by, sponsored by, or certified by OxfordAQA, Oxford International AQA, Pearson Edexcel, Cambridge International, CAIE, College Board, Advanced Placement, AP, AQA, Edexcel, OCR, WJEC/Eduqas, CCEA, or any other exam board, school, publisher, or qualification provider.
 
 Exam-board names are used only to identify public source materials and user-requested qualification routes. Users must verify all syllabus requirements, exam dates, subject codes, assessment formats, and allowed materials against the latest official exam-board publications.
 
@@ -24,7 +24,7 @@ The maintainers are not liable for academic, financial, operational, copyright, 
 
 ## 中文
 
-本项目是独立的开源学习与工作流框架。它与 OxfordAQA、Oxford International AQA、Pearson Edexcel、Cambridge International、CAIE、AQA、Edexcel、OCR、WJEC/Eduqas、CCEA 或任何考试局、学校、出版社、资格认证机构均无从属、授权、赞助、背书或认证关系。
+本项目是独立的开源学习与工作流框架。它与 OxfordAQA、Oxford International AQA、Pearson Edexcel、Cambridge International、CAIE、College Board、Advanced Placement、AP、AQA、Edexcel、OCR、WJEC/Eduqas、CCEA 或任何考试局、学校、出版社、资格认证机构均无从属、授权、赞助、背书或认证关系。
 
 README 中出现考试局名称，只用于说明公开来源材料和用户请求的课程路线。用户必须以考试局最新官方资料为准，自行核对大纲要求、考试日期、科目代码、考核方式和允许使用的材料。
 

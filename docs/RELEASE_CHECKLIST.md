@@ -25,6 +25,21 @@
   output directories.
 - [ ] Do not use old ignored `outputs/` folders, stale `validation.json`, or
   local design drafts as proof that the current release output is valid.
+- [ ] The publish diff excludes local review evidence, downloaded source PDFs,
+  generated handbooks/PDFs, `tmp/`, `MP4/`, `review-*`, `visual-*`, caches,
+  `NUL`, and machine-specific absolute paths.
+
+## Skill-Store Package
+
+- [ ] `python scripts/build_skill_store_package.py` succeeds after the final
+  version bump.
+- [ ] The resulting ZIP contains `SKILL.md` at archive root and does not contain
+  `skill/SKILL.md`, a repository-name outer directory, or another nested
+  `SKILL.md`.
+- [ ] Packaged `SKILL.md` is byte-identical to `skill/SKILL.md`; a second build
+  has the same SHA-256.
+- [ ] Upload the purpose-built Skill ZIP to the GitHub Release. Do not use the
+  GitHub-generated repository source ZIP as the Skill-store package.
 
 ## Release Evidence Status
 
@@ -37,7 +52,10 @@
   validation error, or Agent self-review block.
 - [ ] Final-ready outputs have fresh validation, `final-review-packet.json`,
   concept status, visual status, package manifest, and PDF/export evidence from
-  the current code.
+  the current code. Each handbook also has its own complete LLM HTML review in
+  `review-ledger/`, with per-item evidence locations, current Topic/Visual
+  coverage, and a compact `agent-product-review.json` bound to the exact current
+  HTML/render/ledger hashes; no other handbook's review is reused.
 - [ ] Certified outputs meet the final-ready bar and have an explicit release
   owner or subject-aware reviewer approval recorded in the manifest.
 - [ ] For any `draft`, `final-ready`, or `certified` claim, create or update a
@@ -49,7 +67,7 @@
 - [ ] Offline demo works:
 
 ```bash
-python -m intl_exam_guide demo --out ./outputs/demo-science
+python -m intl_exam_guide demo --out ./outputs/demo-science --language en --image-provider prompt-queue --explanation-style friendly --skip-pdf
 ```
 
 - [ ] Subject-page discovery shows qualification metadata:
@@ -112,7 +130,10 @@ python -m intl_exam_guide generate --provider cambridge --query "Chemistry 9701"
 ## Validation
 
 - [ ] `python -m pytest -q` passes.
+- [ ] `python -m ruff check .` passes.
 - [ ] `python -m compileall -q src tests scripts` passes.
+- [ ] Targeted `python -m mypy` checks pass for changed source files.
+- [ ] `python scripts/sync_intro_animation_sources.py --check` passes.
 - [ ] Run or refresh the delivery matrix evidence for every
   subject/board/level claim changed in this release.
 - [ ] Run `python -m intl_exam_guide review --out <sample-output>` for each
@@ -121,6 +142,19 @@ python -m intl_exam_guide generate --provider cambridge --query "Chemistry 9701"
   `blocked_errors`. Map that internal result to release evidence status:
   `draft`, `final-ready`, or `certified`; leave route-only checks as
   `candidate`.
+- [ ] For every handbook claimed as final-ready, the active LLM has opened the
+  complete current HTML and reviewed every final topic, worked example, answer,
+  source anchor, and rendered visual. Repairs were rerendered and reviewed again
+  before `agent-product-review.json` was written.
+- [ ] Run `python -m intl_exam_guide export-pdf --out <sample-output>` only after
+  that handbook's current HTML approval passes. A later HTML change invalidates
+  the approval and marks the former PDF historical. Confirm the candidate passes
+  technical checks and `current-pdf.json` references the exact HTML hash, PDF
+  hash, review-ledger hash, and product-review hash.
+- [ ] When copying a final PDF outside the sample directory, use
+  `export-pdf --delivery-dir <directory>` and verify `current-delivery.json`.
+  Do not silently replace a differing file; archive it only through the explicit
+  `--supersede-existing` option.
 - [ ] For every release-ready sample,
   `validation.json.review_summary.pending_concept_explanations` is `0`. If it is
   nonzero, write the missing items from `concepts/concept_jobs.json`, save
@@ -131,7 +165,7 @@ python -m intl_exam_guide generate --provider cambridge --query "Chemistry 9701"
 - [ ] Release notes or changelog include fresh end-to-end evidence from the
   current working copy: command, output directory, `issues` count, topic count,
   practice-card count, visual-brief count, section-file count, image-file count,
-  and whether HTML/PDF were produced. Do not commit the generated `outputs/`
+  and whether HTML/PDF were produced after the approval gate. Do not commit the generated `outputs/`
   folder used for this evidence.
 - [ ] A raw-key scan across the repository and release outputs reports
   `raw_key_matches=0`:
@@ -156,15 +190,31 @@ python scripts/import_infographic_assets.py ./outputs/economics-9214-sample --as
 python scripts/import_infographic_assets.py ./outputs/chemistry-9202-sample --asset-dir ./generated-infographics/chemistry-9202-sample --provider "external-reviewed-workflow"
 ```
 
-- [ ] After infographic assets are generated, `python scripts/finalize_release_samples.py --outputs-root <outputs-dir>` regenerates the final Mathematics, Economics, and Chemistry HTML/PDF samples.
+- [ ] After infographic assets are generated, rerender each affected handbook,
+  repeat its complete LLM HTML review, and export its PDF through the approval
+  gate. Do not use a batch script to invent content or share approval.
+- [ ] Confirm asset import used the existing manifest only. Every imported or
+  replaced asset has `visual_need.reviewer_visual_decision: "pending"` until
+  the active LLM completes the visual review; do not rebuild the manifest after
+  import or after recording that approval.
+- [ ] Confirm the delivery audit reports no `visual.manifest_plan_mismatch`:
+  the current manifest must match the current plan by visual count, derived key,
+  and source-bound `spec_hash`, even when HTML was rendered by a maintenance
+  script directly.
+- [ ] For a changed visual plan, start a new explicit manifest refresh cycle
+  before generating/importing assets. Reuse is valid only when `spec_hash` and
+  asset SHA-256 are unchanged.
 - [ ] `python scripts/verify_release_samples.py --outputs-root <outputs-dir>` passes
-  for the final Mathematics, Economics, and Chemistry sample guides.
-- [ ] Final guide screenshots are recaptured for `docs/assets/sample-math-guide.png`,
-  `docs/assets/sample-economics-guide.png`, `docs/assets/sample-chemistry-guide.png`,
-  and `docs/assets/sample-guide-snapshot.png`.
+  for every release sample being claimed.
+- [ ] The 12 `docs/assets/v060-*.jpg` preview pages are recaptured from the four
+  approved current PDFs: three each for OxfordAQA Biology, CAIE Physics, AP
+  Chemistry, and Pearson Edexcel Mathematics. They are full A4 pages with
+  visual teaching content, not text-only pages.
 - [ ] The intro animation HTML and GIF preview are regenerated after final guide
-  screenshots are recaptured. MP4 export is optional and should stay out of the
-  repo unless the release explicitly needs a downloadable video file:
+  screenshots are recaptured. Chinese and English keyframes are visually checked
+  for nonblank canvas, overlap, clipping, and loaded sample assets. MP4 export is
+  optional and should stay out of the repo unless the Release explicitly offers
+  it as a downloadable asset:
 
 ```bash
 python scripts/render_intro_animation.py --html docs/project-intro-animation.html --mp4 outputs/project-intro-animation.mp4 --gif docs/assets/intro-animation-preview.gif
@@ -182,7 +232,9 @@ python scripts/render_intro_animation.py --html docs/project-intro-animation-en.
 - [ ] `validation.json.review_summary` has the expected topic, guide, practice-card, diagram, and source-snippet counts.
 - [ ] Generated HTML includes source checks.
 - [ ] Generated HTML includes website listing metadata when discovered from a subject page.
-- [ ] Generated HTML includes one concept map per topic.
+- [ ] Every final topic has a Writer-authored `visual_decision`; `text-ok` topics
+  include a specific `no_visual_reason`, and non-text routes have reviewed assets
+  or remain explicitly pending.
 - [ ] Generated HTML includes practice cards with command words, solution steps, and answer checkpoints.
 - [ ] Generated HTML records the selected term-support language in `run-options.json`.
 - [ ] Handbook body, template labels, examples, diagram text, and image prompts remain English.

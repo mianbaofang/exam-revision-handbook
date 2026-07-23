@@ -74,14 +74,69 @@ class ExamBoardProvider(ABC):
 
 # Providers fully implemented in this release. Append a name once get_provider
 # returns a working instance for it.
-PROVIDER_NAMES: tuple[str, ...] = ("oxfordaqa", "pearson", "cambridge")
+PROVIDER_NAMES: tuple[str, ...] = (
+    "oxfordaqa",
+    "aqa_uk",
+    "pearson",
+    "pearson_uk",
+    "cambridge",
+    "cambridge_uk",
+    "collegeboard",
+)
 
 # Domain fingerprints used to infer a provider from a user-supplied URL.
 PROVIDER_DOMAINS: dict[str, tuple[str, ...]] = {
     "oxfordaqa": ("oxfordaqa.com",),
+    "aqa_uk": ("aqa.org.uk",),
     "pearson": ("qualifications.pearson.com", "edexcel"),
     "cambridge": ("cambridgeinternational.org",),
+    "collegeboard": ("apstudents.collegeboard.org", "apcentral.collegeboard.org"),
 }
+
+
+def provider_for_course_market(name: str, course_market: str | None) -> str:
+    """Resolve an exam-board family to its explicit market-specific Provider."""
+
+    normalized = name.lower().strip()
+    if course_market is None:
+        return normalized
+    if course_market not in {"international", "uk-domestic", "not-applicable"}:
+        raise ValueError(f"Unsupported course market: {course_market!r}.")
+    if course_market == "not-applicable":
+        if normalized in {"collegeboard", "college-board", "ap", "advanced-placement"}:
+            return "collegeboard"
+        raise ValueError("course_market=not-applicable is only valid for College Board AP.")
+
+    routes = {
+        "international": {
+            "aqa": "oxfordaqa",
+            "oxfordaqa": "oxfordaqa",
+            "aqa_uk": "oxfordaqa",
+            "edexcel": "pearson",
+            "pearson": "pearson",
+            "pearson_uk": "pearson",
+            "caie": "cambridge",
+            "cambridge": "cambridge",
+            "cambridge_uk": "cambridge",
+        },
+        "uk-domestic": {
+            "aqa": "aqa_uk",
+            "oxfordaqa": "aqa_uk",
+            "aqa_uk": "aqa_uk",
+            "edexcel": "pearson_uk",
+            "pearson": "pearson_uk",
+            "pearson_uk": "pearson_uk",
+            "caie": "cambridge_uk",
+            "cambridge": "cambridge_uk",
+            "cambridge_uk": "cambridge_uk",
+        },
+    }
+    try:
+        return routes[course_market][normalized]
+    except KeyError as exc:
+        raise ValueError(
+            f"Provider {name!r} does not support course_market={course_market!r}."
+        ) from exc
 
 
 def infer_provider_from_url(url: str) -> str | None:
@@ -104,14 +159,30 @@ def get_provider(name: str) -> ExamBoardProvider:
         from intl_exam_guide.providers.oxfordaqa import OxfordAQAProvider
 
         return OxfordAQAProvider()
+    if normalized in {"aqa_uk", "aqa-uk", "uk-aqa"}:
+        from intl_exam_guide.providers.aqa import AQAUKProvider
+
+        return AQAUKProvider()
     if normalized in {"pearson", "edexcel", "pearson-edexcel"}:
         from intl_exam_guide.providers.pearson import PearsonEdexcelProvider
 
         return PearsonEdexcelProvider()
+    if normalized in {"pearson_uk", "pearson-uk", "edexcel-uk", "uk-edexcel"}:
+        from intl_exam_guide.providers.pearson import PearsonEdexcelUKProvider
+
+        return PearsonEdexcelUKProvider()
     if normalized in {"cambridge", "caie", "cie"}:
         from intl_exam_guide.providers.cambridge import CambridgeInternationalProvider
 
         return CambridgeInternationalProvider()
+    if normalized in {"cambridge_uk", "cambridge-uk", "caie-uk", "uk-caie"}:
+        from intl_exam_guide.providers.cambridge import CambridgeUKProvider
+
+        return CambridgeUKProvider()
+    if normalized in {"collegeboard", "college-board", "ap", "advanced-placement"}:
+        from intl_exam_guide.providers.collegeboard import CollegeBoardAPProvider
+
+        return CollegeBoardAPProvider()
     raise ValueError(
         f"Unknown provider: {name!r}. Implemented providers: {', '.join(PROVIDER_NAMES)}."
     )

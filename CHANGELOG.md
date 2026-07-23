@@ -1,5 +1,1135 @@
 # Changelog
 
+## Unreleased
+
+No completed iterations have been recorded after `v0.6.0`.
+
+## 0.6.0 - 2026-07-24
+
+### Iteration 2026-07-24 - Store Package, Public Showcase, And Release Evidence
+
+#### Added
+
+- Added a deterministic Skill-store package builder that promotes the contents
+  of `skill/` to archive root, verifies the root `SKILL.md` byte-for-byte, rejects
+  unsafe or nested Skill paths, and prints the final SHA-256.
+- Added 12 full-A4 preview pages from four independently reviewed handbooks:
+  OxfordAQA IGCSE Biology, CAIE AS Physics, College Board AP Chemistry, and
+  Pearson Edexcel International A Level Mathematics.
+- Added a `v0.6.0` release-evidence manifest that records each handbook's own
+  topic, practice, visual-review, HTML-review, ledger, PDF-page, and hash evidence
+  without committing generated handbooks, PDFs, source PDFs, or local paths.
+- Added an animation-source synchronizer so the shared primitives and each
+  language's `video.jsx` cannot drift from the standalone HTML pages.
+
+#### Changed
+
+- Rebuilt both 48-second introduction animations around the four current source
+  systems, hard first-turn preflight, market-specific Providers, atomic syllabus
+  analysis, per-topic visual decisions, four current handbook samples,
+  HTML-before-PDF review, and the store-ready archive layout.
+- Replaced the old three-image README gallery with three visual teaching pages
+  from each of the four current handbooks, and synchronized the English and
+  Chinese installation, scope, version, and release wording.
+- Bumped the package version from `0.5.3` to `0.6.0` and updated the public site,
+  operations guide, and release checklist.
+
+#### Fixed
+
+- Fixed the Skill-store upload layout that caused stores to report a missing
+  `SKILL.md` when users uploaded a repository folder or GitHub source archive.
+- Updated the release-evidence verifier to default to `v0.6.0` and accept real
+  semantic release versions at or above `v0.5.0`, instead of contradicting its
+  own `v0.5+` contract by accepting only `v0.5` prefixes.
+
+#### Verified
+
+- Rendered and visually inspected the final Chinese and English introduction
+  videos. Each MP4 is 1920x1080, 47.33 seconds, and 284 frames; representative
+  frames from the actual videos were nonblank, sample assets loaded, and no
+  text or controls overlapped or clipped. The two README GIFs are 960x540 and
+  47.40 seconds.
+- Verified four independent `final-ready` release-evidence entries with zero
+  pending concepts or images. The repository raw-key scan reported zero
+  matches, and the animation source synchronization check passed.
+- Built `dist/igcse-a-level-revision-guide-skill-v0.6.0.zip` with seven files,
+  one root `SKILL.md`, no nested Skill entry, and SHA-256
+  `104b7a0fc768214481457bb6b54511f7b3215c9872909e264943cd1d36f8fe20`.
+- Final regression suite: `488 passed, 165 skipped`. Ruff, compileall, and mypy
+  for all 80 source files and the changed release scripts passed.
+
+### Iteration 2026-07-24 - Pearson Edexcel International A Level Mathematics Controlled Delivery
+
+#### Fixed
+
+- Completed the 2027 Pearson Edexcel International A Level Mathematics
+  handbook for `YMA01`, covering P1-P4, M1-M2, D1, S1, and S2.
+- Recovered the LLM-authored plan and completed a fresh 103-topic / 74-visual
+  render review. The delivery record is bound to the current render snapshot,
+  review ledger, and all reviewed visual assets.
+- Corrected the binomial-approximation visual from programmer-style
+  `sqrt(1 + x)` notation to a rendered square-root symbol, then reimported the
+  asset, rerendered the HTML, and repeated desktop/mobile evidence capture.
+
+#### Verified
+
+- Controlled delivery audit: eligible with zero blockers; all 74 rendered
+  visuals are reviewed and the final HTML has no broken images.
+- Exported a 131-page A4 PDF to the Desktop Handbook folder. The delivered
+  file is `pearson-edexcel-as-a-level-mathematics-20260724-0431.pdf` with
+  SHA-256 `2d379b02a13fb033a6efc733cc5ce072bdbab15673f437ffa7ace8edde55fd0a`.
+  The controlled source and Desktop copy have matching hashes; PDF text
+  extraction found no `sqrt(` residue.
+- Ruff, compileall, and mypy for the changed SVG asset helper passed. The full
+  suite reported `482 passed, 165 skipped, 1 failed`; the single failure is the
+  pre-existing architecture test assumption that this checkout has a working
+  Git repository, while its `.git` directory is not a usable worktree. The
+  raw-key scan reports one untouched temporary-page match at
+  `tmp/caie-physics-9702-page-full.html:944`.
+
+### Iteration 2026-07-24 - Course Market Preflight Gate
+
+#### Fixed
+
+- Added the required `course_market` preflight field for AQA, Edexcel, and
+  CAIE IGCSE, AS, and A-Level requests. The user must explicitly choose
+  `international` or `uk-domestic`; the Agent must never infer it from a title,
+  code, URL, provider, or previous run.
+- Added `AS` as a distinct preflight level and persisted the course-market
+  choice in the coordinator state. Missing, invalid, or route-inappropriate
+  market values now keep that state blocked.
+- Added market-specific official Provider routing: OxfordAQA/AQA for the two
+  AQA routes, Pearson International/Pearson UK for Edexcel, and Cambridge
+  International for the selected CAIE qualification family. The market is now
+  retained in source metadata and UK qualification labels no longer render as
+  International labels.
+- Aligned the Skill, coordinator prompt, reference contract, operations guide,
+  and public English/Chinese scope statements around the two supported markets.
+
+#### Verified
+
+- Focused tests cover missing market values, UK route selection, invalid AP
+  market selection, domestic AQA/Edexcel metadata, AS PDF selection, and prompt
+  wording that prohibits market inference.
+- Live official-provider checks retrieved and selected the expected source
+  records for AQA UK GCSE Mathematics, Edexcel UK AS Mathematics, and CAIE UK
+  Accounting. The AQA and Edexcel routes use their respective UK catalogues;
+  CAIE retains the selected market while using the official Cambridge
+  International qualification catalogue for that qualification family.
+- Focused regression suite: `17 passed, 31 skipped`; Ruff, compileall, and
+  mypy for the changed modules passed. The full suite reported `482 passed,
+  165 skipped, 1 failed`; the remaining failure is the pre-existing
+  architecture guard expectation of a functional Git worktree while this
+  checkout has an empty `.git` directory. The raw-key scan completed and
+  reported one untouched temporary-file match at
+  `tmp/caie-physics-9702-page-full.html:944`.
+
+### Iteration 2026-07-24 - AP Chemistry Controlled Delivery
+
+#### Fixed
+
+- Corrected scientific-notation handling in the AP Chemistry authoring helper
+  so thermodynamic notation is not mistaken for a negative exponent.
+- Repaired the reviewed AP Chemistry explanations and visuals covering
+  mass-spectra qualification, ammonia geometry, phase-diagram slope,
+  calorimetry conditions, reaction-energy semantics, equilibrium particle
+  conservation, and electrolytic-cell electron paths.
+- Rebound the LLM review ledger only after byte-for-byte comparison confirmed
+  that all 132 required review screenshots were identical between the prior
+  review evidence and the final visual-approval snapshot.
+
+#### Verified
+
+- Completed snapshot-bound LLM review of all 91 AP Chemistry topic guides,
+  worked examples, 38 rendered visuals, and desktop/mobile HTML evidence.
+- The controlled-delivery audit passed with zero blockers. Its 100 warnings
+  are non-blocking checklist-length and formulaic-wording diagnostics, reviewed
+  as non-factual defects.
+- Exported a 94-page, 13.23 MiB A4 PDF with zero blank pages, zero blank-text
+  pages, zero raw ASCII maths residues, and a hash-verified desktop copy:
+  `2f319fb6400ee0142002daf2428b08976d3996f23f735bb7de09a65e0f2d441e`.
+- Full tests: `476 passed, 165 skipped`; one architecture-guard test cannot
+  run because the workspace has an empty/non-worktree `.git` directory. Ruff
+  and compileall passed. Mypy reports nine untyped-JSON issues in the
+  standalone AP authoring helper. The raw-key scan reports one untouched
+  temporary source-page match at `tmp/caie-physics-9702-page-full.html:944`.
+
+### Iteration 2026-07-23 - Visual Manifest Lifecycle And Approval Invalidation
+
+#### Fixed
+
+- Existing visual manifests now default to render-only behavior. Rebuilding a
+  manifest is an explicit new visual-plan cycle, so importing assets or writing
+  visual approvals cannot accidentally recreate the list and reset decisions.
+- Reviewed/generated assets are reused only when the source-bound visual
+  `spec_hash` is unchanged. A changed visual specification starts with no
+  current asset and pending asset/visual-review state; legacy manifests without
+  a hash remain readable for compatibility but still require a fresh visual
+  decision.
+- Importing or replacing an infographic resets
+  `visual_need.reviewer_visual_decision` to `pending` while retaining the
+  separate imported asset `review_status`. Unreferenced image files are no
+  longer deleted during manifest rebuilds.
+- Manifest/plan matching now rejects duplicate visual keys and count-mismatched
+  manifests instead of allowing dictionary folding to hide inconsistent state.
+- Maintenance scripts that replace SVGs, revise routes, or change visual prompts
+  now reset the affected visual decision to `pending` instead of carrying an
+  approval across changed visual semantics.
+- Concept imports now start a new manifest cycle when an imported
+  `visual_spec` changes; import commands fail instead of reporting success when
+  the required rerender cannot complete. Asset imports likewise fail on a real
+  rerender error rather than leaving a silently stale handbook.
+- Rebuild reuse compares the recorded asset SHA-256 with the current file. A
+  changed file under the same name is treated as a new unreviewed asset.
+- The read-only delivery gate now verifies that the current visual manifest is
+  the exact visual-spec set for the current `guide-plan.json`, including count,
+  derived key, and source-bound `spec_hash`; direct `render_html()` calls cannot
+  bypass this binding check.
+- Manifest entries with a declared key that disagrees with their own topic,
+  focus, visual type, or complexity are blocked instead of being treated as a
+  valid lookup entry.
+- The CCAPI asset-versioning maintenance path now resets the affected visual
+  decision to `pending`, matching the normal asset-import contract.
+- PDF raster derivatives marked as already optimized are not optimized again
+  during a later explicit manifest refresh, preventing needless `-print-2` file
+  churn and avoidable review invalidation.
+- A review packet no longer continues silently after a current render exists
+  but HTML rerender fails. Draft directories without a current render pointer
+  retain the legacy packet behavior so incomplete fixtures remain reviewable as
+  drafts.
+- Raw-key scanning skips Windows reserved device-name files such as `NUL`, so
+  the scan reports actual matches instead of failing while reading a device.
+
+#### Workflow Contract
+
+- Documented the enforced order: Writer visual specs -> explicit manifest
+  refresh -> asset generation/import -> visual-level LLM approval -> render-only
+  HTML -> complete LLM HTML review -> product approval -> PDF.
+- Clarified that any plan, concept, manifest, or asset mutation requires a new
+  render snapshot and complete LLM review; machine hashes block stale delivery
+  but do not replace visual approval.
+- Bumped the package patch version to `0.5.2`; publication and GitHub Release
+  creation remain pending explicit user request.
+
+#### Verified
+
+- Added regression coverage for changed visual specifications not reusing old
+  reviewed assets or approvals, render-only reuse, duplicate manifest keys, and
+  asset import resetting visual approval.
+- Targeted lifecycle tests: `86 passed, 1 skipped`.
+- Full test suite: `476 passed, 165 skipped`; one existing environment failure
+  remains because the workspace contains an empty `.git` directory rather than
+  a Git worktree, so the architecture guard's `git check-ignore` call exits
+  with code 128.
+- Ruff, compileall, and mypy passed for the changed modules. The raw-key scan
+  runs successfully and reports one pre-existing temporary-file match at
+  `tmp/caie-physics-9702-page-full.html:944`; that local file was not changed
+  or deleted.
+
+### Iteration 2026-07-23 - CAIE AS Physics Controlled Delivery
+
+#### Fixed
+
+- Corrected the Topic 1 worked-example equation to `P = Fv` and repaired the
+  I-V-characteristic visual caption so every explanation is visible in the
+  rendered handbook.
+- Rebuilt the external-image and exact-SVG manifest in the correct order so
+  13 approved visual assets remain bound to the final render snapshot.
+
+#### Verified
+
+- Completed a snapshot-bound LLM review of all 35 CAIE AS Physics topics,
+  35 worked examples, 13 rendered visuals, and desktop/mobile HTML evidence.
+- The controlled-delivery audit passed with zero blockers and zero warnings.
+  The 39-page PDF was exported and copied to the selected delivery directory
+  with matching SHA-256 `548b2d99d6f584d91ac28205d4a2538fa613756aea7b0094ca52ebf3019eeefd`.
+
+### Iteration 2026-07-23 - A4 Cover Responsive Isolation
+
+#### Fixed
+
+- Scoped the single-column cover breakpoint to screen rendering. A4 PDF export
+  can no longer inherit the narrow-screen grid that stacked the title, course
+  identity card, syllabus metadata, and feature cells inside a fixed-height
+  print page and caused them to overlap.
+- Let genuinely narrow screen covers grow with their content instead of
+  constraining stacked cover blocks to a viewport-derived grid row.
+
+#### Compatibility
+
+- Preserved the shared cover structure and the fixed AQA, Edexcel, CAIE, and AP
+  palettes. The change only separates screen responsiveness from A4 print
+  geometry; course-derived cover text and Provider behavior are unchanged.
+
+#### Verified
+
+- Added a regression proving that narrow-cover rules are screen-only and that
+  mobile cover rows expand with content.
+- Exported and visually inspected a four-page A4 PDF containing AQA, Edexcel,
+  CAIE, and AP covers. All four pages fill the printable A4 area; the course
+  identity card, syllabus metadata, and feature cells remain separated, and
+  each board keeps its fixed palette.
+- Inspected the cover at a 390px screen width. The mast, main identity area,
+  and footer flowed in order without intersecting bounding boxes.
+- Cover and rendering regressions passed (`39 passed, 1 skipped`). The full
+  suite reached `468 passed, 165 skipped`; its only failure is the existing
+  architecture guard invoking Git against the workspace's empty/non-worktree
+  `.git` directory. Ruff, Compileall, and targeted Mypy passed.
+- Raw-key scanning passed across source, tests, scripts, Skill files, docs, and
+  release Markdown. The whole-workspace scan remains blocked by a separately
+  generated, unreferenced `tmp/caie-physics-9702-page-full.html` file reported
+  at line 944; it was not altered or deleted by this iteration.
+
+### Iteration 2026-07-23 - OxfordAQA Biology Responsive Review And Controlled Delivery
+
+#### Fixed
+
+- Contained the mobile cover decoration within the viewport and made narrow
+  tables and long links wrap safely, preventing horizontal scrolling in the
+  rendered handbook.
+
+#### Verified
+
+- Re-rendered OxfordAQA International GCSE Biology (9201) for 2027 and
+  completed a snapshot-bound LLM review: 32 topics, 32 worked examples, 21
+  rendered visuals, desktop/mobile evidence, source anchors, navigation,
+  encoding, and responsive layout were reviewed.
+- The controlled-delivery audit passed with zero blockers and zero warnings.
+  The 43-page, 5.51 MiB PDF was exported and copied to the selected delivery
+  directory with matching SHA-256 `4f5955bee1decc8629ba05b9450ca2521d34f6aab937c0c5c790d4dd81e66a69`.
+- Ruff, Compileall, targeted Mypy, and raw-key scanning passed. Full pytest
+  execution is blocked by an empty/non-worktree `.git` directory: the first
+  failure is the architecture guard that invokes `git check-ignore`, after 10
+  tests passed. `git diff --check` is not applicable for the same reason.
+
+### Iteration 2026-07-22 - Hard Structured First-Turn Preflight
+
+#### Added
+
+- Added a mandatory first-turn preflight contract to `skill/SKILL.md` and the
+  default OpenAI Skill prompt. The first response must be a fixed-choice form
+  covering external visual capability, board, level, subject, year/range,
+  support language, explanation style, workflow mode, batch scope, and output
+  directory.
+- Added the required `key=value` response shape and explicit stop conditions:
+  answered values are preserved, only missing/invalid fields are asked again,
+  and no source discovery, syllabus analysis, writing, visual planning,
+  rendering, or PDF work can begin before the form is complete.
+- Added coordinator validation for supported languages, six explanation styles,
+  workflow mode, image capability state, route verification, and output
+  directory. A configured `image_provider` remains separate from the user's
+  external-route answer.
+
+#### Fixed
+
+- Closed the entry-point gap where the Agent asked the external-image question,
+  then merged remaining preflight decisions into an open-ended prompt or asked
+  for a style only after other work had begun.
+- Added plain-language descriptions for each accepted style so the user chooses
+  from the Skill's actual options rather than inventing a new label.
+
+#### Compatibility
+
+- Existing coordinator fields remain readable; new verification fields default
+  conservatively and only block incomplete new runs. No provider, subject,
+  qualification, or batch-specific rule was added.
+
+#### Verified
+
+- Added regressions for invalid styles, missing workflow mode, unverified named
+  image routes, non-inference from `image_provider`, and the complete first-form
+  coordinator prompt. Skill, JSON, and YAML validation remain passing.
+- Exhaustive non-overlapping regression groups passed with a combined
+  `466 passed, 165 skipped`. Ruff, Compileall, targeted Mypy, Skill validation,
+  JSON/YAML parsing, and raw-key scanning passed; raw-key scanning returned
+  `raw_key_matches: 0`.
+- This workspace has no Git worktree, so `git diff --check` was not applicable.
+
+### Iteration 2026-07-22 - Controlled PDF Lifecycle And Delivery Copy
+
+#### Added
+
+- Added candidate-PDF export. `export-pdf` now writes to a temporary candidate,
+  runs hard technical checks, promotes only a passing file, and then writes an
+  immutable record under `pdf-exports/` plus the explicit `current-pdf.json`
+  pointer.
+- PDF export records bind the render snapshot ID, parent HTML SHA-256, PDF
+  SHA-256, byte size and page count, review-ledger index hash, product-review
+  hash, and technical-validation result.
+- Added `export-pdf --delivery-dir <directory>` for a hash-verified controlled
+  copy, with immutable `delivery-copies/` evidence and
+  `current-delivery.json`. A differing destination blocks by default;
+  `--supersede-existing` explicitly archives it before replacement.
+- Added deterministic `next_actions` to the read-only delivery audit. It now
+  distinguishes repair/rerender, Writer repair, Visual repair, LLM review, PDF
+  export, stale configured delivery copy, and complete states instead of
+  treating every clean HTML audit as an instruction to export again. An
+  unconfigured optional delivery copy is not a completion blocker.
+
+#### Fixed
+
+- Replaced destructive PDF invalidation. Rerendering or review now marks the
+  former current pointer stale while preserving historical PDF bytes and
+  immutable records.
+- Removed remaining same-name PDF deletion from the CLI draft renderer and both
+  Skill-interface render paths. Rendering HTML can no longer erase a historical
+  delivery artifact merely because it shares the default stem.
+- Removed the same destructive deletion from retained one-off handbook rebuild
+  scripts. They may still rerender their explicitly named local handbooks, but
+  now rely on snapshot invalidation and leave former PDFs available as history.
+- Formal PDF lookup now uses the explicit current pointer and full hash/review
+  binding. Legacy lookup still reads historical files, but those files cannot
+  become formal delivery sources through modification time.
+- Hard PDF delivery checks now cover unreadable/zero-page files, genuinely
+  blank pages, portrait A4 geometry, and local-file header/footer leakage.
+  Recommended page/size limits and lossy text-extraction notation findings are
+  warnings rather than universal cross-subject blockers.
+- A new render snapshot automatically makes a PDF pointer from another snapshot
+  stale, closing rerender paths outside the main review command.
+
+#### Compatibility
+
+- Existing AQA, Edexcel, CAIE, College Board AP, HTML rendering, and legacy PDF
+  discovery paths remain unchanged. Historical PDFs are retained and readable.
+- No delivery directory is touched unless `--delivery-dir` is explicitly used;
+  no differing destination is moved unless `--supersede-existing` is also
+  explicitly supplied.
+- PDF technical checks are provider-, qualification-, subject-, language-, and
+  batch-size independent and do not make teaching or visual-semantic decisions.
+
+#### Verified
+
+- Added regressions for failed-candidate isolation, immutable current-PDF
+  records, non-destructive invalidation, legacy/history lookup separation,
+  controlled-copy conflicts and explicit superseding, state-specific next
+  actions, automatic stale marking after rerender, and non-A4 rejection.
+- Full regression coverage was executed in exhaustive non-overlapping groups:
+  `463 passed, 165 skipped`. Ruff, Compileall, targeted Mypy for every changed
+  source file, and raw-key scanning passed; raw-key scanning returned
+  `raw_key_matches: 0`.
+- This workspace has no Git worktree, so `git diff --check` was not applicable.
+
+### Iteration 2026-07-22 - Cross-Subject Governance Safety Corrections
+
+#### Added
+
+- Topic, Visual, and holistic LLM review records now require non-empty
+  `evidence_locations` pointing to the screenshot or browser viewport positions
+  actually inspected. Python validates presence and binding but does not create
+  or approve those decisions.
+- Added explicit regression coverage proving that a configured image renderer
+  never supplies the user's preflight answer. `image_provider` and confirmed
+  external-image capability are separate facts.
+
+#### Fixed
+
+- Removed the universal one-primary-item-per-topic rule. A final teaching topic
+  must map at least one independently assessable source item and may combine
+  tightly linked items only with a source-based cluster reason and visible
+  teaching treatment for every mapped item. This prevents both broad heading
+  passthrough and artificial micro-topic fragmentation.
+- Narrowed exact-SVG structural rejection so legitimate rectangular tables,
+  matrices, timelines, heatmaps, histograms, and bar/data charts are not rejected
+  merely because SVG element types resemble cards. Declared text/summary cards
+  remain ineligible, and process/feedback visuals still require direction.
+- Updated the Skill, handbook specification, architecture decision, accuracy
+  policy, operations guide, release checklist, README, Reviewer prompt, default
+  Skill prompt, and explanatory docs to one current review/PDF contract.
+
+#### Compatibility
+
+- The granularity rule remains independent of provider, qualification, subject,
+  and batch size. It does not introduce subject vocabularies, topic-count
+  targets, or provider-specific split templates.
+- Legacy v0.6 product-review files and ad-hoc historical scripts remain readable
+  evidence but cannot satisfy the v0.7 ledger-based formal delivery gate.
+
+#### Verified
+
+- Added regressions for justified multi-item teaching topics, rejection of a
+  topic with no independent source item, review evidence locations, rectangular
+  quantitative SVGs, declared text cards, and preflight non-inference.
+- These checks are included in the same complete `463 passed, 165 skipped`
+  regression result above. Ruff, Compileall, targeted Mypy, and raw-key scanning
+  passed.
+
+### Iteration 2026-07-22 - Shadow Delivery Audit And PDF P0 Gate
+
+#### Added
+
+- Added the read-only `audit-delivery --out <output-dir>` command and a shared
+  delivery-gate evaluator. It reports current HTML and review hashes, refreshed
+  HTML-only validation, product-review completeness, per-visual review state,
+  rendered asset presence, and asset SHA-256 consistency without modifying any
+  handbook artifact.
+- Added stable blocker codes for missing or invalid plans and HTML, current-HTML
+  review gaps, validation errors, pending or rejected visual decisions,
+  unreviewed rendered assets, invalid asset paths, and missing or stale hashes.
+
+#### Fixed
+
+- Closed the P0 path where `export-pdf` accepted an approved
+  `agent-product-review.json` even when current validation failed, a visual
+  decision remained pending or rejected, a rendered SVG was unreviewed, or an
+  asset hash no longer matched. PDF export now consumes the same gate result as
+  the shadow audit and rechecks the current HTML hash immediately before export.
+- Removed literal student-facing heading checks such as `Method` and `Check`
+  from language validation. Those checks produced false delivery blockers when
+  valid templates expressed the same teaching structure under different copy;
+  language-mixing, guide-content, practice, visual, and package validation remain
+  active.
+
+#### Compatibility
+
+- The audit accepts both legacy-list and schema-version 2 visual manifests.
+  Legacy manifests remain readable and are reported explicitly; rendered assets
+  without review/hash evidence are blocked rather than silently approved.
+- No provider, qualification, subject, or batch-size condition was added. AQA,
+  Edexcel, CAIE, and College Board AP use the same artifact-state gate.
+- Existing handbook files are not moved, deleted, renamed, or rewritten by the
+  audit. Blocked PDF export returns before changing existing PDF or JSON files.
+
+#### Verified
+
+- Shadow-audited the four retained handbook directories. Refreshed machine
+  validation produced zero errors for AP Chemistry, CAIE AS Physics 9702,
+  Edexcel A-level Mathematics 9MA0, and OxfordAQA IGCSE Biology; the only
+  blockers were the 19, 18, 21, and 8 pending per-visual decisions respectively.
+- Attempted `export-pdf` for all four directories. Every run returned exit code
+  `2`, and all pre-existing PDF and JSON hashes remained unchanged.
+- Added regression coverage for read-only auditing, CLI blocked reporting,
+  validation-error blocking, pending and rejected visual decisions, unreviewed
+  rendered SVGs, stale asset hashes, and a clean reviewed export.
+- Full regression result: `436 passed, 165 skipped`. Ruff, Compileall, targeted
+  Mypy for all changed Python files, and raw-key scanning passed; raw-key
+  scanning returned `raw_key_matches: 0`.
+- This workspace has no Git worktree, so `git diff --check` was not applicable.
+
+### Iteration 2026-07-22 - Immutable Render Snapshot And Current Pointer
+
+#### Added
+
+- Added immutable render snapshots under `render-snapshots/`. Each snapshot
+  binds the exact HTML bytes, the rendered `GuidePlan`, the guide plan,
+  qualification, run options, syllabus evidence/outline, concept explanations,
+  visual manifest, and every rendered visual asset through canonical JSON or
+  byte-level SHA-256 records.
+- Added Unicode-NFC, sorted-key canonical JSON hashing and atomic snapshot and
+  pointer writes. The snapshot ID is derived from the payload without including
+  its own ID, so the hash graph has no self-reference.
+- Added `current-render.json`, a mutable pointer to one immutable snapshot, and
+  made handbook HTML selection prefer that pointer over validation metadata or
+  modification-time guesses.
+
+#### Fixed
+
+- Delivery auditing now rejects missing, invalid, stale, or hash-inconsistent
+  current render snapshots, while retaining historical output files for
+  inspection and migration.
+- JSON formatting-only changes do not create a new semantic snapshot; changes
+  to actual render inputs do. Older snapshots remain untouched when a new
+  render becomes current.
+
+#### Compatibility
+
+- Direct rendering tests and legacy output readers continue to work without a
+  pre-existing guide-plan file; such outputs can render and be inspected, but a
+  formal delivery export requires a current pointer and a complete snapshot.
+- Snapshot records are provider-, qualification-, subject-, and batch-size
+  independent. No existing handbook directory was modified during this
+  iteration.
+
+#### Verified
+
+- Added regressions for canonical Unicode/JSON hashing, immutable snapshot
+  history, pointer precedence over newer unrelated HTML, and detection of later
+  input changes.
+- Full regression result: `438 passed, 165 skipped`. Ruff, Compileall, targeted
+  Mypy for the snapshot, renderer, output-selection, and delivery-gate modules,
+  and raw-key scanning passed; raw-key scanning returned `raw_key_matches: 0`.
+- This workspace has no Git worktree, so `git diff --check` was not applicable.
+
+### Iteration 2026-07-22 - Draft-Only Python Fallbacks And Stable Topic Identity
+
+#### Added
+
+- Added `GuidePlan.content_provenance`. Plans created by Python remain
+  `python-draft`; formal delivery requires the host LLM to finish all teaching
+  content and explicitly record `llm-authored` provenance.
+- Added deterministic `requirement-<sha256>` topic IDs derived from normalized
+  topic titles, source points, and source snippets. Concept jobs and Writer
+  entries now carry that stable ID instead of process-random Python `hash()`
+  values.
+- Added concept-entry provenance and `delivery_eligible` fields. Python visual
+  fallback decisions remain available for demo/legacy workflows but are marked
+  `python-fallback` and cannot pass the delivery gate.
+
+#### Fixed
+
+- Removed substring-based concept-to-topic routing. LLM content now applies by
+  exact stable ID, exact topic title for legacy entries, or exact normalized
+  source point; near-match topic text is left unmatched for explicit repair.
+- Closed two additional PDF bypasses in the concept and infographic import
+  scripts. After either import changes HTML, the scripts retain any old PDF as
+  historical output, clear its validation pointer, and return
+  `blocked_pending_current_html_review` instead of calling the low-level PDF
+  renderer.
+- Updated the authoritative Skill, handbook spec, architecture decision, and
+  coordinator prompt with stable IDs, LLM provenance, immutable snapshots, the
+  read-only audit, and the draft-only Python boundary.
+
+#### Compatibility
+
+- Existing exact-title concept imports remain supported. Lightweight legacy
+  test objects without qualification metadata still use exact title matching;
+  they do not regain fuzzy matching.
+- Python demo and legacy rendering behavior remains available, but its output
+  is intentionally not formal-delivery eligible until LLM-owned artifacts
+  replace every fallback and provenance is updated.
+- The rules are independent of provider, qualification, subject, language, and
+  batch size.
+
+#### Verified
+
+- Added regressions for deterministic IDs, Unicode-stable identity input,
+  rejection of substring matches, fallback provenance blocking, and the absence
+  of low-level PDF export calls from both import scripts.
+- Full regression result: `441 passed, 165 skipped`. Ruff, Compileall, targeted
+  Mypy for all changed runtime/scripts, and raw-key scanning passed; raw-key
+  scanning returned `raw_key_matches: 0`.
+- This workspace has no Git worktree, so `git diff --check` was not applicable.
+
+### Iteration 2026-07-22 - Generic Visual Semantics And Exact-SVG Rejection
+
+#### Added
+
+- Added the provider- and subject-independent
+  `v1-visual-semantic-contract`. Every non-text visual declares its learning
+  claim, intended inference, visual kind, required elements, relationships and
+  labels, and forbidden misconceptions.
+- Carried Writer-authored semantic contracts through `VisualBrief`,
+  `VisualSpec`, spec hashing, and visual-manifest rendering without Python
+  inventing domain content.
+- Added exact-SVG structural diagnostics for text-card layouts and missing
+  directional connectors in process/feedback visuals.
+
+#### Fixed
+
+- Exact-SVG files made only from text and decorative rectangles can no longer
+  satisfy the delivery gate as explanatory visuals.
+- Legitimate table, matrix, and comparison-table SVGs remain supported when
+  their semantic contract declares the relationship they encode.
+- Tightened the existing visual-manifest JSON typing without changing its
+  runtime compatibility behavior, eliminating its previously reported Mypy
+  errors in the touched path.
+
+#### Compatibility
+
+- Existing manifests remain readable, but missing semantic contracts are an
+  explicit formal-delivery blocker rather than being silently inferred.
+- The gate validates visual grammar and contract completeness only. The LLM
+  Reviewer remains responsible for factual meaning and teaching value.
+
+#### Verified
+
+- Added regressions for decorative SVG rejection, table/matrix allowance,
+  directional process connectors, missing semantic-contract fields, and
+  manifest propagation.
+- Full regression result: `445 passed, 165 skipped`. Ruff, Compileall, targeted
+  Mypy for every changed visual/runtime module, and raw-key scanning passed;
+  raw-key scanning returned `raw_key_matches: 0`.
+- This workspace has no Git worktree, so `git diff --check` was not applicable.
+
+### Iteration 2026-07-22 - Chunked Review Ledger And Holistic HTML Approval
+
+#### Added
+
+- Added LLM-authored Topic and Visual review shards under `review-ledger/`,
+  capped at 25 items per shard and bound to the current render snapshot and HTML
+  SHA-256.
+- Added a separate `review-ledger/holistic.json` contract for direct inspection
+  of the complete assembled HTML, including cover/navigation, cross-page
+  consistency, responsive layout, notation, encoding, findings, and repair
+  iteration.
+- Added `index-review-ledger --out <output-dir>`. Python hashes existing
+  LLM-authored shards and writes `review-ledger/index.json`; it does not create
+  review items or approval decisions.
+- Added the compact `v0.7-llm-html-review-ledger` product-review schema, which
+  references the current snapshot, HTML, and ledger-index hashes instead of
+  duplicating full Topic and Visual lists in one large JSON file.
+
+#### Fixed
+
+- Formal delivery now rejects sampled or incomplete review coverage, duplicate
+  or unknown Topic/Visual IDs, stale shard hashes, mismatched visual asset
+  hashes, unapproved per-item decisions, oversized shards, and missing or
+  failed holistic HTML review.
+- The generated Reviewer prompt no longer pre-populates all approval booleans
+  as `true`. It supplies placeholders and instructs the LLM to set each field
+  only after the exact check is completed.
+- Legacy v0.6 product-review records remain readable but cannot satisfy the new
+  formal ledger gate by themselves.
+
+#### Compatibility
+
+- Handbooks with zero rendered visuals use no Visual shard and remain valid
+  when Topic coverage and holistic review are complete.
+- Every handbook has an independent ledger and snapshot binding; batch outputs
+  cannot reuse another handbook's review conclusion.
+- Review rules remain independent of provider, qualification, subject, and
+  batch size.
+
+#### Verified
+
+- Added regressions for complete clean export, missing Topic coverage, stale
+  shard hashes, unapproved Visual review, the 25-item shard cap, compact product
+  review binding, holistic review, and CLI index generation.
+- Full regression result: `450 passed, 165 skipped`. Ruff, Compileall, targeted
+  Mypy for all changed review/gate modules, and raw-key scanning passed; raw-key
+  scanning returned `raw_key_matches: 0`.
+- This workspace has no Git worktree, so `git diff --check` was not applicable.
+
+### Iteration 2026-07-22 - Four Handbook Full Review And Delivery Refresh
+
+#### Fixed
+
+- Completed the repair, current-HTML rerender, and full visible-review loop for
+  OxfordAQA International GCSE Biology 9201, Cambridge International AS Level
+  Physics 9702, AP Chemistry, and Pearson Edexcel A-level Mathematics 9MA0.
+- Replaced generic or cross-topic student-facing teaching remnants, repeated
+  solution layers, stale mathematics practice content, and repeated generic
+  visual prompts. The current topic records and rendered pages now carry
+  topic-specific mastery statements, worked content, and visual decisions.
+- Refreshed the four root-level delivery PDFs so they exactly match the
+  approved subject-folder exports, rather than retaining earlier PDF copies.
+- Updated `C:\\Users\\Ethan\\Desktop\\Handbook\\delivery-record.json` to bind
+  the delivery list to the current approved HTML hashes, root PDF hashes, file
+  sizes, and final page counts.
+
+#### Verified
+
+- The LLM review record for every handbook uses
+  `v0.6-llm-html-review`, approves the exact current HTML hash, lists every
+  final topic and every rendered visual, and has no unresolved fixable issue.
+- Reviewed the current rendered HTML at topic level: 31 Biology topics and 8
+  visuals; 32 Physics topics and 18 visuals; 91 Chemistry topics and 19
+  visuals; 89 Mathematics topics and 21 visuals.
+- Rendered and checked all 204 final PDF pages. The four root delivery PDFs
+  have 28, 36, 72, and 68 pages respectively, with no blank-page or zero-byte
+  render finding.
+- Full regression result: `427 passed, 165 skipped`. Ruff, Compileall, and
+  raw-key scanning passed; raw-key scanning returned `raw_key_matches: 0`.
+- Delivery-record verification passed for all four HTML approval hashes and
+  all four root PDF hashes/page counts.
+- Targeted Mypy on `src/intl_exam_guide/auditing/quality_inspector.py` still
+  reports 18 existing broad-JSON type errors. No Python source was changed in
+  this delivery-refresh closeout. This workspace has no Git worktree, so
+  `git diff --check` was not applicable.
+
+### Iteration 2026-07-22 - Knowledge And Governance Closeout
+
+#### Fixed
+
+- Replaced the stale root `SKILL.md`, which required a second PDF-review handoff
+  and linked to three missing reference files, with a discovery wrapper that
+  points to the authoritative `skill/SKILL.md` and repeats only the supported
+  automatic-acquisition boundary.
+- Reconciled the English and Chinese READMEs, Skill explanation, accuracy
+  policy, project operations guide, image-model guide, examples, release
+  checklist, release-evidence guide, project details, and public homepage with
+  the current workflow: blocking image-capability preflight, LLM-owned atomic
+  syllabus analysis, per-topic visual decisions, complete visible HTML review,
+  repair and rerender loops, and hash-gated PDF export.
+- Removed the broken `docs/QUALITY_METRICS.md` link and stopped presenting
+  Python quality scores or review packets as student-ready approval.
+- Updated the OpenAI Skill metadata to include College Board AP and to require
+  the visual-capability question before any other run action or local-generation
+  assumption.
+
+#### Added
+
+- Added a trackable `AGENTS.md` as a concise maintenance entry for
+  source-of-truth files, change boundaries, changelog discipline, validation
+  commands, publication authorization, and non-destructive workspace handling;
+  removed its stale `.gitignore` exclusion so it will survive the next GitHub
+  import.
+- Added ignore coverage for retained local review approvals, visual prompts,
+  visual-review captures, MP4 exports, and the zero-byte `NUL` residue so a
+  future Git import does not accidentally publish them. No retained artifact
+  was deleted.
+- Synchronized public entry titles to name the supported College Board AP
+  curriculum alongside IGCSE and A-Level.
+- Marked `docs/DELIVERY_QUALITY_REBUILD_PLAN.md` as historical planning. Its
+  sampling matrix is release-portfolio evidence and cannot replace full review
+  of each handbook.
+
+#### Compatibility
+
+- No Python runtime, schema, provider, or rendering behavior changed in this
+  closeout. The package remains `v0.5.1`; publication and versioning are pending
+  a separate release request.
+- The canonical install target remains `skill/`; the root `SKILL.md` is a
+  repository discovery wrapper, not a second contract.
+
+#### Verified
+
+- Full regression result: `426 passed, 165 skipped`.
+- Ruff and Compileall passed.
+- Targeted Mypy passed for the current HTML/PDF gate, coordinator prompt, and
+  release verifier modules.
+- Raw-key scanning returned `raw_key_matches: 0`.
+- Markdown local-link validation, stale-contract scanning, Skill/OpenAI YAML
+  parsing, and public-homepage HTML parsing passed.
+- Full-project Mypy still reports 38 pre-existing errors in
+  `visuals/manifest.py` and `auditing/quality_inspector.py`; those modules were
+  not changed by this documentation/governance iteration.
+
+### Iteration 2026-07-21 - Complete Subject And Visual Semantic Review
+
+#### Fixed
+
+- Closed the final-review loophole where an LLM could approve a handbook after
+  checking only file presence, layout, or a sample of pages and visuals.
+- Final approval now requires the LLM to review every final topic for subject
+  facts, definitions, relationships, teaching claims, worked questions,
+  solution steps, final answers, units, and source anchors.
+- Final approval now requires the LLM to review every visual that actually
+  renders in HTML for semantic accuracy, including labels, arrows, positions,
+  structures, relationships, scales, units, captions, and correspondence with
+  the associated topic. Loading successfully or looking polished is not enough.
+
+#### Added
+
+- Added exact review-coverage fields to `v0.6-llm-html-review`:
+  `reviewed_topic_titles`, `topic_review_count`, `reviewed_visual_ids`,
+  `rendered_visual_review_count`, and explicit subject-fact, worked-answer,
+  visual-semantic, and layout confirmations.
+- The PDF export gate now compares the recorded topic titles and rendered
+  visual IDs with the current handbook artifacts. Missing, duplicate, or unknown
+  entries invalidate approval and block export.
+- The LLM review prompt now enumerates every required Topic and rendered visual
+  ID and explicitly prohibits sampled final approval.
+
+#### Compatibility
+
+- This is a general per-handbook review rule. It does not encode any particular
+  subject, exam board, output batch, or number of handbooks.
+- Handbooks with zero rendered visuals remain valid when every topic is reviewed
+  and the recorded rendered-visual count and ID list are both empty.
+
+#### Verified
+
+- Added regressions proving that omitting one required Topic or one rendered
+  visual invalidates the LLM review and blocks PDF export.
+- Full regression result: `426 passed, 165 skipped`.
+- Full Ruff, Compileall, targeted Mypy, and raw-key checks passed.
+
+### Iteration 2026-07-21 - Skill Boundary Compliance And Per-Topic Visual Decisions
+
+#### Fixed
+
+- Added a mandatory Boundary Compliance Gate at the beginning of the Skill and
+  coordinator prompt. Agents must follow artifact contracts and workflow order
+  exactly, may not invent speed shortcuts, and must stop/report when a boundary
+  cannot be satisfied.
+- Strengthened the Analyst contract against promoting directory-level syllabus
+  headings into final topics or compressing a full course into a few broad
+  themes. Non-flat structure models now require declared official containers,
+  and the prompt includes an explicit pre-delivery depth check.
+- Prevented visual workflow drift in the Writer instructions: visual decisions
+  are independent for every final topic, with no one-image-per-subject quota,
+  no minimum image count, and no generic subject poster or reused visual plan.
+
+#### Changed
+
+- Clarified that visual assets may contain accurate, legible, source-bound text
+  such as labels, callouts, legends, axes, captions, and short example
+  annotations. The Skill does not require text-free images.
+- Clarified that `external-infographic` may be used for a topic-specific
+  explanatory visual, realistic/reference/example image, apparatus, scene,
+  material appearance, process detail, or rich annotation; it is not limited to
+  formal diagrams.
+- Updated Writer, concept-job, coordinator, Skill, specification, image-guide,
+  and multi-agent instructions with the same per-topic visual boundary.
+
+#### Verified
+
+- Added regression assertions for the boundary-compliance prompt, no subject
+  visual quota, text-bearing visuals, generic-poster rejection, and non-flat
+  outlines without official container declarations.
+- Full regression result after this iteration: `424 passed, 165 skipped`.
+- Full Ruff, Compileall, targeted Mypy, and raw-key checks remained green.
+
+### Iteration 2026-07-20 - LLM HTML Review Before PDF Export
+
+#### Changed
+
+- Replaced the previous render-and-review order with a mandatory two-stage
+  delivery workflow. All handbook generation paths now stop at HTML; PDF is no
+  longer created during Writer rendering or by the `review` command.
+- The active LLM Reviewer must personally open and visually inspect the current
+  HTML. Python validation, quality inspection, parsed text, and review packets
+  are supporting diagnostics only and cannot provide approval.
+- Any content, source, teaching, worked-example, visual, layout, overflow,
+  notation, or language issue must return to the Writer. After repair, HTML must
+  be rerendered and visibly reviewed by the LLM again until no fixable issue
+  remains.
+- Added the `v0.6-llm-html-review` product-review contract. Approval records
+  `reviewer_type: "llm"`, the exact inspected HTML SHA-256, review iteration,
+  issue/repair history, `html_review_passed: true`, an empty unresolved-issue
+  list, and `decision: "approved"`.
+
+#### Added
+
+- Added `python -m intl_exam_guide export-pdf --out <output-dir>` as the only
+  production workflow entry that exports a handbook PDF after review.
+- Added a hard export gate that rejects missing review evidence, non-LLM
+  approval, revisions-required decisions, unresolved fixable issues, malformed
+  review records, and HTML hashes that no longer match the reviewed file.
+- HTML rerendering now removes or invalidates an earlier PDF. Any HTML change
+  makes the old review evidence stale and requires another visible LLM review
+  before PDF can be exported again.
+- Updated release-sample verification to require LLM HTML approval and confirm
+  that the recorded review hash matches the released HTML.
+
+#### Compatibility
+
+- Existing `v0.5-visible-handbook-review` artifacts cannot authorize new PDF
+  exports because they were not bound to the current HTML and required PDF
+  sampling before approval. They must be replaced by a fresh visible LLM review
+  using `v0.6-llm-html-review`.
+- Existing generator method signatures retain `skip_pdf` for host compatibility,
+  but handbook rendering now always stops at HTML. Hosts must use the new gated
+  `export-pdf` step after LLM approval.
+- Python quality-inspection files remain available as optional diagnostics, but
+  their presence, absence, pass, or failure cannot substitute for the LLM's
+  visible HTML decision.
+
+#### Verified
+
+- Added regressions proving that `review` never exports PDF, unreviewed HTML is
+  rejected, stale review hashes are rejected, and a matching current-HTML LLM
+  approval permits PDF export.
+- Added prompt assertions requiring the LLM to view HTML, prohibiting PDF during
+  review, and binding the approval template to the current HTML SHA-256.
+- Full regression result: `423 passed, 165 skipped`.
+- Full Ruff and Compileall checks passed. Mypy passed for all seven changed
+  Python workflow/review modules, and the raw-key scan returned zero matches.
+
+### Iteration 2026-07-20 - Source-Relative Syllabus Granularity Contract
+
+#### Fixed
+
+- Closed the outline-validation loophole where an Analyst could define one
+  broad official Topic, Unit, Section, chapter, or table heading as a single
+  `source_coverage` item and then pass all later self-consistency checks.
+- Added a mandatory `coverage_granularity` contract. Every lowest official
+  container must now be classified as one independently assessable requirement,
+  several requirements, or no examinable content, with page evidence and a
+  source-based rationale when no deeper split exists.
+- Every `source_coverage` item must now carry a stable source kind, an
+  independently assessable demand, `atomicity: "atomic"`, source content, and a
+  valid page reference. Structural headings are rejected as coverage unless a
+  single-point container audit supports them.
+- Added split-first topic validation: every final teaching topic must have
+  exactly one primary `independent_topic` source item. Topics that also map
+  prerequisites or sub-skills require a valid `cluster_justification` explaining
+  the relationship and why separate teaching topics would be misleading.
+
+#### Compatibility
+
+- The contract is provider-, qualification-, and subject-independent. It does
+  not encode CAIE-specific behavior, a fixed hierarchy, a command-verb list, or
+  a fixed number of points per Topic.
+- Source requirements may be knowledge statements, conceptual relationships,
+  calculations, practical work, source/data analysis, extended responses,
+  language performance, portfolio evidence, or other source-bound demands.
+- Genuine one-requirement official Topics remain valid when the Analyst cites
+  evidence and explains why the requirement cannot be split further.
+- Existing AQA, Edexcel, CAIE, and College Board AP Provider discovery and
+  acquisition logic is unchanged; the stricter contract applies after evidence
+  extraction to all supported routes.
+
+#### Changed
+
+- Updated the Skill and handbook specification so Analyst instructions,
+  mechanical validation, and Reviewer checks enforce the same source-relative
+  granularity model.
+- Reviewer packets now explicitly check container-detail audits, primary source
+  items, and source-justified prerequisite/sub-skill clustering before handoff.
+
+#### Verified
+
+- Added regression coverage for a multi-requirement container incorrectly
+  mapped to one item, a correctly split multi-requirement container, a genuine
+  single-requirement container, an invalid two-primary-item merge, and a valid
+  primary-plus-sub-skill cluster.
+- Full regression result: `418 passed, 165 skipped`.
+- Full Ruff and Compileall checks passed. Mypy passed for both changed source
+  modules: syllabus-outline planning and final review.
+
+### Iteration 2026-07-20 - College Board AP Provider And Cover
+
+#### Added
+
+- Registered `collegeboard` as the fourth production source provider, with
+  aliases for `ap` and `advanced-placement` and automatic inference from exact
+  AP course names and official College Board URLs.
+- Added full discovery for the official 42-subject AP directory, exact and
+  ambiguity-safe subject selection, strict core Course and Exam Description
+  matching, official-domain enforcement, shared-CED support, and supplemental
+  clarification/correction exclusion.
+- Added the `advanced_placement` qualification type, `--level ap`, CED effective
+  Fall version extraction, target AP exam-year applicability checks, AP output
+  naming, AP-specific revision language, and a College Board provider reference.
+- Added an independent full-A4 AP `Textbook Grid` cover template using College
+  Board blue, bright yellow, and pale aqua. It displays the AP course identity,
+  verified CED version, and target exam year without inventing a course code.
+
+#### Fixed
+
+- Fixed official PDFs that are marked encrypted but are readable with an empty
+  password. The extractor now checks the `pypdf` decrypt result instead of
+  incorrectly treating the persistent `is_encrypted` metadata flag as a locked
+  document; genuinely password-locked PDFs remain blocked.
+
+#### Compatibility
+
+- OxfordAQA, Pearson Edexcel, and Cambridge remain on their existing Provider
+  paths and cover palettes. AP is added as an independent provider and template.
+- AP source acquisition is supported, while subject handbook delivery remains
+  `candidate` until the normal Analyst, Writer, visual, PDF, and final-review
+  evidence chain is complete.
+- Clarified the automatic-acquisition boundary: supported routes are
+  AQA/Edexcel/CAIE IGCSE and A-Level plus College Board AP. Other curriculum
+  systems or exam boards cannot use automatic acquisition; manual syllabus
+  imports are unverified and may fail with unknown compatibility errors.
+
+#### Verified
+
+- Live provider discovery returned all 42 official AP subjects. An
+  `extract-evidence` run for AP Cybersecurity 2027 selected the official core
+  CED, recorded `CED effective Fall 2026`, produced 187 non-empty page-evidence
+  records, generated a successful 274,382-character Markdown companion, and
+  stored the official PDF SHA-256 hash.
+- Rendered and visually inspected the independent AP cover as a one-page A4 PDF
+  (`594.96 x 841.92pt`) and full-page PNG. The long `Cybersecurity` title, CED
+  version, target year, and footer cards remained visible without overlap.
+- Full regression result: `411 passed, 165 skipped`. Full Ruff, Compileall, and
+  raw-key scanning passed; Mypy passed for all 15 source files touched by this
+  iteration.
+- Browser-checked the updated project homepage at `1440 x 900` and `390 x 844`.
+  The four-source heading and scope table fit without horizontal overflow.
+
+### Iteration 2026-07-20 - College Board AP CED Feasibility Audit
+
+#### Added
+
+- Added a reproducible, low-frequency College Board AP audit utility that
+  enumerates the official course directory, excludes overview pages, extracts
+  numbered course-page units, selects explicit Course and Exam Description
+  cards, and verifies official PDF responses and file signatures.
+- Added an isolated `audit` dependency extra for the research utility and a
+  permanent AP provider feasibility report with production acceptance rules.
+
+#### Verified
+
+- The official directory declared and exposed 42 AP subjects. All 42 subject
+  pages returned successfully and yielded a verified core CED, resolving to 39
+  unique official College Board PDFs.
+- Confirmed two shared-document groups: Calculus AB/BC share one CED, while
+  2-D Art and Design, 3-D Art and Design, and Drawing share another.
+- Confirmed that clarification/correction PDFs on Computer Science A and Latin
+  are supplemental documents and do not make the core CED ambiguous.
+- Downloaded and parsed six representative CEDs to confirm course identity,
+  course framework, effective version, and exam or portfolio structure. The
+  sample included the new AP Cybersecurity and AP Business with Personal
+  Finance CEDs effective Fall 2026.
+- The audit utility compiled and passed Ruff. Its JSON assertions confirmed 42
+  courses, zero non-official or invalid PDF selections, and 39 unique CEDs.
+- Full project regression remained green: `399 passed, 165 skipped`.
+
+#### Compatibility
+
+- This iteration establishes feasibility only. AP is not yet registered as a
+  production provider, and the existing OxfordAQA, Pearson Edexcel, and
+  Cambridge provider behavior is unchanged.
+
+### Iteration 2026-07-20 - Textbook Grid Cover Selection
+
+#### Changed
+
+- Explored four A4 cover directions with the installed design Skills and selected
+  the `Textbook Grid` direction for the production templates.
+- Updated the shared cover geometry so the exam-board identity and revision-guide
+  bands span the page width, the subject title and course code form the primary
+  reading path, and the syllabus metadata and learning signals remain anchored
+  at the bottom of the A4 page.
+- Replaced the generic board-handbook label with a qualification- and
+  subject-derived study title such as `AS Mathematics study guide` or
+  `IGCSE Economics study guide`.
+- Fixed distinct production palettes for all supported boards: OxfordAQA uses
+  deep blue, red, and gold; Pearson Edexcel uses deep teal, blue, and pale aqua;
+  Cambridge International uses deep burgundy, navy, red, and gold.
+
+#### Verified
+
+- Rendered the AQA, Edexcel, and CAIE production templates as three independent
+  one-page A4 PDFs and inspected the corresponding full-page PNGs. All three
+  retained the shared layout while preserving distinct board colors, readable
+  study-title wrapping, and syllabus-derived metadata.
+
+### Iteration 2026-07-20 - Board Covers And Visual Preflight
+
+#### Changed
+
+- Standardized OxfordAQA, Pearson Edexcel, and Cambridge International covers
+  on one fixed information hierarchy and geometry. Each board keeps its own
+  identity and palette, while subject, course code, qualification family,
+  specification or syllabus version, and exam year continue to come from the
+  selected qualification and official syllabus metadata.
+- Preserved the existing OxfordAQA cover structure while replacing the former
+  Edexcel- and CAIE-specific header/body arrangements with the shared cover
+  mast, main panel, and footer contract.
+- Added a mandatory first-exchange visual-capability gate to the published
+  Skill, agent default prompt, image-model guide, and optional coordinator.
+  The host must ask whether the user can provide or enable an external
+  image-generation Skill or tool and wait for an explicit answer instead of
+  inferring a route or defaulting the entire handbook to local generation.
+- Defined route-aware behavior after that answer: verified external routes are
+  reserved for source-bound external infographic jobs; runs without an external
+  route may use text, reviewed exact SVG, or Kroki only when the topic justifies
+  them, while complex infographic jobs remain pending.
+
+#### Fixed
+
+- Fixed PDF covers rendering as a partial page. The print cover previously used
+  a `220mm` minimum height even though an A4 page with `3.5mm` top and bottom
+  margins has a `290mm` content area. Print covers now use the full `290mm`
+  height and are protected from internal page breaks.
+
+#### Verified
+
+- Added regression coverage for the shared three-board cover structure, fixed
+  board palettes, syllabus-derived cover fields, mandatory external-image
+  capability question, and coordinator preflight blocking behavior.
+- Rendered OxfordAQA, Edexcel, and CAIE covers through Chromium and exported
+  each as a one-page A4 PDF (`594.96 x 841.92pt`). Each cover occupied the full
+  printable page without clipping, overlap, or bottom-page whitespace.
+- Exported a five-page handbook through the project's normal PDF path and
+  raster-inspected page 1 to confirm that the cover fills the complete A4 page.
+- Full regression result after the iteration: `399 passed, 165 skipped`.
+  Focused cover/PDF regression result: `49 passed, 1 skipped`. Ruff and Mypy
+  passed for every source and test file changed by this iteration, and the
+  packaged Skill plus `skill/test-prompts.json` passed format validation.
+
+#### Release Notes
+
+- This is an unreleased iteration record, not a new certification of every
+  subject or visual route. The CLI framework demo remains intentionally blocked
+  from final-ready status until LLM-authored syllabus, concept, visual, and
+  review artifacts are supplied.
+
 ## 0.5.1 - 2026-07-06
 
 ### Changed

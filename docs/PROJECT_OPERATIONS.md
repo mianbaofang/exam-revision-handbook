@@ -1,6 +1,6 @@
 # Project Operations Guide / 项目维护说明
 
-Last updated: 2026-07-01
+Last updated: 2026-07-24
 
 This file is the operational memory for future sessions and agents. Update it
 whenever release flow, validation rules, animation assets, repository hygiene, or
@@ -8,16 +8,24 @@ Skill usage changes.
 
 ## 1. Project Positioning
 
-This repository publishes an AI Skill and Python pipeline for generating
-International GCSE and International AS-A-level revision handbooks.
+This repository publishes an AI Skill and Python support package for generating
+source-backed IGCSE, AS, A-Level, and College Board AP revision handbooks.
 
 Current public scope:
 
-- AQA, Edexcel, and CAIE are the supported exam-board families.
-- AQA supports catalogue discovery through OxfordAQA / Oxford International AQA
-  pages.
-- Edexcel and CAIE use official candidate matching plus official URL/PDF
-  fallback. If the route is ambiguous, return candidates and wait for the user.
+- AQA, Edexcel, CAIE, and College Board AP are the supported source families.
+- Automatic acquisition covers the International and UK-domestic
+  AQA/Edexcel/CAIE IGCSE, AS, and A-Level routes plus College Board AP. The
+  first preflight must explicitly distinguish `international` from
+  `uk-domestic` for those three boards, then route discovery through the
+  selected official Provider and retain the choice in source metadata. Other
+  systems have no automatic provider; manual imports are unverified and may
+  fail with unknown compatibility errors.
+- AQA uses OxfordAQA / Oxford International AQA for International routes and
+  the AQA official subject catalogue for UK-domestic routes.
+- Edexcel and CAIE use market-specific official candidate matching plus
+  official URL/PDF fallback. If the route is ambiguous, return candidates and
+  wait for the user.
 - Do not claim support for OCR, WJEC/Eduqas, CCEA, or every UK exam board.
 - Do not commit official PDFs, past papers, mark schemes, copied exam questions,
   API keys, local absolute paths, private local notes, or generated output
@@ -28,15 +36,23 @@ User-facing promise:
 1. User gives the Skill link to OpenClaw, Hermes, or another Skill-compatible
    Agent.
 2. User asks for a subject revision/study handbook.
-3. Agent confirms exam board, subject, required exam year, term-support
-   language, explanation style, and workflow mode. The workflow-mode prompt must
+3. Agent first asks the blocking visual-capability question: whether the user can
+   provide or enable a callable external image-generation Skill or tool for this
+   run. It must wait for the answer and must not silently default to local image
+   generation. Agent then confirms exam board, level, course market
+   (`international` or `uk-domestic` for AQA/Edexcel/CAIE IGCSE, AS, and
+   A-Level), subject, required exam year, term-support language, explanation
+   style, and workflow mode. The workflow-mode prompt must
    explicitly offer default single-host Analyst/Writer/Reviewer role passes or
    optional multi-agent delegation when the user wants separate agents and the
    runtime supports them.
 4. Agent fetches official public syllabus/specification sources and official PDF runs produce dual-track evidence: `syllabus-evidence.json`, `source/specification.md`, and `source/markdown-extraction.json`.
-5. Analyst reads Markdown for document structure and page-level evidence for source truth; Python must not split topics from Markdown.
+5. Analyst reads Markdown for document structure and page-level evidence for
+   source truth, then writes independently assessable, source-backed syllabus
+   units. Python must not split topics from Markdown or promote directory
+   headings into final topics.
 6. Agent builds topic guides, concept-writing jobs, worked examples, visual
-   briefs, HTML, PDF, and validation output.
+   briefs, and HTML. PDF is not generated yet.
 7. Agent writes/imports reviewed concept explanations from
    `concepts/concept_jobs.json` before treating the handbook as final.
 8. Agent keeps the lightweight operating roles clear: Analyst writes the outline,
@@ -45,41 +61,47 @@ User-facing promise:
    but the default Skill contract does not require a project-manager or release
    certification workflow. Review completion is not the same as final-ready
    approval.
-9. The user's active LLM/Agent performs a final product review over the actual
-   rendered handbook before handoff. It must compare the final topic sequence,
-   concept explanations, visuals, glossary support, cross-page visual repetition,
-   notation readability, and sampled PDF pages against the syllabus outline and
-   repair fixable problems before giving the file to the user. Machine gates and
-   Skill output are evidence, not a substitute for this review-and-repair loop.
-   The pass must be recorded in `agent-product-review.json`; without complete
-   product-review evidence, the output remains review-ready or draft even when
-   validation is clean.
+9. The user's active LLM/Agent personally opens the current rendered HTML before
+   handoff and reviews every final topic, worked example, answer, source anchor,
+   and rendered visual. It checks topic sequence, concept explanations, visual
+   semantics, glossary support, cross-page repetition, notation, and responsive
+   layout against the syllabus outline. Every fixable problem returns to the
+   Writer; after repair, the Agent rerenders and repeats the complete visible
+   review. Python gates and Skill output are diagnostics, not approval. The pass
+   must be recorded in per-item `review-ledger/` shards with visible evidence
+   locations and summarized in `agent-product-review.json` with
+   `reviewer_type: llm`, the ledger hash, render snapshot, and exact current
+   HTML SHA-256. Only then may `export-pdf` create and technically validate a
+   candidate before promoting it through `current-pdf.json`.
 
 Verified delivery entries are only the routes recorded in the delivery matrix
 with current evidence. Candidate routes must not be described as verified
-delivery or release-ready until a fresh output passes validation,
-`python -m intl_exam_guide review --out <output-dir>`, concept-status checks,
-visual-status checks recorded in `final-review-packet.json`, and the release
-claim is recorded in `docs/release-evidence/`.
+delivery or release-ready until a fresh output passes validation and concept/
+visual status checks, its current HTML receives complete hash-bound LLM review,
+`current-pdf.json` points to a technically valid hash-bound export, and the release claim is recorded in
+`docs/release-evidence/`. `review --out` and `final-review-packet.json` prepare
+supporting diagnostics only.
 
-v0.5 release-evidence status vocabulary:
+v0.6 release-evidence status vocabulary:
 
 - `candidate`: route evidence exists, but it is not delivery-grade.
 - `draft`: a fresh output exists, but concepts, visuals, PDF/export,
   validation, or Agent self-review still blocks final handoff.
-- `final-ready`: current evidence passes validation, final review, concept
-  status, visual status, and package checks.
+- `final-ready`: current evidence passes validation, concept status, visual
+  status, complete current-HTML LLM review, gated PDF export, and package checks.
 - `certified`: final-ready evidence has also been approved by the release owner
   or a subject-aware reviewer and recorded in a release-evidence manifest.
 
 Do not call any route certified unless the manifest explicitly says so. A v0.3
-ready packet is historical evidence, not a standing v0.5 certification.
+ready packet is historical evidence, not a standing v0.6 certification.
 
 ## 2. Source Of Truth
 
 - GitHub repository: `https://github.com/mianbaofang/igcse-a-level-revision-guide`
 - GitHub Pages: `https://mianbaofang.github.io/igcse-a-level-revision-guide/`
 - Skill entry: `https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill`
+- Repository wrapper: `SKILL.md` (discovery only; it points to `skill/SKILL.md`)
+- Agent maintenance rules: `AGENTS.md`
 - Package version: `pyproject.toml` and `src/intl_exam_guide/__init__.py`
 - Release history: `CHANGELOG.md` and GitHub Releases
 - Public home page: `docs/index.html`
@@ -183,16 +205,16 @@ from those jobs and imported with `scripts/import_concept_explanations.py`.
 Release evidence is not ready while
 `validation.json.review_summary.pending_concept_explanations` is nonzero.
 
-v0.3 resets the final-delivery bar around actual student-facing usefulness.
-For every release sample or user-facing final guide, inspect the rendered
-roadmap for duplicate knowledge-unit titles and duplicate mastery targets,
-verify `final-review-packet.json` reports `delivery_status: ready`, and make
-sure complex infographic assets are either reviewed/imported or clearly left as
-non-final image jobs. SVG is appropriate only for reviewed `svg_fit: "exact"`
-cases; it must not be used as a blanket substitute for complex instructional
-infographics.
+v0.3 introduced the student-facing usefulness checks. They remain historical
+release context, not a substitute for the current per-handbook LLM HTML review.
+For every release sample or user-facing final guide, the active LLM must inspect
+the complete HTML and the exact rendered visuals; `final-review-packet.json`
+remains supporting evidence only. Complex infographic assets must be
+reviewed/imported or clearly left as non-final image jobs. SVG is appropriate
+only for reviewed `svg_fit: "exact"` cases; it must not be used as a blanket
+substitute for complex instructional infographics.
 
-v0.5 keeps the release-evidence layer conservative rather than changing the v0.3 facts.
+v0.6 keeps the release-evidence layer conservative rather than changing the v0.3 facts.
 For any route promoted above `candidate`, create or update a concise
 `docs/release-evidence/<version>/manifest.json` entry with the command,
 git revision, validation summary, final-review summary, concept/image status,
@@ -200,11 +222,11 @@ PDF status, and reviewer decision if certified. Do not commit the generated
 output directory used to collect that evidence.
 
 Final-round maintenance updates that touch `skill/`, validation behavior,
-release-facing docs, or public audit claims must not stop at local edits. Before
-handoff, synchronize the installed local Skill copy, commit and push the
-repository update, and create or update the matching GitHub Release notes with
-the exact validation evidence. If the change is intentionally not published,
-state that exception explicitly in the handoff.
+release-facing docs, or public audit claims must record the exact validation
+evidence and update `CHANGELOG.md`. Synchronizing an installed Skill copy,
+committing, pushing, or creating a GitHub Release is a separate publication
+step and requires the user's explicit request. For a local-only iteration,
+report that publication is pending rather than attempting an outward change.
 
 ## 4. Version And Release Rules
 
@@ -217,6 +239,8 @@ python -m pytest --cov --cov-report=term-missing --cov-fail-under=70 -q
 python -m ruff check .
 python -m compileall -q src tests scripts
 python scripts/scan_for_raw_keys.py . ./outputs
+python scripts/sync_intro_animation_sources.py --check
+python scripts/build_skill_store_package.py
 git diff --check
 git status --short
 ```
@@ -227,13 +251,15 @@ Then:
 2. Update `src/intl_exam_guide/__init__.py`.
 3. Update `CHANGELOG.md`.
 4. Update README/project docs if the public promise changed.
-5. If `skill/` changed, synchronize the installed local Skill copy and verify it
+5. Build the store package and verify that `SKILL.md` is at archive root and
+   byte-identical to `skill/SKILL.md`.
+6. If `skill/` changed, synchronize the installed local Skill copy and verify it
    matches the repository copy.
-6. Commit intentionally.
-7. Create an annotated tag, for example `vX.Y.Z`.
-8. Push `main`.
-9. Push the tag.
-10. Create or update the GitHub Release for that tag.
+7. Commit intentionally.
+8. Create an annotated tag, for example `vX.Y.Z`.
+9. Push `main`.
+10. Push the tag.
+11. Create or update the GitHub Release for that tag.
 
 The Release should contain:
 
@@ -243,6 +269,9 @@ The Release should contain:
 - release-evidence manifest path and status summary when any route is claimed
   as `draft`, `final-ready`, or `certified`;
 - usage reminder with the Skill link;
+- the versioned Skill-store ZIP whose archive root contains `SKILL.md`;
+- optional Chinese/English MP4 files only when the release intentionally offers
+  downloadable intro videos;
 - Source code assets generated by GitHub.
 
 Do not leave a version visible only under `/tags`. The user-facing release page
@@ -282,6 +311,9 @@ Animation files:
 - English wrapper: `docs/project-intro-animation-en.html`
 - Chinese source: `docs/assets/three-board-support-video/`
 - English source: `docs/assets/three-board-support-video-en/`
+- shared theme: `docs/assets/intro-animation.css`
+- embedded-source synchronizer: `scripts/sync_intro_animation_sources.py`
+- current handbook page assets: `docs/assets/v060-*.jpg`
 - README GIF previews:
   - `docs/assets/intro-animation-preview.gif`
   - `docs/assets/intro-animation-preview-en.gif`
@@ -294,9 +326,12 @@ Rules:
 - Stage duration is `48` seconds.
 - README GIF preview should be 16:9, normally `960x540`.
 - HTML animation must autoplay in page, not require opening raw code.
-- Visible animation version labels must match `pyproject.toml` and
-  `src/intl_exam_guide/__init__.py`; `tests/test_release_scripts.py` guards
-  this for both Chinese and English animation sources.
+- Animation source must not hardcode a release version label. The README and
+  Release carry the version; `tests/test_release_scripts.py` guards both source
+  and embedded animation pages against stale labels.
+- Run `python scripts/sync_intro_animation_sources.py` after changing shared
+  animation primitives or either language's `video.jsx`, then run the same
+  command with `--check` before release.
 - If animation source text changes, regenerate the relevant preview GIF.
 - MP4 export is optional and should not be committed unless a release explicitly
   needs a downloadable video file.
@@ -311,6 +346,22 @@ python scripts/render_intro_animation.py --html docs/project-intro-animation-en.
 For quick README preview refresh, a shorter preview may be rendered, but the
 HTML source must still represent the current project.
 
+## 6A. Skill-Store Package
+
+The repository root and the store upload are intentionally different layouts.
+The repository root `SKILL.md` is a discovery wrapper; the store archive must
+promote the contents of `skill/` so the authoritative `SKILL.md` is immediately
+visible at archive root.
+
+```powershell
+python scripts/build_skill_store_package.py
+```
+
+The builder writes a deterministic versioned ZIP under `dist/`, rejects unsafe
+or nested archive paths, verifies byte equality with `skill/SKILL.md`, and prints
+its SHA-256. Do not upload GitHub's automatically generated source archive as a
+substitute for this artifact.
+
 ## 7. Skill And Image Routing Rules
 
 The Skill must not present GPT Image, Qwen Image, or SenseNova as built-in
@@ -324,9 +375,10 @@ Current public logic:
 - real image generation only happens if the user provides a callable route,
   API/script, image-generation Skill, designer workflow, or generated asset
   directory;
-- "external" does not mean manual user file-moving. If the route is callable,
-  the Agent should run it after the base handbook exists and import or attach
-  the reviewed assets automatically;
+- the first preflight must confirm whether any such callable route exists before
+  source acquisition or local image generation. After topic-specific visual
+  decisions are written, a confirmed callable route should be run and its
+  reviewed assets imported automatically;
 - exact SVG is a reviewed exception for `svg_fit: "exact"` cases, not a
   fallback for complex visuals; unreviewed or non-exact SVG must block final
   delivery.
@@ -339,8 +391,8 @@ generic icons, brand-logo posters, course covers, or low-density decorative art,
 fix the prompt or regenerate before importing them as reviewed assets.
 
 Do not show a user-facing menu that implies these models are always available.
-Ask for the subject/language/style first. Report complex infographic needs after
-the base handbook plan exists.
+Ask the capability question first, then confirm subject/language/style. Report
+complex infographic needs after the per-topic handbook plan exists.
 
 After changing `skill/`, synchronize any locally installed Skill copy from the
 repository's `skill/` directory, verify the installed files match the repository
@@ -369,6 +421,34 @@ Important warning cases:
 
 - remaining formulaic AI-style wording in student-facing topic guides or
   practice cards after the anti-template language pass.
+
+Approval rules:
+
+- `review --out` prepares diagnostics and rerenders HTML; it does not approve
+  the handbook or export PDF;
+- the active LLM must visibly inspect every final topic and every rendered visual,
+  record per-item decisions and evidence locations in `review-ledger/`, and bind
+  the compact `agent-product-review.json` summary to that ledger;
+- `export-pdf` is the only delivery export path and must remain blocked until the
+  current HTML hash has valid LLM approval; it promotes only a technically valid
+  candidate and writes `current-pdf.json`; any later HTML change marks that PDF
+  historical without deleting it.
+- The visual-manifest lifecycle is ordered: explicitly refresh a new manifest
+  cycle, generate/import assets, write the LLM visual decision, render from the
+  existing manifest only, complete HTML review, then export PDF. Import or
+  rebuild operations after visual approval are ordering errors.
+- Reuse requires an unchanged source-bound `spec_hash`; changed visual specs
+  and replaced assets reset visual approval to `pending`. Unreferenced image
+  files are historical unless cleanup is explicitly approved. Any manifest or
+  asset mutation without a new render snapshot and complete LLM review blocks
+  delivery. The delivery gate also checks that the manifest matches the current
+  plan's visual briefs by count, derived key, and `spec_hash`, so direct HTML
+  rendering cannot approve a stale visual list.
+
+Use `export-pdf --delivery-dir <directory>` only when a controlled final copy is
+needed. The copy must match the current PDF hash. A differing destination is a
+hard conflict unless the operator explicitly adds `--supersede-existing`, which
+archives the former file first.
 
 PDF export should try Playwright first, then fall back to a local Chrome/Edge
 browser. If both routes fail, record a clear PDF export error instead of
@@ -405,6 +485,11 @@ animation assets.
 Ignored or local-only artifacts:
 
 - `outputs/`
+- `review-approvals/`
+- `visual-prompts/`
+- `visual-review/`
+- `MP4/`
+- top-level `NUL` residue;
 - `.pytest_cache/`
 - `.ruff_cache/`
 - `__pycache__/`

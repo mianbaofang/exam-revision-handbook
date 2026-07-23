@@ -115,7 +115,7 @@ def render_mp4(ffmpeg: str, frames_dir: Path, fps: int, output: Path, crf: int) 
 
 def render_gif(ffmpeg: str, frames_dir: Path, fps: int, output: Path) -> None:
     palette = output.with_suffix(".palette.png")
-    preview_filter = "fps=5,scale=720:-1:flags=lanczos"
+    preview_filter = "fps=5,scale=960:-1:flags=lanczos"
     subprocess.run(
         [
             ffmpeg,

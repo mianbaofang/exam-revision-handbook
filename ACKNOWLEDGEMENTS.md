@@ -2,7 +2,7 @@
 
 ## Source materials
 
-This project relies on users and host agents reading official public syllabus pages and PDFs from exam boards such as OxfordAQA / Oxford International AQA, Pearson Edexcel, and Cambridge International. Those materials remain the property of their respective owners.
+This project relies on users and host agents reading official public syllabus pages and PDFs from OxfordAQA / Oxford International AQA, Pearson Edexcel, Cambridge International, and College Board AP Course and Exam Descriptions. Those materials remain the property of their respective owners.
 
 Exam-board names are used only for source identification. This project is independent and not endorsed by any exam board.
 
@@ -22,7 +22,7 @@ Thanks to teachers, tutors, families, and students who review generated learning
 
 ## 中文说明
 
-本项目依赖用户和宿主 Agent 阅读 OxfordAQA / Oxford International AQA、Pearson Edexcel、Cambridge International 等考试局公开大纲页面和 PDF。相关资料归各自权利人所有。
+本项目依赖用户和宿主 Agent 阅读 OxfordAQA / Oxford International AQA、Pearson Edexcel、Cambridge International 公开大纲，以及 College Board AP Course and Exam Description。相关资料归各自权利人所有。
 
 感谢 `pypdf`、Microsoft `markitdown`、Playwright、pytest、pytest-cov、Ruff、mypy、HyperFrames，以及用户或宿主环境提供的生图路线对本项目的支持。
 

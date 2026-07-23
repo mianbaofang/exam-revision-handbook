@@ -70,5 +70,23 @@
       "require_visual_manifest": true,
       "allow_pending_infographics": true
     }
+  },
+  {
+    "id": "collegeboard-ap-cybersecurity-en",
+    "provider": "collegeboard",
+    "level": "advanced_placement",
+    "subject": "Cybersecurity",
+    "language": "en",
+    "claim_status": "candidate",
+    "release_status": "candidate",
+    "evidence_manifest": null,
+    "status_note": "Official AP CED evidence route verified; not delivery-grade without Analyst, Writer, visual, PDF, and final-review evidence.",
+    "expected": {
+      "min_topics": 5,
+      "min_practice_per_topic": 1,
+      "require_assessments": true,
+      "require_visual_manifest": true,
+      "allow_pending_infographics": true
+    }
   }
 ]
