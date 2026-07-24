@@ -150,12 +150,8 @@ to your OpenClaw, Hermes, or other Skill-compatible Agent:
 https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill
 ```
 
-For a Skill store that accepts an uploaded archive, use the purpose-built
+Download the ready-to-install
 [v0.6.0 Skill package](https://github.com/mianbaofang/igcse-a-level-revision-guide/releases/download/v0.6.0/igcse-a-level-revision-guide-skill-v0.6.0.zip).
-Its archive root contains the authoritative `SKILL.md`, `agents/`, `references/`,
-and bundled assets directly. Do not upload GitHub's repository source ZIP to a
-store that requires `SKILL.md` at archive root; the repository ZIP adds an outer
-folder and is a different artifact.
 
 Then ask:
 

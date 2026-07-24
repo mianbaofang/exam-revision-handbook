@@ -770,10 +770,10 @@ const { Stage, Sprite, useTime, Easing, clamp } = window;
 const TOTAL_DURATION = 48;
 
 const boards = [
-  { name: "AQA", note: "International 与英国本土路线", level: "IGCSE · AS · A-Level", accent: "#1666b1" },
-  { name: "Edexcel", note: "Pearson International 与 UK", level: "IGCSE · AS · A-Level", accent: "#007d86" },
-  { name: "CAIE", note: "Cambridge 官方课程目录", level: "IGCSE · AS · A-Level", accent: "#c8323f" },
-  { name: "College Board AP", note: "官方 Course and Exam Description", level: "AP", accent: "#2255a4" },
+  { name: "AQA", accent: "#1666b1" },
+  { name: "Edexcel", accent: "#007d86" },
+  { name: "CAIE", accent: "#c8323f" },
+  { name: "College Board AP", accent: "#2255a4" },
 ];
 
 const sampleBooks = [
@@ -838,16 +838,11 @@ function IntroScene() {
   return (
     <Scene start={0} end={5.6}>
       <div className="kicker">开源复习手册 Skill</div>
-      <h1 className="headline">把官方课程要求，做成真正能学的图文手册。</h1>
+      <h1 className="headline infographic-headline">把官方课程要求，做成真正能学的图文手册。</h1>
       <p className="lead">覆盖 IGCSE、AS、A-Level 与 AP；来源、写作、配图、审查和 PDF 交付都有明确边界。</p>
-      <div className="board-strip">
-        {boards.map((board, index) => (
-          <Stagger start={0.9} index={index} key={board.name}>
-            <article className="board-tile" style={{ "--accent": board.accent }}>
-              <strong>{board.name}</strong><span>{board.note}</span><small>{board.level}</small>
-            </article>
-          </Stagger>
-        ))}
+      <div className="imagegen-visual provider-art">
+        <img src="../intro-providers-infographic.png" alt="" />
+        <div className="visual-legend provider-legend">{boards.map((board, index) => <Stagger start={0.9} index={index} key={board.name}><span style={{ "--accent": board.accent }}>{board.name}</span></Stagger>)}</div>
       </div>
     </Scene>
   );
@@ -900,17 +895,18 @@ function ProviderScene() {
 
 function AtomicScene() {
   const steps = [
-    ["01", "官方来源证据", "同时读取 Markdown 结构与逐页证据，保留页码、原文和版本。", "#1666b1"],
-    ["02", "独立可考要求", "Topic 只是容器；继续拆到可以单独教、单独考、单独验证的要求。", "#c8323f"],
-    ["03", "最终教学 Topic", "合并多个要求必须写理由，并保证每一项都在手册中可见。", "#007d86"],
-    ["04", "可追溯位置", "每个考点都能回到官方来源，也能定位到最终手册页面。", "#2255a4"],
+    ["01", "官方来源证据", "#1666b1"],
+    ["02", "独立可考要求", "#c8323f"],
+    ["03", "最终教学 Topic", "#007d86"],
+    ["04", "可追溯位置", "#2255a4"],
   ];
   return (
     <Scene start={16.1} end={21.8}>
       <div className="kicker">原子级大纲拆解</div>
       <h2 className="headline compact">不按考试局或学科硬编码，只按“能否独立考查”继续拆。</h2>
-      <div className="atomic-flow">
-        {steps.map((step, index) => <React.Fragment key={step[0]}><Stagger start={16.7} index={index}><article className="flow-card" style={{ "--accent": step[3] }}><b>{step[0]}</b><h3>{step[1]}</h3><p>{step[2]}</p></article></Stagger>{index < steps.length - 1 && <div className="flow-arrow">→</div>}</React.Fragment>)}
+      <div className="imagegen-visual atomic-art">
+        <img src="../intro-atomic-infographic.png" alt="" />
+        <div className="visual-legend">{steps.map((step, index) => <Stagger start={16.7} index={index} key={step[0]}><span style={{ "--accent": step[2] }}><b>{step[0]}</b>{step[1]}</span></Stagger>)}</div>
       </div>
     </Scene>
   );
@@ -918,17 +914,18 @@ function AtomicScene() {
 
 function DecisionScene() {
   const decisions = [
-    ["text-ok", "文字足够", "只有在额外图形不增加学习价值时才选择。", "必须写 no_visual_reason", "#36536d"],
-    ["exact-svg", "精确图解", "坐标、曲线、回路、结构和方向必须由领域图形对象表达。", "纯文字方框不算图解", "#1666b1"],
-    ["kroki", "结构关系", "流程、层级、时序和反馈必须有方向、连接与闭环。", "模板卡片不能冒充关系图", "#007d86"],
-    ["external-infographic", "复杂信息图", "装置、材料、空间结构与复杂过程使用已确认的外部路线。", "逐图语义审查后才能导入", "#c8323f"],
+    ["text-ok", "文字足够", "#36536d"],
+    ["exact-svg", "精确图解", "#1666b1"],
+    ["kroki", "结构关系", "#007d86"],
+    ["external-infographic", "复杂信息图", "#c8323f"],
   ];
   return (
     <Scene start={21.5} end={27.2}>
       <div className="kicker">逐主题教学与视觉决策</div>
       <h2 className="headline compact">视觉数量是判断结果，不是先分配给每科的配额。</h2>
-      <div className="decision-grid">
-        {decisions.map((item, index) => <Stagger start={22.1} index={index} key={item[0]}><article className="decision-card" style={{ "--accent": item[4] }}><span className="route">{item[0]}</span><h3>{item[1]}</h3><p>{item[2]}</p><div className="rule">{item[3]}</div></article></Stagger>)}
+      <div className="imagegen-visual decision-art">
+        <img src="../intro-visual-routing-infographic.png" alt="" />
+        <div className="visual-legend">{decisions.map((item, index) => <Stagger start={22.1} index={index} key={item[0]}><span style={{ "--accent": item[2] }}><b>{item[0]}</b>{item[1]}</span></Stagger>)}</div>
       </div>
     </Scene>
   );
@@ -966,14 +963,14 @@ function ReviewScene() {
   );
 }
 
-function PackageScene() {
+function TraceabilityScene() {
   return (
     <Scene start={40.9} end={45.7}>
-      <div className="kicker">Skill 商店发布包</div>
-      <h2 className="headline compact">商店解压后的第一层，必须直接看见权威 SKILL.md。</h2>
+      <div className="kicker">可追溯交付</div>
+      <h2 className="headline compact">从官方要求到最终 PDF，每一步都能查证。</h2>
       <div className="package-layout">
-        <div className="zip-panel"><div className="zip-header"><strong>revision-guide-skill.zip</strong><span>STORE READY</span></div><div className="tree"><div className="tree-row root"><i></i>SKILL.md</div><div className="tree-row"><i></i>agents/openai.yaml</div><div className="tree-row"><i></i>references/revision_guide_spec.md</div><div className="tree-row"><i></i>assets/...</div><div className="tree-row"><i></i>test-prompts.json</div></div></div>
-        <div className="package-notes" style={{ "--accent": "#2255a4" }}><h3>仓库入口和安装包各司其职。</h3><ul><li>仓库根 SKILL.md 只负责发现并指向 skill/SKILL.md。</li><li>商店 ZIP 以 skill/ 内容为根，不带多余外层目录。</li><li>发布前校验根入口、字节一致性、路径安全与确定性哈希。</li></ul></div>
+        <div className="zip-panel"><div className="zip-header"><strong>HANDBOOK EVIDENCE</strong><span>CURRENT VERSION</span></div><div className="tree"><div className="tree-row root"><i></i>官方来源页码</div><div className="tree-row"><i></i>原子考点</div><div className="tree-row"><i></i>教学讲解与例题</div><div className="tree-row"><i></i>已审查视觉</div><div className="tree-row"><i></i>HTML 与 PDF 哈希</div></div></div>
+        <div className="package-notes" style={{ "--accent": "#2255a4" }}><h3>每一步都绑定当前版本。</h3><ul><li>每个最终主题对应官方要求和手册位置。</li><li>视觉批准与 HTML 审查绑定当前资产哈希。</li><li>PDF 只从已批准 HTML 导出，并记录来源与交付哈希。</li></ul></div>
       </div>
     </Scene>
   );
@@ -993,7 +990,7 @@ function Footer() {
 }
 
 function App() {
-  return <Stage width={1920} height={1080} duration={TOTAL_DURATION} background="#eef2f5"><Background /><IntroScene /><PreflightScene /><ProviderScene /><AtomicScene /><DecisionScene /><SamplesScene /><ReviewScene /><PackageScene /><ClosingScene /><Footer /></Stage>;
+  return <Stage width={1920} height={1080} duration={TOTAL_DURATION} background="#eef2f5"><Background /><IntroScene /><PreflightScene /><ProviderScene /><AtomicScene /><DecisionScene /><SamplesScene /><ReviewScene /><TraceabilityScene /><ClosingScene /><Footer /></Stage>;
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);

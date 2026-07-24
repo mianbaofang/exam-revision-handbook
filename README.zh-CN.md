@@ -88,11 +88,8 @@ OpenClaw、Hermes 或其他支持 Skill 的 Agent：
 https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill
 ```
 
-如果技能商店要求上传压缩包，请使用专门制作的
+直接下载
 [v0.6.0 Skill 安装包](https://github.com/mianbaofang/igcse-a-level-revision-guide/releases/download/v0.6.0/igcse-a-level-revision-guide-skill-v0.6.0.zip)。
-这个压缩包解压后的第一层会直接出现权威 `SKILL.md`、`agents/`、`references/`
-和所需资产。不要把 GitHub 自动生成的仓库源码 ZIP 当作技能商店安装包；源码 ZIP
-会多出一层仓库目录，部分商店因此会错误地判断“缺少 SKILL.md”。
 
 然后直接说：
 

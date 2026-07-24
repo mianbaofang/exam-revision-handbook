@@ -6,6 +6,36 @@ No completed iterations have been recorded after `v0.6.0`.
 
 ## 0.6.0 - 2026-07-24
 
+### Iteration 2026-07-24 - Public Copy And Infographic Correction
+
+#### Changed
+
+- Replaced the introduction animation's text-card visuals with three real
+  ImageGen illustrations using distinct radial, linear-process, and teaching-
+  instrument compositions. Chinese and English captions remain accurate HTML
+  overlays rather than generated text.
+- Replaced the archive-layout animation scene with a product-facing
+  traceability scene covering official evidence, atomic requirements, reviewed
+  teaching visuals, HTML approval, and controlled PDF delivery.
+- Simplified both READMEs to link directly to the installable Skill package and
+  removed author-facing archive guidance from public copy. The release notes
+  now describe functional changes and independent handbook evidence only.
+- Updated the public project page so its animation and capability descriptions
+  reflect the current four-source workflow without release-production details.
+
+#### Verified
+
+- Reviewed every scene in both 1920x1080 HTML animations through Playwright
+  captures. The three illustration compositions are visibly distinct; images,
+  localized captions, headings, and fixed footers do not overlap or clip.
+- Rendered and inspected both final MP4 files at 1920x1080, 47.375 seconds,
+  and 379 frames, plus both README GIFs at 960x540, 47.4 seconds, and 237
+  frames. Representative frames extracted from the encoded MP4 files match the
+  approved HTML scenes.
+- Final regression suite: `489 passed, 165 skipped`. Ruff, compileall,
+  animation-source synchronization, raw-key scanning, and Git diff checks
+  passed; the raw-key scan reported zero matches.
+
 ### Iteration 2026-07-24 - Store Package, Public Showcase, And Release Evidence
 
 #### Added

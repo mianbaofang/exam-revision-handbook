@@ -120,59 +120,87 @@ p {
   line-height: 1.48;
 }
 
-.board-strip {
+.infographic-headline {
+  max-width: 1600px;
+  font-size: 60px;
+}
+
+.imagegen-visual {
   position: absolute;
-  right: 96px;
-  bottom: 82px;
-  left: 96px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.imagegen-visual img {
+  position: absolute;
+  inset: 0 0 70px;
+  width: 100%;
+  height: calc(100% - 70px);
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+.provider-art {
+  bottom: 58px;
+  width: 1540px;
+  height: 700px;
+}
+
+.atomic-art {
+  bottom: 58px;
+  width: 1660px;
+  height: 740px;
+}
+
+.decision-art {
+  bottom: 58px;
+  width: 1480px;
+  height: 740px;
+}
+
+.visual-legend {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
+  align-items: start;
+  gap: 28px;
 }
 
-.board-tile {
-  position: relative;
-  min-height: 220px;
-  padding: 34px 30px 28px;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--paper);
-  box-shadow: 0 18px 48px rgba(35, 52, 66, 0.12);
+.visual-legend span {
+  display: flex;
+  min-height: 54px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  color: var(--ink);
+  font-size: 20px;
+  font-weight: 780;
+  line-height: 1.2;
+  text-align: center;
 }
 
-.board-tile::before {
+.visual-legend span::before {
   content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 8px;
-  background: var(--accent);
+  width: 28px;
+  border-top: 5px solid var(--accent);
+  transform: rotate(-3deg);
 }
 
-.board-tile strong {
-  display: block;
+.visual-legend b {
   color: var(--accent);
-  font-size: 38px;
-  line-height: 1.05;
+  font-family: Consolas, "SFMono-Regular", monospace;
+  font-size: 14px;
+  font-weight: 820;
 }
 
-.board-tile span {
-  display: block;
-  margin-top: 14px;
-  color: var(--muted);
-  font-size: 22px;
-  line-height: 1.36;
+.provider-legend span {
+  color: var(--accent);
+  font-size: 23px;
 }
-
-.board-tile small {
-  position: absolute;
-  right: 24px;
-  bottom: 22px;
-  color: #30475c;
-  font-size: 17px;
-  font-weight: 760;
-}
-
 .preflight-layout,
 .review-layout,
 .package-layout {
@@ -338,110 +366,6 @@ p {
   color: #31475b;
   font-size: 18px;
   line-height: 1.3;
-}
-
-.atomic-flow {
-  position: absolute;
-  right: 96px;
-  bottom: 110px;
-  left: 96px;
-  display: grid;
-  grid-template-columns: 1.05fr 80px 1.05fr 80px 1.05fr 80px 1.05fr;
-  align-items: stretch;
-}
-
-.flow-card {
-  min-height: 350px;
-  padding: 32px 28px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--paper);
-  box-shadow: 0 18px 48px rgba(35, 52, 66, 0.1);
-}
-
-.flow-card b {
-  color: var(--accent);
-  font-family: Consolas, "SFMono-Regular", monospace;
-  font-size: 18px;
-}
-
-.flow-card h3 {
-  margin-top: 22px;
-  color: var(--ink);
-  font-size: 30px;
-  line-height: 1.16;
-}
-
-.flow-card p {
-  margin-top: 18px;
-  color: var(--muted);
-  font-size: 20px;
-  line-height: 1.46;
-}
-
-.flow-arrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #6c7e8e;
-  font-size: 44px;
-  font-weight: 400;
-}
-
-.decision-grid {
-  position: absolute;
-  right: 96px;
-  bottom: 92px;
-  left: 96px;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.decision-card {
-  position: relative;
-  min-height: 410px;
-  padding: 32px 28px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--paper);
-  box-shadow: 0 18px 48px rgba(35, 52, 66, 0.1);
-}
-
-.decision-card .route {
-  display: inline-block;
-  padding: 8px 11px;
-  color: #fff;
-  background: var(--accent);
-  font-family: Consolas, "SFMono-Regular", monospace;
-  font-size: 17px;
-  font-weight: 780;
-}
-
-.decision-card h3 {
-  margin-top: 24px;
-  color: var(--ink);
-  font-size: 30px;
-}
-
-.decision-card p {
-  margin-top: 16px;
-  color: var(--muted);
-  font-size: 20px;
-  line-height: 1.44;
-}
-
-.decision-card .rule {
-  position: absolute;
-  right: 26px;
-  bottom: 24px;
-  left: 26px;
-  padding-top: 16px;
-  border-top: 1px solid #dfe5ea;
-  color: #31475b;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.35;
 }
 
 .samples-scene {
