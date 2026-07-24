@@ -24,6 +24,8 @@ No completed iterations have been recorded after `v0.6.0`.
   reflect the current four-source workflow without release-production details.
 - Constrained Ruff to the verified pre-0.16 rule semantics after Ruff 0.16
   changed its default rule set and made the unchanged repository fail CI.
+- Completed the clean CI development dependency set and made the Skill-package
+  byte assertion honor the builder's cross-platform LF normalization contract.
 
 #### Verified
 
@@ -34,10 +36,10 @@ No completed iterations have been recorded after `v0.6.0`.
   and 379 frames, plus both README GIFs at 960x540, 47.4 seconds, and 237
   frames. Representative frames extracted from the encoded MP4 files match the
   approved HTML scenes.
-- Final regression suite: `489 passed, 165 skipped` with 70.56% coverage. Ruff,
+- A clean Python 3.11 environment installed successfully from `.[dev]`. Its
+  final suite reported `489 passed, 165 skipped` with 70.41% coverage; Ruff,
   mypy for 76 source files, compileall, animation-source synchronization,
-  raw-key scanning, and Git diff checks passed; the raw-key scan reported zero
-  matches.
+  raw-key scanning, and Git diff checks passed with zero raw-key matches.
 
 ### Iteration 2026-07-24 - Store Package, Public Showcase, And Release Evidence
 

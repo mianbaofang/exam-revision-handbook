@@ -36,7 +36,10 @@ def test_skill_store_package_places_authoritative_skill_at_archive_root(tmp_path
         assert "SKILL.md" in names
         assert "skill/SKILL.md" not in names
         assert not any(name.startswith("igcse-a-level-revision-guide/") for name in names)
-        assert archive.read("SKILL.md") == (REPO_ROOT / "skill" / "SKILL.md").read_bytes()
+        source_skill = (REPO_ROOT / "skill" / "SKILL.md").read_bytes()
+        assert archive.read("SKILL.md") == source_skill.replace(b"\r\n", b"\n").replace(
+            b"\r", b"\n"
+        )
         assert "agents/openai.yaml" in names
         assert "references/revision_guide_spec.md" in names
 
