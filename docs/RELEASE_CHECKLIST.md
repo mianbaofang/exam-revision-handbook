@@ -85,7 +85,7 @@ python -m intl_exam_guide discover --subject-url https://www.oxfordaqa.com/subje
 python -m intl_exam_guide generate --query chemistry --level igcse --out ./outputs/chemistry-9202
 ```
 
-- [ ] OxfordAQA International AS-A-level sample works:
+- [ ] OxfordAQA International A-Level sample works (AS stage when selected):
 
 ```bash
 python -m intl_exam_guide generate --query chemistry --level a-level --out ./outputs/chemistry-9620
@@ -97,7 +97,7 @@ python -m intl_exam_guide generate --query chemistry --level a-level --out ./out
 python -m intl_exam_guide generate --query economics --level igcse --out ./outputs/economics-9214
 ```
 
-- [ ] OxfordAQA revised non-Science International AS-A-level code lookup sample works:
+- [ ] OxfordAQA revised non-Science International A-Level code lookup sample works:
 
 ```bash
 python -m intl_exam_guide generate --query 9725 --level a-level --out ./outputs/business-9725
@@ -109,7 +109,7 @@ python -m intl_exam_guide generate --query 9725 --level a-level --out ./outputs/
 python -m intl_exam_guide generate --provider pearson --query "Mathematics B" --level igcse --out ./outputs/pearson-igcse-maths-b
 ```
 
-- [ ] Pearson Edexcel International AS/A Level candidate-discovery sample works:
+- [ ] Pearson Edexcel International A-Level candidate-discovery sample works:
 
 ```bash
 python -m intl_exam_guide generate --provider pearson --query "Biology" --level a-level --out ./outputs/pearson-ial-biology
@@ -121,7 +121,7 @@ python -m intl_exam_guide generate --provider pearson --query "Biology" --level 
 python -m intl_exam_guide generate --provider cambridge --query "Accounting 0452" --level igcse --exam-year 2027 --out ./outputs/cambridge-igcse-accounting-2027
 ```
 
-- [ ] Cambridge AS/A Level candidate-discovery sample works with `--exam-year`:
+- [ ] Cambridge A-Level candidate-discovery sample works with `--exam-year`:
 
 ```bash
 python -m intl_exam_guide generate --provider cambridge --query "Chemistry 9701" --level a-level --exam-year 2029 --out ./outputs/cambridge-ial-chemistry-2029
@@ -223,10 +223,10 @@ python scripts/render_intro_animation.py --html docs/project-intro-animation-en.
 
 - [ ] `validation.json` has no `error` issues for the offline demo.
 - [ ] `validation.json` has no `error` issues for one International GCSE subject.
-- [ ] `validation.json` has no `error` issues for one International AS-A-level subject.
+- [ ] `validation.json` has no `error` issues for one International A-Level subject.
 - [ ] `validation.json` has no `error` issues for one non-Science International GCSE subject.
 - [ ] `validation.json` has no `error` issues for one revised non-Science
-  International AS-A-level code lookup subject.
+  International A-Level code lookup subject.
 - [ ] Live parser audit across discovered OxfordAQA qualification pages shows
   no missing topics, assessments, specification links, or listing/type conflicts.
 - [ ] `validation.json.review_summary` has the expected topic, guide, practice-card, diagram, and source-snippet counts.
@@ -251,7 +251,7 @@ python scripts/render_intro_animation.py --html docs/project-intro-animation-en.
 ## 中文发布检查
 
 - [ ] 中文 README 能解释项目是什么、适合谁、怎么跑。
-- [ ] 中文 README 解释 International GCSE / International AS-A-level 的蓝色/红色 listing 映射。
+- [ ] 中文 README 解释 International GCSE / International A-Level 的蓝色/红色 listing 映射。
 - [ ] 准确性政策中明确说明“不编造 syllabus、不复制真题、不提交 PDF”。
 - [ ] 语言策略明确：生成前选择术语辅助语言；手册正文保持英文，非 `en` 只增加 30-50 个“用户语言 → English exam term”专业词对照表。
 - [ ] 给孩子正式使用前，需要老师或熟悉大纲的人复核深度例题。

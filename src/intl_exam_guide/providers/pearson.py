@@ -173,7 +173,7 @@ class PearsonEdexcelProvider(ExamBoardProvider):
 
 
 class PearsonEdexcelUKProvider(PearsonEdexcelProvider):
-    """Official Pearson Edexcel GCSE and AS/A-Level source route for UK centres."""
+    """Official Pearson Edexcel GCSE and A-Level source route for UK centres."""
 
     name = "pearson_uk"
     supported_levels = ("uk_gcse", "uk_as_a_level")
@@ -236,7 +236,7 @@ def pearson_summary(
     first_assessment: str | None,
 ) -> list[str]:
     structure = (
-        "Pearson Edexcel International AS/A Level is normally modular and may include unit routes."
+        "Pearson Edexcel International A-Level is normally modular and may include unit routes."
         if qtype == "international_as_a_level"
         else "Pearson Edexcel International GCSE may be linear or modular depending on the subject and specification."
     )
@@ -251,7 +251,7 @@ def pearson_summary(
 def pearson_audience_note(qtype: str) -> str:
     if qtype == "international_as_a_level":
         return (
-            "Pearson Edexcel International AS/A Levels are international qualifications "
+            "Pearson Edexcel International A-Level qualifications are international qualifications "
             "for international students outside the UK, commonly structured through AS/A2 or unit routes. "
             "Confirm available units and exam series with the school or exam centre."
         )
@@ -351,7 +351,7 @@ def pearson_route_tags_for_market(course_market: str, qtype: str, url: str) -> l
         return pearson_route_tags(qtype, url)
     tags = ["Pearson Edexcel", "uk-domestic"]
     if qtype == "uk_as_a_level":
-        tags.append("AS/A Level")
+        tags.append("A-Level")
     return tags
 
 

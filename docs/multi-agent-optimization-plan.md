@@ -1,8 +1,8 @@
-# IGCSE Handbook Skill - Multi-Agent 优化方案
+# GCSE, IGCSE, A-Level & AP Handbook Skill - Multi-Agent 优化方案
 
 > Historical design note: this document explores an optional multi-agent operating mode. It is not the default Skill contract. The shipped Skill remains a lightweight framework where Analyst, Writer, and Reviewer are role labels that the same host LLM may perform sequentially unless the user explicitly asks for multi-agent orchestration. Do not implement Coordinator, mandatory Quality Inspector gates, or release-certification states from this note without a fresh product decision. See `ARCHITECTURE_DECISION_SKILL_WORKFLOW.md` for the binding workflow boundary.
 
-基于 Multi-Agent Expert Team Methodology，对当前 IGCSE & A-Level Revision Handbook Skill 进行优化。
+基于 Multi-Agent Expert Team Methodology，对当前 GCSE、IGCSE、A-Level 与 AP Revision Handbook Skill 进行优化。
 
 ---
 
@@ -117,7 +117,7 @@ You do NOT write content yourself. You route tasks, collect outputs, and deliver
 Task: Collect parameters from user
 Questions:
 - Exam board? (AQA / Edexcel / Cambridge)
-- Level? (IGCSE / International AS / International A-Level)
+- Level? (IGCSE / International A-Level; record AS or A2 as the stage)
 - Subject? (e.g., Chemistry)
 - Term support language? (en / zh-CN / zh-TW / ja)
 - Explanation style? (formal / friendly / story / detective)
@@ -608,7 +608,7 @@ Options:
 用户: "生成 AQA Chemistry handbook"
 Coordinator: "我需要确认6个参数:
 - Exam board: AQA ✓
-- Level: ? (IGCSE / AS / A-Level)
+- Level: ? (IGCSE / A-Level; record AS or A2 as the A-Level stage)
 - Subject: Chemistry ✓
 - Term support: ? (en / zh-CN / zh-TW / ja)
 - Style: ? (formal / friendly / story...)

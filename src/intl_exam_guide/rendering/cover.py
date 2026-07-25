@@ -225,10 +225,10 @@ def qualification_type_display(qualification: Qualification) -> str:
     if qualification.qualification_type == "uk_gcse":
         return "GCSE"
     if qualification.qualification_type == "uk_as_a_level":
-        return "AS & A Level"
+        return "A-Level"
     if qualification.qualification_type == "advanced_placement":
         return "Advanced Placement (AP)"
-    return "International AS-A-level"
+    return "International A-Level"
 
 
 def cover_subject_title(qualification: Qualification, language: str) -> str:
@@ -253,10 +253,8 @@ def cover_study_title(qualification: Qualification, language: str) -> str:
         level = "AP"
     elif "as only" in normalized:
         level = "AS"
-    elif re.search(r"\bas\b", normalized) and "a level" in normalized:
-        level = "AS & A Level"
     elif "a level" in normalized:
-        level = "A Level"
+        level = "A-Level"
     else:
         level = qtype
     return f"{level} {subject} study guide"
@@ -266,6 +264,7 @@ def stripped_subject_title(qualification: Qualification) -> str:
     title = re.sub(r"\s*\([^)]*\)\s*$", "", qualification.title).strip()
     for prefix in (
         "International GCSE",
+        "International A-Level",
         "International AS-A-level",
         "International AS and A-level",
         "Cambridge IGCSE",

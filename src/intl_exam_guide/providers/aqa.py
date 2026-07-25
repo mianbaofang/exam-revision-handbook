@@ -30,7 +30,7 @@ AQA_HOST = "www.aqa.org.uk"
 
 
 class AQAUKProvider(ExamBoardProvider):
-    """Official AQA GCSE and AS/A-Level source route for UK centres."""
+    """Official AQA GCSE and A-Level source route for UK centres."""
 
     name = "aqa_uk"
     supported_levels = ("uk_gcse", "uk_as_a_level")
@@ -76,7 +76,7 @@ class AQAUKProvider(ExamBoardProvider):
         if len(candidates) > 1:
             raise ValueError(format_candidate_choices("AQA UK", query, candidates))
         raise ValueError(
-            "AQA UK could not confirm one official GCSE or AS/A-Level course from the subject "
+            "AQA UK could not confirm one official GCSE or A-Level course from the subject "
             "query. Provide the official AQA course-page URL or a qualification code."
         )
 

@@ -1,17 +1,17 @@
-# IGCSE、A-Level 与 AP AI Revision Guide Skill
+# GCSE、IGCSE、A-Level 与 AP AI Revision Guide Skill
 
 <p align="center">
-  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/project-intro-animation.html">
-    <img src="docs/assets/intro-animation-preview.gif" alt="IGCSE、A-Level 与 AP 复习手册 Skill 介绍动画预览" width="100%">
+  <a href="https://mianbaofang.github.io/gcse-igcse-alevel-ap-revision-guide/project-intro-animation.html">
+    <img src="docs/assets/intro-animation-preview.gif" alt="GCSE、IGCSE、A-Level 与 AP 复习手册 Skill 介绍动画预览" width="100%">
   </a>
 </p>
 
 <p align="center">
   <a href="README.md">English</a>
   ·
-  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/">项目主页</a>
+  <a href="https://mianbaofang.github.io/gcse-igcse-alevel-ap-revision-guide/">项目主页</a>
   ·
-  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/project-intro-animation.html">介绍动画</a>
+  <a href="https://mianbaofang.github.io/gcse-igcse-alevel-ap-revision-guide/project-intro-animation.html">介绍动画</a>
   ·
   <a href="docs/index.html">项目详情</a>
   ·
@@ -35,7 +35,7 @@
 例题、图解和检查点。这个项目的初衷很简单：不是替孩子学习，而是把学习路上的噪音降下来，
 利用人工智能帮助孩子更轻松、更有掌控感地面对学业。
 
-一个给 AI Agent 使用的复习手册 Skill：基于官方课程来源，生成图文并茂、可打印的 International GCSE / International AS-A-level / College Board AP 学习复习手册，并把 Analyst、Writer、Reviewer 三个角色从来源证据到最终 HTML/PDF 输出都保留下来。
+一个给 AI Agent 使用的复习手册 Skill：基于官方课程来源，生成图文并茂、可打印的英国中学课程（GCSE、IGCSE、A-Level）和美国大学先修课程（AP）复习手册，并把 Analyst、Writer、Reviewer 三个角色从来源证据到最终 HTML/PDF 输出都保留下来。
 
 > 使用前请阅读 [免责声明](DISCLAIMER.md)。本项目不隶属于任何考试局，也不代表考试局背书；生成内容必须结合官方来源和教师判断复核。
 
@@ -43,17 +43,19 @@
 
 | 问题 | 回答 |
 |---|---|
-| 适合谁 | 正在准备 International GCSE / International AS-A-level / AP 复习手册的家庭、老师和 Agent 用户。 |
+| 适合谁 | 正在准备 GCSE、IGCSE、A-Level 或 AP 复习手册的家庭、老师和 Agent 用户。 |
 | 会生成什么 | 带来源证据的手册包：HTML/PDF、topic 规划、例题、配图决策和复查证据。 |
 | Python 包负责什么 | 抓取官方来源证据、渲染输出、管理资产、执行机械验证。 |
 | 宿主 LLM 负责什么 | 写大纲结构、教学解释、例题、配图决策和最终产品复查。 |
 | 当前来源范围 | AQA、Edexcel、CAIE 与 College Board AP。 |
 
-这里的“支持”特指自动获取官方课程大纲：AQA、Edexcel、CAIE 的**国际课程和英国本土版**
-IGCSE / AS / A-Level，以及 College Board AP 可以自动获取。对于前三个考试局，
-首次预检必须明确选择 `international` 或 `uk-domestic`，再由对应的官方 Provider 检索，
-并把选择写入来源元数据；不得静默改用另一个市场的资料。其他考试体系或考试局不能使用自动获取功能；
-手动导入大纲属于未经完整验证的兼容路径，可能出现未知的解析、提取、元数据或渲染错误。
+这里的“支持”特指自动获取英国本土 GCSE、国际 IGCSE、A-Level，以及 College Board
+AP 的官方课程大纲。AS 和 A2 都是 A-Level 内部阶段，不是与 A-Level 并列的课程体系。
+AQA 和 Edexcel 分别提供英国本土与国际来源路线；CAIE 即 Cambridge International，提供
+国际 IGCSE 和 Cambridge International A-Level，而不是一套独立的英国本土 GCSE 产品。
+CAIE 的 `uk-domestic` 选择仅记录英国考点请求，仍使用 Cambridge International 官方目录。
+其他考试体系或考试局不能使用自动获取功能；手动导入大纲属于未经完整验证的兼容路径，可能出现未知的
+解析、提取、元数据或渲染错误。
 
 **这个项目是框架，不是离线内容生成器。** `skill/` 里的 Skill 说明会让
 OpenClaw、Hermes 或其它 Agent 的宿主 LLM 按 Analyst、Writer、Reviewer 三个轻量角色工作：
@@ -70,9 +72,9 @@ CLI 只是框架调试和草稿 fallback。直接运行 `python -m intl_exam_gui
 
 | 考试局 | 当前支持方式 |
 |---|---|
-| AQA | 国际课程使用 OxfordAQA / Oxford International AQA；英国本土 IGCSE/GCSE 和 AS/A-Level 使用 AQA 官方科目目录。 |
-| Edexcel | 根据预检选择，使用对应的 Pearson Edexcel 国际课程或英国 GCSE/AS/A-Level 官方候选页面。 |
-| CAIE | 从 Cambridge International 官方科目索引匹配所选资格体系，并保留用户选择的课程市场元数据。 |
+| AQA | 国际 IGCSE 和 A-Level 使用 OxfordAQA / Oxford International AQA；英国 GCSE 和 A-Level 使用 AQA 官方科目目录。 |
+| Edexcel | 根据预检选择，使用对应的 Pearson Edexcel 国际 IGCSE 或英国 GCSE/A-Level 官方候选页面。 |
+| CAIE | 从 Cambridge International 官方科目索引匹配国际 IGCSE 和 Cambridge International A-Level。英国考点选择会保留为可审计的市场元数据，但不代表存在独立的 CAIE 英国本土 GCSE 产品。 |
 | College Board AP | 自动发现官网 42 门 AP 科目，只选择核心 Course and Exam Description，校验官方来源，并记录 CED 生效版本与目标考试年份。 |
 
 说明：AQA、Edexcel、CAIE 对应 OxfordAQA / Oxford International AQA、Pearson Edexcel、Cambridge International / CAIE；AP 来源为 College Board 官方 Course and Exam Description。
@@ -85,11 +87,11 @@ CLI 只是框架调试和草稿 fallback。直接运行 `python -m intl_exam_gui
 OpenClaw、Hermes 或其他支持 Skill 的 Agent：
 
 ```text
-https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill
+https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/tree/main/skill
 ```
 
 直接下载
-[v0.6.0 Skill 安装包](https://github.com/mianbaofang/igcse-a-level-revision-guide/releases/download/v0.6.0/igcse-a-level-revision-guide-skill-v0.6.0.zip)。
+[v0.6.1 Skill 安装包](https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases/download/v0.6.1/gcse-igcse-alevel-ap-revision-guide-skill-v0.6.1.zip)。
 
 然后直接说：
 
@@ -200,19 +202,18 @@ outputs/chemistry-9202/
 
 ## 课程来源支持范围
 
-| 来源体系 | International IGCSE | International AS/A-Level | 英国本土 GCSE/IGCSE | 英国本土 AS/A-Level | AP | 当前说明 |
-|---|---:|---:|---:|---:|---:|---|
-| AQA | 支持 | 支持 | 支持 | 支持 | 不支持 | 国际课程使用 OxfordAQA / Oxford International AQA；英国本土课程使用 AQA 官方科目目录。 |
-| Edexcel | 支持 | 支持 | 支持 | 支持 | 不支持 | 根据预检选择 Pearson International 或 Pearson UK 官方候选页面；多个候选时让用户选择，官方 URL/PDF 可作为精确输入。 |
-| CAIE | 支持 | 支持 | 支持 | 支持 | 不支持 | 从 Cambridge International 官方科目索引匹配所选资格体系，并将课程市场选择保留在来源元数据中。 |
-| College Board | 不支持 | 不支持 | 不支持 | 不支持 | 支持 | 自动发现 42 门 AP 科目；严格选择核心 CED；记录生效版本与目标考试年份。 |
-| OCR、WJEC/Eduqas、CCEA 等其他英国考试局 | 暂不支持 | 暂不支持 | 暂不支持 | 暂不支持 | 暂不支持 | 不在当前版本范围内。 |
+| 课程路线 | AQA | Edexcel | CAIE | College Board |
+|---|---:|---:|---:|---:|
+| 英国本土 GCSE | 支持 | 支持 | 不支持 | 不支持 |
+| 国际 IGCSE | 支持 | 支持 | 支持 | 不支持 |
+| A-Level | 英国本土 / 国际 | 英国本土 / 国际 | Cambridge International | 不支持 |
+| AP | 不支持 | 不支持 | 不支持 | 支持 |
+| OCR、WJEC/Eduqas、CCEA 等其他英国考试局 | 暂不支持 | 暂不支持 | 暂不支持 | 不支持 |
 
-项目当前支持 AQA、Edexcel、CAIE 的**国际课程和英国本土版** IGCSE / AS / A-Level，
-以及 College Board AP 的官方大纲自动获取。开始检索前，Agent 必须明确记录
-`international` 或 `uk-domestic`，并使用该市场的官方来源，不得改用另一个市场的资料。
-这不等于所有科目都已有 final-ready 手册样例。其他考试体系或考试局不支持自动获取；
-手动导入仍可能遇到未知兼容错误。
+项目当前支持上表列出的官方大纲自动获取路线。开始检索前，Agent 必须明确记录课程市场。
+对 AQA 和 Edexcel，该选择决定所用的官方来源路线；对 CAIE，该选择记录请求的国际或英国考点
+语境，但仍使用同一套 Cambridge International 官方目录。以上是来源工作流支持范围，不等于
+所有科目都已有 final-ready 手册样例。其他考试体系或考试局不支持自动获取；手动导入仍可能遇到未知兼容错误。
 
 交付质量以 `tests/fixtures/delivery_matrix.json` 里的交付矩阵为准。每条路线都有明确的
 claim status 和 v0.6 release-evidence status；四个来源体系共享同一套生成流程，但不等于所有科目、
@@ -265,7 +266,7 @@ v0.6 使用四个状态词：
 
 ## 版本更新说明
 
-版本更新说明统一放在 [GitHub Releases](https://github.com/mianbaofang/igcse-a-level-revision-guide/releases)
+版本更新说明统一放在 [GitHub Releases](https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases)
 和 [CHANGELOG.md](CHANGELOG.md)。中文 README 只保留项目定位、使用方式和核心生成流程。
 
 ## 开发者快速开始
@@ -335,7 +336,7 @@ tests/            测试与回归样例
 
 ## 状态
 
-当前包版本：`v0.6.0`。这个 Skill 已具备公开使用的框架形态；单份手册只有在完成自己的全量 LLM HTML 审查、写入与当前 HTML 绑定的 `agent-product-review.json`、通过 PDF 导出门禁，并具备相应发布证据后，才能称为 final-ready。
+当前包版本：`v0.6.1`。这个 Skill 已具备公开使用的框架形态；单份手册只有在完成自己的全量 LLM HTML 审查、写入与当前 HTML 绑定的 `agent-product-review.json`、通过 PDF 导出门禁，并具备相应发布证据后，才能称为 final-ready。
 
 ## 作者
 

@@ -939,7 +939,7 @@ def validate_qualification_notes(plan: GuidePlan) -> list[ValidationIssue]:
             and qualification.source.listing_qualification_type != "international_as_a_level"
         ):
             issues.append(
-                ValidationIssue("error", "Source listing metadata conflicts with AS-A-level type.")
+                ValidationIssue("error", "Source listing metadata conflicts with A-Level type.")
             )
         if (
             qualification.provider or qualification.source.provider
@@ -949,7 +949,7 @@ def validate_qualification_notes(plan: GuidePlan) -> list[ValidationIssue]:
             issues.append(
                 ValidationIssue(
                     "warning",
-                    "AS-A-level guide does not mention the modular qualification structure.",
+                    "A-Level guide does not mention the modular qualification structure.",
                 )
             )
     if qualification.qualification_type in {"uk_gcse", "uk_as_a_level"}:

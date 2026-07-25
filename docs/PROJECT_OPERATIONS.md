@@ -9,23 +9,26 @@ Skill usage changes.
 ## 1. Project Positioning
 
 This repository publishes an AI Skill and Python support package for generating
-source-backed IGCSE, AS, A-Level, and College Board AP revision handbooks.
+source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks.
 
 Current public scope:
 
 - AQA, Edexcel, CAIE, and College Board AP are the supported source families.
-- Automatic acquisition covers the International and UK-domestic
-  AQA/Edexcel/CAIE IGCSE, AS, and A-Level routes plus College Board AP. The
+- Automatic acquisition covers AQA and Edexcel UK GCSE, International GCSE,
+  and A-Level routes; Cambridge International / CAIE International GCSE and
+  A-Level routes; plus College Board AP. AS and A2 are A-Level stages. The
   first preflight must explicitly distinguish `international` from
-  `uk-domestic` for those three boards, then route discovery through the
-  selected official Provider and retain the choice in source metadata. Other
-  systems have no automatic provider; manual imports are unverified and may
-  fail with unknown compatibility errors.
+  `uk-domestic` for the three British source families and retain the choice in
+  source metadata. AQA and Edexcel use the matching Provider route; CAIE uses
+  the same Cambridge International catalogue for either market. Other systems
+  have no automatic provider; manual imports are unverified and may fail with
+  unknown compatibility errors.
 - AQA uses OxfordAQA / Oxford International AQA for International routes and
   the AQA official subject catalogue for UK-domestic routes.
-- Edexcel and CAIE use market-specific official candidate matching plus
-  official URL/PDF fallback. If the route is ambiguous, return candidates and
-  wait for the user.
+- Edexcel uses market-specific official candidate matching plus official
+  URL/PDF fallback. CAIE uses its Cambridge International catalogue and
+  retains the selected market as request metadata. If the route is ambiguous,
+  return candidates and wait for the user.
 - Do not claim support for OCR, WJEC/Eduqas, CCEA, or every UK exam board.
 - Do not commit official PDFs, past papers, mark schemes, copied exam questions,
   API keys, local absolute paths, private local notes, or generated output
@@ -39,9 +42,9 @@ User-facing promise:
 3. Agent first asks the blocking visual-capability question: whether the user can
    provide or enable a callable external image-generation Skill or tool for this
    run. It must wait for the answer and must not silently default to local image
-   generation. Agent then confirms exam board, level, course market
-   (`international` or `uk-domestic` for AQA/Edexcel/CAIE IGCSE, AS, and
-   A-Level), subject, required exam year, term-support language, explanation
+   generation. Agent then confirms exam board, level, A-Level stage when
+   applicable, course market (`international` or `uk-domestic` for
+   AQA/Edexcel/CAIE GCSE, IGCSE, and A-Level), subject, required exam year, term-support language, explanation
    style, and workflow mode. The workflow-mode prompt must
    explicitly offer default single-host Analyst/Writer/Reviewer role passes or
    optional multi-agent delegation when the user wants separate agents and the
@@ -97,9 +100,9 @@ ready packet is historical evidence, not a standing v0.6 certification.
 
 ## 2. Source Of Truth
 
-- GitHub repository: `https://github.com/mianbaofang/igcse-a-level-revision-guide`
-- GitHub Pages: `https://mianbaofang.github.io/igcse-a-level-revision-guide/`
-- Skill entry: `https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill`
+- GitHub repository: `https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide`
+- GitHub Pages: `https://mianbaofang.github.io/gcse-igcse-alevel-ap-revision-guide/`
+- Skill entry: `https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/tree/main/skill`
 - Repository wrapper: `SKILL.md` (discovery only; it points to `skill/SKILL.md`)
 - Agent maintenance rules: `AGENTS.md`
 - Package version: `pyproject.toml` and `src/intl_exam_guide/__init__.py`
@@ -278,7 +281,7 @@ Do not leave a version visible only under `/tags`. The user-facing release page
 should be under:
 
 ```text
-https://github.com/mianbaofang/igcse-a-level-revision-guide/releases
+https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases
 ```
 
 ## 5. GitHub Release Creation
@@ -286,7 +289,7 @@ https://github.com/mianbaofang/igcse-a-level-revision-guide/releases
 Preferred method when GitHub CLI is installed:
 
 ```powershell
-gh release create vX.Y.Z --repo mianbaofang/igcse-a-level-revision-guide --title "vX.Y.Z · short title" --notes-file RELEASE_NOTES.md --latest
+gh release create vX.Y.Z --repo mianbaofang/gcse-igcse-alevel-ap-revision-guide --title "vX.Y.Z · short title" --notes-file RELEASE_NOTES.md --latest
 ```
 
 If GitHub CLI is unavailable, use the GitHub Releases REST API with the existing

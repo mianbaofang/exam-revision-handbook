@@ -3,9 +3,9 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "igcse-a-level-revision-guide"
-version = "0.6.0"
-description = "Generate source-backed IGCSE, A-Level, and AP revision guides with reviewed visuals and PDF output."
+name = "gcse-igcse-alevel-ap-revision-guide"
+version = "0.6.1"
+description = "Generate source-backed GCSE, IGCSE, A-Level, and AP revision handbooks with reviewed visuals and PDF output."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }

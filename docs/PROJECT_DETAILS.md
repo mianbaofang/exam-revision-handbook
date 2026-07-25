@@ -2,9 +2,10 @@
 
 ## English
 
-IGCSE, A-Level & AP AI Revision Guide Skill is an open-source Skill and Python pipeline for
-generating image-rich study/revision handbooks from official International GCSE
-and International AS-A-level syllabus/specification sources.
+GCSE, IGCSE, A-Level & AP AI Revision Guide Skill is an open-source Skill and Python pipeline for
+generating image-rich study/revision handbooks from official UK GCSE,
+International IGCSE, and A-Level syllabus/specification sources, plus College
+Board AP course descriptions.
 
 It is intentionally narrower than a generic AI education platform. The core
 principle is stable across subjects: confirm how the user wants the handbook,
@@ -61,16 +62,19 @@ then turn the official syllabus into a reusable revision-handbook framework.
   validation, rendering, and manifests; the host LLM owns analysis, writing,
   visual judgment, and final visible-handbook review. Multi-agent orchestration is
   optional rather than the default contract.
-- **International qualification structure**: International GCSE is handled as
-  linear; International AS-A-level is handled as modular.
+- **Qualification structure**: UK GCSE and International IGCSE are treated as
+  the GCSE-level routes. A-Level is one qualification with AS and A2 stages;
+  International A-Level is handled as modular unless the official source says
+  otherwise.
 - **Website listing checks**: OxfordAQA subject buttons are recorded as the
-  blue International GCSE listing or red International AS-A-level listing when
-  that metadata is available.
+  blue International GCSE listing or red International A-Level listing when
+  that metadata is available. The internal compatibility tag remains
+  `international_as_a_level`.
 
 ### Current Release
 
 The current release can generate guides for AQA International GCSE and
-International AS-A-level qualification pages, plus Edexcel and CAIE candidate
+International A-Level qualification pages, plus Edexcel and CAIE candidate
 discovery with official URL/PDF fallbacks. Full official names are OxfordAQA /
 Oxford International AQA, Pearson Edexcel, and Cambridge International / CAIE.
 Current route evidence:
@@ -107,11 +111,11 @@ It does not override the current Skill contract.
 - International GCSE Chemistry (9202): historical PDF extraction sample with 35
   syllabus units, 70 worked/practice cards, exact-SVG candidates, and 18 complex
   infographic briefs.
-- International AS and A-level Chemistry (9620): 3 topic groups, 6 assessment
+- International A-Level Chemistry (9620): 3 topic groups, 6 assessment
   entries, HTML/PDF output, no validation issues.
 - International GCSE Economics (9214): detailed PDF extraction produces 38
   syllabus units, 76 worked/practice cards, and 38 complex infographic briefs.
-- International AS and A-level Business (9725) revised: qualification-page
+- International A-Level Business (9725) revised: qualification-page
   lookup, assessment extraction, HTML/PDF output, and validation checks. This verifies code
   lookup when the subject listing omits the qualification code.
 
@@ -130,7 +134,8 @@ artifacts and are kept out of Git because the image-rich packages are large.
 
 Listing discovery has also been audited across the live OxfordAQA subject index:
 17 subject pages, 48 qualification links, 31 International GCSE listings, 17
-International AS-A-level listings, and no unknown listing types.
+International A-Level listings, and no unknown listing types. The parser keeps
+the historical `international_as_a_level` tag for source compatibility.
 
 The same audit opened all 48 discovered qualification pages. Every page produced
 at least one topic group, at least one assessment structure entry, and a
@@ -144,7 +149,7 @@ components.
 
 The current product covers three China-market British-curriculum provider
 families plus the College Board AP course system in staged form. Do not
-describe it as covering all International GCSE or International AS/A-level
+describe it as covering all International GCSE or International A-Level
 providers, and do not claim full Pearson/Cambridge catalogue crawling yet.
 This scope means automatic official-syllabus acquisition. Other curriculum
 systems and exam boards do not have an automatic provider; manual imports are
@@ -179,8 +184,7 @@ They are useful positioning context, but they are not official provider facts.
 
 ## 中文
 
-IGCSE、A-Level 与 AP AI Revision Guide Skill 是一个开源流水线，用来为 AQA、Edexcel、CAIE 的 International
-GCSE / International AS-A-level 学科以及 College Board AP 课程生成可追溯来源的复习指南。按国内常用习惯，文档主称使用 AQA、Edexcel、CAIE 和 AP；对应全称分别是 OxfordAQA / Oxford International AQA、Pearson Edexcel、Cambridge International / CAIE 与 College Board Advanced Placement。
+IGCSE、A-Level 与 AP AI Revision Guide Skill 是一个开源流水线，用来为 AQA、Edexcel、CAIE 与 College Board AP 的受支持课程路线生成可追溯来源的复习指南：AQA 和 Edexcel 支持英国本土 GCSE、国际 IGCSE 与 A-Level 路线；CAIE 对应 Cambridge International，支持国际 IGCSE 与 Cambridge International A-Level；AP 对应 College Board Advanced Placement。AS 和 A2 是 A-Level 内部阶段，不是并列课程体系。按国内常用习惯，文档主称使用 AQA、Edexcel、CAIE 和 AP；对应全称分别是 OxfordAQA / Oxford International AQA、Pearson Edexcel、Cambridge International / CAIE 与 College Board Advanced Placement。
 
 它不是泛泛的 AI 教育平台。核心原理对各学科通用：以官方 specification 为输入，
 再把大纲内容融合进统一的学习复习手册框架。
@@ -210,10 +214,12 @@ GCSE / International AS-A-level 学科以及 College Board AP 课程生成可追
 - **叙事讲解模式**：topic block 可以切换成生活场景、侦探推理、动漫闯关感等讲法，
   默认不复刻受保护 IP。
 - **给孩子用的谨慎逻辑**：例题必须原创、绑定来源，并建议正式备考前由学科老师复核。
-- **区分资格结构**：International GCSE 按 linear qualification 处理；
-  International AS-A-level 按 modular qualification 处理。
+- **区分资格结构**：英国 GCSE 与国际 IGCSE 属于 GCSE 层级；A-Level 是一套
+  qualification，内部按 AS、A2 两个阶段组织，国际 A-Level 默认按 modular
+  qualification 处理，除非官方来源明确说明不同结构。
 - **记录网站分组**：如果从 OxfordAQA subject 页面发现 qualification，会记录蓝色
-  International GCSE listing 或红色 International AS-A-level listing。
+  International GCSE listing 或红色 International A-Level listing；内部兼容标签仍为
+  `international_as_a_level`。
 
 ### 当前版本
 
@@ -240,11 +246,11 @@ v0.3 的 ready 证据是历史发布事实，不等于 v0.5 长期认证。
   180 张例题/练习卡、exact-SVG 候选和 39 个复杂信息图 briefs。
 - International GCSE Chemistry (9202)：历史 PDF 抽取样例，包含 35 个 syllabus units、
   70 张例题/练习卡、exact-SVG 候选和 18 个复杂信息图 briefs。
-- International AS and A-level Chemistry (9620)：3 个 topic groups、6 个
+- International A-Level Chemistry (9620)：3 个 topic groups、6 个
   assessment entries、HTML/PDF 输出、validation 无问题。
 - International GCSE Economics (9214)：PDF 详细抽取 38 个 syllabus units，
   生成 76 张例题/练习卡和 38 个复杂信息图 briefs。
-- International AS and A-level Business (9725) revised：能通过 qualification page
+- International A-Level Business (9725) revised：能通过 qualification page
   lookup 抽取 assessment structure，生成 HTML/PDF 并通过 validation。这个样例验证
   subject listing 没有代码时，代码查询仍然会进入详情页精确匹配。
 
@@ -257,7 +263,8 @@ v0.3 的 ready 证据是历史发布事实，不等于 v0.5 长期认证。
 
 同时已对 live OxfordAQA subject index 做 discovery audit：17 个 subject pages、
 48 个 qualification links、31 个 International GCSE listings、17 个
-International AS-A-level listings，没有 unknown listing types。
+International A-Level listings，没有 unknown listing types；内部兼容标签仍为
+`international_as_a_level`。
 
 同一轮审计还打开了全部 48 个 qualification pages。每个页面都能抽取至少一个
 topic group、至少一个 assessment structure entry 和一个 specification link，
@@ -268,10 +275,8 @@ Literature 的 text-list 标签、History/Sociology 从 assessment 回推 topic 
 
 ### Provider 范围
 
-当前产品支持国内常用的 AQA、Edexcel、CAIE，以及 College Board AP；不应写成覆盖全部
-International GCSE、International AS/A-level 或其他课程体系 provider。
-这里的支持特指 AQA、Edexcel、CAIE 的 IGCSE / A-Level 与 College Board AP 官方大纲自动获取。
-其他考试体系或考试局没有自动 Provider；手动导入未经完整验证，可能出现未知兼容错误。
+当前产品支持 AQA、Edexcel、CAIE，以及 College Board AP；不应写成覆盖全部
+GCSE、IGCSE、A-Level 或其他课程体系 provider。这里的支持特指 AQA 和 Edexcel 的英国本土 GCSE、国际 IGCSE、A-Level 路线，CAIE 的国际 IGCSE 与 Cambridge International A-Level 路线，以及 College Board AP 的官方大纲自动获取。CAIE 的英国考点选择会保留为市场元数据，但不代表存在独立的 CAIE 英国本土 GCSE。其他考试体系或考试局没有自动 Provider；手动导入未经完整验证，可能出现未知兼容错误。
 
 | Provider / exam board | 状态 | 备注 |
 |---|---|---|

@@ -278,14 +278,14 @@ def build_topic_guide(
     primary = visible_points[0]
     if output_language == "en":
         if qualification_type in {"international_as_a_level", "uk_as_a_level"}:
-            level_hint = "AS-A-level unit"
+            level_hint = "A-Level unit"
         elif qualification_type == "advanced_placement":
             level_hint = "AP course topic"
         else:
             level_hint = "GCSE topic"
     else:
         level_hint = (
-            "AS-A-level 单元"
+            "A-Level 单元"
             if qualification_type in {"international_as_a_level", "uk_as_a_level"}
             else "GCSE 知识点"
         )

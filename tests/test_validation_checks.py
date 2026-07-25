@@ -758,8 +758,8 @@ def test_qualification_notes_and_output_package_pin_release_quality_edges(tmp_pa
     plan.qualification.provider = "pearson"
     plan.qualification.source.provider = "pearson"
     as_messages = [issue.message for issue in validate_qualification_notes(plan)]
-    assert "Source listing metadata conflicts with AS-A-level type." in as_messages
-    assert "AS-A-level guide does not mention the modular qualification structure." in as_messages
+    assert "Source listing metadata conflicts with A-Level type." in as_messages
+    assert "A-Level guide does not mention the modular qualification structure." in as_messages
 
     output_messages = [issue.message for issue in validate_output_package(plan, tmp_path)]
     assert any(message.startswith("Sections directory is missing:") for message in output_messages)

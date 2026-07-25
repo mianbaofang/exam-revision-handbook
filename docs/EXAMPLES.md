@@ -42,14 +42,14 @@ python -m intl_exam_guide discover --subject-url https://www.oxfordaqa.com/subje
 ```
 
 The science page should show International GCSE rows tagged as
-`international_gcse` with the blue listing group, and International AS-A-level
+`international_gcse` with the blue listing group, and International A-Level
 rows tagged as `international_as_a_level` with the red listing group.
 
 ```bash
 python -m intl_exam_guide generate --query chemistry --level igcse --out ./outputs/chemistry-9202
 ```
 
-## OxfordAQA International AS-A-level Example
+## OxfordAQA International A-Level Example
 
 ```bash
 python -m intl_exam_guide generate --query chemistry --level a-level --out ./outputs/chemistry-9620
@@ -61,7 +61,7 @@ python -m intl_exam_guide generate --query chemistry --level a-level --out ./out
 python -m intl_exam_guide generate --query economics --level igcse --out ./outputs/economics-9214
 ```
 
-## OxfordAQA Revised Non-Science AS-A-level Example
+## OxfordAQA Revised Non-Science A-Level Example
 
 ```bash
 python -m intl_exam_guide generate --query 9725 --level a-level --out ./outputs/business-9725
@@ -148,7 +148,7 @@ HTML 会记录 manifest 中的视觉槽位。只有 LLM 写明 `svg_fit="exact"`
 source points。
 
 建议先运行 `discover --subject-url` 检查学科页。International GCSE 行应标记为
-`international_gcse` 和蓝色 listing；International AS-A-level 行应标记为
+`international_gcse` 和蓝色 listing；International A-Level 行应标记为
 `international_as_a_level` 和红色 listing。
 
 真实 OxfordAQA 示例会在运行时下载公开 specification PDF。不要把下载得到的 PDF

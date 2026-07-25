@@ -187,7 +187,7 @@ python -m intl_exam_guide review --out ./outputs/chemistry-9202
 
 ```text
 Create a polished educational worksheet infographic for an International GCSE
-or International AS-A-level revision guide.
+or International A-Level revision guide.
 
 Exam board: {exam_board}
 Qualification: {qualification_title}

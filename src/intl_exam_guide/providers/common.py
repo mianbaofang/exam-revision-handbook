@@ -24,8 +24,8 @@ from intl_exam_guide.providers.base import Link
 
 
 USER_AGENT = (
-    f"igcse-a-level-revision-guide/{__version__} "
-    "(+https://github.com/mianbaofang/igcse-a-level-revision-guide) source-traceable"
+    f"gcse-igcse-alevel-ap-revision-guide/{__version__} "
+    "(+https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide) source-traceable"
 )
 
 

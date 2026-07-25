@@ -1,17 +1,17 @@
-# IGCSE, A-Level & AP AI Revision Guide Skill
+# GCSE, IGCSE, A-Level & AP AI Revision Guide Skill
 
 <p align="center">
-  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/project-intro-animation-en.html">
-    <img src="docs/assets/intro-animation-preview-en.gif" alt="IGCSE, A-Level, and AP revision handbook Skill intro preview" width="100%">
+  <a href="https://mianbaofang.github.io/gcse-igcse-alevel-ap-revision-guide/project-intro-animation-en.html">
+    <img src="docs/assets/intro-animation-preview-en.gif" alt="GCSE, IGCSE, A-Level, and AP revision handbook Skill intro preview" width="100%">
   </a>
 </p>
 
 <p align="center">
   <a href="README.zh-CN.md">中文 README</a>
   ·
-  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/">Project site</a>
+  <a href="https://mianbaofang.github.io/gcse-igcse-alevel-ap-revision-guide/">Project site</a>
   ·
-  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/project-intro-animation-en.html">HTML intro</a>
+  <a href="https://mianbaofang.github.io/gcse-igcse-alevel-ap-revision-guide/project-intro-animation-en.html">HTML intro</a>
   ·
   <a href="docs/index.html">Project details</a>
   ·
@@ -32,7 +32,7 @@ My son is preparing for his International GCSE exams this year. Less than a year
 
 I built this study and revision Skill with AI so it can take the relevant course requirements and break them into understandable structures, worked examples, diagrams, and checkpoints. The purpose is simple: not to let AI study for a child, but to reduce the noise around learning and help students face schoolwork with more calm and control.
 
-An AI Skill for generating image-rich, printable International GCSE, International AS/A-level, and College Board AP revision handbooks from official sources, with Analyst, Writer, and Reviewer roles kept visible from source evidence to final HTML/PDF output.
+An open-source AI Skill for generating image-rich, printable handbooks for the British secondary curriculum (GCSE, IGCSE, and A-Level) and the US Advanced Placement (AP) system from official sources, with Analyst, Writer, and Reviewer roles kept visible from source evidence to final HTML/PDF output.
 
 > Read [Disclaimer](DISCLAIMER.md) before use. This project is not affiliated with or endorsed by any exam board, and generated study materials must be reviewed against official sources.
 
@@ -40,20 +40,24 @@ An AI Skill for generating image-rich, printable International GCSE, Internation
 
 | Question | Answer |
 |---|---|
-| Who is it for? | Families, tutors, and agent users preparing International GCSE, International AS/A-level, or AP revision handbooks. |
+| Who is it for? | Families, tutors, and agent users preparing GCSE, IGCSE, A-Level, or AP revision handbooks. |
 | What does it generate? | A source-backed handbook package with HTML/PDF output, topic plans, worked examples, visual decisions, and review evidence. |
 | What does the Python package do? | Fetch official source evidence, render outputs, manage assets, and run mechanical validation. |
 | What must the host LLM do? | Write the syllabus outline, teaching explanations, examples, visual decisions, and final product review. |
 | Current source scope | AQA, Edexcel, CAIE, and College Board AP. |
 
-Automatic syllabus acquisition supports both the **International** and
-**UK-domestic** AQA, Edexcel, and CAIE IGCSE/AS/A-Level routes, plus College
-Board AP. The first preflight explicitly records `international` or
-`uk-domestic` for those three boards, then selects and records the matching
-official source route. It never silently substitutes the other market. Other
+Automatic syllabus acquisition covers the supported British source families:
+AQA, Edexcel, and CAIE. It includes UK GCSE, International GCSE (IGCSE),
+and A-Level routes from the supported British source families, plus the US
+College Board AP system. AS and A2 are stages within A-Level, not parallel
+curriculum systems. AQA and Edexcel provide separate UK-domestic and
+International source routes. CAIE is Cambridge International: it provides
+International GCSE and Cambridge International A-Level routes rather than a
+separate UK GCSE product. A `uk-domestic` CAIE selection records a UK-centre
+request but still uses the official Cambridge International catalogue. Other
 curriculum systems or exam boards cannot use automatic acquisition. Manual PDF
-import outside the supported routes is an unverified compatibility path and may
-fail with unknown parsing, extraction, metadata, or rendering errors.
+import outside the supported routes is an unverified compatibility path and
+may fail with unknown parsing, extraction, metadata, or rendering errors.
 
 ## What This Project Is
 
@@ -102,9 +106,9 @@ three British-curriculum exam boards plus the College Board AP course system:
 
 | Exam board | Current support |
 |---|---|
-| AQA | Uses OxfordAQA / Oxford International AQA for International routes and AQA's official subject catalogue for UK-domestic GCSE and AS/A-Level routes. |
-| Edexcel | Uses the corresponding official Pearson Edexcel International or UK GCSE/AS/A-Level candidate route selected during preflight. |
-| CAIE | Uses Cambridge International's official subject index for the selected qualification family, retaining the requested market in source metadata. |
+| AQA | Uses OxfordAQA / Oxford International AQA for International GCSE and A-Level routes, and AQA's official subject catalogue for UK GCSE and A-Level routes. |
+| Edexcel | Uses the corresponding official Pearson Edexcel International or UK GCSE/A-Level candidate route selected during preflight. |
+| CAIE | Uses Cambridge International's official subject index for International GCSE and Cambridge International A-Level. A UK-centre selection remains auditable market metadata; it does not imply a separate CAIE UK GCSE product. |
 | College Board AP | Discovers all 42 official AP subjects, selects the core Course and Exam Description, verifies its official source, and records the CED effective version and target exam year. |
 
 It uses one shared handbook workflow across the four source systems: read the official
@@ -147,11 +151,11 @@ Most users do not need to install Python or run commands. Give this Skill link
 to your OpenClaw, Hermes, or other Skill-compatible Agent:
 
 ```text
-https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill
+https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/tree/main/skill
 ```
 
 Download the ready-to-install
-[v0.6.0 Skill package](https://github.com/mianbaofang/igcse-a-level-revision-guide/releases/download/v0.6.0/igcse-a-level-revision-guide-skill-v0.6.0.zip).
+[v0.6.1 Skill package](https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases/download/v0.6.1/gcse-igcse-alevel-ap-revision-guide-skill-v0.6.1.zip).
 
 Then ask:
 
@@ -302,22 +306,23 @@ subjects or certify every subject in the source catalogues.
 
 ## Supported Curriculum Sources
 
-| Source system | International IGCSE | International AS/A-Level | UK-domestic GCSE/IGCSE | UK-domestic AS/A-Level | AP | Current behavior |
-|---|---:|---:|---:|---:|---:|---|
-| AQA | yes | yes | yes | yes | no | Uses OxfordAQA / Oxford International AQA for International courses and AQA's official subject catalogue for UK-domestic courses. |
-| Edexcel | yes | yes | yes | yes | no | Selects the matching official Pearson International or Pearson UK candidate route; an official URL/PDF can resolve an ambiguous subject match. |
-| CAIE | yes | yes | yes | yes | no | Uses Cambridge International's official subject index for the selected qualification family; the market choice remains explicit in source metadata. |
-| College Board | no | no | no | no | yes | Full AP subject-directory discovery; strict official core CED selection; effective-version and target-exam-year recording. |
-| OCR, WJEC/Eduqas, CCEA, and other UK boards | no | no | no | no | no | Outside the current release scope. |
+| Curriculum route | AQA | Edexcel | CAIE | College Board |
+|---|---:|---:|---:|---:|
+| UK GCSE | yes | yes | no | no |
+| International GCSE | yes | yes | yes | no |
+| A-Level | UK / International | UK / International | Cambridge International | no |
+| AP | no | no | no | yes |
+| OCR, WJEC/Eduqas, CCEA, and other UK boards | no | no | no | no |
 
-The current release supports automatic source acquisition for the
-International and UK-domestic AQA, Edexcel, and CAIE IGCSE/AS/A-Level routes,
-plus College Board AP. Before discovery, the Agent must explicitly record the
-market for the first three boards and use that market's official route; it must
-never substitute the other market's source material. This is a source-workflow
-support claim, not a claim that every subject already has a final-ready handbook
-sample. Other systems have no automatic acquisition support; manual imports
-remain unverified and may encounter unknown compatibility errors.
+The current release supports automatic source acquisition for the routes shown
+above. Before discovery, the Agent must explicitly record the course market.
+For AQA and Edexcel that selection chooses the matching official source route.
+For CAIE it records whether the request is for an International or UK-centre
+context while using the same official Cambridge International catalogue. This
+is a source-workflow support claim, not a claim that every subject already has
+a final-ready handbook sample. Other systems have no automatic acquisition
+support; manual imports remain unverified and may encounter unknown
+compatibility errors.
 
 ## Visuals And Writing Styles
 
@@ -385,7 +390,7 @@ translated-body mode:
 ## Release Notes
 
 Version-by-version update notes live in
-[GitHub Releases](https://github.com/mianbaofang/igcse-a-level-revision-guide/releases)
+[GitHub Releases](https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases)
 and [CHANGELOG.md](CHANGELOG.md). The README stays focused on what the Skill
 does and how users run it.
 
@@ -399,7 +404,7 @@ Point your Agent runtime (OpenClaw, Hermes, Claude with subagents, etc.) at
 the Skill folder:
 
 ```text
-https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill
+https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/tree/main/skill
 ```
 
 The Agent runtime follows the lightweight Skill workflow:
@@ -540,7 +545,7 @@ See [DISCLAIMER.md](DISCLAIMER.md) and [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md
 
 ## Status
 
-Current package version: `v0.6.0`. The Skill is public-ready as a framework for
+Current package version: `v0.6.1`. The Skill is public-ready as a framework for
 source-backed handbook generation. An individual handbook is final-ready only
 after its own complete LLM HTML review is recorded in
 `agent-product-review.json` and `review-ledger/`, the exact HTML passes the hash

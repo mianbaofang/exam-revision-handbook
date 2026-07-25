@@ -34,7 +34,24 @@ SUPPORTED_BOARD_ALIASES = {
     "collegeboard ap",
     "collegeboard",
 }
-SUPPORTED_LEVEL_ALIASES = {"igcse", "gcse", "a-level", "alevel", "as-level", "as", "ap"}
+SUPPORTED_LEVEL_ALIASES = {
+    "igcse",
+    "gcse",
+    "a-level",
+    "alevel",
+    "as-level",
+    "as",
+    "as-a-level",
+    "ap",
+}
+SUPPORTED_A_LEVEL_STAGES = {"AS", "A2", "full", "not-applicable"}
+LEGACY_AS_LEVEL_ALIASES = {"as", "as-level"}
+A_LEVEL_LEVEL_ALIASES = {
+    "a-level",
+    "alevel",
+    "as-a-level",
+    *LEGACY_AS_LEVEL_ALIASES,
+}
 
 
 def requires_course_market(exam_board: str | None, level: str | None) -> bool:
@@ -60,6 +77,7 @@ class HandbookProjectParameters:
 
     exam_board: str | None = None
     level: str | None = None
+    a_level_stage: str | None = None
     course_market: str | None = None
     subject: str | None = None
     subject_code: str | None = None
@@ -73,7 +91,23 @@ class HandbookProjectParameters:
     batch_scope: str | None = None
 
     def to_dict(self) -> dict[str, object]:
-        return asdict(self)
+        payload = asdict(self)
+        if (
+            payload["a_level_stage"] is None
+            and self.level
+            and self.level.strip().lower() in LEGACY_AS_LEVEL_ALIASES
+        ):
+            payload["a_level_stage"] = "AS"
+        return payload
+
+    def resolved_a_level_stage(self) -> str | None:
+        """Return the declared stage, preserving the legacy AS selector."""
+
+        if self.a_level_stage:
+            return self.a_level_stage
+        if self.level and self.level.strip().lower() in LEGACY_AS_LEVEL_ALIASES:
+            return "AS"
+        return None
 
     def missing_required(self) -> list[str]:
         missing = []
@@ -91,6 +125,12 @@ class HandbookProjectParameters:
         ]:
             if not getattr(self, field_name):
                 missing.append(field_name)
+        if (
+            self.level
+            and self.level.strip().lower() in A_LEVEL_LEVEL_ALIASES
+            and not self.resolved_a_level_stage()
+        ):
+            missing.append("a_level_stage")
         if self.infographic_capability == "yes":
             if not self.image_method:
                 missing.append("image_method")
@@ -104,6 +144,13 @@ class HandbookProjectParameters:
             invalid.append("exam_board")
         if self.level and self.level.strip().lower() not in SUPPORTED_LEVEL_ALIASES:
             invalid.append("level")
+        if self.a_level_stage and self.a_level_stage not in SUPPORTED_A_LEVEL_STAGES:
+            invalid.append("a_level_stage")
+        elif self.level and self.level.strip().lower() in A_LEVEL_LEVEL_ALIASES:
+            if self.resolved_a_level_stage() == "not-applicable":
+                invalid.append("a_level_stage")
+        elif self.a_level_stage and self.a_level_stage != "not-applicable":
+            invalid.append("a_level_stage")
         if self.course_market and self.course_market not in SUPPORTED_COURSE_MARKETS:
             invalid.append("course_market")
         elif self.course_market and requires_course_market(self.exam_board, self.level):
@@ -309,7 +356,7 @@ def build_coordinator_prompt(
             "",
             "## 1. Identity",
             "",
-            "You are the host LLM coordinating a lightweight IGCSE, International AS/A-Level, or College Board AP handbook run.",
+            "You are the host LLM coordinating a lightweight GCSE/IGCSE, A-Level, or College Board AP handbook run.",
             "Analyst, Writer, and Reviewer are operating roles you keep explicit; they are not mandatory separate agents.",
             "Do not add project-manager, mandatory quality-inspector, or release-certification roles unless the user explicitly asks for that infrastructure.",
             "",
@@ -320,15 +367,15 @@ def build_coordinator_prompt(
             "",
             "## 3. Core Principles",
             "",
-            "1. Preflight first: confirm board, level, course market, subject, support language, explanation style, and external image-generation capability before generation.",
+            "1. Preflight first: confirm board, level, A-Level stage when applicable, course market, subject, support language, explanation style, and external image-generation capability before generation.",
             "   The first response is a structured preflight form only. Ask every field below in one message, show the allowed choices, and wait; do not merge missing fields into an open-ended question.",
-            "   Required first-response fields: external_visual_capability (yes/no/uncertain), image_method when yes, board (AQA/Edexcel/CAIE/College Board AP), level (IGCSE/AS/A-Level/AP), course_market (international/uk-domestic for AQA, Edexcel, or CAIE IGCSE/AS/A-Level; not-applicable for AP), subject, exam_year_or_syllabus_range, term_support_language (en/zh-CN/zh-TW/ja), explanation_style (formal/friendly/life/story/detective/adventure), workflow_mode (single-host/multi-agent), batch_scope, and output_dir.",
-            "   Never infer course_market from a course title, code, URL, provider, or prior run. Route automatic acquisition through the selected market's official Provider and retain course_market in the source metadata; never substitute the other market.",
+            "   Required first-response fields: external_visual_capability (yes/no/uncertain), image_method when yes, board (AQA/Edexcel/CAIE/College Board AP), level (IGCSE/A-Level/AP), a_level_stage (AS/A2/full for A-Level; not-applicable otherwise), course_market (international/uk-domestic for AQA, Edexcel, or CAIE GCSE/IGCSE/A-Level; not-applicable for AP), subject, exam_year_or_syllabus_range, term_support_language (en/zh-CN/zh-TW/ja), explanation_style (formal/friendly/life/story/detective/adventure), workflow_mode (single-host/multi-agent), batch_scope, and output_dir.",
+            "   Never infer course_market from a course title, code, URL, provider, or prior run. AQA and Edexcel route automatic acquisition through the selected market's official Provider. CAIE records the selected market but uses the same official Cambridge International catalogue for either market; never substitute the recorded market.",
             "   Ask exactly: Can you provide or enable an external image-generation Skill or tool for this run? Offer the three capability choices. Do not infer a route or an answer from image_provider, installed tools, prior runs, or the host's own capabilities.",
             "   Reply format must be key=value lines. Preserve answered fields, list only missing/invalid fields on a follow-up, and keep the project blocked until every required field is valid. Do not download, discover, split, write, render, generate visuals, or export PDF while preflight is incomplete.",
             "   A yes capability is not verified until the named route is actually callable and image_route_verified=true is recorded. A no/uncertain answer never silently becomes local generation.",
             "   Explanation-style choices are fixed: formal=exam-oriented; friendly=clear and approachable; life=everyday analogies with exam accuracy; story=narrative structure; detective=questions, clues, inference; adventure=tasks and challenges. Do not accept a new style label or silently map it to a default.",
-            "   Use this first-response form: external_visual_capability=<yes|no|uncertain>; image_method=<route or none>; board=<AQA|Edexcel|CAIE|College Board AP>; level=<IGCSE|AS|A-Level|AP>; course_market=<international|uk-domestic|not-applicable>; subject=<name/code>; exam_year_or_syllabus_range=<value|unknown>; term_support_language=<en|zh-CN|zh-TW|ja>; explanation_style=<fixed value>; workflow_mode=<single-host|multi-agent>; batch_scope=<value>; output_dir=<absolute path>.",
+            "   Use this first-response form: external_visual_capability=<yes|no|uncertain>; image_method=<route or none>; board=<AQA|Edexcel|CAIE|College Board AP>; level=<IGCSE|A-Level|AP>; a_level_stage=<AS|A2|full|not-applicable>; course_market=<international|uk-domestic|not-applicable>; subject=<name/code>; exam_year_or_syllabus_range=<value|unknown>; term_support_language=<en|zh-CN|zh-TW|ja>; explanation_style=<fixed value>; workflow_mode=<single-host|multi-agent>; batch_scope=<value>; output_dir=<absolute path>.",
             "2. Sequential handoff: complete Analyst artifacts before Writer artifacts, then inspect the visible handbook as Reviewer.",
             "3. No Python content generation: do not let Python decide topic boundaries, write teaching text, choose visual need, or approve final quality.",
             "4. Evidence before delivery: final-ready requires visible handbook inspection and product-review evidence, not just validation.",
@@ -336,7 +383,7 @@ def build_coordinator_prompt(
             "",
             "## 4. Workflow",
             "",
-            "1. Preflight: collect missing_required, invalid_preflight, and output_dir from the structured form. Any missing or invalid field keeps the project blocked; never replace it with an inferred default.",
+            "1. Preflight: collect missing_required, invalid_preflight, and output_dir from the structured form. An A-Level request requires an explicit AS, A2, or full stage. Any missing or invalid field keeps the project blocked; never replace it with an inferred default.",
             "2. Analyst: read syllabus-evidence.json and write syllabus-outline.json.",
             "3. Writer: read concept_jobs.json and write concept_explanations.json with the exact stable topic_id, llm-authored provenance, mastery_summary, and visual_decision for every topic. Do not accept Python fallback content or substring topic matching.",
             "4. Visual state: for a new Writer visual plan, explicitly refresh the manifest before asset generation/import; after import or visual approval, never rebuild it again. Reuse requires unchanged spec_hash; changed specs and replaced assets reset visual approval to pending. Keep old unreferenced files unless cleanup is explicitly approved.",
@@ -406,10 +453,20 @@ def parameters_from_generation_args(
     term_support_language: str | None,
     explanation_style: str | None,
     image_provider: str | None,
+    a_level_stage: str | None = None,
 ) -> HandbookProjectParameters:
+    normalized_level = level
+    resolved_stage = a_level_stage
+    if level and level.strip().lower() in LEGACY_AS_LEVEL_ALIASES:
+        normalized_level = "a-level"
+        resolved_stage = resolved_stage or "AS"
+    elif level and level.strip().lower() in {"a-level", "alevel", "as-a-level"}:
+        normalized_level = "a-level"
+        resolved_stage = resolved_stage or "full"
     return HandbookProjectParameters(
         exam_board=provider,
-        level=level,
+        level=normalized_level,
+        a_level_stage=resolved_stage,
         subject=subject,
         exam_year=exam_year,
         term_support_language=term_support_language,

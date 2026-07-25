@@ -72,7 +72,7 @@ function IntroScene() {
     <Scene start={0} end={5.6}>
       <div className="kicker">开源复习手册 Skill</div>
       <h1 className="headline infographic-headline">把官方课程要求，做成真正能学的图文手册。</h1>
-      <p className="lead">覆盖 IGCSE、AS、A-Level 与 AP；来源、写作、配图、审查和 PDF 交付都有明确边界。</p>
+      <p className="lead">覆盖 GCSE、IGCSE、A-Level 与 AP；来源、写作、配图、审查和 PDF 交付都有明确边界。</p>
       <div className="imagegen-visual provider-art">
         <img src="../intro-providers-infographic.png" alt="" />
         <div className="visual-legend provider-legend">{boards.map((board, index) => <Stagger start={0.9} index={index} key={board.name}><span style={{ "--accent": board.accent }}>{board.name}</span></Stagger>)}</div>
@@ -84,7 +84,7 @@ function IntroScene() {
 function PreflightScene() {
   const rows = [
     ["01", "外部生图能力", "先确认可调用路线，不得默认本地生图"],
-    ["02", "考试局与课程阶段", "IGCSE / AS / A-Level / AP"],
+    ["02", "考试局与课程阶段", "GCSE / IGCSE / A-Level / AP；A-Level 标明 AS、A2 或完整范围"],
     ["03", "课程市场", "AQA、Edexcel、CAIE 必选 International 或 UK"],
     ["04", "科目、年份与语言", "来源不唯一时停下让用户选择"],
     ["05", "工作模式与输出目录", "单宿主角色分离或用户明确要求多 Agent"],
@@ -110,9 +110,9 @@ function PreflightScene() {
 
 function ProviderScene() {
   const data = [
-    ["AQA", "OxfordAQA / AQA", "International 走 OxfordAQA；英国本土走 AQA 官方目录。", ["IGCSE / GCSE", "AS 单列", "A-Level"], "#1666b1"],
-    ["Edexcel", "Pearson", "根据预检选 Pearson International 或 Pearson UK，不混用。", ["International", "UK domestic", "候选不唯一先确认"], "#007d86"],
-    ["CAIE", "Cambridge", "从官方科目目录匹配课程，并保留用户选择的市场元数据。", ["IGCSE", "AS", "A-Level"], "#c8323f"],
+    ["AQA", "OxfordAQA / AQA", "International 走 OxfordAQA；英国本土走 AQA 官方目录。", ["英国 GCSE", "国际 IGCSE", "A-Level（AS/A2）"], "#1666b1"],
+    ["Edexcel", "Pearson", "根据预检选 Pearson International 或 Pearson UK，不混用。", ["英国 GCSE", "国际 IGCSE", "A-Level（AS/A2）"], "#007d86"],
+    ["CAIE", "Cambridge", "使用 Cambridge International 官方目录，并保留用户选择的市场元数据。", ["国际 IGCSE", "Cambridge A-Level", "市场元数据"], "#c8323f"],
     ["College Board AP", "AP Courses", "自动发现官方 AP 课程，只选择核心 CED 并记录生效版本。", ["42 门官方科目", "核心 CED", "目标考试年份"], "#2255a4"],
   ];
   return (
@@ -212,14 +212,14 @@ function TraceabilityScene() {
 function ClosingScene() {
   return (
     <Scene start={45.4} end={TOTAL_DURATION} className="closing-scene">
-      <div className="closing-copy"><div className="kicker">Source-backed · LLM-reviewed</div><h2 className="headline">一份手册，一条完整、真实、不可绕过的交付链。</h2><p className="lead">官方来源 → 原子考点 → 教学与视觉 → HTML 审查 → 受控 PDF</p><div className="closing-badges"><span>IGCSE</span><span>AS</span><span>A-Level</span><span>AP</span><span>Open Source Skill</span></div></div>
+      <div className="closing-copy"><div className="kicker">Source-backed · LLM-reviewed</div><h2 className="headline">一份手册，一条完整、真实、不可绕过的交付链。</h2><p className="lead">官方来源 → 原子考点 → 教学与视觉 → HTML 审查 → 受控 PDF</p><div className="closing-badges"><span>GCSE</span><span>IGCSE</span><span>A-Level</span><span>AP</span><span>Open Source Skill</span></div></div>
       <div className="closing-pages"><img src="../v060-oxfordaqa-biology-p28.jpg" alt="" /><img src="../v060-ap-chemistry-p91.jpg" alt="" /><img src="../v060-edexcel-mathematics-p52.jpg" alt="" /></div>
     </Scene>
   );
 }
 
 function Footer() {
-  return <div className="footer-mark"><span>IGCSE · AS · A-LEVEL · AP REVISION HANDBOOK SKILL</span><span>OFFICIAL SOURCE → REVIEWED HANDBOOK</span></div>;
+  return <div className="footer-mark"><span>GCSE · IGCSE · A-LEVEL · AP REVISION HANDBOOK SKILL</span><span>OFFICIAL SOURCE → REVIEWED HANDBOOK</span></div>;
 }
 
 function App() {

@@ -1,8 +1,58 @@
 # Changelog
 
-## Unreleased
+## 0.6.1 - 2026-07-25
 
-No completed iterations have been recorded after `v0.6.0`.
+### Public Repository Rename And Curriculum Terminology
+
+#### Changed
+
+- Renamed the public repository and Skill identifier to
+  `gcse-igcse-alevel-ap-revision-guide`, preserving the `intl_exam_guide`
+  Python import and CLI compatibility.
+- Updated GitHub Pages, README installation links, site metadata, Skill-store
+  package naming, provider user-agent metadata, and operations documentation
+  to the new public address.
+- Expanded the public display names, site titles, SEO metadata, and animation
+  copy to include GCSE, IGCSE, A-Level, and AP. The animation now treats AS and
+  A2 as A-Level stages rather than standalone curriculum systems.
+
+#### Verified
+
+- Full test suite: `491 passed, 165 skipped`.
+- Ruff, compileall, mypy for six changed source files, and the raw-key scan
+  passed with zero raw-key matches.
+- Built and inspected
+  `gcse-igcse-alevel-ap-revision-guide-skill-v0.6.1.zip`: the archive has
+  seven files, `SKILL.md` at its root, no nested Skill entry, no unsafe archive
+  paths, and SHA-256
+  `ff7e3e71cb050372c4d294d6f2b27ff51b12758f12b02174ab64442b3b5c3053`.
+
+### Iteration 2026-07-25 - Curriculum Terminology And A-Level Stage Model
+
+#### Changed
+
+- Reframed the public scope as UK GCSE, International GCSE (IGCSE), A-Level,
+  and College Board AP. AS and A2 are now consistently described as A-Level
+  stages rather than parallel curriculum systems.
+- Corrected the AQA, Edexcel, and CAIE source-route matrix: AQA and Edexcel
+  have UK-domestic and International routes, while CAIE uses the Cambridge
+  International catalogue and does not claim a separate UK GCSE product.
+- Added the `a_level_stage` coordinator field. New A-Level requests require
+  `AS`, `A2`, or `full`; legacy `--level as` remains supported and maps to
+  `level=a-level` with `a_level_stage=AS`.
+- Updated generic handbook labels to use `A-Level`, while retaining official
+  source titles and the `international_as_a_level` compatibility identifier.
+
+#### Verified
+
+- Focused provider, coordinator, cover, rendering, validation, and release
+  contract tests: `145 passed, 29 skipped`.
+- Ruff, compileall, mypy for six changed source files, and the raw-key scan
+  passed with zero raw-key matches.
+- The full suite reached `490 passed, 165 skipped`; its sole failure is the
+  pre-existing repository-state check that calls `git check-ignore` while this
+  workspace has no functional `.git` repository. No Git metadata was created
+  or altered for this documentation and coordinator iteration.
 
 ## 0.6.0 - 2026-07-24
 

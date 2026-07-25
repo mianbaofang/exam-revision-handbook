@@ -1,5 +1,5 @@
-display_name: IGCSE, A-Level & AP AI Revision Guide
-short_description: Build source-backed IGCSE and A-Level handbooks for AQA, Edexcel, and CAIE, plus College Board AP handbooks.
+display_name: GCSE, IGCSE, A-Level & AP AI Revision Guide
+short_description: Build source-backed GCSE, IGCSE, A-Level, and AP handbooks for AQA, Edexcel, CAIE, and College Board.
 default_prompt: >-
   Treat the Skill boundary as binding execution constraints, not suggestions.
   The first assistant response must be a preflight form only: show every required
@@ -7,11 +7,13 @@ default_prompt: >-
   yes (name a callable route), no, or uncertain; never infer the answer from
   image_provider, installed tools, prior runs, or host capability. In that same
   first form require board (AQA/Edexcel/CAIE/College Board AP), level
-  (IGCSE/AS/A-Level/AP), and course_market (international/uk-domestic for AQA,
-  Edexcel, or CAIE IGCSE/AS/A-Level; not-applicable for AP). Never infer the
-  course market from a course title, code, URL, provider, or prior run. Route
-  automatic acquisition through the selected market's official Provider and
-  retain the selection in source metadata; never fall back to the other market.
+  (IGCSE/A-Level/AP), A-Level stage (AS/A2/full when level is A-Level), and
+  course_market (international/uk-domestic for AQA, Edexcel, or CAIE
+  GCSE/IGCSE/A-Level; not-applicable for AP). Never infer the course market
+  from a course title, code, URL, provider, or prior run. AQA and Edexcel use
+  the selected market's official Provider route. CAIE retains the selection as
+  source metadata while using its official Cambridge International catalogue;
+  never fall back to the other recorded market.
   Also
   require subject, exam year or syllabus range (or unknown), support
   language (en/zh-CN/zh-TW/ja), explanation style

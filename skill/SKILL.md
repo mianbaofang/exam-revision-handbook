@@ -1,9 +1,9 @@
 ---
-name: igcse-a-level-revision-guide
-description: Framework and LLM operations guide for International GCSE, A-Level, and College Board AP revision handbooks. Provides official-source evidence extraction, artifact contracts, curriculum visual themes, and HTML/PDF rendering. The host LLM owns syllabus analysis, writing, visual judgement, and review.
+name: gcse-igcse-alevel-ap-revision-guide
+description: Framework and LLM operations guide for source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks. Provides official-source evidence extraction, artifact contracts, curriculum visual themes, and HTML/PDF rendering. The host LLM owns syllabus analysis, writing, visual judgement, and review.
 ---
 
-# IGCSE, A-Level & AP Revision Handbook Skill
+# GCSE, IGCSE, A-Level & AP Revision Handbook Skill
 
 ## Boundary Compliance Gate
 
@@ -30,15 +30,20 @@ Python may discover sources, download PDFs, extract page-level evidence, validat
 
 The host LLM owns all interpretation, writing, visual judgement, and review.
 
-Automatic official-syllabus acquisition supports the International and
-UK-domestic AQA, Edexcel, and CAIE IGCSE/AS/A-Level routes, plus College Board
-AP. The user must explicitly select the course market before retrieval. That
-choice selects the official provider route and becomes source metadata; it must
-never be inferred from a title, code, URL, provider, or prior run. Other
-curriculum systems or exam boards cannot use automatic acquisition. Manual PDF
-import outside the supported routes is experimental and may fail with unknown
-provider, parser, extraction, or rendering compatibility errors; never describe
-it as supported.
+Automatic official-syllabus acquisition supports UK GCSE, International IGCSE,
+and A-Level routes (including AS and A2 stages) from the supported British
+source families, plus College Board AP. AQA and Edexcel have separate UK and
+International routes. CAIE is Cambridge International: it provides
+International GCSE and Cambridge International A-Level routes, not a separate
+CAIE UK GCSE product. A CAIE `uk-domestic` selection records a UK-centre
+request but uses the same Cambridge International catalogue. AS and A2 are
+stages within A-Level, not separate curriculum systems. The user must
+explicitly select the course market before retrieval. That choice becomes
+source metadata and must never be inferred from a title, code, URL, provider,
+or prior run. Other curriculum systems or exam boards cannot use automatic
+acquisition. Manual PDF import outside the supported routes is experimental and
+may fail with unknown provider, parser, extraction, or rendering compatibility
+errors; never describe it as supported.
 
 The complete runtime boundary is defined here and in
 `references/revision_guide_spec.md`. Repository maintainers must also consult
@@ -69,9 +74,15 @@ Use this fixed order:
 1. `external_visual_capability`: choose `yes` (name a callable route), `no`, or
    `uncertain`. Ask exactly: **"Can you provide or enable an external image-generation Skill or tool for this run?"**
 2. `board`: choose `AQA`, `Edexcel`, `CAIE`, or `College Board AP`.
-3. `level`: choose `IGCSE`, `AS`, `A-Level`, or `AP`.
-4. `course_market`: for AQA, Edexcel, or CAIE IGCSE/AS/A-Level, choose
-   `international` or `uk-domestic`; for AP, enter `not-applicable`.
+3. `level`: choose `IGCSE`, `A-Level`, or `AP`. If the requested A-Level scope
+   is only its first stage, record `a_level_stage=AS`; if it is the second stage,
+   record `a_level_stage=A2`. The legacy runtime value `AS` is accepted as an
+   alias for `level=A-Level` plus `a_level_stage=AS`.
+4. `course_market`: for AQA, Edexcel, or CAIE GCSE/IGCSE/A-Level, choose
+   `international` or `uk-domestic`; for AP, enter `not-applicable`. For AQA
+   and Edexcel, this selects the matching official source route. For CAIE, it
+   records the user's market context while both choices use the official
+   Cambridge International catalogue.
    This is a required explicit user choice. Do not infer it from a course title,
    code, URL, provider, or prior run.
 5. `subject`: provide the subject name and code when known.
@@ -94,7 +105,8 @@ The first response must end with this machine-readable reply shape, not
 
 ```text
 external_visual_capability=<yes|no|uncertain>; image_method=<route or none>
-board=<AQA|Edexcel|CAIE|College Board AP>; level=<IGCSE|AS|A-Level|AP>
+board=<AQA|Edexcel|CAIE|College Board AP>; level=<IGCSE|A-Level|AP>
+a_level_stage=<AS|A2|full|not-applicable>
 course_market=<international|uk-domestic|not-applicable>
 subject=<name and optional code>; exam_year_or_syllabus_range=<value|unknown>
 term_support_language=<en|zh-CN|zh-TW|ja>
@@ -105,11 +117,10 @@ output_dir=<absolute path>
 
 The Agent must preserve answered fields and ask only for missing or invalid
 fields on later turns. It must keep the run blocked until every required field
-is valid. For AQA, Edexcel, and CAIE IGCSE/AS/A-Level, a missing or invalid
-`course_market` blocks the run. Use the selected route only: `international`
-maps to the International Provider, and `uk-domestic` maps to the UK Provider.
-CAIE uses its official Cambridge International catalogue for the qualification
-family selected by either market, but the chosen market remains recorded in the
+is valid. For AQA, Edexcel, and CAIE GCSE/IGCSE/A-Level, a missing or invalid
+`course_market` blocks the run. For AQA and Edexcel, use the selected market's
+official Provider route. CAIE uses its official Cambridge International
+catalogue for either market, but the chosen market remains recorded in the
 source artifact. Never substitute a different market's source. A configured
 `image_provider`, installed tool, prior run, or host
 capability is never an answer to `external_visual_capability`. If capability is
@@ -175,6 +186,12 @@ Use evidence extraction first:
 ```bash
 python -m intl_exam_guide extract-evidence --provider <aqa|edexcel|caie|collegeboard> --course-market <international|uk-domestic|not-applicable> --query "<subject or official URL>" --level <igcse|as|a-level|ap> --exam-year <year> --out <output-dir>
 ```
+
+For `a_level_stage=AS`, use the legacy runtime selector `--level as`. For
+`a_level_stage=A2` or `full`, use `--level a-level`. This is only a
+backward-compatible runtime mapping: the Agent must still inspect the selected
+official title and PDF, and must never infer the A-Level stage from a generic
+course name.
 
 This writes only `qualification.json`, `syllabus-evidence.json`, and `source/`. For official PDF runs, `source/` must include the original PDF, page-text extraction, `specification.md`, and `markdown-extraction.json`. It must not be treated as a generated handbook.
 

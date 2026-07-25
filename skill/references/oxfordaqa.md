@@ -3,11 +3,11 @@
 OxfordAQA public pages use this stable pattern:
 
 - `https://www.oxfordaqa.com/subjects/` lists subject category pages.
-- Subject pages list both International GCSE and International AS-A-level
+- Subject pages list both International GCSE and International A-Level
   qualification links.
 - Subject-page qualification buttons currently expose a useful style signal:
   `btn--type-8` maps to the blue International GCSE listing and `btn--type-7`
-  maps to the red International AS-A-level listing. Record this metadata, but
+  maps to the red International A-Level listing. Record this metadata, but
   still verify the qualification type from the title and target page.
 - Qualification pages usually contain:
   - `Syllabus summary`
@@ -16,8 +16,10 @@ OxfordAQA public pages use this stable pattern:
   - `Course specification` with a PDF download link
 
 International GCSE pages should be treated as linear qualifications unless the
-source page says otherwise. International AS-A-level pages should be treated as
-modular qualifications unless the source page says otherwise.
+source page says otherwise. International A-Level pages should be treated as
+modular qualifications unless the source page says otherwise. AS and A2 are
+stages within that A-Level qualification; record the selected stage separately
+when the source supports stage-level filtering.
 
 Include this audience note in generated guides:
 

@@ -10,8 +10,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 ASSET_ROOT = REPO_ROOT / "docs" / "assets"
 ANIMATIONS_PATH = ASSET_ROOT / "three-board-support-video" / "animations.jsx"
 TARGETS = (
-    ("three-board-support-video", "zh-CN", "IGCSE、A-Level 与 AP 复习手册 Skill 介绍动画"),
-    ("three-board-support-video-en", "en", "IGCSE, A-Level & AP Revision Handbook Skill"),
+    ("three-board-support-video", "zh-CN", "GCSE、IGCSE、A-Level 与 AP 复习手册 Skill 介绍动画"),
+    ("three-board-support-video-en", "en", "GCSE, IGCSE, A-Level & AP Revision Handbook Skill"),
 )
 
 

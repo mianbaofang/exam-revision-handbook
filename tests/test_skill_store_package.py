@@ -35,7 +35,7 @@ def test_skill_store_package_places_authoritative_skill_at_archive_root(tmp_path
         names = [entry.filename for entry in archive.infolist() if not entry.is_dir()]
         assert "SKILL.md" in names
         assert "skill/SKILL.md" not in names
-        assert not any(name.startswith("igcse-a-level-revision-guide/") for name in names)
+        assert not any(name.startswith("gcse-igcse-alevel-ap-revision-guide/") for name in names)
         source_skill = (REPO_ROOT / "skill" / "SKILL.md").read_bytes()
         assert archive.read("SKILL.md") == source_skill.replace(b"\r\n", b"\n").replace(
             b"\r", b"\n"

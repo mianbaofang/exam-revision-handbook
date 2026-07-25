@@ -41,10 +41,14 @@ An evidence-only package from `extract-evidence` is intentionally smaller. It co
 
 Do not start syllabus download or handbook writing until the user has confirmed the following. Ask clarifying questions when any item is missing or ambiguous; do not silently choose defaults for content-bearing decisions. In the first preflight exchange, explicitly offer the workflow-mode choice: default single-host role passes, or optional multi-agent delegation when the user wants separate agents and the runtime supports them.
 
-1. board, qualification level, subject, and code when known;
-2. for AQA, Edexcel, and CAIE IGCSE, AS, or A-Level, the explicit course
-   market: `international` or `uk-domestic`. Never infer this from a course
-   title, code, URL, provider, or prior run. AP uses `not-applicable`;
+1. board, qualification level, A-Level stage when applicable, subject, and code
+   when known. AS and A2 are A-Level stages, not parallel qualification levels;
+2. for AQA, Edexcel, and CAIE GCSE/IGCSE/A-Level, the explicit course market:
+   `international` or `uk-domestic`. Never infer this from a course title,
+   code, URL, provider, or prior run. AP uses `not-applicable`. For AQA and
+   Edexcel, the market selects the matching official route. For CAIE, it
+   records the request context while using the same official Cambridge
+   International catalogue;
 3. official page URL or direct PDF URL when discovery is ambiguous;
 4. exam year or syllabus range when the provider lists multiple versions;
 5. support language: `en` for no glossary, or `zh-CN`, `zh-TW`, or `ja` for a professional term glossary;

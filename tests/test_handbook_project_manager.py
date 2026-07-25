@@ -56,6 +56,7 @@ def test_coordinator_prompt_exposes_lightweight_workflow():
     assert "formal=exam-oriented" in prompt
     assert "explanation_style=<fixed value>" in prompt
     assert "course_market=<international|uk-domestic|not-applicable>" in prompt
+    assert "a_level_stage=<AS|A2|full|not-applicable>" in prompt
     assert "Never infer course_market" in prompt
 
 
@@ -97,6 +98,8 @@ def test_generation_image_provider_never_infers_user_preflight_answer():
 
     assert parameters.image_method == "custom"
     assert parameters.infographic_capability is None
+    assert parameters.level == "a-level"
+    assert parameters.a_level_stage == "full"
     assert "infographic_capability" in parameters.missing_required()
 
 
@@ -147,6 +150,7 @@ def test_complete_structured_preflight_unblocks_the_workflow(tmp_path):
         parameters=HandbookProjectParameters(
             exam_board="CAIE",
             level="a-level",
+            a_level_stage="full",
             course_market="international",
             subject="Physics 9702",
             exam_year="2027",
@@ -162,6 +166,42 @@ def test_complete_structured_preflight_unblocks_the_workflow(tmp_path):
     assert state.project_status == "in_progress"
     assert state.missing_preflight == []
     assert state.invalid_preflight == []
+
+
+def test_a_level_preflight_requires_a_declared_stage(tmp_path):
+    state = build_project_state(
+        parameters=HandbookProjectParameters(
+            exam_board="AQA",
+            level="a-level",
+            course_market="international",
+            subject="Mathematics",
+            exam_year="2027",
+            term_support_language="en",
+            explanation_style="formal",
+            infographic_capability="no",
+            workflow_mode="single-host",
+            batch_scope="one-handbook",
+        ),
+        output_dir=tmp_path,
+    )
+
+    assert state.project_status == "blocked"
+    assert "a_level_stage" in state.missing_preflight
+
+
+def test_legacy_as_selector_maps_to_a_level_as_stage():
+    parameters = parameters_from_generation_args(
+        provider="AQA",
+        level="as",
+        subject="Mathematics",
+        exam_year="2027",
+        term_support_language="en",
+        explanation_style="formal",
+        image_provider=None,
+    )
+
+    assert parameters.level == "a-level"
+    assert parameters.a_level_stage == "AS"
 
 
 def test_scoped_preflight_requires_an_explicit_course_market(tmp_path):
