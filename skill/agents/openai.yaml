@@ -1,5 +1,5 @@
-display_name: GCSE, IGCSE, A-Level & AP AI Revision Guide
-short_description: Build source-backed GCSE, IGCSE, A-Level, and AP handbooks for AQA, Edexcel, CAIE, and College Board.
+display_name: Exam Revision Handbook
+short_description: Create source-backed GCSE, IGCSE, A-Level, and AP handbooks for AQA, Edexcel, CAIE, and College Board.
 default_prompt: >-
   Treat the Skill boundary as binding execution constraints, not suggestions.
   The first assistant response must be a preflight form only: show every required

@@ -1,4 +1,4 @@
-# GCSE、IGCSE、A-Level 与 AP AI Revision Guide Skill
+# Exam Revision Handbook：GCSE、IGCSE、A-Level 与 AP
 
 <p align="center">
   <a href="https://mianbaofang.github.io/gcse-igcse-alevel-ap-revision-guide/project-intro-animation.html">
@@ -91,7 +91,7 @@ https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/tree/main/ski
 ```
 
 直接下载
-[v0.6.1 Skill 安装包](https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases/download/v0.6.1/gcse-igcse-alevel-ap-revision-guide-skill-v0.6.1.zip)。
+[v0.6.2 Skill 安装包](https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases/download/v0.6.2/exam-revision-handbook-v0.6.2.zip)。
 
 然后直接说：
 
@@ -336,7 +336,7 @@ tests/            测试与回归样例
 
 ## 状态
 
-当前包版本：`v0.6.1`。这个 Skill 已具备公开使用的框架形态；单份手册只有在完成自己的全量 LLM HTML 审查、写入与当前 HTML 绑定的 `agent-product-review.json`、通过 PDF 导出门禁，并具备相应发布证据后，才能称为 final-ready。
+当前包版本：`v0.6.2`。这个 Skill 已具备公开使用的框架形态；单份手册只有在完成自己的全量 LLM HTML 审查、写入与当前 HTML 绑定的 `agent-product-review.json`、通过 PDF 导出门禁，并具备相应发布证据后，才能称为 final-ready。
 
 ## 作者
 

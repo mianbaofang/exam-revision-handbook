@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.6.2 - 2026-07-25
+
+### Standard Skill Identity
+
+#### Changed
+
+- Renamed the installable Skill identity to `exam-revision-handbook` while
+  retaining the keyword-rich public repository name
+  `gcse-igcse-alevel-ap-revision-guide`.
+- Kept the established `skill/` source directory and its workflow references
+  intact. The install ZIP still exposes the standard root layout: `SKILL.md`,
+  `agents/`, and `references/`.
+- Shortened the Skill display name and release asset name while retaining GCSE,
+  IGCSE, A-Level, AP, AQA, Edexcel, CAIE, and College Board in searchable
+  metadata and documentation.
+
+#### Verified
+
+- Full test suite: `491 passed, 165 skipped`.
+- `skill-creator` structural validation passed for `skill/` under UTF-8.
+- Built and inspected `exam-revision-handbook-v0.6.2.zip`: seven required
+  files, root `SKILL.md`, no nested Skill entry, no unsafe archive path, and
+  SHA-256 `e0c482de0a86672acbd2eaaaed37ee042d7e744cb5450be523d959714f48a034`.
+
 ## 0.6.1 - 2026-07-25
 
 ### Public Repository Rename And Curriculum Terminology

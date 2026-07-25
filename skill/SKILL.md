@@ -1,9 +1,9 @@
 ---
-name: gcse-igcse-alevel-ap-revision-guide
-description: Framework and LLM operations guide for source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks. Provides official-source evidence extraction, artifact contracts, curriculum visual themes, and HTML/PDF rendering. The host LLM owns syllabus analysis, writing, visual judgement, and review.
+name: exam-revision-handbook
+description: Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official sources. Use for syllabus evidence extraction, topic-level teaching, worked examples, visual planning, HTML review, and approved PDF delivery across AQA, Edexcel, CAIE, and College Board AP.
 ---
 
-# GCSE, IGCSE, A-Level & AP Revision Handbook Skill
+# Exam Revision Handbook
 
 ## Boundary Compliance Gate
 

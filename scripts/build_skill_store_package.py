@@ -24,7 +24,7 @@ def package_version() -> str:
 
 
 def default_output_path() -> Path:
-    return REPO_ROOT / "dist" / f"gcse-igcse-alevel-ap-revision-guide-skill-v{package_version()}.zip"
+    return REPO_ROOT / "dist" / f"exam-revision-handbook-v{package_version()}.zip"
 
 
 def skill_files(source_dir: Path) -> list[Path]:

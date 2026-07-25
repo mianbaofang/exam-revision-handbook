@@ -1,9 +1,9 @@
 ---
-name: gcse-igcse-alevel-ap-revision-guide
-description: Repository entry for the source-backed GCSE, IGCSE, A-Level, and College Board AP revision-handbook Skill. The authoritative workflow is maintained in skill/SKILL.md.
+name: exam-revision-handbook
+description: Repository discovery entry for the Exam Revision Handbook Skill, which creates source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks. The authoritative workflow is maintained in skill/SKILL.md.
 ---
 
-# Repository Skill Entry
+# Exam Revision Handbook
 
 The installable and authoritative Skill is [skill/SKILL.md](skill/SKILL.md).
 Read that file in full before starting a handbook run, then follow its linked

@@ -1,4 +1,4 @@
-# GCSE, IGCSE, A-Level & AP AI Revision Guide Skill
+# Exam Revision Handbook Skill for GCSE, IGCSE, A-Level & AP
 
 <p align="center">
   <a href="https://mianbaofang.github.io/gcse-igcse-alevel-ap-revision-guide/project-intro-animation-en.html">
@@ -155,7 +155,7 @@ https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/tree/main/ski
 ```
 
 Download the ready-to-install
-[v0.6.1 Skill package](https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases/download/v0.6.1/gcse-igcse-alevel-ap-revision-guide-skill-v0.6.1.zip).
+[v0.6.2 Skill package](https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases/download/v0.6.2/exam-revision-handbook-v0.6.2.zip).
 
 Then ask:
 
@@ -545,7 +545,7 @@ See [DISCLAIMER.md](DISCLAIMER.md) and [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md
 
 ## Status
 
-Current package version: `v0.6.1`. The Skill is public-ready as a framework for
+Current package version: `v0.6.2`. The Skill is public-ready as a framework for
 source-backed handbook generation. An individual handbook is final-ready only
 after its own complete LLM HTML review is recorded in
 `agent-product-review.json` and `review-ledger/`, the exact HTML passes the hash
