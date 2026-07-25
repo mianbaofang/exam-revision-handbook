@@ -1,0 +1,778 @@
+{
+  "byte_count": 1923410,
+  "file_count": 154,
+  "files": [
+    {
+      "bytes": 123233,
+      "path": "CHANGELOG.md",
+      "sha256": "039f1aaed4d412a37aea7a8a8394bb8101826cc2800d4b6b30c3b389c4b6b020"
+    },
+    {
+      "bytes": 28889,
+      "path": "README.md",
+      "sha256": "90bb9139842421ebef79d6042a31fa63b7243a9c5f55d06eaac412af34db4fa7"
+    },
+    {
+      "bytes": 22357,
+      "path": "README.zh-CN.md",
+      "sha256": "36b032a0cbaf2164688cbc4400b41733bb09b53d9403703f81bbd81343f4197d"
+    },
+    {
+      "bytes": 1586,
+      "path": "SKILL.md",
+      "sha256": "12b9da5e60c4e64cb2d185b2e5347bb9b23f901d326d8dfd5e0aec1694a0134e"
+    },
+    {
+      "bytes": 1301,
+      "path": "pyproject.toml",
+      "sha256": "818cb1a8796ac924b224bd53ba793b96f6d33d7a4a69fc5e454832c732ff3e3b"
+    },
+    {
+      "bytes": 13526,
+      "path": "scripts/audit_ap_courses.py",
+      "sha256": "34191c0216186abd4f7ec59e0cb6d94299f630227c4112c3c275a9cf6a1cc783"
+    },
+    {
+      "bytes": 5303,
+      "path": "scripts/build_skill_store_package.py",
+      "sha256": "3a0f241b4b4574bcdd3d4eef49f928857cc7a3cab635d0f063852092e246a857"
+    },
+    {
+      "bytes": 6223,
+      "path": "scripts/capture_release_assets.py",
+      "sha256": "7f0a2c5a7058d03087afd12f0c15921df3712bb36b26136173323c4c28dd4a74"
+    },
+    {
+      "bytes": 2565,
+      "path": "scripts/finalize_release_samples.py",
+      "sha256": "9ebf9dea1c34f55c9ea2c72532b7730594be093924a81d1c5fb7f1f24dc82c0f"
+    },
+    {
+      "bytes": 6857,
+      "path": "scripts/import_concept_explanations.py",
+      "sha256": "40185bf75021d9616d59536307699f206a0298ffec5887038b8d286774567543"
+    },
+    {
+      "bytes": 10978,
+      "path": "scripts/import_infographic_assets.py",
+      "sha256": "80ea34d10f175d35fcb72c88b338950e959a4568a9e942234b4ba86f882f3dd0"
+    },
+    {
+      "bytes": 5673,
+      "path": "scripts/render_intro_animation.py",
+      "sha256": "38d383ff59d5005250621b1dcb28f7cd5faed19f6de83ed3087dde3952134356"
+    },
+    {
+      "bytes": 2403,
+      "path": "scripts/scan_for_raw_keys.py",
+      "sha256": "3c734f52b0bc14292700c5284a12e39cb18d726724236a533c5b9ad420bea5bf"
+    },
+    {
+      "bytes": 2750,
+      "path": "scripts/sync_intro_animation_sources.py",
+      "sha256": "52daa0e0208958f1be5bdaa5fe6adc6df240716aebf37f8fb8a34ad17956e963"
+    },
+    {
+      "bytes": 21707,
+      "path": "scripts/verify_release_samples.py",
+      "sha256": "762a7ab725e815c8349ea03245513ea6d49617b80575d49f7035067c7d0e15a3"
+    },
+    {
+      "bytes": 1603,
+      "path": "scripts/write_concept_explanations_from_jobs.py",
+      "sha256": "53e1ec1618c72b1b38ebcce719753c35078312f6e07a0624d291a404e0144163"
+    },
+    {
+      "bytes": 32960,
+      "path": "skill/SKILL.md",
+      "sha256": "beb1beaf471e9e653cff0963c4eed118eba6d4cbadb244b37402e757105d6c48"
+    },
+    {
+      "bytes": 2873,
+      "path": "skill/agents/openai.yaml",
+      "sha256": "0c57ac8e20ca4cf03f63a48fdccf0bdde9138e631b3be843c455e64bf1575795"
+    },
+    {
+      "bytes": 1345,
+      "path": "skill/references/collegeboard-ap.md",
+      "sha256": "cfc89584d390bb27d9df4f1d282cb583d67d56b4c382ab673a7830345e793f7c"
+    },
+    {
+      "bytes": 2155,
+      "path": "skill/references/oxfordaqa.md",
+      "sha256": "4e910641a10b052ab883bc6fb9df05cecc2cb2fed6dd3a4304a8dd263aaea9fc"
+    },
+    {
+      "bytes": 22865,
+      "path": "skill/references/revision_guide_spec.md",
+      "sha256": "57c490578be6eded66522a55c427cac9e589e6455620ac98f4ed4d4678b590b0"
+    },
+    {
+      "bytes": 1947,
+      "path": "skill/references/scientific_vector_fallback.md",
+      "sha256": "0dab614108c9d420d52d4115d2637c0f2bb2aebaf14e123d5fb4380e1b004745"
+    },
+    {
+      "bytes": 3304,
+      "path": "skill/test-prompts.json",
+      "sha256": "885f8b842199f5757770e225c5b52ce3ff524cca963fd1670f68b0d8b96e365e"
+    },
+    {
+      "bytes": 113,
+      "path": "src/intl_exam_guide/__init__.py",
+      "sha256": "8b20ea79ba82b79f3cb4ef975c53404c724c5744e81abffeb0c7eba34958ec11"
+    },
+    {
+      "bytes": 131,
+      "path": "src/intl_exam_guide/__main__.py",
+      "sha256": "504644a25f7b02955bafe24273989f7caa265ea77d6392b3d040155f3194073b"
+    },
+    {
+      "bytes": 441,
+      "path": "src/intl_exam_guide/agents/__init__.py",
+      "sha256": "9a6a63096721a324ebf841c411a93b8e2208e1b59c7fdd0d9e4f6ea1e33204fe"
+    },
+    {
+      "bytes": 6491,
+      "path": "src/intl_exam_guide/agents/orchestration.py",
+      "sha256": "f49319634408aece8856ddf96d3cb9106ebcd2dcc08d01068484e25f505d09be"
+    },
+    {
+      "bytes": 4104,
+      "path": "src/intl_exam_guide/assets/demo_qualification.json",
+      "sha256": "02d23467e2bd8c39e2bcdbd0aaab02f72e0269ddd0959fc4f4a01616ca14298e"
+    },
+    {
+      "bytes": 56,
+      "path": "src/intl_exam_guide/auditing/__init__.py",
+      "sha256": "5823745cbd54c13abf85db82cefe60ee20413403ff15476a7c88f7369ab9ae2d"
+    },
+    {
+      "bytes": 21205,
+      "path": "src/intl_exam_guide/auditing/concept_jobs.py",
+      "sha256": "d58a9492543642c8ca5c9d7945d6b04f0dd0bb7c58cb06ade0d65ee5b2c34d7a"
+    },
+    {
+      "bytes": 2260,
+      "path": "src/intl_exam_guide/auditing/content_quality.py",
+      "sha256": "3585aec4a80a7158bbdddb578aefea854540dd80873b7f3c50493d5d2e3443d1"
+    },
+    {
+      "bytes": 20349,
+      "path": "src/intl_exam_guide/auditing/delivery_gate.py",
+      "sha256": "9fb0e75d01714af05156797ae17bf09a93287582c6d8dfad75d1e276b259acc7"
+    },
+    {
+      "bytes": 3865,
+      "path": "src/intl_exam_guide/auditing/delivery_matrix.py",
+      "sha256": "daa882c60c8de5789bab2adf1b2e17b65ba4958422a9fc9d6feeb42fae6626ed"
+    },
+    {
+      "bytes": 47024,
+      "path": "src/intl_exam_guide/auditing/final_review.py",
+      "sha256": "0323836e8a2d01e0e41106d2fc3f5a837fde08fc0a9ea14908e059253559f200"
+    },
+    {
+      "bytes": 18757,
+      "path": "src/intl_exam_guide/auditing/pdf_delivery.py",
+      "sha256": "29f5cdcc51fb08bbe3ce246ead183f44b0ed1ef807efefc1fcc1d121476e6b0c"
+    },
+    {
+      "bytes": 19852,
+      "path": "src/intl_exam_guide/auditing/quality_inspector.py",
+      "sha256": "0eb2ac73a0a3cef80254a5622805cd83c179d5c95d5b01b2c000802251f00164"
+    },
+    {
+      "bytes": 16912,
+      "path": "src/intl_exam_guide/auditing/review_ledger.py",
+      "sha256": "38ac99011b1b15c6a5e52eea551236ff46a661f1da4662f21643215c998efbf2"
+    },
+    {
+      "bytes": 3646,
+      "path": "src/intl_exam_guide/auditing/visual_jobs.py",
+      "sha256": "f5ca4b03bbf17b126a8df408c515d40fb6e97d7771ac8d22ecef11f228aaf32d"
+    },
+    {
+      "bytes": 5023,
+      "path": "src/intl_exam_guide/auditing/visual_semantics.py",
+      "sha256": "6f93f30584e0955e7ef4bc5be39bf0018aaecc05e59042cb607119c9a9dc04b9"
+    },
+    {
+      "bytes": 25343,
+      "path": "src/intl_exam_guide/cli.py",
+      "sha256": "61a1314857298e6bde6f005a077d1e0bdc711e44d4481a9a38fc706edbaa054c"
+    },
+    {
+      "bytes": 7256,
+      "path": "src/intl_exam_guide/config.py",
+      "sha256": "4a1849441369c5e4daf3b5b90c21382a8cbef44a2c6de579b6df201d569c7e60"
+    },
+    {
+      "bytes": 841,
+      "path": "src/intl_exam_guide/coordination/__init__.py",
+      "sha256": "6caa1d6e727648ee1d2097c2d27e6a9301d55778e1e09d4062d412254d9541c0"
+    },
+    {
+      "bytes": 24319,
+      "path": "src/intl_exam_guide/coordination/handbook_project_manager.py",
+      "sha256": "75f48f3037db0fa3d29282459c191c2ca1328aaab9418b1213a11aab9ee16177"
+    },
+    {
+      "bytes": 538,
+      "path": "src/intl_exam_guide/core/__init__.py",
+      "sha256": "446d8d2b7ef6cfb1f68a0b2ce77c08cde324714b60022e51d887d5cc49f4497f"
+    },
+    {
+      "bytes": 8665,
+      "path": "src/intl_exam_guide/core/contracts.py",
+      "sha256": "480bd72b04ce7d7bfa4833f4218886fc09b023b9b37be0e6901667f3907bac7b"
+    },
+    {
+      "bytes": 499,
+      "path": "src/intl_exam_guide/llm/__init__.py",
+      "sha256": "7532ed96febbccf97c82722e053e2475d84b909bb7a778d2fce70d9670425263"
+    },
+    {
+      "bytes": 4413,
+      "path": "src/intl_exam_guide/llm/factory.py",
+      "sha256": "32d5fa5eceaebd9b09ebad0e8af5ab24166e7f04facecb26e3ed01c0d8d8343d"
+    },
+    {
+      "bytes": 3183,
+      "path": "src/intl_exam_guide/llm/fallback_provider.py",
+      "sha256": "69df25c3b1b21f4037985179f148770e40ae70a280a80e4de8217b95e858269b"
+    },
+    {
+      "bytes": 8416,
+      "path": "src/intl_exam_guide/llm/openai_provider.py",
+      "sha256": "7b0c0cd5e56d670d5390deddbf8e728bddc35463c08bd54b14e7f9fa7b28bdbd"
+    },
+    {
+      "bytes": 3315,
+      "path": "src/intl_exam_guide/llm/provider.py",
+      "sha256": "403e32deecd1b866b5125c529c99bf79ea5c913523a6bb695598698dbdf4af6e"
+    },
+    {
+      "bytes": 359,
+      "path": "src/intl_exam_guide/llm/provider_interface.py",
+      "sha256": "e2aab3fef4bb38e47d00a1ce24696f0d7e9920493a06990dcc67a269c0a4bbab"
+    },
+    {
+      "bytes": 9409,
+      "path": "src/intl_exam_guide/models.py",
+      "sha256": "c606fdaf24512aca0a19e110e21ff48ecbf363a17b23256618892aff1d43fa55"
+    },
+    {
+      "bytes": 6281,
+      "path": "src/intl_exam_guide/parsing/markdown_companion.py",
+      "sha256": "790f0e310c0b5a4bd81532c7224cb24199406e9fd80f7a2084579b85171525c1"
+    },
+    {
+      "bytes": 1991,
+      "path": "src/intl_exam_guide/parsing/pdf_text.py",
+      "sha256": "aa55e05a45ea1d35afd9330109c050c8b865f9460ac5bb6292c8c8ca2ddaec57"
+    },
+    {
+      "bytes": 2064,
+      "path": "src/intl_exam_guide/planning/anti_ai_language.py",
+      "sha256": "ddd488f9925cf64f3d8c19854c84f01071ea735252eb1d67e01cdd435d96453e"
+    },
+    {
+      "bytes": 4016,
+      "path": "src/intl_exam_guide/planning/async_guide_plan.py",
+      "sha256": "b849e53bd8fcd05d05b675076dbc913c1bb422ca36414d8b15ef14f246406691"
+    },
+    {
+      "bytes": 4255,
+      "path": "src/intl_exam_guide/planning/checklists.py",
+      "sha256": "e1e29e1e17714ced2bba4a7dbb6fc6773187da2b7eee0e579ca99783ee8b2ace"
+    },
+    {
+      "bytes": 18364,
+      "path": "src/intl_exam_guide/planning/concept_integration.py",
+      "sha256": "dcddeec730135a6a61c515893be425e1f29baa2db9502b364e8d56bf1a1ca761"
+    },
+    {
+      "bytes": 7548,
+      "path": "src/intl_exam_guide/planning/explanation_styles.py",
+      "sha256": "962d1731fc011ec4c8a974e0ada70875ee38777478b2835ae74229258b854177"
+    },
+    {
+      "bytes": 13617,
+      "path": "src/intl_exam_guide/planning/guide_plan.py",
+      "sha256": "b8b4729eebca4f73f5a5ab8ad31557a903a8535f3effac2f4905c4319ecf5597"
+    },
+    {
+      "bytes": 762,
+      "path": "src/intl_exam_guide/planning/identifiers.py",
+      "sha256": "1ffc1f21de65aa37a660c81e213bc35149e994b95ec43a724837713e67bb5b4f"
+    },
+    {
+      "bytes": 926,
+      "path": "src/intl_exam_guide/planning/language_policy.py",
+      "sha256": "0ac84528a44dd45d1ad6842c8ea0439f46c4bef8943bc8818703c1859cd64604"
+    },
+    {
+      "bytes": 21298,
+      "path": "src/intl_exam_guide/planning/localization.py",
+      "sha256": "25d6dfd156ec6764318c3142ee6e22be04ed5c43c69e5c06ebe60fb21d390ce1"
+    },
+    {
+      "bytes": 2217,
+      "path": "src/intl_exam_guide/planning/practice_focus.py",
+      "sha256": "172b320f4a50bc02f39e51bfc2bd4f21a9b8b550d07a72a8ca111cc30b57aadc"
+    },
+    {
+      "bytes": 7919,
+      "path": "src/intl_exam_guide/planning/practice_generator.py",
+      "sha256": "a20b13eb86f0418ed0cb66b51c227d256ace59061927a14a852a74a10c0a9358"
+    },
+    {
+      "bytes": 12225,
+      "path": "src/intl_exam_guide/planning/source_points.py",
+      "sha256": "574f466411021995173071f3676317aeeb77bb36f2ff7ab0cb12d66653220957"
+    },
+    {
+      "bytes": 11349,
+      "path": "src/intl_exam_guide/planning/subject_profiles.py",
+      "sha256": "8a371f1ce6e713ea0dee13f5331b33edf34e3a7151b9ebe7f62be5efaccae4a6"
+    },
+    {
+      "bytes": 54565,
+      "path": "src/intl_exam_guide/planning/syllabus_outline.py",
+      "sha256": "c1e967efdb13f4adbac98e98a961a9b256f9fda9a5b1902d9b6bf9bb444c66b5"
+    },
+    {
+      "bytes": 9254,
+      "path": "src/intl_exam_guide/planning/visual_routing.py",
+      "sha256": "b1d09335d01bd15456745c29d0b9820352301c3856703ba0092513d3001e8ac1"
+    },
+    {
+      "bytes": 384,
+      "path": "src/intl_exam_guide/providers/__init__.py",
+      "sha256": "bc0a032cb2e4c605a1e2fe5e9ff9ca4d5cfe29dbe7d878684c3155b1219c46c3"
+    },
+    {
+      "bytes": 9511,
+      "path": "src/intl_exam_guide/providers/aqa.py",
+      "sha256": "be91c853bbe620a4d33ab553af242acc9571383c8524c4990bcaed6783ab8760"
+    },
+    {
+      "bytes": 6597,
+      "path": "src/intl_exam_guide/providers/base.py",
+      "sha256": "93f51ad1bfa1a8f6fb57f4c7ee43d2b6dc36cd230385d9a846ec43404d847bb5"
+    },
+    {
+      "bytes": 12936,
+      "path": "src/intl_exam_guide/providers/cambridge.py",
+      "sha256": "0c20b954d8a74a885622e87f3882d6371562520e18e46a2d99121aff88e17a44"
+    },
+    {
+      "bytes": 13258,
+      "path": "src/intl_exam_guide/providers/collegeboard.py",
+      "sha256": "33a337df55f7e918a93c469f2b0d206b8bca0263814cf028a6d098d7f92a9304"
+    },
+    {
+      "bytes": 29840,
+      "path": "src/intl_exam_guide/providers/common.py",
+      "sha256": "5201df849155b64c95a93760716c4cec000b7d9d55305cade8e8eaadcb6a9fdb"
+    },
+    {
+      "bytes": 45735,
+      "path": "src/intl_exam_guide/providers/oxfordaqa.py",
+      "sha256": "770f0cfacf48b569a17ef1487f212b43bee2fdc93276fce26128efaba4d2f981"
+    },
+    {
+      "bytes": 16848,
+      "path": "src/intl_exam_guide/providers/pearson.py",
+      "sha256": "c34769156d8df00a7c61eae51991d262a289afeff21190cfe06476765354a2f7"
+    },
+    {
+      "bytes": 10653,
+      "path": "src/intl_exam_guide/rendering/cover.py",
+      "sha256": "f8ed1cc4a806d8f818362f4ca5b4ce168fe09545a2b0aa88c8c7acf5d5044863"
+    },
+    {
+      "bytes": 6229,
+      "path": "src/intl_exam_guide/rendering/delivery_panel.py",
+      "sha256": "0f05fcbbe0d7027540c431c758abd0f3d0b3aaa71c4741d0747e39069fe3a506"
+    },
+    {
+      "bytes": 21062,
+      "path": "src/intl_exam_guide/rendering/glossary.py",
+      "sha256": "f7c302cbf2acd23fbb0928807b8858b2b1cacb72c1baad758e5dc51eb55b6cb1"
+    },
+    {
+      "bytes": 16841,
+      "path": "src/intl_exam_guide/rendering/handbook_package.py",
+      "sha256": "a53fded0684d36d192c95bea94d17f5940e917d639763f5ad84990487435e174"
+    },
+    {
+      "bytes": 37683,
+      "path": "src/intl_exam_guide/rendering/html.py",
+      "sha256": "ac498cad9ff60f6ef7b080ae9a39a061ef7f12d3dbe7564d60400a4dac3a05a0"
+    },
+    {
+      "bytes": 1625,
+      "path": "src/intl_exam_guide/rendering/icons.py",
+      "sha256": "9d993e26539ab2cb4a8599c7611681fd28a922312eaed19046a3b10a7db5743d"
+    },
+    {
+      "bytes": 4735,
+      "path": "src/intl_exam_guide/rendering/infographics.py",
+      "sha256": "d5221eda1885960f4afbeea39edb0fb113fd30e658656da980cc41854fddba14"
+    },
+    {
+      "bytes": 11637,
+      "path": "src/intl_exam_guide/rendering/kroki.py",
+      "sha256": "1740f0b3a9308170ccd6954ea48b706ce8cb009ff8aab554bba6ad1eedb1cc24"
+    },
+    {
+      "bytes": 6402,
+      "path": "src/intl_exam_guide/rendering/output_names.py",
+      "sha256": "f0648b4dce14cd01bd9318831da944d6012614fdf8047e7e462858afd80baa05"
+    },
+    {
+      "bytes": 5942,
+      "path": "src/intl_exam_guide/rendering/pdf.py",
+      "sha256": "54c95ce0bab5dac5b6b4c4aeec23e6eda35518e81725bebe9741ac9870b7a0db"
+    },
+    {
+      "bytes": 14547,
+      "path": "src/intl_exam_guide/rendering/render_snapshot.py",
+      "sha256": "d673ffdff080c37832a2f372b0233225d84e32a81032e7a566336aedbbad49b0"
+    },
+    {
+      "bytes": 3169,
+      "path": "src/intl_exam_guide/rendering/story_modes.py",
+      "sha256": "c3ed7c60837629837f12c7af1a9d9eeaff16fd388114383b2ed052e3b4d2061e"
+    },
+    {
+      "bytes": 19981,
+      "path": "src/intl_exam_guide/rendering/styles.py",
+      "sha256": "5334dece88cde07ce75799926d0d615213cf381edbad85e4e13f1a15ba0f28d1"
+    },
+    {
+      "bytes": 12088,
+      "path": "src/intl_exam_guide/rendering/svg_templates.py",
+      "sha256": "4ab44766665bf3725602ccec4d0634aca6b05852be4eb5aab4bde4b1101bd1fc"
+    },
+    {
+      "bytes": 2837,
+      "path": "src/intl_exam_guide/rendering/text.py",
+      "sha256": "c29393fa18f3d9859eec0c6e589da98ac045ddf13cf55e3683316606c3974498"
+    },
+    {
+      "bytes": 6272,
+      "path": "src/intl_exam_guide/rendering/visual_assets.py",
+      "sha256": "5deccbe60272b90dfa1de957ba0811173503e48998b58aa9ba18cdc28ff4fafe"
+    },
+    {
+      "bytes": 31126,
+      "path": "src/intl_exam_guide/skill_interface.py",
+      "sha256": "631baa2fda5da8d89a88c8583d432d501ab05de0286a90e24626a27744ed2f28"
+    },
+    {
+      "bytes": 336,
+      "path": "src/intl_exam_guide/subjects/__init__.py",
+      "sha256": "6ab65cd2d56df25e1e3520e46530c4b570c3f554ea71ac733963e285f46b1a9e"
+    },
+    {
+      "bytes": 6416,
+      "path": "src/intl_exam_guide/subjects/packs.py",
+      "sha256": "d4e49aa5760a0c385096885444fa74bb5a24747837cd6f0476f4458d44099004"
+    },
+    {
+      "bytes": 88988,
+      "path": "src/intl_exam_guide/validation/checks.py",
+      "sha256": "6b64a17f7341776ef05cc1ae048a963db8601222eff21c4be04724f9c2d81089"
+    },
+    {
+      "bytes": 102,
+      "path": "src/intl_exam_guide/visuals/__init__.py",
+      "sha256": "13bfc7889b62ff93e6066e4dc711399a7c317356381e22f10e49ff1f10d6c3bb"
+    },
+    {
+      "bytes": 13103,
+      "path": "src/intl_exam_guide/visuals/manifest.py",
+      "sha256": "39bb2f28c922aa46664c9a0d431da00340be6074b21e391527feab76148bfaff"
+    },
+    {
+      "bytes": 2430,
+      "path": "src/intl_exam_guide/visuals/spec.py",
+      "sha256": "ffe8dbbda4a4f70ff9d60ec7ecfdb22218e14ee461f5b090e60bd76706c9965e"
+    },
+    {
+      "bytes": 920,
+      "path": "tests/conftest_skip_visual_routing.py",
+      "sha256": "f9b0efe6f9bd6985e45a27a642aa30fe7ede3201af20db91ae746bfc3ac3e3c7"
+    },
+    {
+      "bytes": 2824,
+      "path": "tests/fixtures/delivery_matrix.json",
+      "sha256": "04756c9e6057bfb53592366e668f4ed82992a7cd724c394914c0cda2137b6d1a"
+    },
+    {
+      "bytes": 4746,
+      "path": "tests/test_anti_ai_language.py",
+      "sha256": "3527608d6d46fdb892680cdaeb604f384441d15faf4ec66ba4cebf3cc3ff1acc"
+    },
+    {
+      "bytes": 3486,
+      "path": "tests/test_architecture_guards.py",
+      "sha256": "8c42024c8b638e574bbcad549503d669ee7133fc59690c1275081ad62c9eb6f0"
+    },
+    {
+      "bytes": 9983,
+      "path": "tests/test_collegeboard_ap_provider.py",
+      "sha256": "c2a96231045a1384cef12065dddf682c6cea7e176b4626e5428fa4fd438a8515"
+    },
+    {
+      "bytes": 6848,
+      "path": "tests/test_concept_jobs.py",
+      "sha256": "5bc5216fda8e41fda100e376a2b9b47adbc6f77ad78fad887ba7ec6889e89a4d"
+    },
+    {
+      "bytes": 9581,
+      "path": "tests/test_config.py",
+      "sha256": "b352a4bb87594821ab04a99c054b9d4dbbab64f1c5c6b094359ca4050ab125b8"
+    },
+    {
+      "bytes": 1302,
+      "path": "tests/test_content_quality.py",
+      "sha256": "0831fc35f8cb65c250625a0fd0a76690dd7f28d8b6fedba34c773462a37c3eda"
+    },
+    {
+      "bytes": 6465,
+      "path": "tests/test_core_contracts.py",
+      "sha256": "825354bb954c0cc9c2cbc550a6d1af94351875cdfb52df198a5cacfba982bc17"
+    },
+    {
+      "bytes": 4855,
+      "path": "tests/test_course_market_providers.py",
+      "sha256": "ef5b3c8a975ad8263e2f201b79a1507a370a1219e2c6875c7f65d0db62bcf546"
+    },
+    {
+      "bytes": 5707,
+      "path": "tests/test_cover_templates.py",
+      "sha256": "9b9c39b8d1744a08cd560117ea44c21e1d2735abcc67fb57a6970db43c035467"
+    },
+    {
+      "bytes": 4389,
+      "path": "tests/test_delivery_matrix.py",
+      "sha256": "bd24954b24ecb5492af1594bd82e74c93ecbad868f0e8f3baabf4ac46df800fc"
+    },
+    {
+      "bytes": 3262,
+      "path": "tests/test_delivery_status.py",
+      "sha256": "93872a3fc93adce42aebff4a94cd511a70105bb67eb7852e465fba8b7105df7d"
+    },
+    {
+      "bytes": 55710,
+      "path": "tests/test_demo_cli.py",
+      "sha256": "5c1a7abe92fd9eb646c9337d79d7c8ca08cabecfaa169b96c26863e56a200b1f"
+    },
+    {
+      "bytes": 2167,
+      "path": "tests/test_explanation_styles.py",
+      "sha256": "f6c4c5bc2e30b9c51440c8d6d227d533eebd0e70305bd50e5f8948c1f1fda18d"
+    },
+    {
+      "bytes": 11122,
+      "path": "tests/test_fallback_provider.py",
+      "sha256": "ea19a82d9386d25c91e69631a75814eb19ff532ce7df2359aa243fde79be8efa"
+    },
+    {
+      "bytes": 51563,
+      "path": "tests/test_final_review_packet.py",
+      "sha256": "07667101676bf5cca55b5abbff20dfaa1197a3d627beb6d621e1054f9d6e87d0"
+    },
+    {
+      "bytes": 15244,
+      "path": "tests/test_guide_plan_llm_integration.py",
+      "sha256": "e8b22da4846015e55a54ec961ab5b5091f9f3e9b767d72bafc786d84c72232d4"
+    },
+    {
+      "bytes": 27303,
+      "path": "tests/test_guide_plan_units.py",
+      "sha256": "fd18a4e4be39a5d99715c16b9b762eb308242458efd24962f0ecac338e521262"
+    },
+    {
+      "bytes": 8999,
+      "path": "tests/test_handbook_project_manager.py",
+      "sha256": "36714bb0ce1af2b7fdc0cf4ad8116a72b173bc5e7148bcab281188a59a7344b3"
+    },
+    {
+      "bytes": 4815,
+      "path": "tests/test_import_concept_full_body.py",
+      "sha256": "7f9c067f7aa6d962c55bb821c459c3dc05f5ddb8d2a893162999daf302a014d4"
+    },
+    {
+      "bytes": 3399,
+      "path": "tests/test_infographics.py",
+      "sha256": "1973d1c0755af7eaff394935c3a2bd326fc27504ff920c5568bf6ba454d0c63c"
+    },
+    {
+      "bytes": 3904,
+      "path": "tests/test_kroki_renderer.py",
+      "sha256": "e85bd76427d799db056aa5cef3107e6ac3b1bcf39c5d3a0cb855c9a88dc59f30"
+    },
+    {
+      "bytes": 9387,
+      "path": "tests/test_llm_factory.py",
+      "sha256": "9f55e8c024a2c156760b7f591d374517a44884b055bd1ec9fd723ea0e397b4dc"
+    },
+    {
+      "bytes": 14454,
+      "path": "tests/test_llm_provider.py",
+      "sha256": "624d95e6eb24911ae46be5ce5950fe3c6ab68a637aa8c289daccc488501c18bf"
+    },
+    {
+      "bytes": 12058,
+      "path": "tests/test_localization.py",
+      "sha256": "76da304c6da5d561f527a254d25bde53ac7031cc7be8b71252af00fd99ff3bb2"
+    },
+    {
+      "bytes": 364,
+      "path": "tests/test_main_module.py",
+      "sha256": "7c507182b458ba17b93771828dd1d8ab7feb318bb5ed0f9b613360c318488bed"
+    },
+    {
+      "bytes": 2675,
+      "path": "tests/test_markdown_companion.py",
+      "sha256": "f8f310c7b6c8c60bc4686475bf93e58a266e4c9f61dd45ccb198179eecdc047d"
+    },
+    {
+      "bytes": 5193,
+      "path": "tests/test_models_multi_provider.py",
+      "sha256": "26296fddcb153e6dbaea604c8a4105b364e7a8faf75f4635054ea57348f35cdf"
+    },
+    {
+      "bytes": 13022,
+      "path": "tests/test_pdf_export.py",
+      "sha256": "ad5b50cbe0182b4ba18ac0e2ffa1f86aa441bcbb90f6b22146dfed1b67211530"
+    },
+    {
+      "bytes": 2414,
+      "path": "tests/test_pdf_text.py",
+      "sha256": "0eb7d647a93a833c6c0b0f43c9c9131868f2d78477c5d0debbabec6324a36414"
+    },
+    {
+      "bytes": 5806,
+      "path": "tests/test_practice_generator.py",
+      "sha256": "5a8017710c33baf231679dc9e8080a9a36211ac8a8110b4614d6989ec93cb95c"
+    },
+    {
+      "bytes": 34191,
+      "path": "tests/test_provider_parser.py",
+      "sha256": "7c2bf2a4e7fe1a6867df38ea8cb83a21320a12848450a14aa085efd7b63339b1"
+    },
+    {
+      "bytes": 10875,
+      "path": "tests/test_quality_inspector.py",
+      "sha256": "2ede87d7bedf388637cd3473866ab646be65dded39412a802ac083551d6f54af"
+    },
+    {
+      "bytes": 33426,
+      "path": "tests/test_release_scripts.py",
+      "sha256": "39c3810240941c9adfbc68bc462a1a8624368f2966571e0773bfc6a15aa4efed"
+    },
+    {
+      "bytes": 64264,
+      "path": "tests/test_rendering_contracts.py",
+      "sha256": "c6602ad4c7506eb700de22bcf68bd172095a7c199a0e2c1ae90c25cc63647222"
+    },
+    {
+      "bytes": 2215,
+      "path": "tests/test_rendering_text.py",
+      "sha256": "679279ee70f6b9767bd03ed9e02135e178cc342c72a40b40a61a31cce9afbd96"
+    },
+    {
+      "bytes": 3581,
+      "path": "tests/test_scope_exclusion.py",
+      "sha256": "8e0374ca66363ed9f4035c0f79b453ec58774eae4056e37d58373ca09eda755d"
+    },
+    {
+      "bytes": 21870,
+      "path": "tests/test_skill_interface.py",
+      "sha256": "1957c664eb263edcd40723ae77d008ea17ad0247df56d419f89a0aeab534fac8"
+    },
+    {
+      "bytes": 3410,
+      "path": "tests/test_skill_store_package.py",
+      "sha256": "02b75dd623d3cc0b1a76b0777f4460ebb58cf6d6256ed6fc7a8b0ebf2c7be6ae"
+    },
+    {
+      "bytes": 1121,
+      "path": "tests/test_story_modes.py",
+      "sha256": "313b482bda7b93dc4e2e8697dfe0c642610d1c75eef0d09547858694feb549c4"
+    },
+    {
+      "bytes": 2809,
+      "path": "tests/test_subject_packs.py",
+      "sha256": "007f109349af420f0a61940e8de99ce237807cc38d40e6c7988b38706a69e2ce"
+    },
+    {
+      "bytes": 4362,
+      "path": "tests/test_subject_profiles.py",
+      "sha256": "a068314480d7c5903796713ece99e0651080cfb35d82eb8e8366ee8b9d98ffa7"
+    },
+    {
+      "bytes": 3054,
+      "path": "tests/test_svg_templates.py",
+      "sha256": "30180d9eb43bd13f0cac8d9e026266996080e768edba862862b32555920db0f2"
+    },
+    {
+      "bytes": 20355,
+      "path": "tests/test_syllabus_outline.py",
+      "sha256": "d1e4d9be9c0a58bb4a77601ce2d18d607a60eae21141839856d25cbaf4b69939"
+    },
+    {
+      "bytes": 43121,
+      "path": "tests/test_url_first_providers.py",
+      "sha256": "370cccb35faacf0e9a10379aae64b1cb2ca861f3c88b5a2c7e05f668f998add2"
+    },
+    {
+      "bytes": 68381,
+      "path": "tests/test_validation_checks.py",
+      "sha256": "7222f84d4e8b51469794b51aae42a540f4329063ed9d6194cde0696d6baf4f89"
+    },
+    {
+      "bytes": 5785,
+      "path": "tests/test_visual_jobs.py",
+      "sha256": "b2640a5c47715c3420b390f02e47c0787d1d29481fd036da96e0663aaaac85b3"
+    },
+    {
+      "bytes": 3675,
+      "path": "tests/test_visual_manifest_v2.py",
+      "sha256": "c68f34ca111c7e100295628ead285b5d266b0d621e62d6dc88bc351a969f9392"
+    },
+    {
+      "bytes": 34277,
+      "path": "tests/test_visual_routing.py",
+      "sha256": "c23878e89887204fa4db29e3792181bbc2467e3cdaa20862dbc2617472670676"
+    },
+    {
+      "bytes": 12129,
+      "path": "tests/test_visual_routing_benchmark.py",
+      "sha256": "830847ba28dfc586ecf9fe6f7560e9be97ec8d7fc95d6a4f7c79456d27cc5e63"
+    },
+    {
+      "bytes": 3703,
+      "path": "tests/test_visual_semantics.py",
+      "sha256": "8b2e277bed82227f450dde140648d14acc48d63ecb51ba7cca96ac88aaf07775"
+    },
+    {
+      "bytes": 2006,
+      "path": "tests/test_visual_spec.py",
+      "sha256": "5eff2e1a0d8cc2d112dd060b235464c85ca45e062cf48e60de84066395adc6c8"
+    },
+    {
+      "bytes": 1681,
+      "path": "tests/test_write_concept_explanations_from_jobs.py",
+      "sha256": "39d69ec7a733a6f116cf2c5ee26b6e93ad55e90d31ff02ac374056b3d2d3c13b"
+    }
+  ],
+  "schema_version": "v1-legacy-source-baseline",
+  "source_identity": "gcse-igcse-alevel-ap-revision-guide@0.6.2"
+}

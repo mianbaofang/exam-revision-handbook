@@ -655,7 +655,7 @@ def write_guide_outputs(
     print("     - Writer: write concepts, mastery summaries, and visual decisions", file=sys.stderr)
     print("     - Reviewer: open the rendered HTML and audit it against the evidence", file=sys.stderr)
     print("", file=sys.stderr)
-    print("See skill/SKILL.md for LLM workflow instructions.", file=sys.stderr)
+    print("See SKILL.md for LLM workflow instructions.", file=sys.stderr)
     print("", file=sys.stderr)
     print("Current output status: {}".format(delivery_status), file=sys.stderr)
     print("=" * 80, file=sys.stderr)

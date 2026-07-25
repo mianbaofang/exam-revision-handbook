@@ -1,0 +1,26 @@
+{
+  "recommended_threshold": 0.48,
+  "should_trigger": [
+    {"text": "Create an AQA GCSE Biology revision handbook from the official specification.", "family": "handbook-generation"},
+    {"text": "帮我生成 CAIE IGCSE Economics 复习手册。", "family": "handbook-generation-zh"},
+    {"text": "Download the official Edexcel A-Level Mathematics syllabus and prepare the handbook evidence.", "family": "source-acquisition"},
+    {"text": "Build a College Board AP Chemistry revision guide with worked examples and diagrams.", "family": "ap-handbook"},
+    {"text": "Review this generated handbook HTML completely and repair it before PDF export.", "family": "html-review"},
+    {"text": "The visual manifest has pending diagrams; review each teaching visual and rerender the guide.", "family": "visual-review"},
+    {"text": "Export the approved IGCSE handbook PDF and verify the delivery hash.", "family": "pdf-delivery"},
+    {"text": "拆解这份 A-Level 考纲到具体考点，再为每个考点写教学内容。", "family": "syllabus-analysis-zh"}
+  ],
+  "should_not_trigger": [
+    {"text": "What is the difference between GCSE and IGCSE?", "family": "explanation-only"},
+    {"text": "Translate this school newsletter into Chinese.", "family": "translation"},
+    {"text": "Fix the failing unit test in my Python repository.", "family": "code-maintenance"},
+    {"text": "Create a marketing landing page for a tutoring company.", "family": "marketing"},
+    {"text": "Summarize this unrelated PDF in five bullets.", "family": "summary-only"}
+  ],
+  "near_neighbor": [
+    {"text": "Update the README and GitHub release notes for the exam handbook repository.", "family": "repository-release"},
+    {"text": "Audit the Skill package structure but do not generate a student handbook.", "family": "skill-maintenance"},
+    {"text": "Design a generic worksheet template for teachers.", "family": "teacher-resource"},
+    {"text": "Give me three ideas for an AP study app.", "family": "brainstorming"}
+  ]
+}

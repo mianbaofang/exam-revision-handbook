@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "default_policy": {
+    "decision": "deny-unlisted-host",
+    "protocol": "https",
+    "authentication": "none"
+  },
+  "scripts": {
+    "scripts\\audit_ap_courses.py": {
+      "allowed_hosts": [
+        "apstudents.collegeboard.org"
+      ],
+      "purpose": "Audit and cache the official College Board AP course catalogue for Provider maintenance."
+    },
+    "scripts\\bootstrap_runtime.py": {
+      "allowed_hosts": [
+        "pypi.org",
+        "files.pythonhosted.org"
+      ],
+      "purpose": "Install the pinned runtime Wheel dependencies into the isolated user cache."
+    },
+    "scripts\\run_runtime.py": {
+      "allowed_hosts": [
+        "www.aqa.org.uk",
+        "www.oxfordaqa.com",
+        "qualifications.pearson.com",
+        "www.cambridgeinternational.org",
+        "apcentral.collegeboard.org",
+        "apstudents.collegeboard.org"
+      ],
+      "purpose": "Retrieve the confirmed official syllabus source through the packaged engine."
+    }
+  }
+}

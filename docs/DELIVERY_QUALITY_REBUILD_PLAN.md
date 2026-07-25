@@ -7,7 +7,7 @@ Date: 2026-07-01
 > per-topic visual decisions, and the complete LLM review of the current HTML
 > before PDF export. The sampling matrix below is release-portfolio evidence,
 > not a substitute for reviewing every topic and rendered visual in each
-> handbook. For the current contract, use `skill/SKILL.md` and
+> handbook. For the current contract, use root `SKILL.md` and
 > `docs/ARCHITECTURE_DECISION_SKILL_WORKFLOW.md`.
 
 ## Verdict

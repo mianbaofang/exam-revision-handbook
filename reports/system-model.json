@@ -1,0 +1,195 @@
+{
+  "skill_name": "exam-revision-handbook",
+  "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources.",
+  "systems_doctrine": "A handbook is deliverable only when its source, teaching, visual, review, and delivery states form one current evidence chain.",
+  "stability": {
+    "score": 95,
+    "band": "governed"
+  },
+  "boundary_map": {
+    "owned_job": "Acquire official curriculum evidence, decompose it into atomic teaching points, write subject-specific teaching and practice, select and review educational visuals, render and personally review HTML, and export a hash-bound PDF only after approval.",
+    "input_boundary": [
+      "A complete preflight covering board or provider, qualification, A-Level stage when applicable, market, subject, exam year, language, work mode, batch scope, and output directory.",
+      "An explicit user answer about external image-generation capability plus a verified callable route when one is selected.",
+      "Official source evidence, or a user-accepted experimental manual import for unsupported curricula."
+    ],
+    "output_boundary": "For each subject, one controlled handbook bundle containing current source evidence, atomic outline, teaching content, visual manifest and assets, approved HTML, review ledger, PDF, delivery copy, and matching hashes.",
+    "non_goals": [
+      "Automatic official-source acquisition for curricula outside the declared AQA, Edexcel, CAIE, and College Board AP routes.",
+      "Using Python, keyword rules, templates, or machine diagnostics to decide syllabus meaning, teaching content, visual semantics, or approval.",
+      "Exporting a PDF before complete LLM review and approval of the exact current HTML.",
+      "Sharing sampled review conclusions, outlines, approvals, or artifact state between batch subjects."
+    ],
+    "constraints": [
+      "Block every downstream phase until preflight is complete and the selected image route is verified.",
+      "Keep LLM-owned semantic decisions separate from Python-owned extraction, validation, rendering, recording, and blocking.",
+      "Preserve rebuild, import assets, approve visuals, then render-only ordering.",
+      "Invalidate every downstream artifact and approval when an upstream input hash changes.",
+      "Review and repair the complete visible HTML until the current render and ledger hashes pass before PDF export.",
+      "Run the full evidence and review chain independently for every subject in a batch."
+    ],
+    "standards": [
+      "Official-source traceability",
+      "Atomic syllabus coverage",
+      "Topic-specific teaching",
+      "Semantic visual review",
+      "Current-hash state consistency",
+      "HTML-before-PDF approval",
+      "Per-subject batch isolation"
+    ],
+    "human_judgment_boundary": [
+      "Confirm the complete preflight and verify the selected image route before starting any downstream work.",
+      "Resolve official provider, market, qualification, stage, course, and year ambiguity instead of guessing or substituting.",
+      "Let the LLM decide syllabus meaning, atomic teaching points, teaching content, visual route, semantic correctness, and approval.",
+      "Require complete review of the exact current HTML and matching evidence hashes before authorizing PDF export.",
+      "Review every batch subject independently and never approve from a sample or another subject's state."
+    ],
+    "maturity_assumption": "governed"
+  },
+  "feedback_loops": [
+    {
+      "name": "Preflight gate loop",
+      "signal": "A required field is missing, ambiguous, inferred, or the selected image route has not been called successfully.",
+      "response": "Stop, ask only for the missing decision, verify the route, and invalidate any prematurely created downstream artifacts.",
+      "evidence": "workflow state and preflight record"
+    },
+    {
+      "name": "Syllabus granularity loop",
+      "signal": "A final topic maps only to a broad Topic or Unit container, lacks an independently assessable source requirement, or merges requirements without a teaching reason.",
+      "response": "Return to official evidence, rebuild the atomic mapping, and re-audit source coverage before writing.",
+      "evidence": "official requirement -> atomic point -> final topic -> visible handbook location mapping"
+    },
+    {
+      "name": "Visual semantics loop",
+      "signal": "A planned or rendered visual does not express a topic-specific structure, relationship, quantity, process, or spatial meaning, or contains incorrect labels, arrows, units, or relationships.",
+      "response": "Reject the visual, revise its medium and source-bound specification, regenerate or replace it, and perform LLM semantic review again.",
+      "evidence": "visual manifest, visual specification, rendered asset, and per-visual review decision"
+    },
+    {
+      "name": "State invalidation loop",
+      "signal": "A manifest rebuild, imported asset, outline, teaching input, visual decision, HTML, render snapshot, ledger, PDF, or delivery hash changes.",
+      "response": "Invalidate every dependent approval and rebuild the chain from the earliest changed input using rebuild -> import -> approve -> render-only order.",
+      "evidence": "artifact hashes and approval state ledger"
+    },
+    {
+      "name": "HTML repair loop",
+      "signal": "Complete visible LLM review finds a factual, teaching, visual, layout, encoding, or traceability defect in the current HTML.",
+      "response": "Rewrite or repair the defect, rerender, inspect the complete new HTML, and repeat until the exact current hashes are approved.",
+      "evidence": "HTML hash, render snapshot hash, item-level review ledger, screenshot locations, and repair round"
+    },
+    {
+      "name": "Delivery and batch loop",
+      "signal": "Any subject has pending, rejected, stale, missing, shared, or mismatched state before export or delivery.",
+      "response": "Block PDF and batch completion for that subject, repair its own chain, then verify the approved PDF and delivery-copy hashes.",
+      "evidence": "per-subject approval, PDF provenance, delivery audit, and batch completion matrix"
+    }
+  ],
+  "drift_watch": [
+    {
+      "name": "Preflight bypass",
+      "watch_signal": "An agent starts retrieval, analysis, writing, or visuals before the structured preflight and image-route decision are complete.",
+      "countermeasure": "Make preflight state the first blocking transition and invalidate all artifacts created before it.",
+      "cadence": "every handbook run"
+    },
+    {
+      "name": "Broad-topic decomposition",
+      "watch_signal": "The outline stops at Topic or Unit headings instead of independently assessable atomic teaching points.",
+      "countermeasure": "Require the source-to-atomic-to-topic-to-location table and a coverage audit before writing.",
+      "cadence": "every outline revision"
+    },
+    {
+      "name": "Manifest and approval order drift",
+      "watch_signal": "Approval is recorded before a manifest rebuild or asset import, causing assets or decisions to disappear or reset.",
+      "countermeasure": "Enforce rebuild -> import -> approve -> render-only and reject out-of-order transitions.",
+      "cadence": "every visual state transition"
+    },
+    {
+      "name": "Stale artifact hashes",
+      "watch_signal": "HTML, render evidence, approvals, PDF, or delivery copies refer to different input versions.",
+      "countermeasure": "Invalidate downstream state on every upstream hash change and audit the complete chain before export.",
+      "cadence": "every render and export"
+    },
+    {
+      "name": "Semantic visual regression",
+      "watch_signal": "Decorative text cards, repeated SVG templates, or polished but incorrect images are accepted as explanatory visuals.",
+      "countermeasure": "Require topic-specific graphical objects and item-level LLM semantic review of the rendered asset.",
+      "cadence": "every planned and rendered visual"
+    },
+    {
+      "name": "Sampled batch review",
+      "watch_signal": "One subject's outline, visual decision, HTML approval, or sampled result is reused to approve another subject.",
+      "countermeasure": "Maintain independent subject state and block batch completion until every subject has its own current evidence chain.",
+      "cadence": "every batch phase transition"
+    }
+  ],
+  "failure_pattern_map": [
+    {
+      "family": "Preflight bypass",
+      "symptom": "The agent invents an image route or starts work before all user decisions are locked.",
+      "repair": "Return to preflight, verify the selected route, and invalidate premature work."
+    },
+    {
+      "family": "Syllabus under-decomposition",
+      "symptom": "Broad source containers become final handbook topics without independently assessable requirements.",
+      "repair": "Rebuild the atomic evidence map and repeat the coverage audit before writing."
+    },
+    {
+      "family": "Semantic ownership violation",
+      "symptom": "Python, keywords, quotas, or templates decide teaching content or visual meaning.",
+      "repair": "Move semantic decisions back to the LLM and retain Python only for deterministic support and gates."
+    },
+    {
+      "family": "Visual format substitution",
+      "symptom": "An SVG, PNG, or JPG is accepted because the file exists even though it lacks correct teaching meaning.",
+      "repair": "Judge the rendered relationship, structure, quantity, or space; reject and redesign semantically weak visuals."
+    },
+    {
+      "family": "State and hash divergence",
+      "symptom": "Old and new manifests, assets, approvals, HTML, PDFs, or delivery copies are mixed.",
+      "repair": "Invalidate from the earliest changed input and rebuild one current evidence chain."
+    },
+    {
+      "family": "False approval",
+      "symptom": "Machine checks or a partial HTML sample are treated as LLM approval.",
+      "repair": "Perform full visible review and repair of the current HTML, then record hash-bound item-level evidence."
+    },
+    {
+      "family": "Batch conclusion sharing",
+      "symptom": "Multiple subjects share one review conclusion or approval state.",
+      "repair": "Invalidate the shared conclusion and complete each subject independently."
+    }
+  ],
+  "leverage_points": [
+    {
+      "rank": 1,
+      "point": "Block incomplete preflight",
+      "why": "Every later artifact depends on course identity, market, year, and the real image route.",
+      "move": "Prevent downstream state creation until the complete preflight is valid."
+    },
+    {
+      "rank": 2,
+      "point": "Make atomic mapping an approved artifact",
+      "why": "Teaching, practice, visuals, and source coverage all inherit outline granularity.",
+      "move": "Approve the source-to-atomic-to-topic-to-location map before writing."
+    },
+    {
+      "rank": 3,
+      "point": "Enforce state ordering and invalidation",
+      "why": "Correct content still fails when rebuilds erase assets or approvals refer to stale versions.",
+      "move": "Use rebuild -> import -> approve -> render-only and propagate every hash invalidation."
+    },
+    {
+      "rank": 4,
+      "point": "Approve meaning, not file format",
+      "why": "A valid image file can still be visually empty, generic, or factually wrong.",
+      "move": "Require per-visual LLM semantic review of the rendered asset against its source-bound specification."
+    },
+    {
+      "rank": 5,
+      "point": "Bind delivery to complete HTML review",
+      "why": "PDF generation freezes defects and can hide stale approval state.",
+      "move": "Export only from the exact current HTML and ledger hashes after the full repair loop passes."
+    }
+  ],
+  "reviewer_rule": "Approve only when one current, per-subject evidence chain proves complete preflight, atomic source coverage, LLM-owned semantics, reviewed visuals, fully repaired HTML, and hash-bound PDF delivery."
+}

@@ -21,7 +21,7 @@
   ·
   <a href="ACKNOWLEDGEMENTS.md">致谢</a>
   ·
-  <a href="skill/references/revision_guide_spec.md">手册规范</a>
+  <a href="references/revision_guide_spec.md">手册规范</a>
 </p>
 
 ## 为什么要做这个 Skill
@@ -57,7 +57,8 @@ CAIE 的 `uk-domestic` 选择仅记录英国考点请求，仍使用 Cambridge I
 其他考试体系或考试局不能使用自动获取功能；手动导入大纲属于未经完整验证的兼容路径，可能出现未知的
 解析、提取、元数据或渲染错误。
 
-**这个项目是框架，不是离线内容生成器。** `skill/` 里的 Skill 说明会让
+**这个项目是框架，不是无人值守的离线内容生成器。** 根目录唯一的 `SKILL.md` 及其
+`references/` 合同会让
 OpenClaw、Hermes 或其它 Agent 的宿主 LLM 按 Analyst、Writer、Reviewer 三个轻量角色工作：
 根据当前官方大纲即时判断 topic 边界、写概念解释、例题、学习路线和每个 topic 的
 `visual_decision`，再单独复查渲染后的手册。Reviewer 可以是用户明确要求时的独立 Agent，
@@ -65,7 +66,7 @@ OpenClaw、Hermes 或其它 Agent 的宿主 LLM 按 Analyst、Writer、Reviewer 
 MarkItDown 生成 `source/specification.md`、导出 HTML/PDF、登记图片资产、写入 concept/image jobs
 和执行机械验证；Python 不从 Markdown 拆 topic。
 
-CLI 只是框架调试和草稿 fallback。直接运行 `python -m intl_exam_guide generate ...`
+CLI 只是框架调试和草稿 fallback。直接运行 `python scripts/run_runtime.py -- generate ...`
 会得到结构完整但教学内容偏骨架化的 draft，不能当成已经可交给学生的最终手册。
 
 当前版本自动支持三大英式课程考试局的国际课程和英国本土版路线，并新增 College Board AP 课程体系：
@@ -87,11 +88,11 @@ CLI 只是框架调试和草稿 fallback。直接运行 `python -m intl_exam_gui
 OpenClaw、Hermes 或其他支持 Skill 的 Agent：
 
 ```text
-https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/tree/main/skill
+https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide
 ```
 
 直接下载
-[v0.6.2 Skill 安装包](https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases/download/v0.6.2/exam-revision-handbook-v0.6.2.zip)。
+[v0.7.0 标准 Skill ZIP](https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases/download/v0.7.0/exam-revision-handbook-v0.7.0.zip)。
 
 然后直接说：
 
@@ -156,7 +157,7 @@ outputs/chemistry-9202/
 - 可打印 HTML，以及审查通过后由门禁命令导出的 PDF。
 
 在把输出当成最终成品交给学生前，可以运行
-`python -m intl_exam_guide review --out <output-dir>` 生成辅助诊断，但
+`python scripts/run_runtime.py -- review --out <output-dir>` 生成辅助诊断，但
 `final-review-packet.json` 和 Validation 都不能给出通过结论。当前 LLM Reviewer 必须亲自打开当前 HTML，逐一审查每个最终 topic、定义与关系、教学解释、例题、解题步骤、最终答案、单位、来源锚点，以及每个实际渲染视觉的标签、箭头、位置、结构、比例、单位、说明文字和 topic 对应关系。
 
 发现任何问题都必须返回 Writer 重写源产物、重新渲染 HTML，并从头再次完整查看。只有当前 HTML 没有可修复问题时，LLM 才能写入与该 HTML SHA-256 绑定的 `agent-product-review.json`；随后再运行 `export-pdf`。在此之前不得生成或审查 PDF，也不能标为 final-ready。
@@ -271,24 +272,25 @@ v0.6 使用四个状态词：
 
 ## 开发者快速开始
 
-普通用户可以跳过这一节。只有想修改 Python 引擎或本地调试时才需要看。
-这条命令只运行 evidence-only official run，不运行 LLM syllabus_outline_analyst，不拆大纲、不写教学内容、不渲染 HTML/PDF。真正可教学的手册必须通过 Skill 宿主 LLM 完成大纲 outline、考点、概念写作、渲染和独立 reviewer 复查。
+普通用户可以跳过这一节。下面的标准运行时命令只运行 evidence-only official run，
+不代替 LLM 的大纲拆解、教学写作、配图判断或 HTML 审查。真正可教学的手册必须通过
+Skill 宿主 LLM 完成完整流程。
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -e .
-python -m intl_exam_guide generate --query chemistry --level igcse --out ./outputs/chemistry-9202
+python scripts/doctor.py
+python scripts/run_runtime.py -- generate --query chemistry --level igcse --out ./outputs/chemistry-9202
 ```
 
 Windows PowerShell：
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -e .
-python -m intl_exam_guide generate --query chemistry --level igcse --out .\outputs\chemistry-9202
+python scripts\doctor.py
+python scripts\run_runtime.py -- generate --query chemistry --level igcse --out .\outputs\chemistry-9202
 ```
+
+GitHub `main`、对应的 `v0.7.0` tag 和 Release 中的 Skill ZIP 就是同一个当前标准
+Skill 版本，不存在单独的“源码版”或“安装版”。需要修改 Python 引擎的贡献者可使用
+`pip install -e ".[dev]"`；ZIP 通过 `assets/runtime/` 中的受控 Wheel 和独立用户缓存运行。
 
 常用检查：
 
@@ -302,16 +304,26 @@ python scripts/scan_for_raw_keys.py . ./outputs
 ## 目录结构
 
 ```text
+SKILL.md         唯一权威 Agent 入口
+agents/          各平台的 Skill 元数据
+references/      完整工作流、产物、Provider 与运行时合同
+assets/runtime/  固定版本的 Python 引擎 Wheel 与完整性锁
+evals/           触发、工作流、迁移与输出一致性样例
+reports/         标准 Skill 与迁移验证证据
+security/        运行权限和网络策略
+skill_atlas/     路由与维护元数据
+scripts/         运行适配器、导入助手和项目维护工具
 src/intl_exam_guide/
   providers/      各考试局官方页面读取与解析
   parsing/        PDF 文本抽取
   planning/       知识点、例题和配图需求规划
   rendering/      HTML 与 PDF 渲染
   validation/     完整性检查
-skill/            Agent 使用的 Skill 说明
 docs/             项目详情、准确性政策、示例和展示页面
 tests/            测试与回归样例
 ```
+
+维护或交接项目前，请先阅读 [PROJECT.md](PROJECT.md)。
 
 ## 安全与来源边界
 
@@ -336,7 +348,7 @@ tests/            测试与回归样例
 
 ## 状态
 
-当前包版本：`v0.6.2`。这个 Skill 已具备公开使用的框架形态；单份手册只有在完成自己的全量 LLM HTML 审查、写入与当前 HTML 绑定的 `agent-product-review.json`、通过 PDF 导出门禁，并具备相应发布证据后，才能称为 final-ready。
+当前 Skill 版本：`v0.7.0`。这个 Skill 已具备公开使用的框架形态；单份手册只有在完成自己的全量 LLM HTML 审查、写入与当前 HTML 绑定的 `agent-product-review.json`、通过 PDF 导出门禁，并具备相应发布证据后，才能称为 final-ready。
 
 ## 作者
 
@@ -351,7 +363,7 @@ Ethan <ethan.zl@hotmail.com>
 通过后，LLM 在 `agent-product-review.json` 中记录 `reviewer_type: "llm"`、当前 HTML 的 SHA-256、审查轮次和 `decision: "approved"`。然后才可运行：
 
 ```bash
-python -m intl_exam_guide export-pdf --out <output-dir>
+python scripts/run_runtime.py -- export-pdf --out <output-dir>
 ```
 
 HTML 一旦再次改变，原审查记录立即失效，必须重新查看和审批后才能再次导出 PDF。

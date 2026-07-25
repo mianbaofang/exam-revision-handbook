@@ -33,13 +33,17 @@
 
 - [ ] `python scripts/build_skill_store_package.py` succeeds after the final
   version bump.
-- [ ] The resulting ZIP contains `SKILL.md` at archive root and does not contain
-  `skill/SKILL.md`, a repository-name outer directory, or another nested
-  `SKILL.md`.
-- [ ] Packaged `SKILL.md` is byte-identical to `skill/SKILL.md`; a second build
-  has the same SHA-256.
-- [ ] Upload the purpose-built Skill ZIP to the GitHub Release. Do not use the
-  GitHub-generated repository source ZIP as the Skill-store package.
+- [ ] The resulting ZIP contains one top-level `exam-revision-handbook/`
+  directory, with the canonical `SKILL.md` at that Skill root and no second or
+  nested `SKILL.md`.
+- [ ] Packaged `SKILL.md` is byte-identical to the repository-root `SKILL.md`;
+  a second build has the same SHA-256.
+- [ ] The ZIP contains both concept/visual import helpers and excludes
+  repository-only `src/`, `tests/`, `docs/`, `.github/`, and post-package
+  verification reports.
+- [ ] Upload only the purpose-built versioned Skill ZIP and its `.sha256` file
+  to the GitHub Release. Do not use the GitHub-generated source ZIP as the
+  Skill installer.
 
 ## Release Evidence Status
 
@@ -64,16 +68,19 @@
 
 ## Commands
 
-- [ ] Offline demo works:
+- [ ] Offline demo creates the controlled HTML draft and its complete artifact
+  set, then returns the expected blocked status while LLM-owned teaching content
+  or review decisions are still missing. It must not report `final-ready` or
+  export a PDF merely because rendering completed:
 
 ```bash
-python -m intl_exam_guide demo --out ./outputs/demo-science --language en --image-provider prompt-queue --explanation-style friendly --skip-pdf
+python scripts/run_runtime.py -- demo --out ./outputs/demo-science --language en --image-provider prompt-queue --explanation-style friendly --skip-pdf
 ```
 
 - [ ] Subject-page discovery shows qualification metadata:
 
 ```bash
-python -m intl_exam_guide discover --subject-url https://www.oxfordaqa.com/subjects/science/
+python scripts/run_runtime.py -- discover --subject-url https://www.oxfordaqa.com/subjects/science/
 ```
 
 - [ ] Discovery output includes `international_gcse` rows with the blue listing
@@ -82,49 +89,49 @@ python -m intl_exam_guide discover --subject-url https://www.oxfordaqa.com/subje
 - [ ] OxfordAQA International GCSE sample works:
 
 ```bash
-python -m intl_exam_guide generate --query chemistry --level igcse --out ./outputs/chemistry-9202
+python scripts/run_runtime.py -- generate --query chemistry --level igcse --out ./outputs/chemistry-9202
 ```
 
 - [ ] OxfordAQA International A-Level sample works (AS stage when selected):
 
 ```bash
-python -m intl_exam_guide generate --query chemistry --level a-level --out ./outputs/chemistry-9620
+python scripts/run_runtime.py -- generate --query chemistry --level a-level --out ./outputs/chemistry-9620
 ```
 
 - [ ] OxfordAQA non-Science International GCSE sample works:
 
 ```bash
-python -m intl_exam_guide generate --query economics --level igcse --out ./outputs/economics-9214
+python scripts/run_runtime.py -- generate --query economics --level igcse --out ./outputs/economics-9214
 ```
 
 - [ ] OxfordAQA revised non-Science International A-Level code lookup sample works:
 
 ```bash
-python -m intl_exam_guide generate --query 9725 --level a-level --out ./outputs/business-9725
+python scripts/run_runtime.py -- generate --query 9725 --level a-level --out ./outputs/business-9725
 ```
 
 - [ ] Pearson Edexcel International GCSE candidate-discovery sample works:
 
 ```bash
-python -m intl_exam_guide generate --provider pearson --query "Mathematics B" --level igcse --out ./outputs/pearson-igcse-maths-b
+python scripts/run_runtime.py -- generate --provider pearson --query "Mathematics B" --level igcse --out ./outputs/pearson-igcse-maths-b
 ```
 
 - [ ] Pearson Edexcel International A-Level candidate-discovery sample works:
 
 ```bash
-python -m intl_exam_guide generate --provider pearson --query "Biology" --level a-level --out ./outputs/pearson-ial-biology
+python scripts/run_runtime.py -- generate --provider pearson --query "Biology" --level a-level --out ./outputs/pearson-ial-biology
 ```
 
 - [ ] Cambridge IGCSE candidate-discovery sample works with `--exam-year`:
 
 ```bash
-python -m intl_exam_guide generate --provider cambridge --query "Accounting 0452" --level igcse --exam-year 2027 --out ./outputs/cambridge-igcse-accounting-2027
+python scripts/run_runtime.py -- generate --provider cambridge --query "Accounting 0452" --level igcse --exam-year 2027 --out ./outputs/cambridge-igcse-accounting-2027
 ```
 
 - [ ] Cambridge A-Level candidate-discovery sample works with `--exam-year`:
 
 ```bash
-python -m intl_exam_guide generate --provider cambridge --query "Chemistry 9701" --level a-level --exam-year 2029 --out ./outputs/cambridge-ial-chemistry-2029
+python scripts/run_runtime.py -- generate --provider cambridge --query "Chemistry 9701" --level a-level --exam-year 2029 --out ./outputs/cambridge-ial-chemistry-2029
 ```
 
 ## Validation
@@ -136,7 +143,7 @@ python -m intl_exam_guide generate --provider cambridge --query "Chemistry 9701"
 - [ ] `python scripts/sync_intro_animation_sources.py --check` passes.
 - [ ] Run or refresh the delivery matrix evidence for every
   subject/board/level claim changed in this release.
-- [ ] Run `python -m intl_exam_guide review --out <sample-output>` for each
+- [ ] Run `python scripts/run_runtime.py -- review --out <sample-output>` for each
   release sample and record whether it is `ready`,
   `draft_needs_concept_review`, `draft_needs_image_review`, or
   `blocked_errors`. Map that internal result to release evidence status:
@@ -146,7 +153,7 @@ python -m intl_exam_guide generate --provider cambridge --query "Chemistry 9701"
   complete current HTML and reviewed every final topic, worked example, answer,
   source anchor, and rendered visual. Repairs were rerendered and reviewed again
   before `agent-product-review.json` was written.
-- [ ] Run `python -m intl_exam_guide export-pdf --out <sample-output>` only after
+- [ ] Run `python scripts/run_runtime.py -- export-pdf --out <sample-output>` only after
   that handbook's current HTML approval passes. A later HTML change invalidates
   the approval and marks the former PDF historical. Confirm the candidate passes
   technical checks and `current-pdf.json` references the exact HTML hash, PDF

@@ -6,7 +6,7 @@ The offline demo uses `src/intl_exam_guide/assets/demo_qualification.json`. It
 does not download OxfordAQA content and does not include copyrighted PDFs.
 
 ```bash
-python -m intl_exam_guide demo --out ./outputs/demo-science
+python scripts/run_runtime.py -- demo --out ./outputs/demo-science
 ```
 
 Expected files:
@@ -38,7 +38,7 @@ source points used to shape the prompt.
 First inspect the subject page listings:
 
 ```bash
-python -m intl_exam_guide discover --subject-url https://www.oxfordaqa.com/subjects/science/
+python scripts/run_runtime.py -- discover --subject-url https://www.oxfordaqa.com/subjects/science/
 ```
 
 The science page should show International GCSE rows tagged as
@@ -46,25 +46,25 @@ The science page should show International GCSE rows tagged as
 rows tagged as `international_as_a_level` with the red listing group.
 
 ```bash
-python -m intl_exam_guide generate --query chemistry --level igcse --out ./outputs/chemistry-9202
+python scripts/run_runtime.py -- generate --query chemistry --level igcse --out ./outputs/chemistry-9202
 ```
 
 ## OxfordAQA International A-Level Example
 
 ```bash
-python -m intl_exam_guide generate --query chemistry --level a-level --out ./outputs/chemistry-9620
+python scripts/run_runtime.py -- generate --query chemistry --level a-level --out ./outputs/chemistry-9620
 ```
 
 ## OxfordAQA Non-Science International GCSE Example
 
 ```bash
-python -m intl_exam_guide generate --query economics --level igcse --out ./outputs/economics-9214
+python scripts/run_runtime.py -- generate --query economics --level igcse --out ./outputs/economics-9214
 ```
 
 ## OxfordAQA Revised Non-Science A-Level Example
 
 ```bash
-python -m intl_exam_guide generate --query 9725 --level a-level --out ./outputs/business-9725
+python scripts/run_runtime.py -- generate --query 9725 --level a-level --out ./outputs/business-9725
 ```
 
 This covers a revised qualification page where the subject listing text does
@@ -78,8 +78,8 @@ Official subject-page URLs or direct specification PDF URLs still work as exact
 inputs:
 
 ```bash
-python -m intl_exam_guide generate --provider pearson --query "https://qualifications.pearson.com/en/qualifications/edexcel-international-gcses/international-gcse-mathematics-a-2016.html" --level igcse --out ./outputs/pearson-igcse-maths
-python -m intl_exam_guide generate --provider pearson --query "https://qualifications.pearson.com/en/qualifications/edexcel-international-advanced-levels/mathematics-2018.html" --level a-level --out ./outputs/pearson-ial-maths
+python scripts/run_runtime.py -- generate --provider pearson --query "https://qualifications.pearson.com/en/qualifications/edexcel-international-gcses/international-gcse-mathematics-a-2016.html" --level igcse --out ./outputs/pearson-igcse-maths
+python scripts/run_runtime.py -- generate --provider pearson --query "https://qualifications.pearson.com/en/qualifications/edexcel-international-advanced-levels/mathematics-2018.html" --level a-level --out ./outputs/pearson-ial-maths
 ```
 
 ## Cambridge International / CAIE Examples
@@ -90,8 +90,8 @@ Cambridge subject pages often list several syllabus year ranges, so provide
 `--exam-year` when the selected page has multiple syllabus PDFs:
 
 ```bash
-python -m intl_exam_guide generate --provider cambridge --query "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-chemistry-0620/" --level igcse --exam-year 2027 --out ./outputs/cambridge-igcse-chemistry-2027
-python -m intl_exam_guide generate --provider cambridge --query "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-chemistry-9701/" --level a-level --exam-year 2029 --out ./outputs/cambridge-ial-chemistry-2029
+python scripts/run_runtime.py -- generate --provider cambridge --query "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-chemistry-0620/" --level igcse --exam-year 2027 --out ./outputs/cambridge-igcse-chemistry-2027
+python scripts/run_runtime.py -- generate --provider cambridge --query "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-chemistry-9701/" --level a-level --exam-year 2029 --out ./outputs/cambridge-ial-chemistry-2029
 ```
 
 ## Release Sample Verification
@@ -111,8 +111,8 @@ python scripts/import_infographic_assets.py ./outputs/mathematics-9260-sample --
 python scripts/import_infographic_assets.py ./outputs/economics-9214-sample --asset-dir ./generated-infographics/economics-9214-sample --provider "external-reviewed-workflow"
 python scripts/import_infographic_assets.py ./outputs/chemistry-9202-sample --asset-dir ./generated-infographics/chemistry-9202-sample --provider "external-reviewed-workflow"
 # Repeat review -> complete visible LLM inspection -> export-pdf for each sample.
-python -m intl_exam_guide review --out ./outputs/<sample>
-python -m intl_exam_guide export-pdf --out ./outputs/<sample>
+python scripts/run_runtime.py -- review --out ./outputs/<sample>
+python scripts/run_runtime.py -- export-pdf --out ./outputs/<sample>
 python scripts/verify_release_samples.py --outputs-root ./outputs
 python scripts/capture_release_assets.py --outputs-root ./outputs --docs-assets docs/assets
 python scripts/render_intro_animation.py --html docs/project-intro-animation.html --mp4 outputs/project-intro-animation.mp4 --gif docs/assets/intro-animation-preview.gif

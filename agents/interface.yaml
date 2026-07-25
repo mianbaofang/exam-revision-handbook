@@ -1,0 +1,28 @@
+interface:
+  display_name: "Exam Revision Handbook"
+  short_description: "Create reviewed GCSE, IGCSE, A-Level, and AP handbooks"
+  default_prompt: "Use $exam-revision-handbook. First ask: Can you provide or enable an external image-generation Skill or tool for this run? Wait for the complete preflight."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "agent-skills"
+    - "vscode"
+    - "generic"
+  activation:
+    mode: "model-or-manual"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "powershell"
+  trust:
+    source_tier: "managed"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    openai: "Use the canonical Skill plus the packaged Python runtime adapter."
+    claude: "Use Agent Skills metadata and the same packaged Python runtime adapter."
+    agent-skills: "Use the canonical folder directly; Python 3.11+ remains required."
+    vscode: "Use the canonical Agent Skills metadata; invoke scripts through the integrated terminal."
+    generic: "Read SKILL.md directly and invoke the packaged Python runtime adapter."

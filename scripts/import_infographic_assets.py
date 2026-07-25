@@ -1,20 +1,40 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import shutil
 import sys
 from pathlib import Path
 
 SRC_PATH = Path(__file__).resolve().parents[1] / "src"
-if str(SRC_PATH) not in sys.path:
+if SRC_PATH.is_dir() and str(SRC_PATH) not in sys.path:
     sys.path.insert(0, str(SRC_PATH))
 
-from intl_exam_guide.visuals.manifest import (  # noqa: E402
-    VISUAL_CONTRACT,
-    build_asset_metadata,
-    sync_visual_manifest_entry,
-)
+SCRIPT_INTERFACE = "cli"
+SCRIPT_INTERFACE_REASON = "Import reviewed visual assets through the isolated packaged engine."
+
+
+VISUAL_CONTRACT = ""
+build_asset_metadata = None
+sync_visual_manifest_entry = None
+
+
+def ensure_engine_imports() -> None:
+    global VISUAL_CONTRACT, build_asset_metadata, sync_visual_manifest_entry
+    if importlib.util.find_spec("intl_exam_guide") is None:
+        from _runtime import activate_runtime_imports
+
+        activate_runtime_imports()
+    from intl_exam_guide.visuals.manifest import (
+        VISUAL_CONTRACT as runtime_visual_contract,
+        build_asset_metadata as runtime_build_asset_metadata,
+        sync_visual_manifest_entry as runtime_sync_visual_manifest_entry,
+    )
+
+    VISUAL_CONTRACT = runtime_visual_contract
+    build_asset_metadata = runtime_build_asset_metadata
+    sync_visual_manifest_entry = runtime_sync_visual_manifest_entry
 
 
 VISUAL_ASSET_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".svg"}
@@ -58,6 +78,8 @@ def main() -> int:
         help="Re-render the named handbook HTML and section files after importing assets.",
     )
     args = parser.parse_args()
+
+    ensure_engine_imports()
 
     output_dir = Path(args.output_dir).resolve()
     asset_dir = Path(args.asset_dir).resolve()

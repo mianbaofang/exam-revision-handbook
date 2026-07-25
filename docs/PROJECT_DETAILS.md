@@ -86,7 +86,7 @@ pipeline is designed to work across discovered OxfordAQA qualification pages;
 unprofiled subjects fall back to source-bound generic examples instead of
 borrowing Mathematics, Chemistry, or Economics templates.
 
-For v0.5 release evidence, use four status words:
+For v0.7 release evidence, use four status words:
 
 - `candidate`: route evidence exists, but it is not delivery-grade.
 - `draft`: a fresh output exists, but concepts, images, PDF/export, validation,
@@ -124,7 +124,7 @@ own active LLM has completely reviewed the current HTML, recorded its exact
 topic/visual coverage and HTML hash in `agent-product-review.json`, exported
 the PDF through `export-pdf`, and passed
 `scripts/verify_release_samples.py --outputs-root <outputs>` without
-`--allow-pending`. One guide's review cannot authorize another guide. For v0.5+,
+`--allow-pending`. One guide's review cannot authorize another guide. For v0.7,
 the same claim also needs a concise `docs/release-evidence/<version>/manifest.json`
 entry; the generated output folder itself remains untracked.
 
@@ -147,8 +147,8 @@ components.
 
 ### Provider Scope
 
-The current product covers three China-market British-curriculum provider
-families plus the College Board AP course system in staged form. Do not
+The current product covers three British-curriculum source families plus the
+College Board AP course system. Do not
 describe it as covering all International GCSE or International A-Level
 providers, and do not claim full Pearson/Cambridge catalogue crawling yet.
 This scope means automatic official-syllabus acquisition. Other curriculum
@@ -230,7 +230,7 @@ validation、final-review 和视觉状态证据，否则这些路线仍按 candi
 provider/parser 流程面向已发现的 OxfordAQA qualification pages；暂未做专门 profile 的科目会使用
 基于官方大纲的通用例题和图文判断，不会借用 Mathematics、Chemistry 或 Economics 的模板。
 
-v0.5 发布证据只使用四个状态词：
+v0.7 发布证据只使用四个状态词：
 
 - `candidate`：有路线证据，但不是交付级。
 - `draft`：有当前输出，但概念、图片、PDF/export、validation 或 Agent 自查仍有阻塞。
@@ -238,7 +238,7 @@ v0.5 发布证据只使用四个状态词：
 - `certified`：在 final-ready 之上，又经过发布负责人或熟悉学科的人确认，并写入 release-evidence manifest。
 
 除非 `docs/release-evidence/` 里有对应 manifest 条目，否则不要把任何路线称为 certified。
-v0.3 的 ready 证据是历史发布事实，不等于 v0.5 长期认证。
+v0.3 的 ready 证据是历史发布事实，不等于 v0.7 长期认证。
 
 - Offline synthetic demo：无网络、无版权 PDF，能生成完整 handbook package，
   validation 无问题。
@@ -254,7 +254,7 @@ v0.3 的 ready 证据是历史发布事实，不等于 v0.5 长期认证。
   lookup 抽取 assessment structure，生成 HTML/PDF 并通过 validation。这个样例验证
   subject listing 没有代码时，代码查询仍然会进入详情页精确匹配。
 
-公开发布用 showcase guides 只有在各自完成当前 HTML 的全量 LLM 审查、分别写入与自身 HTML 哈希绑定的 `agent-product-review.json`、通过 `export-pdf` 导出 PDF，并且 `scripts/verify_release_samples.py --outputs-root <outputs>` 不带 `--allow-pending` 通过之后，才算最终完成。一份手册的审查不能授权另一份。v0.5 起还需要在 `docs/release-evidence/<version>/manifest.json` 中记录精简证据；完整输出目录仍不提交到 Git。
+公开发布用 showcase guides 只有在各自完成当前 HTML 的全量 LLM 审查、分别写入与自身 HTML 哈希绑定的 `agent-product-review.json`、通过 `export-pdf` 导出 PDF，并且 `scripts/verify_release_samples.py --outputs-root <outputs>` 不带 `--allow-pending` 通过之后，才算最终完成。一份手册的审查不能授权另一份。v0.7 仍要求在 `docs/release-evidence/<version>/manifest.json` 中记录精简证据；完整输出目录不提交到 Git。
 这三份是首页展示和发布验收样例，不是生成器的科目支持上限。
 
 仓库提交源码、Skill 包、文档、截图和介绍动画；完整的

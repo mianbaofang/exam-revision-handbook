@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "reviewer": "",
+  "reviewed_at": "",
+  "review_integrity": {
+    "blind_pack_sha256": "3ee163f974c06f95d9a04b3236df8f92c7deb4e6693f28f81c8e47ff3cb883f2",
+    "case_count": 6,
+    "case_ids": [
+      "complete-runtime-package",
+      "cli-command-contract",
+      "artifact-tree-parity",
+      "html-before-pdf-gate",
+      "repository-maintenance-neighbor",
+      "governed-file-backed-migration"
+    ],
+    "prompt_sha256_by_case": {
+      "complete-runtime-package": "65a84e42a4351d14b1625355861f9abfaf053f20d37b69768620740fe633891f",
+      "cli-command-contract": "224e7095037838307b996ff3ca98969b99f0ec54dc01c9c56b85ce924a3d1463",
+      "artifact-tree-parity": "c0f5856f4b1977878f6e28453c55a788a4be7997ccd58e7d15d4317f1eb9c3e2",
+      "html-before-pdf-gate": "e0edf1bfd82d31291eae2c8fd16c014197816f53607ec9c00988ce5f9ec93b1b",
+      "repository-maintenance-neighbor": "4ede3508421f227b4de2fe5c047f5bbfdc884c136a19bf772b41e01de8284d76",
+      "governed-file-backed-migration": "704bf940b82e3331a6c0484599bd3a76815e3dbef88b74f21b70cf9dc4cb53ef"
+    }
+  },
+  "reviewer_attestation": {
+    "blind_review_completed_before_answer_key": false,
+    "answer_key_not_opened_before_decisions": false,
+    "raw_content_excluded": true,
+    "reviewer_reason_required": true
+  },
+  "decision_contract": {
+    "winner_variant": "Use A or B after reading the blind review pack. Leave blank when pending.",
+    "confidence": "Optional number from 0 to 1.",
+    "reason": "Required reviewer rationale. Do not reveal baseline or with-skill labels before adjudication.",
+    "reviewer_attestation": "Set blind_review_completed_before_answer_key and answer_key_not_opened_before_decisions to true only after a real blind review."
+  },
+  "decisions": [
+    {
+      "case_id": "complete-runtime-package",
+      "winner_variant": "",
+      "confidence": null,
+      "reason": ""
+    },
+    {
+      "case_id": "cli-command-contract",
+      "winner_variant": "",
+      "confidence": null,
+      "reason": ""
+    },
+    {
+      "case_id": "artifact-tree-parity",
+      "winner_variant": "",
+      "confidence": null,
+      "reason": ""
+    },
+    {
+      "case_id": "html-before-pdf-gate",
+      "winner_variant": "",
+      "confidence": null,
+      "reason": ""
+    },
+    {
+      "case_id": "repository-maintenance-neighbor",
+      "winner_variant": "",
+      "confidence": null,
+      "reason": ""
+    },
+    {
+      "case_id": "governed-file-backed-migration",
+      "winner_variant": "",
+      "confidence": null,
+      "reason": ""
+    }
+  ]
+}

@@ -5,8 +5,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-import pytest
-
 from intl_exam_guide.models import (
     AssessmentPaper,
     GuidePlan,
@@ -594,7 +592,6 @@ def test_intro_animation_uses_all_four_current_handbook_samples():
             assert sample_name in video_file.read_text(encoding="utf-8")
 
 
-@pytest.mark.skip(reason="Test needs update after architecture refactor.")
 def test_public_repo_does_not_ship_built_in_image_router():
     repo_root = Path(__file__).resolve().parents[1]
     router_scripts = [
@@ -604,51 +601,61 @@ def test_public_repo_does_not_ship_built_in_image_router():
     ]
     assert router_scripts == []
 
-    skill_text = (repo_root / "skill" / "SKILL.md").read_text(encoding="utf-8")
-    assert "does not include a fixed built-in image-generation router" in skill_text
-    assert "That does not mean image work must be manual" in skill_text
-    assert "scripts/import_infographic_assets.py" in skill_text
+    workflow_text = (repo_root / "references" / "workflow-contract.md").read_text(
+        encoding="utf-8"
+    )
+    assert "Do not silently select local generation" in workflow_text
+    assert "keeps the run at preflight" in workflow_text
+    assert (repo_root / "scripts" / "import_infographic_assets.py").is_file()
 
 
-@pytest.mark.skip(reason="Test needs update after architecture refactor.")
 def test_skill_instructions_include_required_preflight_choices():
-    skill_path = Path(__file__).resolve().parents[1] / "skill" / "SKILL.md"
-    text = skill_path.read_text(encoding="utf-8")
+    root = Path(__file__).resolve().parents[1]
+    skill_text = (root / "SKILL.md").read_text(encoding="utf-8")
+    workflow_text = (root / "references" / "workflow-contract.md").read_text(
+        encoding="utf-8"
+    )
 
-    assert text.startswith("---\n")
-    assert "name: exam-revision-handbook" in text
-    assert "description:" in text
-    assert "Subject choice" in text
-    assert "Term-support language" in text
-    assert "Exam year when needed" in text
-    assert "Explanation style" in text
-    assert "Do not ask the user to choose an image model before the base guide is generated" in text
-    assert "how many complex infographic" in text
-    assert "pending visual jobs" in text
-    assert "handbook body, worked examples, labels, and" in text
-    assert "30-50 item professional glossary" in text
-    assert "Do not generate a fully translated handbook body" in text
+    assert skill_text.startswith("---\n")
+    assert "name: exam-revision-handbook" in skill_text
+    assert "description:" in skill_text
+    for field in (
+        "external_visual_capability",
+        "board",
+        "level",
+        "course_market",
+        "subject",
+        "exam_year_or_syllabus_range",
+        "term_support_language",
+        "explanation_style",
+        "workflow_mode",
+        "batch_scope",
+        "output_dir",
+    ):
+        assert field in workflow_text
+    assert "professional term glossary" in workflow_text
+    assert "Keep the handbook body in English" in workflow_text
 
 
 def test_skill_blocks_until_external_image_capability_is_confirmed():
     repo_root = Path(__file__).resolve().parents[1]
-    skill_text = (repo_root / "skill" / "SKILL.md").read_text(encoding="utf-8")
-    agent_text = (repo_root / "skill" / "agents" / "openai.yaml").read_text(
+    skill_text = (repo_root / "SKILL.md").read_text(encoding="utf-8")
+    workflow_text = (repo_root / "references" / "workflow-contract.md").read_text(
         encoding="utf-8"
     )
+    agent_text = (repo_root / "agents" / "openai.yaml").read_text(encoding="utf-8")
     image_guide = (repo_root / "docs" / "IMAGE_MODEL_GUIDE.md").read_text(
         encoding="utf-8"
     )
-    prompt_records = json.loads(
-        (repo_root / "skill" / "test-prompts.json").read_text(encoding="utf-8")
-    )
+    prompt_records = json.loads((repo_root / "evals" / "workflow-cases.json").read_text(encoding="utf-8"))
 
     required_question = "provide or enable an external image-generation Skill or tool"
-    assert required_question in skill_text
-    assert "This is a blocking question" in skill_text
-    assert "do not infer" in skill_text.lower()
-    assert "Do not silently select local generation" in skill_text
-    assert "keeps the run at preflight" in skill_text
+    assert "complete structured preflight" in skill_text
+    assert required_question in workflow_text
+    assert "This is a blocking question" in workflow_text
+    assert "do not infer" in workflow_text.lower()
+    assert "Do not silently select local generation" in workflow_text
+    assert "keeps the run at preflight" in workflow_text
     assert required_question in agent_text
     assert required_question in image_guide
     handbook_prompts = {
@@ -678,16 +685,18 @@ def test_public_docs_explain_delivery_matrix_and_final_review():
 
 def test_public_skill_and_docs_state_the_automatic_acquisition_boundary():
     root_skill = Path("SKILL.md").read_text(encoding="utf-8")
-    packaged_skill = Path("skill/SKILL.md").read_text(encoding="utf-8")
+    workflow = Path("references/workflow-contract.md").read_text(encoding="utf-8")
     readme = Path("README.md").read_text(encoding="utf-8")
     chinese_readme = Path("README.zh-CN.md").read_text(encoding="utf-8")
 
-    for text in (root_skill, packaged_skill, readme):
+    for text in (workflow, readme):
         normalized = " ".join(text.split())
         assert "AQA, Edexcel, and CAIE" in normalized
         assert "College Board AP" in normalized
         assert "cannot use automatic acquisition" in normalized
         assert "unknown compatibility errors" in normalized
+
+    assert "official AQA, Edexcel, CAIE, and College Board sources" in root_skill
 
     assert "AQA、Edexcel、CAIE" in chinese_readme
     assert "College Board AP" in chinese_readme
@@ -699,7 +708,7 @@ def test_release_checklist_requires_matrix_review_and_visual_job_ids():
     text = Path("docs/RELEASE_CHECKLIST.md").read_text(encoding="utf-8")
 
     assert "delivery matrix" in text.lower()
-    assert "python -m intl_exam_guide review --out <sample-output>" in text
+    assert "python scripts/run_runtime.py -- review --out <sample-output>" in text
     assert "images/infographic_jobs.md" in text
     assert "visual IDs need generation/review" in text
 

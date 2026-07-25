@@ -1,0 +1,30 @@
+{
+  "schema_version": "v1-packaged-runtime-lock",
+  "engine": {
+    "distribution": "gcse-igcse-alevel-ap-revision-guide",
+    "version": "0.6.2",
+    "file": "gcse_igcse_alevel_ap_revision_guide-0.6.2-py3-none-any.whl",
+    "sha256": "c1a8a6f1a5ce04653092274b5ddcf05281c0281e0ddfefeaa93f7dcdabc93a81",
+    "module": "intl_exam_guide"
+  },
+  "python": {
+    "minimum": "3.11"
+  },
+  "install_requirements": [
+    "pypdf==6.14.2",
+    "playwright==1.61.0",
+    "openai==2.48.0",
+    "tenacity==9.1.4"
+  ],
+  "commands": [
+    "discover",
+    "generate",
+    "extract-evidence",
+    "demo",
+    "review",
+    "export-pdf",
+    "audit-delivery",
+    "index-review-ledger",
+    "inspect"
+  ]
+}

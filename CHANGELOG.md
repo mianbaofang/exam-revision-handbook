@@ -1,5 +1,73 @@
 # Changelog
 
+## 0.7.0 - 2026-07-25
+
+### Standard Skill Migration
+
+#### Changed
+
+- Replaced the former repository discovery wrapper plus nested `skill/`
+  workflow with one canonical standard Skill at the repository root. The root
+  `SKILL.md` is now the only Skill entry and directly links the workflow,
+  artifact, Provider, migration, and runtime contracts in `references/`.
+- Added standard Skill metadata, runtime assets, governed evaluation evidence,
+  and explicit permission boundaries under `agents/`, `assets/`, `evals/`,
+  `reports/`, `security/`, and `skill_atlas/`.
+- Preserved the open-source Python engine in `src/` and its regression suite in
+  `tests/` as parts of the same current Skill release. The Release ZIP is the
+  strict-allowlist download generated from that same tagged commit.
+- Added `PROJECT.md`, updated `AGENTS.md`, and rebuilt the operations guide so a
+  later Agent has one current explanation of the canonical entry, ownership
+  boundaries, package layout, version model, release procedure, and rollback
+  policy.
+- Defined GitHub `main`, its matching tag, and the versioned ZIP as one current
+  standard Skill release, with no separate source edition, install edition,
+  structure, workflow, or development line.
+- Added deterministic governance-report normalization for generated path
+  metadata and nested Atlas resources. CI and the package builder now reject
+  machine-specific absolute paths and Atlas resources that do not exist in the
+  install archive; report scores and conclusions are never rewritten.
+- Replaced legacy architecture copy that still referenced `skill/SKILL.md` and
+  incorrectly assigned teaching and visual decisions to Python. The current
+  diagram separates root Skill instructions, LLM ownership, and deterministic
+  runtime gates.
+
+#### Preserved
+
+- Preserved all current AQA, Edexcel, CAIE, and College Board AP Provider,
+  cover, course-market, A-Level stage, atomic syllabus, teaching, visual,
+  HTML-review, PDF, and batch-isolation contracts.
+- Preserved the validated `0.6.2` engine command and artifact behavior inside a
+  pinned Wheel. The wheel was rebuilt only to replace the deleted
+  `skill/SKILL.md` help path with the canonical root `SKILL.md`; all 77 current
+  source files still match the packaged payload. The standard package exposes
+  the root CLI plus nine subcommands and both concept and visual import helpers
+  without depending on repository `src/` files.
+- Archived the complete pre-migration project outside the repository as
+  `igcse-a-level-revision-guide-pre-v0.7.0-20260725.zip`. Its 452 files match
+  the archived source tree and its SHA-256 is
+  `bde77a6253bf3c18392737817804db8dcd96d3cc45c6b99b39b1eafc90541e4c`.
+
+#### Verified
+
+- Migration acceptance: `P01-P19` passed, `77/77` packaged engine source files
+  are byte-identical, CLI contract parity is `10/10`, normalized demo artifact
+  parity is `25/25`, known capability loss is `0`, and every blocker-class Yao
+  Governed gate passed.
+- Review Studio reports `0` blockers and retains `6` honest warnings for
+  unavailable optional telemetry, provider, human-review, waiver, and
+  world-class evidence; no evidence was fabricated to remove them.
+- Full regression suite: `497 passed, 163 skipped`. Ruff, compileall, mypy for
+  all 76 source files, raw-key scanning, animation-source synchronization,
+  Skill Creator validation, and the packaged runtime doctor passed.
+- Built `dist/exam-revision-handbook-v0.7.0.zip` deterministically: 102 files,
+  515169 bytes, one top-level `exam-revision-handbook/` directory, exactly one
+  `SKILL.md`, no maintenance-only source or promotional media, and SHA-256
+  `b5a44dece732aa7f18abba595d97553ec6cd110c489239b9c008a6411db77acc`.
+- Reverse installation from that ZIP passed the runtime doctor, root and
+  subcommand help probes, both import-helper probes, concept import, visual
+  import, pending-review preservation, and HTML-before-PDF blocking behavior.
+
 ## 0.6.2 - 2026-07-25
 
 ### Standard Skill Identity

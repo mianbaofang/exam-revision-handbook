@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "reviewed_at": "2026-07-25",
+  "capabilities": {
+    "network": {
+      "decision": "approved",
+      "reviewer": "Codex migration audit",
+      "scope": "Pinned dependency bootstrap and official syllabus retrieval from the bounded hosts in security/network_policy.json.",
+      "reason": "The isolated runtime needs pinned package installation, and handbook source acquisition needs the confirmed official exam-board or College Board host.",
+      "expires_at": "2027-07-25",
+      "evidence": [
+        "security/network_policy.json",
+        "references/runtime-contract.md"
+      ],
+      "target_enforcement": {
+        "openai": "Operator-visible network policy metadata",
+        "claude": "Adapter network policy metadata",
+        "generic": "Explicit host allowlist and operator review",
+        "vscode": "Workspace trust plus explicit host allowlist"
+      }
+    },
+    "file_write": {
+      "decision": "approved",
+      "reviewer": "Codex migration audit",
+      "scope": "Versioned isolated runtime cache, atomic readiness marker, and the handbook output directory explicitly selected by the user.",
+      "reason": "The packaged engine must persist official evidence, handbook artifacts, review ledgers, and hash-bound delivery files; bootstrap must create an isolated runtime without changing global Python.",
+      "expires_at": "2027-07-25",
+      "evidence": [
+        "reports/wheel-payload-parity.json",
+        "reports/demo-output-parity.json",
+        "references/runtime-contract.md"
+      ],
+      "target_enforcement": {
+        "openai": "Skill contract and operator-visible output path",
+        "claude": "Adapter metadata and operator-visible output path",
+        "generic": "Metadata fallback plus explicit output path",
+        "vscode": "Workspace trust and integrated-terminal visibility"
+      }
+    },
+    "subprocess": {
+      "decision": "approved",
+      "reviewer": "Codex migration audit",
+      "scope": "Python venv creation, pip dependency installation, packaged engine invocation, CLI health probe, and Playwright browser process used for approved PDF export.",
+      "reason": "Subprocess execution is required to keep the runtime isolated and preserve the existing CLI and PDF capabilities while exposing the exact command and exit status to the operator.",
+      "expires_at": "2027-07-25",
+      "evidence": [
+        "reports/cli-contract-parity.json",
+        "reports/security_trust_report.json",
+        "references/runtime-contract.md"
+      ],
+      "target_enforcement": {
+        "openai": "Skill contract with metadata fallback",
+        "claude": "Adapter metadata fallback",
+        "generic": "Operator-reviewed command execution",
+        "vscode": "Workspace trust and integrated-terminal visibility"
+      }
+    }
+  }
+}

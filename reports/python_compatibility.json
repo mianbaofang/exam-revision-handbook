@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "ok": true,
+  "generated_at": "2026-07-25",
+  "root": "<SKILL_ROOT>",
+  "summary": {
+    "target_python": "3.11",
+    "file_count": 8,
+    "issue_count": 0,
+    "syntax_error_count": 0,
+    "fstring_311_violation_count": 0,
+    "decision": "pass"
+  },
+  "rules": [
+    {
+      "key": "current-python-syntax",
+      "reason": "Every scanned Python source file must compile under the running interpreter."
+    },
+    {
+      "key": "fstring-expression-backslash",
+      "reason": "Python 3.11 rejects backslashes inside f-string expressions; keep escaping outside the expression."
+    }
+  ],
+  "files": [
+    {
+      "path": "evals\\capture_legacy_baseline.py",
+      "ok": true,
+      "issue_count": 0,
+      "issues": []
+    },
+    {
+      "path": "evals\\compare_cli_contract.py",
+      "ok": true,
+      "issue_count": 0,
+      "issues": []
+    },
+    {
+      "path": "evals\\compare_output_trees.py",
+      "ok": true,
+      "issue_count": 0,
+      "issues": []
+    },
+    {
+      "path": "evals\\verify_wheel_payload.py",
+      "ok": true,
+      "issue_count": 0,
+      "issues": []
+    },
+    {
+      "path": "scripts\\_runtime.py",
+      "ok": true,
+      "issue_count": 0,
+      "issues": []
+    },
+    {
+      "path": "scripts\\bootstrap_runtime.py",
+      "ok": true,
+      "issue_count": 0,
+      "issues": []
+    },
+    {
+      "path": "scripts\\doctor.py",
+      "ok": true,
+      "issue_count": 0,
+      "issues": []
+    },
+    {
+      "path": "scripts\\run_runtime.py",
+      "ok": true,
+      "issue_count": 0,
+      "issues": []
+    }
+  ],
+  "issues": [],
+  "artifacts": {
+    "json": "reports/python_compatibility.json",
+    "markdown": "reports/python_compatibility.md"
+  }
+}

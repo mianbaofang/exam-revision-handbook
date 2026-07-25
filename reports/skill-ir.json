@@ -1,0 +1,160 @@
+{
+  "schema_version": "2.0.0",
+  "name": "exam-revision-handbook",
+  "title": "Exam Revision Handbook",
+  "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
+  "trigger_surface": {
+    "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
+    "should_trigger": [
+      "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary."
+    ],
+    "should_not_trigger": [
+      "repository README, release, promotional-media, or GitHub maintenance",
+      "unsupported curriculum auto-acquisition",
+      "PDF export before current HTML review approval",
+      "machine diagnostics used as a substitute for LLM content or visual approval",
+      "Python-owned syllabus decomposition, teaching writing, visual routing, or semantic approval"
+    ],
+    "edge_cases": []
+  },
+  "workflow": {
+    "steps": [
+      "First respond with the complete structured preflight, including the explicit external-image-capability question. Infer nothing and block all later work until every field is valid.",
+      "Acquire official evidence only for the confirmed board, qualification, A-Level stage, market, subject, and year.",
+      "The LLM maps every official requirement to atomic teaching points before writing. Python may extract, validate, record, render, and block; it may not own meaning, content, visual judgment, or approval.",
+      "Decide visuals per final teaching point. Decorative text boxes are not explanatory diagrams.",
+      "Use this order: rebuild manifest, import assets, record per-visual LLM approval, then render only. Rebuilds invalidate approvals.",
+      "Render HTML first. The LLM inspects all of it, records item evidence, repairs, rerenders, and repeats until the exact HTML/render/ledger hashes are approved. Machines cannot approve.",
+      "Export PDF only from approved HTML and verify all HTML, review, PDF, and delivery hashes.",
+      "Review every batch subject independently; never share or sample conclusions."
+    ],
+    "decision_points": [
+      "The LLM owns syllabus meaning, teaching content, visual judgment, and approval; Python owns extraction, validation, rendering, recording, and blocking only.",
+      "Every official requirement, visual, review item, and delivery file remains traceable to current source and artifact hashes.",
+      "Hand back the approved PDF plus controlled HTML, evidence, review, and delivery artifacts.",
+      "Confirm the complete preflight and verify the selected image route before starting any downstream work.",
+      "Resolve official provider, market, qualification, stage, course, and year ambiguity instead of guessing or substituting.",
+      "Let the LLM decide syllabus meaning, atomic teaching points, teaching content, visual route, semantic correctness, and approval.",
+      "Require complete review of the exact current HTML and matching evidence hashes before authorizing PDF export.",
+      "Review every batch subject independently and never approve from a sample or another subject's state."
+    ],
+    "failure_modes": [
+      "The agent bypasses the blocking external-image capability preflight.",
+      "Syllabus analysis stops at broad Topic or Unit headings.",
+      "Manifest rebuild, asset import, approval, and rendering occur in the wrong order.",
+      "A text-card SVG or semantically wrong image is accepted as a teaching visual.",
+      "PDF export proceeds without complete current LLM HTML approval and matching hashes.",
+      "Batch subjects share sampled or stale review conclusions.",
+      "An agent starts retrieval, analysis, writing, or visuals before the structured preflight and image-route decision are complete.",
+      "The outline stops at Topic or Unit headings instead of independently assessable atomic teaching points.",
+      "Approval is recorded before a manifest rebuild or asset import, causing assets or decisions to disappear or reset.",
+      "HTML, render evidence, approvals, PDF, or delivery copies refer to different input versions."
+    ]
+  },
+  "resources": {
+    "references": [
+      "references\\collegeboard-ap.md",
+      "references\\migration-acceptance.md",
+      "references\\oxfordaqa.md",
+      "references\\revision_guide_spec.md",
+      "references\\runtime-contract.md",
+      "references\\scientific_vector_fallback.md",
+      "references\\workflow-contract.md"
+    ],
+    "scripts": [
+      "scripts\\_runtime.py",
+      "scripts\\audit_ap_courses.py",
+      "scripts\\bootstrap_runtime.py",
+      "scripts\\build_skill_store_package.py",
+      "scripts\\capture_release_assets.py",
+      "scripts\\doctor.py",
+      "scripts\\finalize_release_samples.py",
+      "scripts\\import_concept_explanations.py",
+      "scripts\\import_infographic_assets.py",
+      "scripts\\render_intro_animation.py",
+      "scripts\\run_runtime.py",
+      "scripts\\scan_for_raw_keys.py",
+      "scripts\\sync_intro_animation_sources.py",
+      "scripts\\verify_release_samples.py",
+      "scripts\\write_concept_explanations_from_jobs.py"
+    ],
+    "assets": [
+      "assets\\runtime\\gcse_igcse_alevel_ap_revision_guide-0.6.2-py3-none-any.whl",
+      "assets\\runtime\\runtime-lock.json"
+    ],
+    "reports": [
+      "reports/intent-context.json",
+      "reports/intent-confidence.json",
+      "reports/intent-confidence.md",
+      "reports/output-risk-profile.json",
+      "reports/output-risk-profile.md",
+      "reports/artifact-design-profile.json",
+      "reports/artifact-design-profile.md",
+      "reports/prompt-quality-profile.json",
+      "reports/prompt-quality-profile.md",
+      "reports/system-model.json",
+      "reports/system-model.md",
+      "reports/skill-overview.json",
+      "reports/skill-overview.html",
+      "reports/output_quality_scorecard.json",
+      "reports/output_quality_scorecard.md",
+      "reports/output_blind_review_pack.json",
+      "reports/output_blind_review_pack.md",
+      "reports/output_blind_answer_key.json",
+      "reports/output_review_adjudication.json",
+      "reports/output_review_adjudication.md",
+      "reports/review_annotations.json",
+      "reports/review_annotations.md",
+      "reports/conformance_matrix.json",
+      "reports/conformance_matrix.md",
+      "reports/security_trust_report.json",
+      "reports/security_trust_report.md",
+      "reports/runtime_permission_probes.json",
+      "reports/runtime_permission_probes.md",
+      "reports/skill_atlas.json",
+      "reports/skill_atlas.html"
+    ]
+  },
+  "eval_plan": {
+    "trigger": [
+      "evals\\fixtures\\cli-contract-parity.json",
+      "evals\\fixtures\\demo-output-parity.json",
+      "evals\\fixtures\\legacy-source-baseline.json",
+      "evals\\fixtures\\wheel-payload-parity.json",
+      "evals\\output-cases.jsonl",
+      "evals\\route-cases.json",
+      "evals\\semantic-config.json",
+      "evals\\trigger-cases.json",
+      "evals\\workflow-cases.json"
+    ],
+    "output": [],
+    "adversarial": [],
+    "baseline": "without_skill"
+  },
+  "risk": {
+    "output_risk": "high",
+    "execution_risk": "medium",
+    "trust_boundary": "external"
+  },
+  "governance": {
+    "owner": "Ethan",
+    "maturity": "governed",
+    "review_cadence": "per-release",
+    "review_due": ""
+  },
+  "targets": [
+    "openai",
+    "claude",
+    "agent-skills",
+    "vscode",
+    "generic"
+  ],
+  "source_files": [
+    "SKILL.md",
+    "manifest.json",
+    "agents/interface.yaml",
+    "reports/intent-context.json",
+    "reports/output-risk-profile.json",
+    "reports/system-model.json"
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "ok": true,
+  "schema_version": "2.0",
+  "skill_dir": "<SKILL_ROOT>",
+  "registry_dir": "<SKILL_ROOT>\\registry",
+  "package": {
+    "schema_version": "2.0",
+    "name": "exam-revision-handbook",
+    "version": "0.7.0",
+    "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
+    "targets": [
+      "openai",
+      "claude",
+      "agent-skills",
+      "vscode",
+      "generic"
+    ],
+    "maturity": "governed",
+    "owner": "Ethan",
+    "review_cadence": "per-release",
+    "trust_level": "managed",
+    "license": "MIT",
+    "checksums": {
+      "package_sha256": "be5627cc36a3eabca53952447aeff1f42312d0526348b0ab684b7826e16afed2",
+      "archive_sha256": "e32506d9c8ef035fb040c704b20eb99c0aaade4dae752251e4dce77dcd0f2be2"
+    },
+    "compatibility": {
+      "openai": "pass",
+      "claude": "pass",
+      "agent-skills": "pass",
+      "vscode": "pass",
+      "generic": "pass"
+    },
+    "source": {
+      "skill_dir": "<SKILL_ROOT>",
+      "skill_ir": "reports\\skill-ir.json",
+      "ir_schema_version": "2.0.0",
+      "canonical_metadata": "agents/interface.yaml"
+    },
+    "artifacts": {
+      "overview_html": "reports/skill-overview.html",
+      "review_studio_html": "reports/review-studio.html",
+      "trust_report": "reports/security_trust_report.md",
+      "conformance_matrix": "reports/conformance_matrix.md",
+      "compiled_targets": "reports/compiled_targets.md",
+      "package_verification": "reports/package_verification.md",
+      "install_simulation": "reports/install_simulation.md",
+      "adoption_drift": "reports/adoption_drift_report.md",
+      "review_waivers": "reports/review_waivers.md",
+      "review_annotations": "reports/review_annotations.md",
+      "package_metadata": "registry/packages/exam-revision-handbook.json"
+    },
+    "distribution": {
+      "archive_verified": true,
+      "archive_sha256": "e32506d9c8ef035fb040c704b20eb99c0aaade4dae752251e4dce77dcd0f2be2",
+      "package_verification": "reports/package_verification.json",
+      "install_simulated": true,
+      "install_simulation": "reports/install_simulation.json"
+    },
+    "generated_at": "2026-07-25"
+  },
+  "index": {
+    "schema_version": "2.0",
+    "generated_at": "2026-07-25",
+    "package_count": 1,
+    "packages": [
+      {
+        "name": "exam-revision-handbook",
+        "version": "0.7.0",
+        "maturity": "governed",
+        "owner": "Ethan",
+        "targets": [
+          "openai",
+          "claude",
+          "agent-skills",
+          "vscode",
+          "generic"
+        ],
+        "package_metadata": "registry/packages/exam-revision-handbook.json",
+        "package_sha256": "be5627cc36a3eabca53952447aeff1f42312d0526348b0ab684b7826e16afed2"
+      }
+    ]
+  },
+  "failures": [],
+  "warnings": [],
+  "artifacts": {
+    "index": "<SKILL_ROOT>\\registry\\index.json",
+    "package": "<SKILL_ROOT>\\registry\\packages\\exam-revision-handbook.json",
+    "json": "<SKILL_ROOT>\\reports\\registry_audit.json",
+    "markdown": "<SKILL_ROOT>\\reports\\registry_audit.md"
+  }
+}

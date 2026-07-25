@@ -788,18 +788,18 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div>
-          <div class="kicker">四个课程来源体系 · v0.6</div>
+          <div class="kicker">四个课程来源体系 · v0.7</div>
           <h1>AQA、Edexcel、CAIE 与 AP 复习手册，一句话生成。</h1>
           <p class="lead">支持自动获取 AQA、Edexcel 的英国本土 GCSE、国际 IGCSE 与 A-Level 大纲，CAIE 的 Cambridge International IGCSE 与 A-Level 大纲，以及 College Board AP CED。把 Skill 链接交给你的 Agent，先完成外部生图能力预检，再确认来源体系、科目、语言和讲解风格；LLM 完成全量 HTML 审查后，才会导出可打印 PDF。其他体系不能自动获取，手动导入也可能出现未知兼容错误。</p>
           <div class="action-row">
-            <a class="button" href="https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/tree/main/skill">安装 Skill</a>
+            <a class="button" href="https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases/tag/v0.7.0">安装 Skill</a>
             <a class="button secondary" href="../README.md">English</a>
             <a class="button secondary" href="PROJECT_DETAILS.md">查看项目详情</a>
             <a class="button secondary" href="project-intro-animation.html">播放介绍动画</a>
           </div>
           <div class="proof-row" aria-label="Verified progress">
             <div class="proof">
-              <strong>3</strong>
+              <strong>4</strong>
               <span>当前官方来源路线：AQA、Edexcel、CAIE、College Board AP</span>
             </div>
             <div class="proof">
@@ -902,7 +902,7 @@
       <div class="shell">
         <div class="section-head">
           <h2>当前核心能力，不只是把文字排成 PDF。</h2>
-          <p>v0.6 在“框架 + LLM 操作指南”的边界上补齐了四路官方来源、首轮强制预检、原子级大纲拆解、逐 topic 视觉决策，以及 HTML 先审后修；Python 仍只负责下载、抽取、验证、渲染和阻断，教学判断与批准仍由宿主 LLM 完成。</p>
+          <p>v0.7 将同一项目升级为根目录单一权威入口的标准 Skill，并保留四路官方来源、首轮强制预检、原子级大纲拆解、逐 topic 视觉决策，以及 HTML 先审后修；Python 仍只负责下载、抽取、验证、渲染和阻断，教学判断与批准仍由宿主 LLM 完成。</p>
         </div>
         <div class="flow capability-flow">
           <article class="flow-item">
@@ -1140,9 +1140,14 @@
     ACCURACY_POLICY.md
     EXAMPLES.md
     README_RESEARCH.md
-  skill/
-    SKILL.md
-    references/oxfordaqa.md
+  SKILL.md
+  agents/
+  references/
+  assets/runtime/
+  evals/
+  reports/
+  security/
+  skill_atlas/
   src/intl_exam_guide/
     providers/oxfordaqa.py
     providers/pearson.py

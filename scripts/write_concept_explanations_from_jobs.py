@@ -12,6 +12,9 @@ REFUSAL_REASON = (
     "concepts/concept_jobs.json, including mastery_summary and visual_decision for every topic."
 )
 
+SCRIPT_INTERFACE = "cli"
+SCRIPT_INTERFACE_REASON = "Preserve the refusal-only legacy command without writing teaching content."
+
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(

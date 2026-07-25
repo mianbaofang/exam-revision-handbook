@@ -1,0 +1,11 @@
+{
+  "schema_version": "v1-packaged-runtime-import",
+  "ok": true,
+  "distribution": "gcse-igcse-alevel-ap-revision-guide",
+  "version": "0.6.2",
+  "wheel_sha256": "c1a8a6f1a5ce04653092274b5ddcf05281c0281e0ddfefeaa93f7dcdabc93a81",
+  "runtime_cache": "<MIGRATION_WORKSPACE>/.runtime-cache-test/0.6.2-c1a8a6f1a5ce",
+  "module_path": "<MIGRATION_WORKSPACE>/.runtime-cache-test/0.6.2-c1a8a6f1a5ce/Lib/site-packages/intl_exam_guide/__init__.py",
+  "source_tree_shadowed": false,
+  "runtime_ready_marker": "<MIGRATION_WORKSPACE>/.runtime-cache-test/0.6.2-c1a8a6f1a5ce/runtime-ready.json"
+}

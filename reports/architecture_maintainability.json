@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "ok": true,
+  "generated_at": "2026-07-25T00:00:00Z",
+  "skill_dir": ".",
+  "summary": {
+    "python_file_count": 4,
+    "script_file_count": 0,
+    "test_file_count": 0,
+    "internal_module_count": 1,
+    "cli_script_count": 3,
+    "command_handler_count": 0,
+    "entrypoint_command_handler_count": 0,
+    "command_module_count": 0,
+    "warn_line_threshold": 900,
+    "watch_line_threshold": 720,
+    "early_watch_line_threshold": 600,
+    "block_line_threshold": 1500,
+    "largest_file_lines": 108,
+    "watchlist_count": 0,
+    "early_watchlist_count": 0,
+    "hotspot_count": 0,
+    "blocker_count": 0,
+    "decision": "pass"
+  },
+  "largest_files": [
+    {
+      "path": "scripts\\_runtime.py",
+      "lines": 108,
+      "kind": "internal-module",
+      "severity": "pass",
+      "early_watch": false,
+      "recommendation": "Watch this file before adding new responsibilities; extract a helper module when one concern dominates."
+    },
+    {
+      "path": "scripts\\bootstrap_runtime.py",
+      "lines": 82,
+      "kind": "cli-script",
+      "severity": "pass",
+      "early_watch": false,
+      "recommendation": "Watch this file before adding new responsibilities; extract a helper module when one concern dominates."
+    },
+    {
+      "path": "scripts\\doctor.py",
+      "lines": 67,
+      "kind": "cli-script",
+      "severity": "pass",
+      "early_watch": false,
+      "recommendation": "Watch this file before adding new responsibilities; extract a helper module when one concern dominates."
+    },
+    {
+      "path": "scripts\\run_runtime.py",
+      "lines": 54,
+      "kind": "cli-script",
+      "severity": "pass",
+      "early_watch": false,
+      "recommendation": "Watch this file before adding new responsibilities; extract a helper module when one concern dominates."
+    }
+  ],
+  "watchlist": [],
+  "early_watchlist": [],
+  "hotspots": [],
+  "actions": [],
+  "artifacts": {
+    "json": "reports/architecture_maintainability.json",
+    "markdown": "reports/architecture_maintainability.md"
+  }
+}

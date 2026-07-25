@@ -1,0 +1,28 @@
+{
+  "name": "exam-revision-handbook",
+  "version": "0.7.0",
+  "owner": "Ethan",
+  "license": "MIT",
+  "updated_at": "2026-07-25",
+  "status": "active",
+  "maturity_tier": "governed",
+  "lifecycle_stage": "governed",
+  "context_budget_tier": "governed",
+  "review_cadence": "per-release",
+  "category": "education",
+  "complexity_tier": "complex",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "agent-skills",
+    "vscode",
+    "generic"
+  ],
+  "factory_components": [
+    "references",
+    "scripts",
+    "assets",
+    "evals",
+    "reports"
+  ]
+}

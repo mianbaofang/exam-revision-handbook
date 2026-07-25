@@ -1,0 +1,117 @@
+{
+  "ok": true,
+  "schema_version": "2.0",
+  "generated_at": "2026-07-25",
+  "skill_dir": "<SKILL_ROOT>",
+  "package_dir": "<SKILL_ROOT>\\dist-yao",
+  "summary": {
+    "target_count": 4,
+    "adapter_count": 4,
+    "archive_present": true,
+    "archive_sha256": "e32506d9c8ef035fb040c704b20eb99c0aaade4dae752251e4dce77dcd0f2be2",
+    "archive_entry_count": 112,
+    "nested_skill_entry_count": 0,
+    "failure_count": 0,
+    "warning_count": 0
+  },
+  "checks": [
+    {
+      "id": "package-manifest",
+      "status": "pass",
+      "detail": "Package manifest exists: <SKILL_ROOT>\\dist-yao\\manifest.json"
+    },
+    {
+      "id": "claude-adapter",
+      "status": "pass",
+      "detail": "Adapter exists for target: claude"
+    },
+    {
+      "id": "generic-adapter",
+      "status": "pass",
+      "detail": "Adapter exists for target: generic"
+    },
+    {
+      "id": "openai-adapter",
+      "status": "pass",
+      "detail": "Adapter exists for target: openai"
+    },
+    {
+      "id": "vscode-adapter",
+      "status": "pass",
+      "detail": "Adapter exists for target: vscode"
+    },
+    {
+      "id": "archive-safe-paths",
+      "status": "pass",
+      "detail": "Archive has no absolute or parent-traversal entries"
+    },
+    {
+      "id": "archive-entry-exam-revision-handbook/SKILL.md",
+      "status": "pass",
+      "detail": "Archive contains exam-revision-handbook/SKILL.md"
+    },
+    {
+      "id": "archive-entry-exam-revision-handbook/manifest.json",
+      "status": "pass",
+      "detail": "Archive contains exam-revision-handbook/manifest.json"
+    },
+    {
+      "id": "archive-entry-exam-revision-handbook/agents/interface.yaml",
+      "status": "pass",
+      "detail": "Archive contains exam-revision-handbook/agents/interface.yaml"
+    },
+    {
+      "id": "archive-single-skill-entrypoint",
+      "status": "pass",
+      "detail": "Archive exposes only the root SKILL.md entrypoint"
+    },
+    {
+      "id": "archive-excludes-generated",
+      "status": "pass",
+      "detail": "Archive excludes generated dist/, .previews/, and tests/tmp* contents"
+    },
+    {
+      "id": "registry-ok",
+      "status": "pass",
+      "detail": "Registry audit is OK"
+    },
+    {
+      "id": "registry-name-match",
+      "status": "pass",
+      "detail": "Registry package name matches package manifest"
+    },
+    {
+      "id": "registry-version-match",
+      "status": "pass",
+      "detail": "Registry package version matches package manifest"
+    },
+    {
+      "id": "registry-compat-claude",
+      "status": "pass",
+      "detail": "Registry compatibility is reviewable for target: claude"
+    },
+    {
+      "id": "registry-compat-generic",
+      "status": "pass",
+      "detail": "Registry compatibility is reviewable for target: generic"
+    },
+    {
+      "id": "registry-compat-openai",
+      "status": "pass",
+      "detail": "Registry compatibility is reviewable for target: openai"
+    },
+    {
+      "id": "registry-compat-vscode",
+      "status": "pass",
+      "detail": "Registry compatibility is reviewable for target: vscode"
+    }
+  ],
+  "failures": [],
+  "warnings": [],
+  "artifacts": {
+    "manifest": "<SKILL_ROOT>\\dist-yao\\manifest.json",
+    "archive": "<SKILL_ROOT>\\dist-yao\\exam-revision-handbook.zip",
+    "json": "<SKILL_ROOT>\\reports\\package_verification.json",
+    "markdown": "<SKILL_ROOT>\\reports\\package_verification.md"
+  }
+}

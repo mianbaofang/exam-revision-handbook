@@ -6,12 +6,12 @@
 
 ## English
 
-The authoritative Agent entry is `skill/SKILL.md`. Its references provide the
+The authoritative Agent entry is the repository-root `SKILL.md`. Its references provide the
 handbook contract and provider notes:
 
-- `skill/references/revision_guide_spec.md`: artifact and delivery contract;
-- `skill/references/oxfordaqa.md`: AQA-specific source notes;
-- `skill/references/collegeboard-ap.md`: AP directory, CED, and effective-version rules;
+- `references/revision_guide_spec.md`: artifact and delivery contract;
+- `references/oxfordaqa.md`: AQA-specific source notes;
+- `references/collegeboard-ap.md`: AP directory, CED, and effective-version rules;
 - Edexcel and CAIE use the shared provider and candidate-confirmation workflow.
 
 The host LLM owns syllabus interpretation, teaching content, worked examples,
@@ -23,7 +23,7 @@ hashing, and enforcement of the recorded LLM decision.
 
 ```mermaid
 flowchart LR
-  A["User requests a supported handbook"] --> B["Load skill/SKILL.md"]
+  A["User requests a supported handbook"] --> B["Load root SKILL.md"]
   B --> C["Blocking preflight: confirm external image capability and run choices"]
   C --> D["Extract official Markdown and page evidence"]
   D --> E["LLM Analyst writes atomic syllabus outline"]
@@ -52,7 +52,7 @@ A handbook is not final unless all applicable gates pass:
 5. The current HTML exists and no PDF has been generated for that HTML before approval.
 6. The active LLM personally reviews every final topic, worked example, answer, source anchor, and rendered visual, repairing and rerendering until no fixable issue remains.
 7. LLM-authored `review-ledger/` shards cover every current Topic/Visual ID, record visible evidence locations, and bind to the render snapshot and HTML SHA-256; compact `agent-product-review.json` uses `v0.7-llm-html-review-ledger` and references the ledger hash.
-8. `python -m intl_exam_guide export-pdf --out <output-dir>` promotes only a technically valid candidate and writes `current-pdf.json` after approval.
+8. `python scripts/run_runtime.py -- export-pdf --out <output-dir>` promotes only a technically valid candidate and writes `current-pdf.json` after approval.
 
 `validation.json`, `quality-inspection.json`, and `final-review-packet.json` are
 supporting diagnostics. They cannot approve content or replace visible review.
@@ -60,18 +60,18 @@ supporting diagnostics. They cannot approve content or replace visible review.
 For an installation smoke check only:
 
 ```bash
-python -m intl_exam_guide demo --out ./outputs/demo-science --language en --image-provider prompt-queue --explanation-style friendly --skip-pdf
+python scripts/run_runtime.py -- demo --out ./outputs/demo-science --language en --image-provider prompt-queue --explanation-style friendly --skip-pdf
 ```
 
 The demo stops at HTML and is not a teaching-grade handbook.
 
 ## 中文
 
-Agent 的唯一权威入口是 `skill/SKILL.md`。相关 reference 分别保存手册交付合同和来源说明：
+Agent 的唯一权威入口是仓库根目录的 `SKILL.md`。相关 reference 分别保存手册交付合同和来源说明：
 
-- `skill/references/revision_guide_spec.md`：产物与交付合同；
-- `skill/references/oxfordaqa.md`：AQA 来源说明；
-- `skill/references/collegeboard-ap.md`：AP 课程目录、CED 与生效版本规则；
+- `references/revision_guide_spec.md`：产物与交付合同；
+- `references/oxfordaqa.md`：AQA 来源说明；
+- `references/collegeboard-ap.md`：AP 课程目录、CED 与生效版本规则；
 - Edexcel 和 CAIE 使用共享 provider 与候选确认流程。
 
 宿主 LLM 负责解释大纲、编写教学内容与例题、逐 topic 做配图判断，并亲自完成最终可视审查。Python 只负责抓取来源、提取证据、校验产物结构、渲染、计算哈希和执行已记录的 LLM 决定。
@@ -80,7 +80,7 @@ Agent 的唯一权威入口是 `skill/SKILL.md`。相关 reference 分别保存�
 
 ```mermaid
 flowchart LR
-  A["用户要求生成受支持课程手册"] --> B["加载 skill/SKILL.md"]
+  A["用户要求生成受支持课程手册"] --> B["加载根目录 SKILL.md"]
   B --> C["阻塞式预检：确认外部生图能力与本次选项"]
   C --> D["提取官方 Markdown 与逐页证据"]
   D --> E["LLM Analyst 写原子化大纲"]
@@ -105,6 +105,6 @@ flowchart LR
 5. 当前 HTML 已生成，而且在它通过审查前没有提前生成 PDF。
 6. 当前 LLM 逐一审查所有最终 topic、例题、答案、来源锚点和实际渲染视觉；发现问题后重写、重渲染、重新完整查看，直到没有可修复问题。
 7. LLM 编写的 `review-ledger/` 分片逐项覆盖当前 Topic/Visual ID，记录可见审查位置，并绑定渲染快照与 HTML SHA-256；精简的 `agent-product-review.json` 使用 `v0.7-llm-html-review-ledger` 并引用账本哈希。
-8. 审查通过后，`python -m intl_exam_guide export-pdf --out <output-dir>` 只提升通过技术检查的候选 PDF，并写入 `current-pdf.json`。
+8. 审查通过后，`python scripts/run_runtime.py -- export-pdf --out <output-dir>` 只提升通过技术检查的候选 PDF，并写入 `current-pdf.json`。
 
 `validation.json`、`quality-inspection.json` 和 `final-review-packet.json` 只是辅助诊断，不能代替 LLM 的可视审查，也不能自动批准手册。

@@ -1,0 +1,30 @@
+{
+  "margin_warning_threshold": 0.08,
+  "routes": [
+    {
+      "name": "exam-revision-handbook",
+      "description_file": "SKILL.md",
+      "semantic_config": "evals/semantic-config.json",
+      "threshold": 0.48
+    }
+  ],
+  "cases": [
+    {"text": "Create an AQA GCSE Biology revision handbook from the official specification.", "family": "handbook-generation", "expected_route": "exam-revision-handbook"},
+    {"text": "帮我生成 CAIE IGCSE Economics 复习手册。", "family": "handbook-generation-zh", "expected_route": "exam-revision-handbook"},
+    {"text": "Download the official Edexcel A-Level Mathematics syllabus and prepare the handbook evidence.", "family": "source-acquisition", "expected_route": "exam-revision-handbook"},
+    {"text": "Build a College Board AP Chemistry revision guide with worked examples and diagrams.", "family": "ap-handbook", "expected_route": "exam-revision-handbook"},
+    {"text": "Review this generated handbook HTML completely and repair it before PDF export.", "family": "html-review", "expected_route": "exam-revision-handbook"},
+    {"text": "The visual manifest has pending diagrams; review each teaching visual and rerender the guide.", "family": "visual-review", "expected_route": "exam-revision-handbook"},
+    {"text": "Export the approved IGCSE handbook PDF and verify the delivery hash.", "family": "pdf-delivery", "expected_route": "exam-revision-handbook"},
+    {"text": "拆解这份 A-Level 考纲到具体考点，再为每个考点写教学内容。", "family": "syllabus-analysis-zh", "expected_route": "exam-revision-handbook"},
+    {"text": "What is the difference between GCSE and IGCSE?", "family": "explanation-only", "expected_route": "no_route"},
+    {"text": "Translate this school newsletter into Chinese.", "family": "translation", "expected_route": "no_route"},
+    {"text": "Fix the failing unit test in my Python repository.", "family": "code-maintenance", "expected_route": "no_route"},
+    {"text": "Create a marketing landing page for a tutoring company.", "family": "marketing", "expected_route": "no_route"},
+    {"text": "Summarize this unrelated PDF in five bullets.", "family": "summary-only", "expected_route": "no_route"},
+    {"text": "Update the README and GitHub release notes for the exam handbook repository.", "family": "repository-release", "expected_route": "no_route"},
+    {"text": "Audit the Skill package structure but do not generate a student handbook.", "family": "skill-maintenance", "expected_route": "no_route"},
+    {"text": "Design a generic worksheet template for teachers.", "family": "teacher-resource", "expected_route": "no_route"},
+    {"text": "Give me three ideas for an AP study app.", "family": "brainstorming", "expected_route": "no_route"}
+  ]
+}

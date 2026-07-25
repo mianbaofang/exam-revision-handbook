@@ -1,0 +1,66 @@
+{
+  "ok": true,
+  "schema_version": "v1-cli-contract-parity",
+  "commands": [
+    {
+      "command": "<root>",
+      "pass": true,
+      "legacy_exit": 0,
+      "candidate_exit": 0
+    },
+    {
+      "command": "discover",
+      "pass": true,
+      "legacy_exit": 0,
+      "candidate_exit": 0
+    },
+    {
+      "command": "generate",
+      "pass": true,
+      "legacy_exit": 0,
+      "candidate_exit": 0
+    },
+    {
+      "command": "extract-evidence",
+      "pass": true,
+      "legacy_exit": 0,
+      "candidate_exit": 0
+    },
+    {
+      "command": "demo",
+      "pass": true,
+      "legacy_exit": 0,
+      "candidate_exit": 0
+    },
+    {
+      "command": "review",
+      "pass": true,
+      "legacy_exit": 0,
+      "candidate_exit": 0
+    },
+    {
+      "command": "export-pdf",
+      "pass": true,
+      "legacy_exit": 0,
+      "candidate_exit": 0
+    },
+    {
+      "command": "audit-delivery",
+      "pass": true,
+      "legacy_exit": 0,
+      "candidate_exit": 0
+    },
+    {
+      "command": "index-review-ledger",
+      "pass": true,
+      "legacy_exit": 0,
+      "candidate_exit": 0
+    },
+    {
+      "command": "inspect",
+      "pass": true,
+      "legacy_exit": 0,
+      "candidate_exit": 0
+    }
+  ]
+}

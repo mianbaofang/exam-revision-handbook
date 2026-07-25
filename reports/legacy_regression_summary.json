@@ -1,0 +1,31 @@
+{
+  "schema_version": "v1-legacy-regression-summary",
+  "ok": true,
+  "source_identity": "gcse-igcse-alevel-ap-revision-guide@0.6.2",
+  "junit": "reports/legacy_regression.xml",
+  "tests": 656,
+  "passed": 491,
+  "skipped": 165,
+  "failures": 0,
+  "errors": 0,
+  "time_seconds": 33.477,
+  "skipped_breakdown": [
+    {
+      "count": 77,
+      "reason": "Deprecated: Test relies on Python parser/routing. LLM now handles this."
+    },
+    {
+      "count": 50,
+      "reason": "Deprecated: Python no longer uses keyword routing. LLM Writer judges visuals in Phase 2."
+    },
+    {
+      "count": 35,
+      "reason": "Deprecated: Python no longer parses topics. LLM Analyst decides topics from evidence."
+    },
+    {
+      "count": 3,
+      "reason": "Test needs update after architecture refactor."
+    }
+  ],
+  "migration_interpretation": "The frozen v0.6.2 suite has no failure or error. Existing intentional skips are preserved and are not counted as newly passing tests."
+}

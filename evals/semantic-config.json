@@ -1,0 +1,62 @@
+{
+  "fallback_positive_concepts": ["exam_handbook_workflow"],
+  "positive_concepts": {
+    "exam_handbook_workflow": {
+      "weight": 1.0,
+      "phrases": [
+        "source-backed",
+        "revision handbook",
+        "revision guide",
+        "复习手册",
+        "考纲",
+        "syllabus",
+        "specification",
+        "handbook html",
+        "visual manifest",
+        "teaching visual",
+        "approved igcse handbook pdf",
+        "delivery hash"
+      ]
+    },
+    "supported_exam_context": {
+      "weight": 0.08,
+      "phrases": ["aqa", "edexcel", "caie", "college board ap", "gcse", "igcse", "a-level", "ap chemistry"]
+    },
+    "teaching_content": {
+      "weight": 0.05,
+      "phrases": ["worked examples", "教学内容", "具体考点", "diagrams"]
+    }
+  },
+  "negative_concepts": {
+    "explanation_only": {
+      "weight": 0.7,
+      "exclusive": true,
+      "phrases": ["what is", "difference between", "explain only"]
+    },
+    "translation_only": {
+      "weight": 0.8,
+      "exclusive": true,
+      "phrases": ["translate", "翻译"]
+    },
+    "repository_maintenance": {
+      "weight": 0.75,
+      "exclusive": true,
+      "phrases": ["unit test", "readme", "release notes", "package structure", "repository"]
+    },
+    "unrelated_artifact": {
+      "weight": 0.65,
+      "exclusive": true,
+      "phrases": ["landing page", "newsletter", "worksheet template", "study app"]
+    },
+    "summary_only": {
+      "weight": 0.8,
+      "exclusive": true,
+      "phrases": ["summarize", "five bullets"]
+    },
+    "brainstorm_only": {
+      "weight": 0.65,
+      "exclusive": true,
+      "phrases": ["ideas for", "brainstorm"]
+    }
+  }
+}

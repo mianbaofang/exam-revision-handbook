@@ -1,10 +1,27 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import sys
 from pathlib import Path
 from typing import Any
+
+
+SRC_PATH = Path(__file__).resolve().parents[1] / "src"
+if SRC_PATH.is_dir() and str(SRC_PATH) not in sys.path:
+    sys.path.insert(0, str(SRC_PATH))
+
+SCRIPT_INTERFACE = "cli"
+SCRIPT_INTERFACE_REASON = "Import LLM-reviewed concept content through the isolated packaged engine."
+
+
+def ensure_engine_imports() -> None:
+    if importlib.util.find_spec("intl_exam_guide") is not None:
+        return
+    from _runtime import activate_runtime_imports
+
+    activate_runtime_imports()
 
 
 def main() -> int:
@@ -30,6 +47,7 @@ def main() -> int:
         print(f"missing concept file: {concept_file}", file=sys.stderr)
         return 1
 
+    ensure_engine_imports()
     from intl_exam_guide.models import GuidePlan
     from intl_exam_guide.planning.concept_integration import apply_concept_entries
 

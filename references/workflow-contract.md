@@ -1,9 +1,8 @@
----
-name: exam-revision-handbook
-description: Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official sources. Use for syllabus evidence extraction, topic-level teaching, worked examples, visual planning, HTML review, and approved PDF delivery across AQA, Edexcel, CAIE, and College Board AP.
----
+# Complete Workflow Contract
 
-# Exam Revision Handbook
+This is the complete migrated workflow from the v0.6.2 source baseline. Every
+requirement remains binding. `SKILL.md` provides the compact execution entry;
+this file preserves the full rule surface.
 
 ## Boundary Compliance Gate
 

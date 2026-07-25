@@ -1,0 +1,860 @@
+{
+  "ok": true,
+  "cases": "<SKILL_ROOT>\\evals\\output-cases.jsonl",
+  "summary": {
+    "case_count": 6,
+    "file_backed_case_count": 4,
+    "near_neighbor_case_count": 1,
+    "boundary_case_count": 2,
+    "baseline_pass_rate": 0.0,
+    "with_skill_pass_rate": 100.0,
+    "delta": 100.0,
+    "regression_count": 0,
+    "gate_pass": true,
+    "failure_taxonomy": [],
+    "blind_pair_count": 6
+  },
+  "results": [
+    {
+      "id": "complete-runtime-package",
+      "prompt": "Package the existing exam handbook Skill without losing its Python-backed generation capability.",
+      "input_files": [
+        "fixtures/wheel-payload-parity.json"
+      ],
+      "metadata": {
+        "case_type": "file_backed",
+        "tier": "governed"
+      },
+      "baseline": {
+        "score": 0.0,
+        "passed_count": 0,
+        "failed_count": 3,
+        "checks": [
+          {
+            "id": "has-entrypoint",
+            "description": "Keeps the standard Skill entrypoint.",
+            "weight": 1.0,
+            "failure_type": "missing_entrypoint",
+            "passed": false,
+            "missing": [
+              "agents/interface.yaml"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-engine",
+            "description": "Includes the executable legacy engine.",
+            "weight": 1.0,
+            "failure_type": "missing_runtime",
+            "passed": false,
+            "missing": [
+              "engine wheel",
+              "runtime-lock.json"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-integrity",
+            "description": "Reports byte-level engine parity.",
+            "weight": 1.0,
+            "failure_type": "unverified_runtime",
+            "passed": false,
+            "missing": [
+              "77/77"
+            ],
+            "present_forbidden": []
+          }
+        ],
+        "failed": [
+          {
+            "id": "has-entrypoint",
+            "description": "Keeps the standard Skill entrypoint.",
+            "weight": 1.0,
+            "failure_type": "missing_entrypoint",
+            "passed": false,
+            "missing": [
+              "agents/interface.yaml"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-engine",
+            "description": "Includes the executable legacy engine.",
+            "weight": 1.0,
+            "failure_type": "missing_runtime",
+            "passed": false,
+            "missing": [
+              "engine wheel",
+              "runtime-lock.json"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-integrity",
+            "description": "Reports byte-level engine parity.",
+            "weight": 1.0,
+            "failure_type": "unverified_runtime",
+            "passed": false,
+            "missing": [
+              "77/77"
+            ],
+            "present_forbidden": []
+          }
+        ]
+      },
+      "with_skill": {
+        "score": 100.0,
+        "passed_count": 3,
+        "failed_count": 0,
+        "checks": [
+          {
+            "id": "has-entrypoint",
+            "description": "Keeps the standard Skill entrypoint.",
+            "weight": 1.0,
+            "failure_type": "missing_entrypoint",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-engine",
+            "description": "Includes the executable legacy engine.",
+            "weight": 1.0,
+            "failure_type": "missing_runtime",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-integrity",
+            "description": "Reports byte-level engine parity.",
+            "weight": 1.0,
+            "failure_type": "unverified_runtime",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          }
+        ],
+        "failed": []
+      },
+      "delta": 100.0,
+      "winner": "with_skill",
+      "failure_taxonomy": []
+    },
+    {
+      "id": "cli-command-contract",
+      "prompt": "Prove that the standard Skill keeps the existing command surface.",
+      "input_files": [
+        "fixtures/cli-contract-parity.json"
+      ],
+      "metadata": {
+        "case_type": "contract",
+        "tier": "governed"
+      },
+      "baseline": {
+        "score": 0.0,
+        "passed_count": 0,
+        "failed_count": 3,
+        "checks": [
+          {
+            "id": "has-count",
+            "description": "Names complete command comparison.",
+            "weight": 1.0,
+            "failure_type": "partial_cli",
+            "passed": false,
+            "missing": [
+              "10/10"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-commands",
+            "description": "Includes retrieval, review, and delivery commands.",
+            "weight": 1.0,
+            "failure_type": "missing_command",
+            "passed": false,
+            "missing": [
+              "extract-evidence",
+              "review",
+              "export-pdf",
+              "audit-delivery"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "preserves-exit",
+            "description": "Preserves the exit contract.",
+            "weight": 1.0,
+            "failure_type": "exit_drift",
+            "passed": false,
+            "missing": [
+              "exit codes pass through unchanged"
+            ],
+            "present_forbidden": []
+          }
+        ],
+        "failed": [
+          {
+            "id": "has-count",
+            "description": "Names complete command comparison.",
+            "weight": 1.0,
+            "failure_type": "partial_cli",
+            "passed": false,
+            "missing": [
+              "10/10"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-commands",
+            "description": "Includes retrieval, review, and delivery commands.",
+            "weight": 1.0,
+            "failure_type": "missing_command",
+            "passed": false,
+            "missing": [
+              "extract-evidence",
+              "review",
+              "export-pdf",
+              "audit-delivery"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "preserves-exit",
+            "description": "Preserves the exit contract.",
+            "weight": 1.0,
+            "failure_type": "exit_drift",
+            "passed": false,
+            "missing": [
+              "exit codes pass through unchanged"
+            ],
+            "present_forbidden": []
+          }
+        ]
+      },
+      "with_skill": {
+        "score": 100.0,
+        "passed_count": 3,
+        "failed_count": 0,
+        "checks": [
+          {
+            "id": "has-count",
+            "description": "Names complete command comparison.",
+            "weight": 1.0,
+            "failure_type": "partial_cli",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-commands",
+            "description": "Includes retrieval, review, and delivery commands.",
+            "weight": 1.0,
+            "failure_type": "missing_command",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "preserves-exit",
+            "description": "Preserves the exit contract.",
+            "weight": 1.0,
+            "failure_type": "exit_drift",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          }
+        ],
+        "failed": []
+      },
+      "delta": 100.0,
+      "winner": "with_skill",
+      "failure_taxonomy": []
+    },
+    {
+      "id": "artifact-tree-parity",
+      "prompt": "Show that a packaged run produces the same controlled artifacts as the legacy engine.",
+      "input_files": [
+        "fixtures/demo-output-parity.json"
+      ],
+      "metadata": {
+        "case_type": "boundary",
+        "tier": "governed"
+      },
+      "baseline": {
+        "score": 0.0,
+        "passed_count": 0,
+        "failed_count": 3,
+        "checks": [
+          {
+            "id": "has-tree-count",
+            "description": "Reports the complete output-tree count.",
+            "weight": 1.0,
+            "failure_type": "partial_artifacts",
+            "passed": false,
+            "missing": [
+              "25/25"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-no-drift",
+            "description": "Confirms no artifact drift.",
+            "weight": 1.0,
+            "failure_type": "artifact_drift",
+            "passed": false,
+            "missing": [
+              "no missing, extra, or changed files"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "keeps-blocker",
+            "description": "Preserves incomplete-content blocking.",
+            "weight": 1.0,
+            "failure_type": "weakened_gate",
+            "passed": false,
+            "missing": [
+              "same blocked state"
+            ],
+            "present_forbidden": []
+          }
+        ],
+        "failed": [
+          {
+            "id": "has-tree-count",
+            "description": "Reports the complete output-tree count.",
+            "weight": 1.0,
+            "failure_type": "partial_artifacts",
+            "passed": false,
+            "missing": [
+              "25/25"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-no-drift",
+            "description": "Confirms no artifact drift.",
+            "weight": 1.0,
+            "failure_type": "artifact_drift",
+            "passed": false,
+            "missing": [
+              "no missing, extra, or changed files"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "keeps-blocker",
+            "description": "Preserves incomplete-content blocking.",
+            "weight": 1.0,
+            "failure_type": "weakened_gate",
+            "passed": false,
+            "missing": [
+              "same blocked state"
+            ],
+            "present_forbidden": []
+          }
+        ]
+      },
+      "with_skill": {
+        "score": 100.0,
+        "passed_count": 3,
+        "failed_count": 0,
+        "checks": [
+          {
+            "id": "has-tree-count",
+            "description": "Reports the complete output-tree count.",
+            "weight": 1.0,
+            "failure_type": "partial_artifacts",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-no-drift",
+            "description": "Confirms no artifact drift.",
+            "weight": 1.0,
+            "failure_type": "artifact_drift",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "keeps-blocker",
+            "description": "Preserves incomplete-content blocking.",
+            "weight": 1.0,
+            "failure_type": "weakened_gate",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          }
+        ],
+        "failed": []
+      },
+      "delta": 100.0,
+      "winner": "with_skill",
+      "failure_taxonomy": []
+    },
+    {
+      "id": "html-before-pdf-gate",
+      "prompt": "Prevent PDF export before the current handbook HTML has passed complete LLM review.",
+      "input_files": [],
+      "metadata": {
+        "case_type": "boundary",
+        "tier": "governed"
+      },
+      "baseline": {
+        "score": 0.0,
+        "passed_count": 0,
+        "failed_count": 3,
+        "checks": [
+          {
+            "id": "has-review-chain",
+            "description": "Names the complete review chain.",
+            "weight": 1.0,
+            "failure_type": "missing_gate_command",
+            "passed": false,
+            "missing": [
+              "index-review-ledger",
+              "audit-delivery",
+              "export-pdf"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-hash-binding",
+            "description": "Requires current hash-bound approval.",
+            "weight": 1.0,
+            "failure_type": "unbound_approval",
+            "passed": false,
+            "missing": [
+              "exact current HTML",
+              "review-ledger hashes"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-blocking-exit",
+            "description": "Preserves failure behavior.",
+            "weight": 1.0,
+            "failure_type": "nonblocking_pdf",
+            "passed": false,
+            "missing": [
+              "blocking exit code"
+            ],
+            "present_forbidden": []
+          }
+        ],
+        "failed": [
+          {
+            "id": "has-review-chain",
+            "description": "Names the complete review chain.",
+            "weight": 1.0,
+            "failure_type": "missing_gate_command",
+            "passed": false,
+            "missing": [
+              "index-review-ledger",
+              "audit-delivery",
+              "export-pdf"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-hash-binding",
+            "description": "Requires current hash-bound approval.",
+            "weight": 1.0,
+            "failure_type": "unbound_approval",
+            "passed": false,
+            "missing": [
+              "exact current HTML",
+              "review-ledger hashes"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-blocking-exit",
+            "description": "Preserves failure behavior.",
+            "weight": 1.0,
+            "failure_type": "nonblocking_pdf",
+            "passed": false,
+            "missing": [
+              "blocking exit code"
+            ],
+            "present_forbidden": []
+          }
+        ]
+      },
+      "with_skill": {
+        "score": 100.0,
+        "passed_count": 3,
+        "failed_count": 0,
+        "checks": [
+          {
+            "id": "has-review-chain",
+            "description": "Names the complete review chain.",
+            "weight": 1.0,
+            "failure_type": "missing_gate_command",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-hash-binding",
+            "description": "Requires current hash-bound approval.",
+            "weight": 1.0,
+            "failure_type": "unbound_approval",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-blocking-exit",
+            "description": "Preserves failure behavior.",
+            "weight": 1.0,
+            "failure_type": "nonblocking_pdf",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          }
+        ],
+        "failed": []
+      },
+      "delta": 100.0,
+      "winner": "with_skill",
+      "failure_taxonomy": []
+    },
+    {
+      "id": "repository-maintenance-neighbor",
+      "prompt": "Update the README and release assets for the exam handbook repository.",
+      "input_files": [],
+      "metadata": {
+        "case_type": "near_neighbor",
+        "tier": "governed"
+      },
+      "baseline": {
+        "score": 0.0,
+        "passed_count": 0,
+        "failed_count": 3,
+        "checks": [
+          {
+            "id": "declines-run",
+            "description": "Does not start handbook generation.",
+            "weight": 1.0,
+            "failure_type": "over_trigger",
+            "passed": false,
+            "missing": [
+              "Do not trigger a handbook generation run"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "names-neighbor",
+            "description": "Names the route boundary.",
+            "weight": 1.0,
+            "failure_type": "missing_boundary",
+            "passed": false,
+            "missing": [
+              "near-neighbor",
+              "repository maintenance"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "no-preflight",
+            "description": "Avoids irrelevant preflight.",
+            "weight": 1.0,
+            "failure_type": "wrong_preflight",
+            "passed": false,
+            "missing": [
+              "do not ask the external-image preflight"
+            ],
+            "present_forbidden": []
+          }
+        ],
+        "failed": [
+          {
+            "id": "declines-run",
+            "description": "Does not start handbook generation.",
+            "weight": 1.0,
+            "failure_type": "over_trigger",
+            "passed": false,
+            "missing": [
+              "Do not trigger a handbook generation run"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "names-neighbor",
+            "description": "Names the route boundary.",
+            "weight": 1.0,
+            "failure_type": "missing_boundary",
+            "passed": false,
+            "missing": [
+              "near-neighbor",
+              "repository maintenance"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "no-preflight",
+            "description": "Avoids irrelevant preflight.",
+            "weight": 1.0,
+            "failure_type": "wrong_preflight",
+            "passed": false,
+            "missing": [
+              "do not ask the external-image preflight"
+            ],
+            "present_forbidden": []
+          }
+        ]
+      },
+      "with_skill": {
+        "score": 100.0,
+        "passed_count": 3,
+        "failed_count": 0,
+        "checks": [
+          {
+            "id": "declines-run",
+            "description": "Does not start handbook generation.",
+            "weight": 1.0,
+            "failure_type": "over_trigger",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "names-neighbor",
+            "description": "Names the route boundary.",
+            "weight": 1.0,
+            "failure_type": "missing_boundary",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "no-preflight",
+            "description": "Avoids irrelevant preflight.",
+            "weight": 1.0,
+            "failure_type": "wrong_preflight",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          }
+        ],
+        "failed": []
+      },
+      "delta": 100.0,
+      "winner": "with_skill",
+      "failure_taxonomy": []
+    },
+    {
+      "id": "governed-file-backed-migration",
+      "prompt": "Use the current project as evidence and produce a governed standard Skill with zero known capability loss.",
+      "input_files": [
+        "fixtures/legacy-source-baseline.json",
+        "fixtures/wheel-payload-parity.json",
+        "fixtures/demo-output-parity.json"
+      ],
+      "metadata": {
+        "case_type": "file_backed",
+        "tier": "governed"
+      },
+      "baseline": {
+        "score": 0.0,
+        "passed_count": 0,
+        "failed_count": 5,
+        "checks": [
+          {
+            "id": "uses-file-evidence",
+            "description": "Names governed file-backed evidence.",
+            "weight": 1.0,
+            "failure_type": "missing_file_fixture",
+            "passed": false,
+            "missing": [
+              "file-backed fixture",
+              "input_files"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-governance",
+            "description": "Keeps owner and lifecycle review.",
+            "weight": 1.0,
+            "failure_type": "missing_governance",
+            "passed": false,
+            "missing": [
+              "owner",
+              "review cadence"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-boundaries",
+            "description": "Defines delivery and rollback boundaries.",
+            "weight": 1.0,
+            "failure_type": "missing_boundary",
+            "passed": false,
+            "missing": [
+              "output contract",
+              "rollback boundary"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-reports",
+            "description": "Requires trust and quality evidence.",
+            "weight": 1.0,
+            "failure_type": "missing_evidence",
+            "passed": false,
+            "missing": [
+              "trust report",
+              "reports/output_quality_scorecard.md"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "does-not-invent",
+            "description": "Marks unavailable telemetry honestly.",
+            "weight": 1.0,
+            "failure_type": "fabricated_evidence",
+            "passed": false,
+            "missing": [
+              "missing evidence"
+            ],
+            "present_forbidden": []
+          }
+        ],
+        "failed": [
+          {
+            "id": "uses-file-evidence",
+            "description": "Names governed file-backed evidence.",
+            "weight": 1.0,
+            "failure_type": "missing_file_fixture",
+            "passed": false,
+            "missing": [
+              "file-backed fixture",
+              "input_files"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-governance",
+            "description": "Keeps owner and lifecycle review.",
+            "weight": 1.0,
+            "failure_type": "missing_governance",
+            "passed": false,
+            "missing": [
+              "owner",
+              "review cadence"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-boundaries",
+            "description": "Defines delivery and rollback boundaries.",
+            "weight": 1.0,
+            "failure_type": "missing_boundary",
+            "passed": false,
+            "missing": [
+              "output contract",
+              "rollback boundary"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-reports",
+            "description": "Requires trust and quality evidence.",
+            "weight": 1.0,
+            "failure_type": "missing_evidence",
+            "passed": false,
+            "missing": [
+              "trust report",
+              "reports/output_quality_scorecard.md"
+            ],
+            "present_forbidden": []
+          },
+          {
+            "id": "does-not-invent",
+            "description": "Marks unavailable telemetry honestly.",
+            "weight": 1.0,
+            "failure_type": "fabricated_evidence",
+            "passed": false,
+            "missing": [
+              "missing evidence"
+            ],
+            "present_forbidden": []
+          }
+        ]
+      },
+      "with_skill": {
+        "score": 100.0,
+        "passed_count": 5,
+        "failed_count": 0,
+        "checks": [
+          {
+            "id": "uses-file-evidence",
+            "description": "Names governed file-backed evidence.",
+            "weight": 1.0,
+            "failure_type": "missing_file_fixture",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-governance",
+            "description": "Keeps owner and lifecycle review.",
+            "weight": 1.0,
+            "failure_type": "missing_governance",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-boundaries",
+            "description": "Defines delivery and rollback boundaries.",
+            "weight": 1.0,
+            "failure_type": "missing_boundary",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "has-reports",
+            "description": "Requires trust and quality evidence.",
+            "weight": 1.0,
+            "failure_type": "missing_evidence",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          },
+          {
+            "id": "does-not-invent",
+            "description": "Marks unavailable telemetry honestly.",
+            "weight": 1.0,
+            "failure_type": "fabricated_evidence",
+            "passed": true,
+            "missing": [],
+            "present_forbidden": []
+          }
+        ],
+        "failed": []
+      },
+      "delta": 100.0,
+      "winner": "with_skill",
+      "failure_taxonomy": []
+    }
+  ],
+  "failures": [],
+  "blind_review": {
+    "pack": "<SKILL_ROOT>\\reports\\output_blind_review_pack.json",
+    "answer_key": "<SKILL_ROOT>\\reports\\output_blind_answer_key.json",
+    "pair_count": 6
+  },
+  "artifacts": {
+    "json": "<SKILL_ROOT>\\reports\\output_quality_scorecard.json",
+    "markdown": "<SKILL_ROOT>\\reports\\output_quality_scorecard.md",
+    "blind_review_pack_json": "<SKILL_ROOT>\\reports\\output_blind_review_pack.json",
+    "blind_review_pack_md": "<SKILL_ROOT>\\reports\\output_blind_review_pack.md",
+    "blind_answer_key_json": "<SKILL_ROOT>\\reports\\output_blind_answer_key.json"
+  }
+}

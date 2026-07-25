@@ -163,7 +163,7 @@ manifest only and never rebuilds it. After a successful import it prints the
 exact handbook review command to run:
 
 ```bash
-python -m intl_exam_guide review --out ./outputs/chemistry-9202
+python scripts/run_runtime.py -- review --out ./outputs/chemistry-9202
 ```
 
 ## Routing Rules

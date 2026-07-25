@@ -21,7 +21,7 @@
   ·
   <a href="ACKNOWLEDGEMENTS.md">Acknowledgements</a>
   ·
-  <a href="skill/references/revision_guide_spec.md">Handbook spec</a>
+  <a href="references/revision_guide_spec.md">Handbook spec</a>
 </p>
 
 ## Why This Skill Exists
@@ -61,7 +61,8 @@ may fail with unknown parsing, extraction, metadata, or rendering errors.
 
 ## What This Project Is
 
-**This is a framework, not a content generator.** The Skill provides the
+**This is a framework, not an unattended content generator.** The root
+`SKILL.md` and its contracts provide the
 scaffolding — syllabus parsing, HTML/PDF rendering, visual asset management,
 multi-role orchestration contracts — but the actual concept explanations and
 worked-example wording are produced by **the LLM that runs this Skill**:
@@ -94,7 +95,7 @@ The Python package under `src/intl_exam_guide/` provides:
 - HTML rendering plus candidate-PDF export gated by LLM approval of the current HTML hash, followed by technical validation and an immutable current-PDF record.
 - Validation and quality gates (`scripts/import_concept_explanations.py`,
   `scripts/import_infographic_assets.py`).
-- A **CLI-only fallback** (`python -m intl_exam_guide generate …`) that
+- A **CLI-only fallback** (`python scripts/run_runtime.py -- generate ...`) that
   produces an evidence package without the LLM Analyst outline pass. The
   CLI fallback is for testing or for environments where no Skill host is
   available. The output stays at `draft/evidence-ready` and cannot be
@@ -128,12 +129,12 @@ and cross-page repetition. Supporting diagnostics are written to
 
 Delivery quality claims are tracked in the delivery matrix at
 `tests/fixtures/delivery_matrix.json`. Each route has an explicit claim status
-and a v0.6 release-evidence status. Candidate routes must not be described as
+and a v0.7 release-evidence status. Candidate routes must not be described as
 release-ready until a fresh output passes validation, final review, product
 review, and visual-status checks. The shared workflow covers four source systems, but the
 matrix evidence defines what is currently deliverable.
 
-v0.6 status words are intentionally conservative:
+v0.7 status words are intentionally conservative:
 
 - `candidate`: route evidence exists, but it is not delivery-grade.
 - `draft`: a fresh output exists, but concepts, visuals, PDF, validation, or
@@ -151,11 +152,11 @@ Most users do not need to install Python or run commands. Give this Skill link
 to your OpenClaw, Hermes, or other Skill-compatible Agent:
 
 ```text
-https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/tree/main/skill
+https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide
 ```
 
-Download the ready-to-install
-[v0.6.2 Skill package](https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases/download/v0.6.2/exam-revision-handbook-v0.6.2.zip).
+Download the ready-to-use
+[v0.7.0 standard Skill ZIP](https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases/download/v0.7.0/exam-revision-handbook-v0.7.0.zip).
 
 Then ask:
 
@@ -233,7 +234,7 @@ The handbook package includes:
 - printable HTML plus a PDF exported only after current-HTML LLM approval.
 
 Before presenting an output as final, run
-`python -m intl_exam_guide review --out <output-dir>`. This rerenders HTML and
+`python scripts/run_runtime.py -- review --out <output-dir>`. This rerenders HTML and
 prepares `final-review-packet.json`, but it does not inspect or approve the
 handbook and it does not generate PDF. Validation is not enough by itself: the
 LLM must personally open the complete current HTML and review what a student
@@ -248,7 +249,7 @@ After each repair it must rerender and personally inspect the new HTML again.
 The project must not present "the Skill generated it", Python inspection, or a
 passing gate as a substitute. Record approval and the exact HTML SHA-256 in
 `agent-product-review.json`. Then run
-`python -m intl_exam_guide export-pdf --out <output-dir>`. The export command
+`python scripts/run_runtime.py -- export-pdf --out <output-dir>`. The export command
 rejects missing, non-LLM, stale, incomplete, or revisions-required approval.
 It exports to a temporary candidate, blocks promotion on hard PDF defects, and
 only then updates `current-pdf.json`; older PDFs remain historical rather than
@@ -401,10 +402,10 @@ Two operating modes exist. Pick the one that matches your environment.
 ### Mode 1: Skill host (preferred, for production handbooks)
 
 Point your Agent runtime (OpenClaw, Hermes, Claude with subagents, etc.) at
-the Skill folder:
+the repository root. The root `SKILL.md` is the only authoritative entry:
 
 ```text
-https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/tree/main/skill
+https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide
 ```
 
 The Agent runtime follows the lightweight Skill workflow:
@@ -426,15 +427,13 @@ Re-runs within the same session are idempotent: re-generated topics overwrite
 existing handbook-package.json, validation.json, and visual-manifest.json so the
 Skill can keep iterating until the Reviewer has inspected the visible handbook.
 
-### Mode 2: CLI-only (no Skill host, evidence package only)
+### Mode 2: Packaged CLI (no Skill host, evidence package only)
 
 The official CLI run prepares source evidence for the host LLM workflow. It does not split topics, write teaching content, or render the handbook:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -e .
-python -m intl_exam_guide generate \
+python scripts/doctor.py
+python scripts/run_runtime.py -- generate \
   --query chemistry \
   --level igcse \
   --out ./outputs/chemistry-9202
@@ -443,13 +442,17 @@ python -m intl_exam_guide generate \
 Windows PowerShell:
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -e .
-python -m intl_exam_guide generate --query chemistry --level igcse --out .\outputs\chemistry-9202
+python scripts\doctor.py
+python scripts\run_runtime.py -- generate --query chemistry --level igcse --out .\outputs\chemistry-9202
 ```
 
 The CLI is for fetching official source material and writing `qualification.json`, `syllabus-evidence.json`, and `source/`. A real teaching handbook still requires Mode 1: an LLM Analyst outline, Writer-authored concepts/visual decisions, rendered HTML, repeated visible LLM review until approval, and gated PDF export afterward.
+
+GitHub `main`, its `v0.7.0` tag, and the attached Skill ZIP are the same current
+standard Skill release. There is no separate source edition or install
+edition. Contributors changing its Python engine can use
+`pip install -e ".[dev]"`; the ZIP runs the pinned engine from
+`assets/runtime/` in an isolated user cache.
 
 Checks:
 
@@ -508,6 +511,15 @@ mechanical diagnostics and handbook approval.
 ## Repository Layout
 
 ```text
+SKILL.md         the single authoritative Agent entry
+agents/          platform-facing Skill metadata
+references/      complete workflow, artifact, provider, and runtime contracts
+assets/runtime/  pinned Python engine Wheel and integrity lock
+evals/           trigger, workflow, migration, and output parity fixtures
+reports/         governed Skill and migration evidence
+security/        runtime permission and network policy
+skill_atlas/     generated routing and maintenance metadata
+scripts/         runtime adapters, import helpers, and repository tooling
 src/intl_exam_guide/
   providers/      exam-board source access and parsing
   parsing/        PDF text extraction
@@ -515,10 +527,11 @@ src/intl_exam_guide/
   rendering/      HTML and PDF rendering
   validation/     completeness checks
   quality/        teaching effectiveness metrics
-skill/            Agent-facing Skill instructions
 docs/             project details, policies, examples, and preview pages
 tests/            tests and regression samples
 ```
+
+See [PROJECT.md](PROJECT.md) before maintaining or handing off the repository.
 
 ## Safety And Source Policy
 
@@ -545,7 +558,7 @@ See [DISCLAIMER.md](DISCLAIMER.md) and [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md
 
 ## Status
 
-Current package version: `v0.6.2`. The Skill is public-ready as a framework for
+Current Skill version: `v0.7.0`. The Skill is public-ready as a framework for
 source-backed handbook generation. An individual handbook is final-ready only
 after its own complete LLM HTML review is recorded in
 `agent-product-review.json` and `review-ledger/`, the exact HTML passes the hash

@@ -1,0 +1,128 @@
+{
+  "skill_name": "exam-revision-handbook",
+  "risk_families": [
+    {
+      "key": "preflight_bypass",
+      "label": "Preflight bypass",
+      "score": 3,
+      "risks": [
+        "The agent skips the external-image capability question or infers a local route.",
+        "Retrieval or writing starts before board, level, market, subject, year, language, mode, batch scope, and output directory are valid."
+      ],
+      "constraints": [
+        "The first handbook response is the structured preflight only.",
+        "Incomplete or unverified fields block every downstream phase."
+      ],
+      "self_repair": [
+        "Re-open preflight state and ask only for missing or invalid fields.",
+        "Invalidate any downstream artifact created before preflight completion."
+      ]
+    },
+    {
+      "key": "syllabus_granularity",
+      "label": "Syllabus granularity",
+      "score": 3,
+      "risks": [
+        "Broad Topic or Unit headings are mistaken for final teaching points.",
+        "Python or templates replace LLM source interpretation."
+      ],
+      "constraints": [
+        "The LLM maps independently assessable source requirements before writing.",
+        "Every merge needs a source-based teaching reason and visible treatment."
+      ],
+      "self_repair": [
+        "Rebuild the outline from source coverage and container audits.",
+        "Reject topics without an independent source item."
+      ]
+    },
+    {
+      "key": "state_hash_drift",
+      "label": "State and hash drift",
+      "score": 3,
+      "risks": [
+        "A manifest rebuild removes imported assets or resets approvals.",
+        "Old outlines, HTML, review ledgers, PDFs, or delivery copies are mixed with current state."
+      ],
+      "constraints": [
+        "Preserve rebuild, import, approve, render-only order.",
+        "Every mutable input change invalidates downstream approval and delivery state."
+      ],
+      "self_repair": [
+        "Rebuild the affected state chain from the earliest changed input.",
+        "Compare current artifact hashes before approval or export."
+      ]
+    },
+    {
+      "key": "visual_semantics",
+      "label": "Visual teaching semantics",
+      "score": 3,
+      "risks": [
+        "Decorative text rectangles are counted as explanatory SVGs.",
+        "Visuals look polished but contain wrong labels, arrows, structures, units, or relationships."
+      ],
+      "constraints": [
+        "Decide the medium independently for every final teaching point.",
+        "The LLM reviews the rendered subject meaning of every visual."
+      ],
+      "self_repair": [
+        "Reject visuals without independent structure, relationship, quantity, or spatial meaning.",
+        "Regenerate or replace any semantically incorrect visual and review again."
+      ]
+    },
+    {
+      "key": "review_delivery",
+      "label": "HTML review and PDF delivery",
+      "score": 3,
+      "risks": [
+        "Machine diagnostics are treated as approval.",
+        "PDF is exported before complete visible HTML review or from stale approval."
+      ],
+      "constraints": [
+        "The LLM personally reviews and repairs the complete current HTML.",
+        "PDF export requires current HTML, render, ledger, visual, PDF, and delivery hashes."
+      ],
+      "self_repair": [
+        "Return to HTML repair and rerender until the exact current version passes.",
+        "Block export on any pending, rejected, stale, missing, or mismatched state."
+      ]
+    },
+    {
+      "key": "batch_isolation",
+      "label": "Batch isolation",
+      "score": 2,
+      "risks": [
+        "Several subjects share one outline, visual review, HTML approval, or sampled conclusion."
+      ],
+      "constraints": [
+        "Each handbook completes the full workflow independently."
+      ],
+      "self_repair": [
+        "Invalidate shared conclusions and review every subject from its own current artifacts."
+      ]
+    }
+  ],
+  "top_risks": [
+    "The agent bypasses the blocking external-image capability preflight.",
+    "Syllabus analysis stops at broad Topic or Unit headings.",
+    "Manifest rebuild, asset import, approval, and rendering occur in the wrong order.",
+    "A text-card SVG or semantically wrong image is accepted as a teaching visual.",
+    "PDF export proceeds without complete current LLM HTML approval and matching hashes.",
+    "Batch subjects share sampled or stale review conclusions."
+  ],
+  "output_constraints": [
+    "Block all work until structured preflight is valid.",
+    "Keep syllabus meaning, teaching writing, visual judgment, and approval LLM-owned.",
+    "Use rebuild -> import -> approve -> render-only ordering.",
+    "Require complete current HTML review before PDF export.",
+    "Bind every approval and delivery decision to current hashes.",
+    "Complete every batch subject independently."
+  ],
+  "self_repair_checks": [
+    "Check preflight state before every phase transition.",
+    "Verify every final topic maps to independently assessable source evidence.",
+    "Reject pending, rejected, stale, or hash-mismatched visual and review state.",
+    "Inspect the complete visible HTML after every repair.",
+    "Re-run the delivery audit immediately before PDF export."
+  ],
+  "reviewer_note": "Use these domain risks before approving any workflow, output, migration, or release claim."
+}

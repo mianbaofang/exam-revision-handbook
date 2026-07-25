@@ -1,0 +1,11 @@
+{
+  "schema_version": "v1-workflow-contract-parity",
+  "ok": true,
+  "source": "<SOURCE_PROJECT_ROOT>/skill/SKILL.md",
+  "candidate": "references/workflow-contract.md",
+  "comparison_start": "## Boundary Compliance Gate",
+  "source_tail_chars": 32575,
+  "candidate_tail_chars": 32575,
+  "exact_tail_match": true,
+  "candidate_preamble": "The standard package adds only a migration header before the exact authoritative workflow tail."
+}

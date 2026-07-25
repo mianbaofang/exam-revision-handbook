@@ -1,0 +1,55 @@
+{
+  "score": 100,
+  "band": "high",
+  "gate_passed": true,
+  "strengths": [
+    "The recurring job is concrete enough to anchor the package.",
+    "Real input shape is explicit.",
+    "The hand-back output is concrete.",
+    "Boundary exclusions are already explicit.",
+    "Operational constraints are visible."
+  ],
+  "gaps": [],
+  "follow_up_questions": [],
+  "anchor_sentence": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates. Primary output: A complete revision handbook with source evidence, atomic teaching points, topic-specific visuals, a fully reviewed current HTML edition, and a hash-bound PDF exported only after approval.. Exclusions: repository README, release, promotional-media, or GitHub maintenance, unsupported curriculum auto-acquisition, PDF export before current HTML review approval, machine diagnostics used as a substitute for LLM content or visual approval, Python-owned syllabus decomposition, teaching writing, visual routing, or semantic approval.",
+  "recommended_action": "Intent is clear enough to package the first routeable version.",
+  "context": {
+    "job": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
+    "real_inputs": [
+      "exam board and curriculum selection",
+      "qualification, market, subject, syllabus code, and language",
+      "official syllabus sources or an explicitly experimental manual syllabus import",
+      "confirmed external-image capability and route",
+      "LLM-authored syllabus decomposition, teaching content, examples, and review decisions"
+    ],
+    "primary_output": "A complete revision handbook with source evidence, atomic teaching points, topic-specific visuals, a fully reviewed current HTML edition, and a hash-bound PDF exported only after approval.",
+    "description": "Preserve the complete v0.6.2 handbook-generation capability inside a standard Governed Skill package with no known capability loss.",
+    "exclusions": [
+      "repository README, release, promotional-media, or GitHub maintenance",
+      "unsupported curriculum auto-acquisition",
+      "PDF export before current HTML review approval",
+      "machine diagnostics used as a substitute for LLM content or visual approval",
+      "Python-owned syllabus decomposition, teaching writing, visual routing, or semantic approval"
+    ],
+    "constraints": [
+      "keep the original project untouched until explicit replacement approval",
+      "preserve current command and artifact contracts",
+      "use file-backed evidence and hash-bound state",
+      "support OpenAI, Claude, Agent Skills, VS Code, and generic adapters",
+      "do not fabricate telemetry, adoption, benchmarks, or human review"
+    ],
+    "standards": [
+      "100 percent migration capability parity",
+      "100 percent rule and command contract coverage",
+      "zero known capability loss",
+      "Yao Governed gates",
+      "clean installable archive with SKILL.md at archive root"
+    ],
+    "correction": "The user clarified that 100 percent refers to migration of the current project and complete inheritance of existing generation capability, not guarantees about future websites, models, or third-party platforms.",
+    "user_references": [
+      "the current v0.6.2 source project as the authoritative behavior baseline",
+      "Yao Meta Skill Governed package requirements",
+      "the project workflow, artifact, architecture, and operations contracts"
+    ]
+  }
+}
