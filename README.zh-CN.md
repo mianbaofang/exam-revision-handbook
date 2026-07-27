@@ -4,13 +4,7 @@
 College Board 官方来源，生成 GCSE、IGCSE、A-Level 与 AP 图文复习手册；先完整
 审查 HTML，再按批准版本导出 PDF。**
 
-<p align="center">
-  <a href="https://github.com/mianbaofang/exam-revision-handbook/releases/latest"><img src="https://img.shields.io/github/v/release/mianbaofang/exam-revision-handbook?style=flat-square&label=release" alt="最新版本"></a>
-  <a href="https://github.com/mianbaofang/exam-revision-handbook/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/mianbaofang/exam-revision-handbook/ci.yml?branch=main&style=flat-square&label=tests" alt="测试状态"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/mianbaofang/exam-revision-handbook?style=flat-square" alt="MIT 许可证"></a>
-  <a href="https://github.com/mianbaofang/exam-revision-handbook/stargazers"><img src="https://img.shields.io/github/stars/mianbaofang/exam-revision-handbook?style=flat-square" alt="GitHub Stars"></a>
-  <img src="https://img.shields.io/badge/Agent%20Skill-SKILL.md-166b63?style=flat-square" alt="标准 Agent Skill">
-</p>
+<p align="center"><a href="https://github.com/mianbaofang/exam-revision-handbook/releases/latest"><img src="https://img.shields.io/github/v/release/mianbaofang/exam-revision-handbook?style=flat-square&amp;label=release" alt="最新版本"></a>&nbsp;<a href="https://github.com/mianbaofang/exam-revision-handbook/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/mianbaofang/exam-revision-handbook/ci.yml?branch=main&amp;style=flat-square&amp;label=tests" alt="测试状态"></a>&nbsp;<a href="LICENSE"><img src="https://img.shields.io/github/license/mianbaofang/exam-revision-handbook?style=flat-square" alt="MIT 许可证"></a>&nbsp;<a href="https://github.com/mianbaofang/exam-revision-handbook/stargazers"><img src="https://img.shields.io/github/stars/mianbaofang/exam-revision-handbook?style=flat-square" alt="GitHub Stars"></a></p>
 
 <p align="center">
   <a href="https://mianbaofang.github.io/exam-revision-handbook/project-intro-animation.html">

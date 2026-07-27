@@ -5,13 +5,7 @@ revision guides. It retrieves official AQA, Edexcel, CAIE, and College Board
 requirements, turns them into teachable handbooks, reviews the complete HTML,
 and exports PDF only after approval.**
 
-<p align="center">
-  <a href="https://github.com/mianbaofang/exam-revision-handbook/releases/latest"><img src="https://img.shields.io/github/v/release/mianbaofang/exam-revision-handbook?style=flat-square&label=release" alt="Latest release"></a>
-  <a href="https://github.com/mianbaofang/exam-revision-handbook/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/mianbaofang/exam-revision-handbook/ci.yml?branch=main&style=flat-square&label=tests" alt="CI status"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/mianbaofang/exam-revision-handbook?style=flat-square" alt="MIT license"></a>
-  <a href="https://github.com/mianbaofang/exam-revision-handbook/stargazers"><img src="https://img.shields.io/github/stars/mianbaofang/exam-revision-handbook?style=flat-square" alt="GitHub stars"></a>
-  <img src="https://img.shields.io/badge/Agent%20Skill-SKILL.md-166b63?style=flat-square" alt="Standard Agent Skill">
-</p>
+<p align="center"><a href="https://github.com/mianbaofang/exam-revision-handbook/releases/latest"><img src="https://img.shields.io/github/v/release/mianbaofang/exam-revision-handbook?style=flat-square&amp;label=release" alt="Latest release"></a>&nbsp;<a href="https://github.com/mianbaofang/exam-revision-handbook/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/mianbaofang/exam-revision-handbook/ci.yml?branch=main&amp;style=flat-square&amp;label=tests" alt="CI status"></a>&nbsp;<a href="LICENSE"><img src="https://img.shields.io/github/license/mianbaofang/exam-revision-handbook?style=flat-square" alt="MIT license"></a>&nbsp;<a href="https://github.com/mianbaofang/exam-revision-handbook/stargazers"><img src="https://img.shields.io/github/stars/mianbaofang/exam-revision-handbook?style=flat-square" alt="GitHub stars"></a></p>
 
 <p align="center">
   <a href="https://mianbaofang.github.io/exam-revision-handbook/project-intro-animation-en.html">
