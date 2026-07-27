@@ -303,35 +303,43 @@ image provider is not proof that the user supplied an external visual route.
 
 ### OxfordAQA IGCSE Biology
 
-<p align="center">
-  <img src="docs/assets/v060-oxfordaqa-biology-p12.jpg" alt="OxfordAQA IGCSE Biology photosynthesis page" width="31%">
-  <img src="docs/assets/v060-oxfordaqa-biology-p21.jpg" alt="OxfordAQA IGCSE Biology carbon cycle page" width="31%">
-  <img src="docs/assets/v060-oxfordaqa-biology-p28.jpg" alt="OxfordAQA IGCSE Biology thermoregulation page" width="31%">
-</p>
+<table align="center">
+  <tr>
+    <td><img src="docs/assets/v060-oxfordaqa-biology-p12.jpg" alt="OxfordAQA IGCSE Biology photosynthesis page" width="100%"></td>
+    <td><img src="docs/assets/v060-oxfordaqa-biology-p21.jpg" alt="OxfordAQA IGCSE Biology carbon cycle page" width="100%"></td>
+    <td><img src="docs/assets/v060-oxfordaqa-biology-p28.jpg" alt="OxfordAQA IGCSE Biology thermoregulation page" width="100%"></td>
+  </tr>
+</table>
 
 ### CAIE AS Physics
 
-<p align="center">
-  <img src="docs/assets/v060-caie-physics-p10.jpg" alt="CAIE AS Physics projectile motion page" width="31%">
-  <img src="docs/assets/v060-caie-physics-p25.jpg" alt="CAIE AS Physics stationary wave apparatus page" width="31%">
-  <img src="docs/assets/v060-caie-physics-p30.jpg" alt="CAIE AS Physics internal resistance circuit page" width="31%">
-</p>
+<table align="center">
+  <tr>
+    <td><img src="docs/assets/v060-caie-physics-p10.jpg" alt="CAIE AS Physics projectile motion page" width="100%"></td>
+    <td><img src="docs/assets/v060-caie-physics-p25.jpg" alt="CAIE AS Physics stationary wave apparatus page" width="100%"></td>
+    <td><img src="docs/assets/v060-caie-physics-p30.jpg" alt="CAIE AS Physics internal resistance circuit page" width="100%"></td>
+  </tr>
+</table>
 
 ### College Board AP Chemistry
 
-<p align="center">
-  <img src="docs/assets/v060-ap-chemistry-p11.jpg" alt="AP Chemistry photoelectron spectrum page" width="31%">
-  <img src="docs/assets/v060-ap-chemistry-p43.jpg" alt="AP Chemistry titration page" width="31%">
-  <img src="docs/assets/v060-ap-chemistry-p91.jpg" alt="AP Chemistry galvanic cell page" width="31%">
-</p>
+<table align="center">
+  <tr>
+    <td><img src="docs/assets/v060-ap-chemistry-p11.jpg" alt="AP Chemistry photoelectron spectrum page" width="100%"></td>
+    <td><img src="docs/assets/v060-ap-chemistry-p43.jpg" alt="AP Chemistry titration page" width="100%"></td>
+    <td><img src="docs/assets/v060-ap-chemistry-p91.jpg" alt="AP Chemistry galvanic cell page" width="100%"></td>
+  </tr>
+</table>
 
 ### Pearson Edexcel International A Level Mathematics
 
-<p align="center">
-  <img src="docs/assets/v060-edexcel-mathematics-p52.jpg" alt="Edexcel IAL Mathematics exponential model page" width="31%">
-  <img src="docs/assets/v060-edexcel-mathematics-p74.jpg" alt="Edexcel IAL Mathematics mechanics model page" width="31%">
-  <img src="docs/assets/v060-edexcel-mathematics-p99.jpg" alt="Edexcel IAL Mathematics conditional probability page" width="31%">
-</p>
+<table align="center">
+  <tr>
+    <td><img src="docs/assets/v060-edexcel-mathematics-p52.jpg" alt="Edexcel IAL Mathematics exponential model page" width="100%"></td>
+    <td><img src="docs/assets/v060-edexcel-mathematics-p74.jpg" alt="Edexcel IAL Mathematics mechanics model page" width="100%"></td>
+    <td><img src="docs/assets/v060-edexcel-mathematics-p99.jpg" alt="Edexcel IAL Mathematics conditional probability page" width="100%"></td>
+  </tr>
+</table>
 
 These are pages from four independently reviewed, current handbooks. They
 demonstrate layout and visual teaching quality; they do not limit the supported

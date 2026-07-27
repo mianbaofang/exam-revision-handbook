@@ -199,35 +199,43 @@ outputs/chemistry-9202/
 
 ### OxfordAQA IGCSE Biology
 
-<p align="center">
-  <img src="docs/assets/v060-oxfordaqa-biology-p12.jpg" alt="OxfordAQA IGCSE Biology 光合作用图文页" width="31%">
-  <img src="docs/assets/v060-oxfordaqa-biology-p21.jpg" alt="OxfordAQA IGCSE Biology 碳循环图文页" width="31%">
-  <img src="docs/assets/v060-oxfordaqa-biology-p28.jpg" alt="OxfordAQA IGCSE Biology 体温调节图文页" width="31%">
-</p>
+<table align="center">
+  <tr>
+    <td><img src="docs/assets/v060-oxfordaqa-biology-p12.jpg" alt="OxfordAQA IGCSE Biology 光合作用图文页" width="100%"></td>
+    <td><img src="docs/assets/v060-oxfordaqa-biology-p21.jpg" alt="OxfordAQA IGCSE Biology 碳循环图文页" width="100%"></td>
+    <td><img src="docs/assets/v060-oxfordaqa-biology-p28.jpg" alt="OxfordAQA IGCSE Biology 体温调节图文页" width="100%"></td>
+  </tr>
+</table>
 
 ### CAIE AS Physics
 
-<p align="center">
-  <img src="docs/assets/v060-caie-physics-p10.jpg" alt="CAIE AS Physics 抛体运动图文页" width="31%">
-  <img src="docs/assets/v060-caie-physics-p25.jpg" alt="CAIE AS Physics 驻波实验装置图文页" width="31%">
-  <img src="docs/assets/v060-caie-physics-p30.jpg" alt="CAIE AS Physics 内阻电路图文页" width="31%">
-</p>
+<table align="center">
+  <tr>
+    <td><img src="docs/assets/v060-caie-physics-p10.jpg" alt="CAIE AS Physics 抛体运动图文页" width="100%"></td>
+    <td><img src="docs/assets/v060-caie-physics-p25.jpg" alt="CAIE AS Physics 驻波实验装置图文页" width="100%"></td>
+    <td><img src="docs/assets/v060-caie-physics-p30.jpg" alt="CAIE AS Physics 内阻电路图文页" width="100%"></td>
+  </tr>
+</table>
 
 ### College Board AP Chemistry
 
-<p align="center">
-  <img src="docs/assets/v060-ap-chemistry-p11.jpg" alt="AP Chemistry 光电子能谱图文页" width="31%">
-  <img src="docs/assets/v060-ap-chemistry-p43.jpg" alt="AP Chemistry 滴定图文页" width="31%">
-  <img src="docs/assets/v060-ap-chemistry-p91.jpg" alt="AP Chemistry 原电池图文页" width="31%">
-</p>
+<table align="center">
+  <tr>
+    <td><img src="docs/assets/v060-ap-chemistry-p11.jpg" alt="AP Chemistry 光电子能谱图文页" width="100%"></td>
+    <td><img src="docs/assets/v060-ap-chemistry-p43.jpg" alt="AP Chemistry 滴定图文页" width="100%"></td>
+    <td><img src="docs/assets/v060-ap-chemistry-p91.jpg" alt="AP Chemistry 原电池图文页" width="100%"></td>
+  </tr>
+</table>
 
 ### Pearson Edexcel International A Level Mathematics
 
-<p align="center">
-  <img src="docs/assets/v060-edexcel-mathematics-p52.jpg" alt="Edexcel IAL Mathematics 指数模型图文页" width="31%">
-  <img src="docs/assets/v060-edexcel-mathematics-p74.jpg" alt="Edexcel IAL Mathematics 力学模型图文页" width="31%">
-  <img src="docs/assets/v060-edexcel-mathematics-p99.jpg" alt="Edexcel IAL Mathematics 条件概率图文页" width="31%">
-</p>
+<table align="center">
+  <tr>
+    <td><img src="docs/assets/v060-edexcel-mathematics-p52.jpg" alt="Edexcel IAL Mathematics 指数模型图文页" width="100%"></td>
+    <td><img src="docs/assets/v060-edexcel-mathematics-p74.jpg" alt="Edexcel IAL Mathematics 力学模型图文页" width="100%"></td>
+    <td><img src="docs/assets/v060-edexcel-mathematics-p99.jpg" alt="Edexcel IAL Mathematics 条件概率图文页" width="100%"></td>
+  </tr>
+</table>
 
 这些页面来自四份分别完成拆纲、写作、配图、HTML 审查和 PDF 导出的当前手册，
 用于展示版式与图文教学效果；它们不代表项目只支持这四门课，也不等于所有目录科目都已认证。
