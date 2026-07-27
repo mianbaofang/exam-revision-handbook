@@ -3,8 +3,8 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "gcse-igcse-alevel-ap-revision-guide"
-version = "0.6.2"
+name = "exam-revision-handbook"
+version = "0.7.1"
 description = "Generate source-backed GCSE, IGCSE, A-Level, and AP revision handbooks with reviewed visuals and PDF output."
 readme = "README.md"
 requires-python = ">=3.11"

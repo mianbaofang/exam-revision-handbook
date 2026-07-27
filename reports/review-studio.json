@@ -95,7 +95,7 @@
       "key": "trust-report",
       "label": "信任报告",
       "status": "pass",
-      "detail": "0 secrets; 15 scripts; 1 network-capable scripts; 0 help smoke failures",
+      "detail": "0 secrets; 7 scripts; 0 network-capable scripts; 0 help smoke failures",
       "evidence": "reports/security_trust_report.json",
       "link": "security_trust_report.md",
       "review_action_id": "",
@@ -140,7 +140,7 @@
       "key": "permission-gates",
       "label": "权限批准",
       "status": "pass",
-      "detail": "3/3 permissions approved; gaps 0; required file_write, network, subprocess",
+      "detail": "2/2 permissions approved; gaps 0; required file_write, subprocess",
       "evidence": "reports/security_trust_report.json + security/permission_policy.json",
       "link": "..\\security\\permission_policy.md",
       "review_action_id": "",
@@ -230,7 +230,7 @@
       "key": "registry-audit",
       "label": "注册审计",
       "status": "pass",
-      "detail": "exam-revision-handbook 0.7.0; 5/5 compatibility entries pass; install pass with 4 adapters; installer permissions 8 enforced / 0 failures",
+      "detail": "exam-revision-handbook 0.7.1; 5/5 compatibility entries pass; install pass with 4 adapters; installer permissions 8 enforced / 0 failures",
       "evidence": "reports/registry_audit.json + reports/install_simulation.json",
       "link": "registry_audit.md",
       "review_action_id": "",
@@ -881,7 +881,7 @@
         "display_name": "Exam Revision Handbook",
         "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
         "maturity": "governed",
-        "updated_at": "2026-07-25",
+        "updated_at": "2026-07-27",
         "core_value": "把一次性经验沉淀为可复用、可评估、可迁移的 Skill 包体。",
         "audience": "Skill 作者、复用团队和后续 reviewer。",
         "deliverables": [
@@ -1802,7 +1802,7 @@
         "interactive_script_count": 0,
         "package_hash_scope": "source-contract-without-generated-reports",
         "package_hash_file_count": 35,
-        "package_sha256": "55507392665052a03a4981891954944d627f2318e1b2243433a446042a217c60"
+        "package_sha256": "37d886ff9fd5b7decc8e5e9d57c4100f2b04e0a68d8f601ca1c305276ff7968a"
       },
       "skill_atlas": {
         "skill_count": 1,
@@ -1825,7 +1825,7 @@
         "package": {
           "schema_version": "2.0",
           "name": "exam-revision-handbook",
-          "version": "0.7.0",
+          "version": "0.7.1",
           "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
           "targets": [
             "openai",
@@ -1840,8 +1840,8 @@
           "trust_level": "managed",
           "license": "MIT",
           "checksums": {
-            "package_sha256": "55507392665052a03a4981891954944d627f2318e1b2243433a446042a217c60",
-            "archive_sha256": "731cd2dd1eebbc82077e81efa6ddb2e3f7dadd9e29b315e610d395cef1a2da99"
+            "package_sha256": "37d886ff9fd5b7decc8e5e9d57c4100f2b04e0a68d8f601ca1c305276ff7968a",
+            "archive_sha256": "6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af"
           },
           "compatibility": {
             "openai": "pass",
@@ -1871,12 +1871,12 @@
           },
           "distribution": {
             "archive_verified": true,
-            "archive_sha256": "731cd2dd1eebbc82077e81efa6ddb2e3f7dadd9e29b315e610d395cef1a2da99",
+            "archive_sha256": "6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af",
             "package_verification": "reports/package_verification.json",
             "install_simulated": true,
             "install_simulation": "reports/install_simulation.json"
           },
-          "generated_at": "2026-07-25"
+          "generated_at": "2026-07-27"
         },
         "failures": [],
         "warnings": []
@@ -1887,8 +1887,8 @@
           "target_count": 4,
           "adapter_count": 4,
           "archive_present": true,
-          "archive_sha256": "731cd2dd1eebbc82077e81efa6ddb2e3f7dadd9e29b315e610d395cef1a2da99",
-          "archive_entry_count": 104,
+          "archive_sha256": "6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af",
+          "archive_entry_count": 205,
           "nested_skill_entry_count": 0,
           "failure_count": 0,
           "warning_count": 0
@@ -1900,7 +1900,7 @@
         "ok": true,
         "summary": {
           "archive_present": true,
-          "archive_entry_count": 104,
+          "archive_entry_count": 205,
           "nested_skill_entry_count": 0,
           "archive_extracted": true,
           "entrypoint_loaded": true,
@@ -2123,7 +2123,7 @@
         ],
         "maturity_tier": "governed",
         "skill_archetype": "governed",
-        "updated_at": "2026-07-25"
+        "updated_at": "2026-07-27"
       }
     },
     "intent_confidence": {
@@ -4025,7 +4025,7 @@
     "compiled_targets": {
       "schema_version": "1.0",
       "ok": true,
-      "generated_at": "2026-07-25",
+      "generated_at": "2026-07-27",
       "skill_dir": "<SKILL_ROOT>",
       "summary": {
         "target_count": 5,
@@ -4061,7 +4061,7 @@
           "compiled_contract": {
             "name": "exam-revision-handbook",
             "title": "Exam Revision Handbook",
-            "version": "0.7.0",
+            "version": "0.7.1",
             "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
             "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
             "trigger": {
@@ -4124,23 +4124,15 @@
               ],
               "scripts": [
                 "scripts\\_runtime.py",
-                "scripts\\audit_ap_courses.py",
                 "scripts\\bootstrap_runtime.py",
-                "scripts\\build_skill_store_package.py",
-                "scripts\\capture_release_assets.py",
                 "scripts\\doctor.py",
-                "scripts\\finalize_release_samples.py",
                 "scripts\\import_concept_explanations.py",
                 "scripts\\import_infographic_assets.py",
-                "scripts\\render_intro_animation.py",
                 "scripts\\run_runtime.py",
-                "scripts\\scan_for_raw_keys.py",
-                "scripts\\sync_intro_animation_sources.py",
-                "scripts\\verify_release_samples.py",
                 "scripts\\write_concept_explanations_from_jobs.py"
               ],
               "assets": [
-                "assets\\runtime\\gcse_igcse_alevel_ap_revision_guide-0.6.2-py3-none-any.whl",
+                "assets\\runtime\\exam_revision_handbook-0.7.1-py3-none-any.whl",
                 "assets\\runtime\\runtime-lock.json"
               ],
               "reports": [
@@ -4170,16 +4162,14 @@
                 "reports/conformance_matrix.md",
                 "reports/security_trust_report.json",
                 "reports/security_trust_report.md",
-                "reports/runtime_permission_probes.json",
-                "reports/runtime_permission_probes.md",
                 "reports/skill_atlas.json",
                 "reports/skill_atlas.html"
               ],
               "counts": {
                 "references": 7,
-                "scripts": 15,
+                "scripts": 7,
                 "assets": 2,
-                "reports": 30
+                "reports": 28
               }
             },
             "eval_plan": {
@@ -4340,9 +4330,9 @@
                 "strategy": "Ship the neutral source tree and expose OpenAI-facing interface metadata as a generated companion file.",
                 "counts": {
                   "references": 7,
-                  "scripts": 15,
+                  "scripts": 7,
                   "assets": 2,
-                  "reports": 30
+                  "reports": 28
                 },
                 "generated_files": [
                   "targets/openai/adapter.json",
@@ -4351,7 +4341,7 @@
               },
               "scripts": {
                 "strategy": "Keep scripts as local package resources; expose help-smoke and permission metadata for reviewer approval before execution.",
-                "script_count": 15,
+                "script_count": 7,
                 "help_smoke_failed_count": 0
               },
               "permissions": {
@@ -4508,9 +4498,9 @@
               "strategy": "Ship the neutral source tree and expose OpenAI-facing interface metadata as a generated companion file.",
               "counts": {
                 "references": 7,
-                "scripts": 15,
+                "scripts": 7,
                 "assets": 2,
-                "reports": 30
+                "reports": 28
               },
               "generated_files": [
                 "targets/openai/adapter.json",
@@ -4519,7 +4509,7 @@
             },
             "scripts": {
               "strategy": "Keep scripts as local package resources; expose help-smoke and permission metadata for reviewer approval before execution.",
-              "script_count": 15,
+              "script_count": 7,
               "help_smoke_failed_count": 0
             },
             "permissions": {
@@ -4612,7 +4602,7 @@
           "compiled_contract": {
             "name": "exam-revision-handbook",
             "title": "Exam Revision Handbook",
-            "version": "0.7.0",
+            "version": "0.7.1",
             "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
             "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
             "trigger": {
@@ -4675,23 +4665,15 @@
               ],
               "scripts": [
                 "scripts\\_runtime.py",
-                "scripts\\audit_ap_courses.py",
                 "scripts\\bootstrap_runtime.py",
-                "scripts\\build_skill_store_package.py",
-                "scripts\\capture_release_assets.py",
                 "scripts\\doctor.py",
-                "scripts\\finalize_release_samples.py",
                 "scripts\\import_concept_explanations.py",
                 "scripts\\import_infographic_assets.py",
-                "scripts\\render_intro_animation.py",
                 "scripts\\run_runtime.py",
-                "scripts\\scan_for_raw_keys.py",
-                "scripts\\sync_intro_animation_sources.py",
-                "scripts\\verify_release_samples.py",
                 "scripts\\write_concept_explanations_from_jobs.py"
               ],
               "assets": [
-                "assets\\runtime\\gcse_igcse_alevel_ap_revision_guide-0.6.2-py3-none-any.whl",
+                "assets\\runtime\\exam_revision_handbook-0.7.1-py3-none-any.whl",
                 "assets\\runtime\\runtime-lock.json"
               ],
               "reports": [
@@ -4721,16 +4703,14 @@
                 "reports/conformance_matrix.md",
                 "reports/security_trust_report.json",
                 "reports/security_trust_report.md",
-                "reports/runtime_permission_probes.json",
-                "reports/runtime_permission_probes.md",
                 "reports/skill_atlas.json",
                 "reports/skill_atlas.html"
               ],
               "counts": {
                 "references": 7,
-                "scripts": 15,
+                "scripts": 7,
                 "assets": 2,
-                "reports": 30
+                "reports": 28
               }
             },
             "eval_plan": {
@@ -4891,9 +4871,9 @@
                 "strategy": "Preserve the source tree directly; write target notes in targets/claude/README.md.",
                 "counts": {
                   "references": 7,
-                  "scripts": 15,
+                  "scripts": 7,
                   "assets": 2,
-                  "reports": 30
+                  "reports": 28
                 },
                 "generated_files": [
                   "targets/claude/adapter.json",
@@ -4902,7 +4882,7 @@
               },
               "scripts": {
                 "strategy": "Scripts remain local package resources and must be reviewed through trust and permission reports before use.",
-                "script_count": 15,
+                "script_count": 7,
                 "help_smoke_failed_count": 0
               },
               "permissions": {
@@ -5059,9 +5039,9 @@
               "strategy": "Preserve the source tree directly; write target notes in targets/claude/README.md.",
               "counts": {
                 "references": 7,
-                "scripts": 15,
+                "scripts": 7,
                 "assets": 2,
-                "reports": 30
+                "reports": 28
               },
               "generated_files": [
                 "targets/claude/adapter.json",
@@ -5070,7 +5050,7 @@
             },
             "scripts": {
               "strategy": "Scripts remain local package resources and must be reviewed through trust and permission reports before use.",
-              "script_count": 15,
+              "script_count": 7,
               "help_smoke_failed_count": 0
             },
             "permissions": {
@@ -5163,7 +5143,7 @@
           "compiled_contract": {
             "name": "exam-revision-handbook",
             "title": "Exam Revision Handbook",
-            "version": "0.7.0",
+            "version": "0.7.1",
             "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
             "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
             "trigger": {
@@ -5226,23 +5206,15 @@
               ],
               "scripts": [
                 "scripts\\_runtime.py",
-                "scripts\\audit_ap_courses.py",
                 "scripts\\bootstrap_runtime.py",
-                "scripts\\build_skill_store_package.py",
-                "scripts\\capture_release_assets.py",
                 "scripts\\doctor.py",
-                "scripts\\finalize_release_samples.py",
                 "scripts\\import_concept_explanations.py",
                 "scripts\\import_infographic_assets.py",
-                "scripts\\render_intro_animation.py",
                 "scripts\\run_runtime.py",
-                "scripts\\scan_for_raw_keys.py",
-                "scripts\\sync_intro_animation_sources.py",
-                "scripts\\verify_release_samples.py",
                 "scripts\\write_concept_explanations_from_jobs.py"
               ],
               "assets": [
-                "assets\\runtime\\gcse_igcse_alevel_ap_revision_guide-0.6.2-py3-none-any.whl",
+                "assets\\runtime\\exam_revision_handbook-0.7.1-py3-none-any.whl",
                 "assets\\runtime\\runtime-lock.json"
               ],
               "reports": [
@@ -5272,16 +5244,14 @@
                 "reports/conformance_matrix.md",
                 "reports/security_trust_report.json",
                 "reports/security_trust_report.md",
-                "reports/runtime_permission_probes.json",
-                "reports/runtime_permission_probes.md",
                 "reports/skill_atlas.json",
                 "reports/skill_atlas.html"
               ],
               "counts": {
                 "references": 7,
-                "scripts": 15,
+                "scripts": 7,
                 "assets": 2,
-                "reports": 30
+                "reports": 28
               }
             },
             "eval_plan": {
@@ -5442,9 +5412,9 @@
                 "strategy": "Keep optional directories as relative resources next to SKILL.md.",
                 "counts": {
                   "references": 7,
-                  "scripts": 15,
+                  "scripts": 7,
                   "assets": 2,
-                  "reports": 30
+                  "reports": 28
                 },
                 "generated_files": [
                   "SKILL.md",
@@ -5453,7 +5423,7 @@
               },
               "scripts": {
                 "strategy": "Scripts remain local optional resources and should advertise --help when executable.",
-                "script_count": 15,
+                "script_count": 7,
                 "help_smoke_failed_count": 0
               },
               "permissions": {
@@ -5603,9 +5573,9 @@
               "strategy": "Keep optional directories as relative resources next to SKILL.md.",
               "counts": {
                 "references": 7,
-                "scripts": 15,
+                "scripts": 7,
                 "assets": 2,
-                "reports": 30
+                "reports": 28
               },
               "generated_files": [
                 "SKILL.md",
@@ -5614,7 +5584,7 @@
             },
             "scripts": {
               "strategy": "Scripts remain local optional resources and should advertise --help when executable.",
-              "script_count": 15,
+              "script_count": 7,
               "help_smoke_failed_count": 0
             },
             "permissions": {
@@ -5698,7 +5668,7 @@
           "compiled_contract": {
             "name": "exam-revision-handbook",
             "title": "Exam Revision Handbook",
-            "version": "0.7.0",
+            "version": "0.7.1",
             "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
             "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
             "trigger": {
@@ -5761,23 +5731,15 @@
               ],
               "scripts": [
                 "scripts\\_runtime.py",
-                "scripts\\audit_ap_courses.py",
                 "scripts\\bootstrap_runtime.py",
-                "scripts\\build_skill_store_package.py",
-                "scripts\\capture_release_assets.py",
                 "scripts\\doctor.py",
-                "scripts\\finalize_release_samples.py",
                 "scripts\\import_concept_explanations.py",
                 "scripts\\import_infographic_assets.py",
-                "scripts\\render_intro_animation.py",
                 "scripts\\run_runtime.py",
-                "scripts\\scan_for_raw_keys.py",
-                "scripts\\sync_intro_animation_sources.py",
-                "scripts\\verify_release_samples.py",
                 "scripts\\write_concept_explanations_from_jobs.py"
               ],
               "assets": [
-                "assets\\runtime\\gcse_igcse_alevel_ap_revision_guide-0.6.2-py3-none-any.whl",
+                "assets\\runtime\\exam_revision_handbook-0.7.1-py3-none-any.whl",
                 "assets\\runtime\\runtime-lock.json"
               ],
               "reports": [
@@ -5807,16 +5769,14 @@
                 "reports/conformance_matrix.md",
                 "reports/security_trust_report.json",
                 "reports/security_trust_report.md",
-                "reports/runtime_permission_probes.json",
-                "reports/runtime_permission_probes.md",
                 "reports/skill_atlas.json",
                 "reports/skill_atlas.html"
               ],
               "counts": {
                 "references": 7,
-                "scripts": 15,
+                "scripts": 7,
                 "assets": 2,
-                "reports": 30
+                "reports": 28
               }
             },
             "eval_plan": {
@@ -5977,9 +5937,9 @@
                 "strategy": "Install as project or user scoped skill source, preserving relative references and scripts.",
                 "counts": {
                   "references": 7,
-                  "scripts": 15,
+                  "scripts": 7,
                   "assets": 2,
-                  "reports": 30
+                  "reports": 28
                 },
                 "generated_files": [
                   "targets/vscode/adapter.json",
@@ -5988,7 +5948,7 @@
               },
               "scripts": {
                 "strategy": "Scripts require workspace trust and operator/client approval outside this compiler.",
-                "script_count": 15,
+                "script_count": 7,
                 "help_smoke_failed_count": 0
               },
               "permissions": {
@@ -6142,9 +6102,9 @@
               "strategy": "Install as project or user scoped skill source, preserving relative references and scripts.",
               "counts": {
                 "references": 7,
-                "scripts": 15,
+                "scripts": 7,
                 "assets": 2,
-                "reports": 30
+                "reports": 28
               },
               "generated_files": [
                 "targets/vscode/adapter.json",
@@ -6153,7 +6113,7 @@
             },
             "scripts": {
               "strategy": "Scripts require workspace trust and operator/client approval outside this compiler.",
-              "script_count": 15,
+              "script_count": 7,
               "help_smoke_failed_count": 0
             },
             "permissions": {
@@ -6243,7 +6203,7 @@
           "compiled_contract": {
             "name": "exam-revision-handbook",
             "title": "Exam Revision Handbook",
-            "version": "0.7.0",
+            "version": "0.7.1",
             "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
             "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
             "trigger": {
@@ -6306,23 +6266,15 @@
               ],
               "scripts": [
                 "scripts\\_runtime.py",
-                "scripts\\audit_ap_courses.py",
                 "scripts\\bootstrap_runtime.py",
-                "scripts\\build_skill_store_package.py",
-                "scripts\\capture_release_assets.py",
                 "scripts\\doctor.py",
-                "scripts\\finalize_release_samples.py",
                 "scripts\\import_concept_explanations.py",
                 "scripts\\import_infographic_assets.py",
-                "scripts\\render_intro_animation.py",
                 "scripts\\run_runtime.py",
-                "scripts\\scan_for_raw_keys.py",
-                "scripts\\sync_intro_animation_sources.py",
-                "scripts\\verify_release_samples.py",
                 "scripts\\write_concept_explanations_from_jobs.py"
               ],
               "assets": [
-                "assets\\runtime\\gcse_igcse_alevel_ap_revision_guide-0.6.2-py3-none-any.whl",
+                "assets\\runtime\\exam_revision_handbook-0.7.1-py3-none-any.whl",
                 "assets\\runtime\\runtime-lock.json"
               ],
               "reports": [
@@ -6352,16 +6304,14 @@
                 "reports/conformance_matrix.md",
                 "reports/security_trust_report.json",
                 "reports/security_trust_report.md",
-                "reports/runtime_permission_probes.json",
-                "reports/runtime_permission_probes.md",
                 "reports/skill_atlas.json",
                 "reports/skill_atlas.html"
               ],
               "counts": {
                 "references": 7,
-                "scripts": 15,
+                "scripts": 7,
                 "assets": 2,
-                "reports": 30
+                "reports": 28
               }
             },
             "eval_plan": {
@@ -6522,9 +6472,9 @@
                 "strategy": "Preserve references, scripts, assets, evals, reports, and adapter metadata as relative package resources.",
                 "counts": {
                   "references": 7,
-                  "scripts": 15,
+                  "scripts": 7,
                   "assets": 2,
-                  "reports": 30
+                  "reports": 28
                 },
                 "generated_files": [
                   "targets/generic/adapter.json"
@@ -6532,7 +6482,7 @@
               },
               "scripts": {
                 "strategy": "Expose script and permission metadata for downstream clients or installers to enforce.",
-                "script_count": 15,
+                "script_count": 7,
                 "help_smoke_failed_count": 0
               },
               "permissions": {
@@ -6683,9 +6633,9 @@
               "strategy": "Preserve references, scripts, assets, evals, reports, and adapter metadata as relative package resources.",
               "counts": {
                 "references": 7,
-                "scripts": 15,
+                "scripts": 7,
                 "assets": 2,
-                "reports": 30
+                "reports": 28
               },
               "generated_files": [
                 "targets/generic/adapter.json"
@@ -6693,7 +6643,7 @@
             },
             "scripts": {
               "strategy": "Expose script and permission metadata for downstream clients or installers to enforce.",
-              "script_count": 15,
+              "script_count": 7,
               "help_smoke_failed_count": 0
             },
             "permissions": {
@@ -6801,10 +6751,10 @@
             "references resource resolves: references\\scientific_vector_fallback.md",
             "references resource resolves: references\\workflow-contract.md",
             "scripts resource resolves: scripts\\_runtime.py",
-            "scripts resource resolves: scripts\\audit_ap_courses.py",
             "scripts resource resolves: scripts\\bootstrap_runtime.py",
-            "scripts resource resolves: scripts\\build_skill_store_package.py",
-            "scripts resource resolves: scripts\\capture_release_assets.py"
+            "scripts resource resolves: scripts\\doctor.py",
+            "scripts resource resolves: scripts\\import_concept_explanations.py",
+            "scripts resource resolves: scripts\\import_infographic_assets.py"
           ],
           "failures": [],
           "warnings": []
@@ -6845,10 +6795,10 @@
             "references resource resolves: references\\scientific_vector_fallback.md",
             "references resource resolves: references\\workflow-contract.md",
             "scripts resource resolves: scripts\\_runtime.py",
-            "scripts resource resolves: scripts\\audit_ap_courses.py",
             "scripts resource resolves: scripts\\bootstrap_runtime.py",
-            "scripts resource resolves: scripts\\build_skill_store_package.py",
-            "scripts resource resolves: scripts\\capture_release_assets.py"
+            "scripts resource resolves: scripts\\doctor.py",
+            "scripts resource resolves: scripts\\import_concept_explanations.py",
+            "scripts resource resolves: scripts\\import_infographic_assets.py"
           ],
           "failures": [],
           "warnings": []
@@ -6889,14 +6839,13 @@
             "references resource resolves: references\\scientific_vector_fallback.md",
             "references resource resolves: references\\workflow-contract.md",
             "scripts resource resolves: scripts\\_runtime.py",
-            "scripts resource resolves: scripts\\audit_ap_courses.py",
             "scripts resource resolves: scripts\\bootstrap_runtime.py",
-            "scripts resource resolves: scripts\\build_skill_store_package.py",
-            "scripts resource resolves: scripts\\capture_release_assets.py"
+            "scripts resource resolves: scripts\\doctor.py",
+            "scripts resource resolves: scripts\\import_concept_explanations.py",
+            "scripts resource resolves: scripts\\import_infographic_assets.py"
           ],
           "failures": [],
           "warnings": [
-            "source checkout directory differs from skill name; package verification must enforce archive top-level identity.",
             "agent-skills uses canonical Agent Skills metadata; provider-native execution transforms are not implemented in v0."
           ]
         },
@@ -6936,14 +6885,13 @@
             "references resource resolves: references\\scientific_vector_fallback.md",
             "references resource resolves: references\\workflow-contract.md",
             "scripts resource resolves: scripts\\_runtime.py",
-            "scripts resource resolves: scripts\\audit_ap_courses.py",
             "scripts resource resolves: scripts\\bootstrap_runtime.py",
-            "scripts resource resolves: scripts\\build_skill_store_package.py",
-            "scripts resource resolves: scripts\\capture_release_assets.py"
+            "scripts resource resolves: scripts\\doctor.py",
+            "scripts resource resolves: scripts\\import_concept_explanations.py",
+            "scripts resource resolves: scripts\\import_infographic_assets.py"
           ],
           "failures": [],
           "warnings": [
-            "source checkout directory differs from skill name; package verification must enforce archive top-level identity.",
             "vscode uses canonical Agent Skills metadata; provider-native execution transforms are not implemented in v0."
           ]
         },
@@ -6983,10 +6931,10 @@
             "references resource resolves: references\\scientific_vector_fallback.md",
             "references resource resolves: references\\workflow-contract.md",
             "scripts resource resolves: scripts\\_runtime.py",
-            "scripts resource resolves: scripts\\audit_ap_courses.py",
             "scripts resource resolves: scripts\\bootstrap_runtime.py",
-            "scripts resource resolves: scripts\\build_skill_store_package.py",
-            "scripts resource resolves: scripts\\capture_release_assets.py"
+            "scripts resource resolves: scripts\\doctor.py",
+            "scripts resource resolves: scripts\\import_concept_explanations.py",
+            "scripts resource resolves: scripts\\import_infographic_assets.py"
           ],
           "failures": [],
           "warnings": []
@@ -7006,7 +6954,7 @@
       "schema_version": "1.0",
       "ok": true,
       "skill_dir": ".",
-      "package_dir": "dist-yao",
+      "package_dir": "dist-yao-final",
       "expected_capabilities": [
         "file_write",
         "subprocess"
@@ -7045,7 +6993,7 @@
         {
           "target": "openai",
           "status": "pass",
-          "adapter": "dist-yao\\targets\\openai\\adapter.json",
+          "adapter": "dist-yao-final\\targets\\openai\\adapter.json",
           "permission_model": "metadata-only",
           "native_enforcement": false,
           "metadata_fallback_explicit": true,
@@ -7140,7 +7088,7 @@
         {
           "target": "claude",
           "status": "pass",
-          "adapter": "dist-yao\\targets\\claude\\adapter.json",
+          "adapter": "dist-yao-final\\targets\\claude\\adapter.json",
           "permission_model": "neutral-source-plus-adapter",
           "native_enforcement": false,
           "metadata_fallback_explicit": true,
@@ -7220,7 +7168,7 @@
         {
           "target": "generic",
           "status": "pass",
-          "adapter": "dist-yao\\targets\\generic\\adapter.json",
+          "adapter": "dist-yao-final\\targets\\generic\\adapter.json",
           "permission_model": "agent-skills-compatible-metadata",
           "native_enforcement": false,
           "metadata_fallback_explicit": true,
@@ -7300,7 +7248,7 @@
         {
           "target": "vscode",
           "status": "pass",
-          "adapter": "dist-yao\\targets\\vscode\\adapter.json",
+          "adapter": "dist-yao-final\\targets\\vscode\\adapter.json",
           "permission_model": "vscode-workspace-trust-plus-metadata",
           "native_enforcement": false,
           "metadata_fallback_explicit": true,
@@ -7388,29 +7336,28 @@
       "ok": true,
       "skill_dir": "<SKILL_ROOT>",
       "summary": {
-        "scanned_files": 68,
-        "script_count": 15,
+        "scanned_files": 35,
+        "script_count": 7,
         "internal_module_count": 1,
         "secret_findings": 0,
         "dependency_files": [
-          "requirements-ci.txt",
-          "pyproject.toml"
+          "requirements-ci.txt"
         ],
-        "network_script_count": 1,
-        "network_policy_covered_count": 1,
+        "network_script_count": 0,
+        "network_policy_covered_count": 0,
         "network_policy_missing_count": 0,
-        "file_write_script_count": 9,
-        "permission_required_count": 3,
-        "permission_approved_count": 3,
+        "file_write_script_count": 4,
+        "permission_required_count": 2,
+        "permission_approved_count": 2,
         "permission_missing_count": 0,
         "permission_invalid_count": 0,
         "permission_expired_count": 0,
-        "help_smoke_checked_count": 14,
+        "help_smoke_checked_count": 6,
         "help_smoke_failed_count": 0,
         "interactive_script_count": 0,
         "package_hash_scope": "source-contract-without-generated-reports",
-        "package_hash_file_count": 68,
-        "package_sha256": "67efdf7a3ec8b11598cf963406a50252ff43485977c284ccae96add9b61e45f6"
+        "package_hash_file_count": 35,
+        "package_sha256": "37d886ff9fd5b7decc8e5e9d57c4100f2b04e0a68d8f601ca1c305276ff7968a"
       },
       "failures": [],
       "warnings": [],
@@ -7429,24 +7376,6 @@
           "uses_subprocess": true,
           "network_urls": [],
           "network_hosts": []
-        },
-        {
-          "path": "scripts\\audit_ap_courses.py",
-          "interface": "cli",
-          "interface_declared": false,
-          "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
-          "has_argparse": true,
-          "has_main_guard": true,
-          "uses_input": false,
-          "uses_network": true,
-          "uses_file_write": true,
-          "uses_subprocess": false,
-          "network_urls": [
-            "https://apstudents.collegeboard.org/courses"
-          ],
-          "network_hosts": [
-            "apstudents.collegeboard.org"
-          ]
         },
         {
           "path": "scripts\\bootstrap_runtime.py",
@@ -7469,52 +7398,10 @@
           ]
         },
         {
-          "path": "scripts\\build_skill_store_package.py",
-          "interface": "cli",
-          "interface_declared": false,
-          "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
-          "has_argparse": true,
-          "has_main_guard": true,
-          "uses_input": false,
-          "uses_network": false,
-          "uses_file_write": true,
-          "uses_subprocess": false,
-          "network_urls": [],
-          "network_hosts": []
-        },
-        {
-          "path": "scripts\\capture_release_assets.py",
-          "interface": "cli",
-          "interface_declared": false,
-          "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
-          "has_argparse": true,
-          "has_main_guard": true,
-          "uses_input": false,
-          "uses_network": false,
-          "uses_file_write": true,
-          "uses_subprocess": true,
-          "network_urls": [],
-          "network_hosts": []
-        },
-        {
           "path": "scripts\\doctor.py",
           "interface": "cli",
           "interface_declared": true,
           "interface_reason": "Read-only packaged runtime integrity and readiness check.",
-          "has_argparse": true,
-          "has_main_guard": true,
-          "uses_input": false,
-          "uses_network": false,
-          "uses_file_write": false,
-          "uses_subprocess": true,
-          "network_urls": [],
-          "network_hosts": []
-        },
-        {
-          "path": "scripts\\finalize_release_samples.py",
-          "interface": "cli",
-          "interface_declared": false,
-          "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
           "has_argparse": true,
           "has_main_guard": true,
           "uses_input": false,
@@ -7553,20 +7440,6 @@
           "network_hosts": []
         },
         {
-          "path": "scripts\\render_intro_animation.py",
-          "interface": "cli",
-          "interface_declared": false,
-          "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
-          "has_argparse": true,
-          "has_main_guard": true,
-          "uses_input": false,
-          "uses_network": false,
-          "uses_file_write": true,
-          "uses_subprocess": true,
-          "network_urls": [],
-          "network_hosts": []
-        },
-        {
           "path": "scripts\\run_runtime.py",
           "interface": "cli",
           "interface_declared": true,
@@ -7595,54 +7468,6 @@
           ]
         },
         {
-          "path": "scripts\\scan_for_raw_keys.py",
-          "interface": "cli",
-          "interface_declared": false,
-          "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
-          "has_argparse": true,
-          "has_main_guard": true,
-          "uses_input": false,
-          "uses_network": false,
-          "uses_file_write": false,
-          "uses_subprocess": false,
-          "network_urls": [],
-          "network_hosts": []
-        },
-        {
-          "path": "scripts\\sync_intro_animation_sources.py",
-          "interface": "cli",
-          "interface_declared": false,
-          "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
-          "has_argparse": true,
-          "has_main_guard": true,
-          "uses_input": false,
-          "uses_network": false,
-          "uses_file_write": true,
-          "uses_subprocess": false,
-          "network_urls": [
-            "https://unpkg.com/react@18.3.1/umd/react.development.js",
-            "https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js",
-            "https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
-          ],
-          "network_hosts": [
-            "unpkg.com"
-          ]
-        },
-        {
-          "path": "scripts\\verify_release_samples.py",
-          "interface": "cli",
-          "interface_declared": false,
-          "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
-          "has_argparse": true,
-          "has_main_guard": true,
-          "uses_input": false,
-          "uses_network": false,
-          "uses_file_write": false,
-          "uses_subprocess": false,
-          "network_urls": [],
-          "network_hosts": []
-        },
-        {
           "path": "scripts\\write_concept_explanations_from_jobs.py",
           "interface": "cli",
           "interface_declared": true,
@@ -7659,8 +7484,7 @@
       ],
       "dependencies": {
         "present": [
-          "requirements-ci.txt",
-          "pyproject.toml"
+          "requirements-ci.txt"
         ],
         "pinned": [
           "pypdf==6.14.2",
@@ -7674,10 +7498,8 @@
         "present": true,
         "path": "security/network_policy.json",
         "schema_version": "1.0",
-        "network_script_count": 1,
-        "covered_scripts": [
-          "scripts\\audit_ap_courses.py"
-        ],
+        "network_script_count": 0,
+        "covered_scripts": [],
         "missing_scripts": [],
         "mismatches": [],
         "default_policy": {
@@ -7689,23 +7511,13 @@
       "help_smoke": {
         "enabled": true,
         "timeout_seconds": 5.0,
-        "candidate_count": 14,
-        "checked_count": 14,
-        "passed_count": 14,
+        "candidate_count": 6,
+        "checked_count": 6,
+        "passed_count": 6,
         "failed_count": 0,
         "skipped_count": 1,
         "failed_scripts": [],
         "results": [
-          {
-            "path": "scripts\\audit_ap_courses.py",
-            "command": "python3 scripts\\audit_ap_courses.py --help",
-            "returncode": 0,
-            "timed_out": false,
-            "passed": true,
-            "has_help_text": true,
-            "stdout_excerpt": "usage: audit_ap_courses.py [-h] --out OUT [--delay DELAY] [--reuse-pages]\n\noptions:\n  -h, --help     show this help message and exit\n  --out OUT\n  --delay DELAY\n  --reuse-pages  Parse previously saved directory/course HTML instead of\n      ",
-            "stderr_excerpt": ""
-          },
           {
             "path": "scripts\\bootstrap_runtime.py",
             "command": "python3 scripts\\bootstrap_runtime.py --help",
@@ -7717,26 +7529,6 @@
             "stderr_excerpt": ""
           },
           {
-            "path": "scripts\\build_skill_store_package.py",
-            "command": "python3 scripts\\build_skill_store_package.py --help",
-            "returncode": 0,
-            "timed_out": false,
-            "passed": true,
-            "has_help_text": true,
-            "stdout_excerpt": "usage: build_skill_store_package.py [-h] [--source SOURCE] [--output OUTPUT]\n\nBuild the versioned standard Skill ZIP and SHA-256 file.\n\noptions:\n  -h, --help       show this help message and exit\n  --source SOURCE\n  --output OUTPUT",
-            "stderr_excerpt": ""
-          },
-          {
-            "path": "scripts\\capture_release_assets.py",
-            "command": "python3 scripts\\capture_release_assets.py --help",
-            "returncode": 0,
-            "timed_out": false,
-            "passed": true,
-            "has_help_text": true,
-            "stdout_excerpt": "usage: capture_release_assets.py [-h] [--outputs-root OUTPUTS_ROOT]\n                                 [--docs-assets DOCS_ASSETS]\n                                 [--viewport-width VIEWPORT_WIDTH]\n                                 [--viewport",
-            "stderr_excerpt": ""
-          },
-          {
             "path": "scripts\\doctor.py",
             "command": "python3 scripts\\doctor.py --help",
             "returncode": 0,
@@ -7744,16 +7536,6 @@
             "passed": true,
             "has_help_text": true,
             "stdout_excerpt": "usage: doctor.py [-h] [--deep]\n\nVerify the packaged handbook runtime.\n\noptions:\n  -h, --help  show this help message and exit\n  --deep      Also run the packaged CLI help command.",
-            "stderr_excerpt": ""
-          },
-          {
-            "path": "scripts\\finalize_release_samples.py",
-            "command": "python3 scripts\\finalize_release_samples.py --help",
-            "returncode": 0,
-            "timed_out": false,
-            "passed": true,
-            "has_help_text": true,
-            "stdout_excerpt": "usage: finalize_release_samples.py [-h] [--outputs-root OUTPUTS_ROOT]\n                                   [--skip-verify]\n\nRegenerate the showcase release samples, export PDFs, and verify final\ncompleteness.\n\noptions:\n  -h, --help           ",
             "stderr_excerpt": ""
           },
           {
@@ -7777,16 +7559,6 @@
             "stderr_excerpt": ""
           },
           {
-            "path": "scripts\\render_intro_animation.py",
-            "command": "python3 scripts\\render_intro_animation.py --help",
-            "returncode": 0,
-            "timed_out": false,
-            "passed": true,
-            "has_help_text": true,
-            "stdout_excerpt": "usage: render_intro_animation.py [-h] [--html HTML] [--mp4 MP4] [--gif GIF]\n                                 [--fps FPS] [--duration DURATION]\n                                 [--start-offset START_OFFSET] [--width WIDTH]\n                  ",
-            "stderr_excerpt": ""
-          },
-          {
             "path": "scripts\\run_runtime.py",
             "command": "python3 scripts\\run_runtime.py --help",
             "returncode": 0,
@@ -7794,36 +7566,6 @@
             "passed": true,
             "has_help_text": true,
             "stdout_excerpt": "usage: run_runtime.py [-h] ...\n\nRun a packaged intl-exam-guide command after a -- delimiter.\n\npositional arguments:\n  runtime_args\n\noptions:\n  -h, --help    show this help message and exit",
-            "stderr_excerpt": ""
-          },
-          {
-            "path": "scripts\\scan_for_raw_keys.py",
-            "command": "python3 scripts\\scan_for_raw_keys.py --help",
-            "returncode": 0,
-            "timed_out": false,
-            "passed": true,
-            "has_help_text": true,
-            "stdout_excerpt": "usage: scan_for_raw_keys.py [-h] [--max-bytes MAX_BYTES] [roots ...]\n\nScan text files for raw API-key-looking values.\n\npositional arguments:\n  roots                 Directories or files to scan.\n\noptions:\n  -h, --help            show this h",
-            "stderr_excerpt": ""
-          },
-          {
-            "path": "scripts\\sync_intro_animation_sources.py",
-            "command": "python3 scripts\\sync_intro_animation_sources.py --help",
-            "returncode": 0,
-            "timed_out": false,
-            "passed": true,
-            "has_help_text": true,
-            "stdout_excerpt": "usage: sync_intro_animation_sources.py [-h] [--check]\n\nRebuild the two standalone intro pages from shared animation sources.\n\noptions:\n  -h, --help  show this help message and exit\n  --check     Fail when an index is stale.",
-            "stderr_excerpt": ""
-          },
-          {
-            "path": "scripts\\verify_release_samples.py",
-            "command": "python3 scripts\\verify_release_samples.py --help",
-            "returncode": 0,
-            "timed_out": false,
-            "passed": true,
-            "has_help_text": true,
-            "stdout_excerpt": "usage: verify_release_samples.py [-h] [--outputs-root OUTPUTS_ROOT]\n                                 [--evidence-manifest EVIDENCE_MANIFEST]\n                                 [--legacy-outputs] [--allow-pending]\n\nVerify release sample guide ",
             "stderr_excerpt": ""
           },
           {
@@ -7851,58 +7593,29 @@
         "reviewed_at": "2026-07-25",
         "required_capabilities": [
           "file_write",
-          "network",
           "subprocess"
         ],
         "approved_capabilities": [
           "file_write",
-          "network",
           "subprocess"
         ],
         "missing_capabilities": [],
         "invalid_capabilities": [],
         "expired_capabilities": [],
-        "approval_count": 3,
-        "required_count": 3,
+        "approval_count": 2,
+        "required_count": 2,
         "missing_count": 0,
         "invalid_count": 0,
         "expired_count": 0,
         "approvals": [
           {
-            "capability": "network",
-            "status": "approved",
-            "scripts": [
-              "scripts\\audit_ap_courses.py"
-            ],
-            "reviewer": "Codex migration audit",
-            "scope": "Pinned dependency bootstrap and official syllabus retrieval from the bounded hosts in security/network_policy.json.",
-            "reason": "The isolated runtime needs pinned package installation, and handbook source acquisition needs the confirmed official exam-board or College Board host.",
-            "expires_at": "2027-07-25",
-            "evidence": [
-              "security/network_policy.json",
-              "references/runtime-contract.md"
-            ],
-            "target_enforcement": {
-              "openai": "Operator-visible network policy metadata",
-              "claude": "Adapter network policy metadata",
-              "generic": "Explicit host allowlist and operator review",
-              "vscode": "Workspace trust plus explicit host allowlist"
-            },
-            "validation": []
-          },
-          {
             "capability": "file_write",
             "status": "approved",
             "scripts": [
               "scripts\\_runtime.py",
-              "scripts\\audit_ap_courses.py",
               "scripts\\bootstrap_runtime.py",
-              "scripts\\build_skill_store_package.py",
-              "scripts\\capture_release_assets.py",
               "scripts\\import_concept_explanations.py",
-              "scripts\\import_infographic_assets.py",
-              "scripts\\render_intro_animation.py",
-              "scripts\\sync_intro_animation_sources.py"
+              "scripts\\import_infographic_assets.py"
             ],
             "reviewer": "Codex migration audit",
             "scope": "Versioned isolated runtime cache, atomic readiness marker, and the handbook output directory explicitly selected by the user.",
@@ -7927,10 +7640,7 @@
             "scripts": [
               "scripts\\_runtime.py",
               "scripts\\bootstrap_runtime.py",
-              "scripts\\capture_release_assets.py",
               "scripts\\doctor.py",
-              "scripts\\finalize_release_samples.py",
-              "scripts\\render_intro_animation.py",
               "scripts\\run_runtime.py"
             ],
             "reviewer": "Codex migration audit",
@@ -8161,7 +7871,7 @@
     "promotion": {},
     "atlas": {
       "ok": true,
-      "workspace_root": "<WORKSPACE_ROOT>",
+      "workspace_root": "<SKILL_ROOT>",
       "summary": {
         "skill_count": 1,
         "actionable_skill_count": 1,
@@ -8184,18 +7894,18 @@
         "rules": []
       },
       "catalog": {
-        "workspace_root": "<WORKSPACE_ROOT>",
-        "generated_at": "2026-07-25",
+        "workspace_root": "<SKILL_ROOT>",
+        "generated_at": "2026-07-27",
         "skills": [
           {
             "name": "exam-revision-handbook",
-            "path": "exam-revision-handbook",
+            "path": ".",
             "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
             "owner": "Ethan",
-            "version": "0.7.0",
+            "version": "0.7.1",
             "status": "active",
             "maturity": "governed",
-            "updated_at": "2026-07-25",
+            "updated_at": "2026-07-27",
             "review_cadence": "per-release",
             "targets": [
               "openai",
@@ -8219,7 +7929,7 @@
               "references/runtime-contract.md",
               "references/scientific_vector_fallback.md",
               "references/workflow-contract.md",
-              "assets/runtime/gcse_igcse_alevel_ap_revision_guide-0.6.2-py3-none-any.whl",
+              "assets/runtime/exam_revision_handbook-0.7.1-py3-none-any.whl",
               "assets/runtime/runtime-lock.json"
             ],
             "token_set": [
@@ -8274,7 +7984,7 @@
             "scope_reason": "default release-actionable skill",
             "telemetry": {
               "report_present": true,
-              "report": "exam-revision-handbook\\reports\\adoption_drift_report.json",
+              "report": "reports\\adoption_drift_report.json",
               "risk_band": "no-data",
               "event_count": 0,
               "adoption_sample_count": 0,
@@ -8306,7 +8016,7 @@
         "nodes": [
           {
             "name": "exam-revision-handbook",
-            "path": "exam-revision-handbook"
+            "path": "."
           }
         ],
         "shared_resources": []
@@ -8318,8 +8028,8 @@
       "drift_signals": [
         {
           "name": "exam-revision-handbook",
-          "path": "exam-revision-handbook",
-          "source": "exam-revision-handbook\\reports\\adoption_drift_report.json",
+          "path": ".",
+          "source": "reports\\adoption_drift_report.json",
           "risk_band": "no-data",
           "signal_types": [
             "no telemetry"
@@ -8343,8 +8053,8 @@
       "actionable_drift_signals": [
         {
           "name": "exam-revision-handbook",
-          "path": "exam-revision-handbook",
-          "source": "exam-revision-handbook\\reports\\adoption_drift_report.json",
+          "path": ".",
+          "source": "reports\\adoption_drift_report.json",
           "risk_band": "no-data",
           "signal_types": [
             "no telemetry"
@@ -8588,7 +8298,7 @@
       "package": {
         "schema_version": "2.0",
         "name": "exam-revision-handbook",
-        "version": "0.7.0",
+        "version": "0.7.1",
         "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
         "targets": [
           "openai",
@@ -8603,8 +8313,8 @@
         "trust_level": "managed",
         "license": "MIT",
         "checksums": {
-          "package_sha256": "be5627cc36a3eabca53952447aeff1f42312d0526348b0ab684b7826e16afed2",
-          "archive_sha256": "e32506d9c8ef035fb040c704b20eb99c0aaade4dae752251e4dce77dcd0f2be2"
+          "package_sha256": "37d886ff9fd5b7decc8e5e9d57c4100f2b04e0a68d8f601ca1c305276ff7968a",
+          "archive_sha256": "6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af"
         },
         "compatibility": {
           "openai": "pass",
@@ -8634,21 +8344,21 @@
         },
         "distribution": {
           "archive_verified": true,
-          "archive_sha256": "e32506d9c8ef035fb040c704b20eb99c0aaade4dae752251e4dce77dcd0f2be2",
+          "archive_sha256": "6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af",
           "package_verification": "reports/package_verification.json",
           "install_simulated": true,
           "install_simulation": "reports/install_simulation.json"
         },
-        "generated_at": "2026-07-25"
+        "generated_at": "2026-07-27"
       },
       "index": {
         "schema_version": "2.0",
-        "generated_at": "2026-07-25",
+        "generated_at": "2026-07-27",
         "package_count": 1,
         "packages": [
           {
             "name": "exam-revision-handbook",
-            "version": "0.7.0",
+            "version": "0.7.1",
             "maturity": "governed",
             "owner": "Ethan",
             "targets": [
@@ -8659,7 +8369,7 @@
               "generic"
             ],
             "package_metadata": "registry/packages/exam-revision-handbook.json",
-            "package_sha256": "be5627cc36a3eabca53952447aeff1f42312d0526348b0ab684b7826e16afed2"
+            "package_sha256": "37d886ff9fd5b7decc8e5e9d57c4100f2b04e0a68d8f601ca1c305276ff7968a"
           }
         ]
       },
@@ -8675,15 +8385,15 @@
     "package_verification": {
       "ok": true,
       "schema_version": "2.0",
-      "generated_at": "2026-07-25",
+      "generated_at": "2026-07-27",
       "skill_dir": "<SKILL_ROOT>",
-      "package_dir": "<SKILL_ROOT>\\dist-yao",
+      "package_dir": "<SKILL_ROOT>\\dist-yao-final",
       "summary": {
         "target_count": 4,
         "adapter_count": 4,
         "archive_present": true,
-        "archive_sha256": "e32506d9c8ef035fb040c704b20eb99c0aaade4dae752251e4dce77dcd0f2be2",
-        "archive_entry_count": 112,
+        "archive_sha256": "6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af",
+        "archive_entry_count": 205,
         "nested_skill_entry_count": 0,
         "failure_count": 0,
         "warning_count": 0
@@ -8692,17 +8402,7 @@
         {
           "id": "package-manifest",
           "status": "pass",
-          "detail": "Package manifest exists: <SKILL_ROOT>\\dist-yao\\manifest.json"
-        },
-        {
-          "id": "claude-adapter",
-          "status": "pass",
-          "detail": "Adapter exists for target: claude"
-        },
-        {
-          "id": "generic-adapter",
-          "status": "pass",
-          "detail": "Adapter exists for target: generic"
+          "detail": "Package manifest exists: <SKILL_ROOT>\\dist-yao-final\\manifest.json"
         },
         {
           "id": "openai-adapter",
@@ -8710,9 +8410,574 @@
           "detail": "Adapter exists for target: openai"
         },
         {
+          "id": "openai-field-name",
+          "status": "pass",
+          "detail": "openai adapter includes field: name"
+        },
+        {
+          "id": "openai-field-description",
+          "status": "pass",
+          "detail": "openai adapter includes field: description"
+        },
+        {
+          "id": "openai-field-version",
+          "status": "pass",
+          "detail": "openai adapter includes field: version"
+        },
+        {
+          "id": "openai-field-display_name",
+          "status": "pass",
+          "detail": "openai adapter includes field: display_name"
+        },
+        {
+          "id": "openai-field-short_description",
+          "status": "pass",
+          "detail": "openai adapter includes field: short_description"
+        },
+        {
+          "id": "openai-field-default_prompt",
+          "status": "pass",
+          "detail": "openai adapter includes field: default_prompt"
+        },
+        {
+          "id": "openai-field-job_to_be_done",
+          "status": "pass",
+          "detail": "openai adapter includes field: job_to_be_done"
+        },
+        {
+          "id": "openai-field-ir_source",
+          "status": "pass",
+          "detail": "openai adapter includes field: ir_source"
+        },
+        {
+          "id": "openai-field-ir_schema_version",
+          "status": "pass",
+          "detail": "openai adapter includes field: ir_schema_version"
+        },
+        {
+          "id": "openai-field-semantic_contract",
+          "status": "pass",
+          "detail": "openai adapter includes field: semantic_contract"
+        },
+        {
+          "id": "openai-field-semantic_parity",
+          "status": "pass",
+          "detail": "openai adapter includes field: semantic_parity"
+        },
+        {
+          "id": "openai-field-compiler",
+          "status": "pass",
+          "detail": "openai adapter includes field: compiler"
+        },
+        {
+          "id": "openai-field-compiled_contract",
+          "status": "pass",
+          "detail": "openai adapter includes field: compiled_contract"
+        },
+        {
+          "id": "openai-field-permission_contract",
+          "status": "pass",
+          "detail": "openai adapter includes field: permission_contract"
+        },
+        {
+          "id": "openai-field-target_permission_contract",
+          "status": "pass",
+          "detail": "openai adapter includes field: target_permission_contract"
+        },
+        {
+          "id": "openai-field-target_native_contract",
+          "status": "pass",
+          "detail": "openai adapter includes field: target_native_contract"
+        },
+        {
+          "id": "openai-field-target_transform",
+          "status": "pass",
+          "detail": "openai adapter includes field: target_transform"
+        },
+        {
+          "id": "openai-field-canonical_metadata",
+          "status": "pass",
+          "detail": "openai adapter includes field: canonical_metadata"
+        },
+        {
+          "id": "openai-field-canonical_format",
+          "status": "pass",
+          "detail": "openai adapter includes field: canonical_format"
+        },
+        {
+          "id": "openai-field-activation_mode",
+          "status": "pass",
+          "detail": "openai adapter includes field: activation_mode"
+        },
+        {
+          "id": "openai-field-execution_context",
+          "status": "pass",
+          "detail": "openai adapter includes field: execution_context"
+        },
+        {
+          "id": "openai-field-shell",
+          "status": "pass",
+          "detail": "openai adapter includes field: shell"
+        },
+        {
+          "id": "openai-field-trust_level",
+          "status": "pass",
+          "detail": "openai adapter includes field: trust_level"
+        },
+        {
+          "id": "openai-field-remote_inline_execution",
+          "status": "pass",
+          "detail": "openai adapter includes field: remote_inline_execution"
+        },
+        {
+          "id": "openai-field-degradation_strategy",
+          "status": "pass",
+          "detail": "openai adapter includes field: degradation_strategy"
+        },
+        {
+          "id": "openai-field-portability_profile",
+          "status": "pass",
+          "detail": "openai adapter includes field: portability_profile"
+        },
+        {
+          "id": "claude-adapter",
+          "status": "pass",
+          "detail": "Adapter exists for target: claude"
+        },
+        {
+          "id": "claude-field-name",
+          "status": "pass",
+          "detail": "claude adapter includes field: name"
+        },
+        {
+          "id": "claude-field-description",
+          "status": "pass",
+          "detail": "claude adapter includes field: description"
+        },
+        {
+          "id": "claude-field-version",
+          "status": "pass",
+          "detail": "claude adapter includes field: version"
+        },
+        {
+          "id": "claude-field-display_name",
+          "status": "pass",
+          "detail": "claude adapter includes field: display_name"
+        },
+        {
+          "id": "claude-field-short_description",
+          "status": "pass",
+          "detail": "claude adapter includes field: short_description"
+        },
+        {
+          "id": "claude-field-default_prompt",
+          "status": "pass",
+          "detail": "claude adapter includes field: default_prompt"
+        },
+        {
+          "id": "claude-field-job_to_be_done",
+          "status": "pass",
+          "detail": "claude adapter includes field: job_to_be_done"
+        },
+        {
+          "id": "claude-field-ir_source",
+          "status": "pass",
+          "detail": "claude adapter includes field: ir_source"
+        },
+        {
+          "id": "claude-field-ir_schema_version",
+          "status": "pass",
+          "detail": "claude adapter includes field: ir_schema_version"
+        },
+        {
+          "id": "claude-field-semantic_contract",
+          "status": "pass",
+          "detail": "claude adapter includes field: semantic_contract"
+        },
+        {
+          "id": "claude-field-semantic_parity",
+          "status": "pass",
+          "detail": "claude adapter includes field: semantic_parity"
+        },
+        {
+          "id": "claude-field-compiler",
+          "status": "pass",
+          "detail": "claude adapter includes field: compiler"
+        },
+        {
+          "id": "claude-field-compiled_contract",
+          "status": "pass",
+          "detail": "claude adapter includes field: compiled_contract"
+        },
+        {
+          "id": "claude-field-permission_contract",
+          "status": "pass",
+          "detail": "claude adapter includes field: permission_contract"
+        },
+        {
+          "id": "claude-field-target_permission_contract",
+          "status": "pass",
+          "detail": "claude adapter includes field: target_permission_contract"
+        },
+        {
+          "id": "claude-field-target_native_contract",
+          "status": "pass",
+          "detail": "claude adapter includes field: target_native_contract"
+        },
+        {
+          "id": "claude-field-target_transform",
+          "status": "pass",
+          "detail": "claude adapter includes field: target_transform"
+        },
+        {
+          "id": "claude-field-canonical_metadata",
+          "status": "pass",
+          "detail": "claude adapter includes field: canonical_metadata"
+        },
+        {
+          "id": "claude-field-canonical_format",
+          "status": "pass",
+          "detail": "claude adapter includes field: canonical_format"
+        },
+        {
+          "id": "claude-field-activation_mode",
+          "status": "pass",
+          "detail": "claude adapter includes field: activation_mode"
+        },
+        {
+          "id": "claude-field-execution_context",
+          "status": "pass",
+          "detail": "claude adapter includes field: execution_context"
+        },
+        {
+          "id": "claude-field-shell",
+          "status": "pass",
+          "detail": "claude adapter includes field: shell"
+        },
+        {
+          "id": "claude-field-trust_level",
+          "status": "pass",
+          "detail": "claude adapter includes field: trust_level"
+        },
+        {
+          "id": "claude-field-remote_inline_execution",
+          "status": "pass",
+          "detail": "claude adapter includes field: remote_inline_execution"
+        },
+        {
+          "id": "claude-field-degradation_strategy",
+          "status": "pass",
+          "detail": "claude adapter includes field: degradation_strategy"
+        },
+        {
+          "id": "claude-field-portability_profile",
+          "status": "pass",
+          "detail": "claude adapter includes field: portability_profile"
+        },
+        {
+          "id": "generic-adapter",
+          "status": "pass",
+          "detail": "Adapter exists for target: generic"
+        },
+        {
+          "id": "generic-field-name",
+          "status": "pass",
+          "detail": "generic adapter includes field: name"
+        },
+        {
+          "id": "generic-field-description",
+          "status": "pass",
+          "detail": "generic adapter includes field: description"
+        },
+        {
+          "id": "generic-field-version",
+          "status": "pass",
+          "detail": "generic adapter includes field: version"
+        },
+        {
+          "id": "generic-field-display_name",
+          "status": "pass",
+          "detail": "generic adapter includes field: display_name"
+        },
+        {
+          "id": "generic-field-short_description",
+          "status": "pass",
+          "detail": "generic adapter includes field: short_description"
+        },
+        {
+          "id": "generic-field-default_prompt",
+          "status": "pass",
+          "detail": "generic adapter includes field: default_prompt"
+        },
+        {
+          "id": "generic-field-job_to_be_done",
+          "status": "pass",
+          "detail": "generic adapter includes field: job_to_be_done"
+        },
+        {
+          "id": "generic-field-ir_source",
+          "status": "pass",
+          "detail": "generic adapter includes field: ir_source"
+        },
+        {
+          "id": "generic-field-ir_schema_version",
+          "status": "pass",
+          "detail": "generic adapter includes field: ir_schema_version"
+        },
+        {
+          "id": "generic-field-semantic_contract",
+          "status": "pass",
+          "detail": "generic adapter includes field: semantic_contract"
+        },
+        {
+          "id": "generic-field-semantic_parity",
+          "status": "pass",
+          "detail": "generic adapter includes field: semantic_parity"
+        },
+        {
+          "id": "generic-field-compiler",
+          "status": "pass",
+          "detail": "generic adapter includes field: compiler"
+        },
+        {
+          "id": "generic-field-compiled_contract",
+          "status": "pass",
+          "detail": "generic adapter includes field: compiled_contract"
+        },
+        {
+          "id": "generic-field-permission_contract",
+          "status": "pass",
+          "detail": "generic adapter includes field: permission_contract"
+        },
+        {
+          "id": "generic-field-target_permission_contract",
+          "status": "pass",
+          "detail": "generic adapter includes field: target_permission_contract"
+        },
+        {
+          "id": "generic-field-target_native_contract",
+          "status": "pass",
+          "detail": "generic adapter includes field: target_native_contract"
+        },
+        {
+          "id": "generic-field-target_transform",
+          "status": "pass",
+          "detail": "generic adapter includes field: target_transform"
+        },
+        {
+          "id": "generic-field-canonical_metadata",
+          "status": "pass",
+          "detail": "generic adapter includes field: canonical_metadata"
+        },
+        {
+          "id": "generic-field-canonical_format",
+          "status": "pass",
+          "detail": "generic adapter includes field: canonical_format"
+        },
+        {
+          "id": "generic-field-activation_mode",
+          "status": "pass",
+          "detail": "generic adapter includes field: activation_mode"
+        },
+        {
+          "id": "generic-field-execution_context",
+          "status": "pass",
+          "detail": "generic adapter includes field: execution_context"
+        },
+        {
+          "id": "generic-field-shell",
+          "status": "pass",
+          "detail": "generic adapter includes field: shell"
+        },
+        {
+          "id": "generic-field-trust_level",
+          "status": "pass",
+          "detail": "generic adapter includes field: trust_level"
+        },
+        {
+          "id": "generic-field-remote_inline_execution",
+          "status": "pass",
+          "detail": "generic adapter includes field: remote_inline_execution"
+        },
+        {
+          "id": "generic-field-degradation_strategy",
+          "status": "pass",
+          "detail": "generic adapter includes field: degradation_strategy"
+        },
+        {
+          "id": "generic-field-portability_profile",
+          "status": "pass",
+          "detail": "generic adapter includes field: portability_profile"
+        },
+        {
           "id": "vscode-adapter",
           "status": "pass",
           "detail": "Adapter exists for target: vscode"
+        },
+        {
+          "id": "vscode-field-name",
+          "status": "pass",
+          "detail": "vscode adapter includes field: name"
+        },
+        {
+          "id": "vscode-field-description",
+          "status": "pass",
+          "detail": "vscode adapter includes field: description"
+        },
+        {
+          "id": "vscode-field-version",
+          "status": "pass",
+          "detail": "vscode adapter includes field: version"
+        },
+        {
+          "id": "vscode-field-display_name",
+          "status": "pass",
+          "detail": "vscode adapter includes field: display_name"
+        },
+        {
+          "id": "vscode-field-short_description",
+          "status": "pass",
+          "detail": "vscode adapter includes field: short_description"
+        },
+        {
+          "id": "vscode-field-default_prompt",
+          "status": "pass",
+          "detail": "vscode adapter includes field: default_prompt"
+        },
+        {
+          "id": "vscode-field-job_to_be_done",
+          "status": "pass",
+          "detail": "vscode adapter includes field: job_to_be_done"
+        },
+        {
+          "id": "vscode-field-ir_source",
+          "status": "pass",
+          "detail": "vscode adapter includes field: ir_source"
+        },
+        {
+          "id": "vscode-field-ir_schema_version",
+          "status": "pass",
+          "detail": "vscode adapter includes field: ir_schema_version"
+        },
+        {
+          "id": "vscode-field-semantic_contract",
+          "status": "pass",
+          "detail": "vscode adapter includes field: semantic_contract"
+        },
+        {
+          "id": "vscode-field-semantic_parity",
+          "status": "pass",
+          "detail": "vscode adapter includes field: semantic_parity"
+        },
+        {
+          "id": "vscode-field-compiler",
+          "status": "pass",
+          "detail": "vscode adapter includes field: compiler"
+        },
+        {
+          "id": "vscode-field-compiled_contract",
+          "status": "pass",
+          "detail": "vscode adapter includes field: compiled_contract"
+        },
+        {
+          "id": "vscode-field-permission_contract",
+          "status": "pass",
+          "detail": "vscode adapter includes field: permission_contract"
+        },
+        {
+          "id": "vscode-field-target_permission_contract",
+          "status": "pass",
+          "detail": "vscode adapter includes field: target_permission_contract"
+        },
+        {
+          "id": "vscode-field-target_native_contract",
+          "status": "pass",
+          "detail": "vscode adapter includes field: target_native_contract"
+        },
+        {
+          "id": "vscode-field-target_transform",
+          "status": "pass",
+          "detail": "vscode adapter includes field: target_transform"
+        },
+        {
+          "id": "vscode-field-canonical_metadata",
+          "status": "pass",
+          "detail": "vscode adapter includes field: canonical_metadata"
+        },
+        {
+          "id": "vscode-field-canonical_format",
+          "status": "pass",
+          "detail": "vscode adapter includes field: canonical_format"
+        },
+        {
+          "id": "vscode-field-activation_mode",
+          "status": "pass",
+          "detail": "vscode adapter includes field: activation_mode"
+        },
+        {
+          "id": "vscode-field-execution_context",
+          "status": "pass",
+          "detail": "vscode adapter includes field: execution_context"
+        },
+        {
+          "id": "vscode-field-shell",
+          "status": "pass",
+          "detail": "vscode adapter includes field: shell"
+        },
+        {
+          "id": "vscode-field-trust_level",
+          "status": "pass",
+          "detail": "vscode adapter includes field: trust_level"
+        },
+        {
+          "id": "vscode-field-remote_inline_execution",
+          "status": "pass",
+          "detail": "vscode adapter includes field: remote_inline_execution"
+        },
+        {
+          "id": "vscode-field-degradation_strategy",
+          "status": "pass",
+          "detail": "vscode adapter includes field: degradation_strategy"
+        },
+        {
+          "id": "vscode-field-portability_profile",
+          "status": "pass",
+          "detail": "vscode adapter includes field: portability_profile"
+        },
+        {
+          "id": "openai-file-targets/openai/adapter.json",
+          "status": "pass",
+          "detail": "Package contains targets/openai/adapter.json"
+        },
+        {
+          "id": "openai-file-targets/openai/agents/openai.yaml",
+          "status": "pass",
+          "detail": "Package contains targets/openai/agents/openai.yaml"
+        },
+        {
+          "id": "claude-file-targets/claude/adapter.json",
+          "status": "pass",
+          "detail": "Package contains targets/claude/adapter.json"
+        },
+        {
+          "id": "claude-file-targets/claude/README.md",
+          "status": "pass",
+          "detail": "Package contains targets/claude/README.md"
+        },
+        {
+          "id": "generic-file-targets/generic/adapter.json",
+          "status": "pass",
+          "detail": "Package contains targets/generic/adapter.json"
+        },
+        {
+          "id": "vscode-file-targets/vscode/adapter.json",
+          "status": "pass",
+          "detail": "Package contains targets/vscode/adapter.json"
+        },
+        {
+          "id": "vscode-file-targets/vscode/README.md",
+          "status": "pass",
+          "detail": "Package contains targets/vscode/README.md"
         },
         {
           "id": "archive-safe-paths",
@@ -8760,6 +9025,11 @@
           "detail": "Registry package version matches package manifest"
         },
         {
+          "id": "registry-compat-openai",
+          "status": "pass",
+          "detail": "Registry compatibility is reviewable for target: openai"
+        },
+        {
           "id": "registry-compat-claude",
           "status": "pass",
           "detail": "Registry compatibility is reviewable for target: claude"
@@ -8770,11 +9040,6 @@
           "detail": "Registry compatibility is reviewable for target: generic"
         },
         {
-          "id": "registry-compat-openai",
-          "status": "pass",
-          "detail": "Registry compatibility is reviewable for target: openai"
-        },
-        {
           "id": "registry-compat-vscode",
           "status": "pass",
           "detail": "Registry compatibility is reviewable for target: vscode"
@@ -8783,8 +9048,8 @@
       "failures": [],
       "warnings": [],
       "artifacts": {
-        "manifest": "<SKILL_ROOT>\\dist-yao\\manifest.json",
-        "archive": "<SKILL_ROOT>\\dist-yao\\exam-revision-handbook.zip",
+        "manifest": "<SKILL_ROOT>\\dist-yao-final\\manifest.json",
+        "archive": "<SKILL_ROOT>\\dist-yao-final\\exam-revision-handbook.zip",
         "json": "<SKILL_ROOT>\\reports\\package_verification.json",
         "markdown": "<SKILL_ROOT>\\reports\\package_verification.md"
       }
@@ -8792,14 +9057,14 @@
     "install_simulation": {
       "ok": true,
       "schema_version": "2.0",
-      "generated_at": "2026-07-25",
+      "generated_at": "2026-07-27",
       "skill_dir": "<SKILL_ROOT>",
-      "package_dir": "<SKILL_ROOT>\\dist-yao",
-      "install_root": "<SKILL_ROOT>\\install-sim-final\\simulate-exam-revision-handbook",
-      "installed_skill_dir": "<SKILL_ROOT>\\install-sim-final\\simulate-exam-revision-handbook\\exam-revision-handbook",
+      "package_dir": "<SKILL_ROOT>\\dist-yao-final",
+      "install_root": "<SKILL_ROOT>\\dist-install-simulation\\simulate-exam-revision-handbook",
+      "installed_skill_dir": "<SKILL_ROOT>\\dist-install-simulation\\simulate-exam-revision-handbook\\exam-revision-handbook",
       "summary": {
         "archive_present": true,
-        "archive_entry_count": 112,
+        "archive_entry_count": 205,
         "nested_skill_entry_count": 0,
         "archive_extracted": true,
         "entrypoint_loaded": true,
@@ -8818,7 +9083,7 @@
         {
           "id": "archive-present",
           "status": "pass",
-          "detail": "Package archive exists: <SKILL_ROOT>\\dist-yao\\exam-revision-handbook.zip"
+          "detail": "Package archive exists: <SKILL_ROOT>\\dist-yao-final\\exam-revision-handbook.zip"
         },
         {
           "id": "archive-safe-paths",
@@ -9029,8 +9294,8 @@
       "failures": [],
       "warnings": [],
       "artifacts": {
-        "archive": "<SKILL_ROOT>\\dist-yao\\exam-revision-handbook.zip",
-        "package_manifest": "<SKILL_ROOT>\\dist-yao\\manifest.json",
+        "archive": "<SKILL_ROOT>\\dist-yao-final\\exam-revision-handbook.zip",
+        "package_manifest": "<SKILL_ROOT>\\dist-yao-final\\manifest.json",
         "json": "<SKILL_ROOT>\\reports\\install_simulation.json",
         "markdown": "<SKILL_ROOT>\\reports\\install_simulation.md"
       }
@@ -9038,10 +9303,10 @@
     "upgrade_check": {},
     "manifest": {
       "name": "exam-revision-handbook",
-      "version": "0.7.0",
+      "version": "0.7.1",
       "owner": "Ethan",
       "license": "MIT",
-      "updated_at": "2026-07-25",
+      "updated_at": "2026-07-27",
       "status": "active",
       "maturity_tier": "governed",
       "lifecycle_stage": "governed",

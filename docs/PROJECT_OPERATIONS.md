@@ -1,13 +1,13 @@
 # Project Operations Guide / 项目维护说明
 
-Last updated: 2026-07-25 for `v0.7.0`.
+Last updated: 2026-07-27 for `v0.7.1`.
 
 This file defines how to maintain and release the single public project. Read
 [`PROJECT.md`](../PROJECT.md) first.
 
 ## 1. Canonical Project
 
-- Repository: `mianbaofang/gcse-igcse-alevel-ap-revision-guide`
+- Repository: `mianbaofang/exam-revision-handbook`
 - Default branch: `main`
 - Skill name: `exam-revision-handbook`
 - Canonical Skill entry: root `SKILL.md`
@@ -107,15 +107,14 @@ not rewritten as if a later change existed in an earlier release.
 
 ## 5. Versioning
 
-The public Skill release version lives in `manifest.json` and drives the Git
-tag, Release name, ZIP name, and checksum name.
+The public Skill release version lives in `manifest.json` and drives the Python
+package version, embedded Wheel, runtime lock, Git tag, Release name, ZIP name,
+and checksum name. They must share one canonical name and version.
 
-The embedded Python engine has its own integrity-locked version in
-`assets/runtime/runtime-lock.json`. The first standard release, `v0.7.0`, keeps
-the validated `0.6.2` engine command and artifact behavior. Its wheel is
-repacked only for the canonical-root `SKILL.md` help-path correction, and the
-current source and wheel remain 77/77 file-identical. This is an internal
-implementation version, not another product release.
+The v0.7.0 migration retained the validated `0.6.2` engine behavior as its
+compatibility baseline. Starting with v0.7.1, `tests/test_release_identity.py`
+blocks a release when the manifest, package, code, Wheel, runtime lock, or hash
+is stale.
 
 When engine source behavior changes, do not leave the old Wheel in place.
 Rebuild it, update its SHA-256 lock, rerun the entire regression suite, and

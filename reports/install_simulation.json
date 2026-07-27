@@ -1,14 +1,14 @@
 {
   "ok": true,
   "schema_version": "2.0",
-  "generated_at": "2026-07-25",
+  "generated_at": "2026-07-27",
   "skill_dir": "<SKILL_ROOT>",
-  "package_dir": "<SKILL_ROOT>\\dist-yao",
-  "install_root": "<SKILL_ROOT>\\install-sim-final\\simulate-exam-revision-handbook",
-  "installed_skill_dir": "<SKILL_ROOT>\\install-sim-final\\simulate-exam-revision-handbook\\exam-revision-handbook",
+  "package_dir": "<SKILL_ROOT>\\dist-yao-final",
+  "install_root": "<SKILL_ROOT>\\dist-install-simulation\\simulate-exam-revision-handbook",
+  "installed_skill_dir": "<SKILL_ROOT>\\dist-install-simulation\\simulate-exam-revision-handbook\\exam-revision-handbook",
   "summary": {
     "archive_present": true,
-    "archive_entry_count": 112,
+    "archive_entry_count": 205,
     "nested_skill_entry_count": 0,
     "archive_extracted": true,
     "entrypoint_loaded": true,
@@ -27,7 +27,7 @@
     {
       "id": "archive-present",
       "status": "pass",
-      "detail": "Package archive exists: <SKILL_ROOT>\\dist-yao\\exam-revision-handbook.zip"
+      "detail": "Package archive exists: <SKILL_ROOT>\\dist-yao-final\\exam-revision-handbook.zip"
     },
     {
       "id": "archive-safe-paths",
@@ -238,8 +238,8 @@
   "failures": [],
   "warnings": [],
   "artifacts": {
-    "archive": "<SKILL_ROOT>\\dist-yao\\exam-revision-handbook.zip",
-    "package_manifest": "<SKILL_ROOT>\\dist-yao\\manifest.json",
+    "archive": "<SKILL_ROOT>\\dist-yao-final\\exam-revision-handbook.zip",
+    "package_manifest": "<SKILL_ROOT>\\dist-yao-final\\manifest.json",
     "json": "<SKILL_ROOT>\\reports\\install_simulation.json",
     "markdown": "<SKILL_ROOT>\\reports\\install_simulation.md"
   }

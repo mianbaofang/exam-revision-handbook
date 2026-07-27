@@ -1,16 +1,16 @@
 {
-  "workspace_root": "<WORKSPACE_ROOT>",
-  "generated_at": "2026-07-25",
+  "workspace_root": "<SKILL_ROOT>",
+  "generated_at": "2026-07-27",
   "skills": [
     {
       "name": "exam-revision-handbook",
-      "path": "exam-revision-handbook",
+      "path": ".",
       "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
       "owner": "Ethan",
-      "version": "0.7.0",
+      "version": "0.7.1",
       "status": "active",
       "maturity": "governed",
-      "updated_at": "2026-07-25",
+      "updated_at": "2026-07-27",
       "review_cadence": "per-release",
       "targets": [
         "openai",
@@ -34,7 +34,7 @@
         "references/runtime-contract.md",
         "references/scientific_vector_fallback.md",
         "references/workflow-contract.md",
-        "assets/runtime/gcse_igcse_alevel_ap_revision_guide-0.6.2-py3-none-any.whl",
+        "assets/runtime/exam_revision_handbook-0.7.1-py3-none-any.whl",
         "assets/runtime/runtime-lock.json"
       ],
       "token_set": [
@@ -89,7 +89,7 @@
       "scope_reason": "default release-actionable skill",
       "telemetry": {
         "report_present": true,
-        "report": "exam-revision-handbook\\reports\\adoption_drift_report.json",
+        "report": "reports\\adoption_drift_report.json",
         "risk_band": "no-data",
         "event_count": 0,
         "adoption_sample_count": 0,

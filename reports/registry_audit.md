@@ -2,12 +2,12 @@
 
 - OK: `True`
 - Package: `exam-revision-handbook`
-- Version: `0.7.0`
+- Version: `0.7.1`
 - Maturity: `governed`
 - Owner: `Ethan`
 - License: `MIT`
-- Package SHA256: `be5627cc36a3eabca53952447aeff1f42312d0526348b0ab684b7826e16afed2`
-- Archive SHA256: `e32506d9c8ef035fb040c704b20eb99c0aaade4dae752251e4dce77dcd0f2be2`
+- Package SHA256: `37d886ff9fd5b7decc8e5e9d57c4100f2b04e0a68d8f601ca1c305276ff7968a`
+- Archive SHA256: `6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af`
 - Install simulated: `True`
 
 ## Compatibility

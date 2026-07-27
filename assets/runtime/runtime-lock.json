@@ -1,10 +1,10 @@
 {
   "schema_version": "v1-packaged-runtime-lock",
   "engine": {
-    "distribution": "gcse-igcse-alevel-ap-revision-guide",
-    "version": "0.6.2",
-    "file": "gcse_igcse_alevel_ap_revision_guide-0.6.2-py3-none-any.whl",
-    "sha256": "c1a8a6f1a5ce04653092274b5ddcf05281c0281e0ddfefeaa93f7dcdabc93a81",
+    "distribution": "exam-revision-handbook",
+    "version": "0.7.1",
+    "file": "exam_revision_handbook-0.7.1-py3-none-any.whl",
+    "sha256": "34af377292650b74923f1b3c8e0bd98ac8de81148b24e20b0aea219cf864fff0",
     "module": "intl_exam_guide"
   },
   "python": {

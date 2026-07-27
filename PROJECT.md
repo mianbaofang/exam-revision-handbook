@@ -4,14 +4,15 @@
 
 This is one open-source project, not a family of parallel repositories.
 
-- Public repository: `mianbaofang/gcse-igcse-alevel-ap-revision-guide`
+- Public repository: `mianbaofang/exam-revision-handbook`
 - Product name: **Exam Revision Handbook**
 - Canonical Skill name: `exam-revision-handbook`
-- Current Skill release: `v0.7.0`
+- Current Skill release: `v0.7.1`
 - Canonical branch: `main`
 
 本项目只有一个公开仓库和一条持续迭代线。`v0.7.0` 将原有项目迁移为标准
-Skill 结构；以后直接在当前结构上更新，不再维护旧的嵌套 `skill/` 工作流，也不再建立
+Skill 结构，`v0.7.1` 统一仓库、Skill、运行引擎和发布文件的名称与版本；以后直接在
+当前结构上更新，不再维护旧的嵌套 `skill/` 工作流，也不再建立
 第二个公开项目。
 
 迁移前的旧结构已单独归档作为回滚证据，但它不是当前开发来源，不得从归档中复制旧
@@ -23,7 +24,7 @@ release; it is not another edition, structure, or source of truth. `src/` and
 `tests/` are maintenance directories inside the same current version. The
 legacy structure exists only in the external rollback archive.
 
-换句话说，GitHub `main`、对应 tag 和 Release ZIP 就是同一个 `v0.7.0`；ZIP 只是
+换句话说，GitHub `main`、对应 tag 和 Release ZIP 就是同一个 `v0.7.1`；ZIP 只是
 它的下载形式，不是“精简版”、第二套结构或另一条开发线。
 
 ## 2. Product Scope / 产品范围
@@ -87,24 +88,23 @@ part of this one open-source version. They remain in Git so the Skill can be
 maintained and verified. Building the download only removes files a Skill host
 does not run; it never creates another Skill structure or version.
 
-The v0.7.0 download contains one top-level `exam-revision-handbook/` folder with
+The v0.7.1 download contains one top-level `exam-revision-handbook/` folder with
 its root `SKILL.md`, required metadata, references, runtime assets, governed
 evidence, and user-facing runtime/import scripts. It must contain no nested
 `SKILL.md`, no `src/`, no `tests/`, no `docs/`, no cache, and no local path.
 
 ## 5. Runtime And Version Model / 运行时与版本
 
-- `manifest.json` is the Skill release version and currently records `0.7.0`.
-- Git tags and GitHub Releases follow the Skill version: `v0.7.0`.
+- `manifest.json` is the Skill release version and currently records `0.7.1`.
+- Git tags and GitHub Releases follow the Skill version: `v0.7.1`.
 - `assets/runtime/runtime-lock.json` pins the embedded Python engine and its
   exact Wheel hash.
-- The first standard-structure release preserves the validated `0.6.2` engine
-  command and artifact behavior. Its embedded wheel is rebuilt only to replace
-  the deleted `skill/SKILL.md` help path with the canonical root `SKILL.md`; the
-  current source and wheel still match across all 77 engine files. This is an
-  internal baseline, not a second product.
-- A future engine behavior change must update source, tests, Wheel, runtime
-  lock, parity evidence, and release notes together.
+- The v0.7.0 migration preserved the validated `0.6.2` engine behavior as its
+  compatibility baseline. Starting with v0.7.1, the Skill manifest, Python
+  package, embedded Wheel, runtime lock, Git tag, and Release share one version.
+- Every future release must update source, tests, Wheel, runtime lock, parity
+  evidence, and release notes together. The release identity test blocks stale
+  names, versions, Wheel paths, or hashes.
 
 Run the packaged engine only through:
 

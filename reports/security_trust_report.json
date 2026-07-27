@@ -2,29 +2,28 @@
   "ok": true,
   "skill_dir": "<SKILL_ROOT>",
   "summary": {
-    "scanned_files": 68,
-    "script_count": 15,
+    "scanned_files": 35,
+    "script_count": 7,
     "internal_module_count": 1,
     "secret_findings": 0,
     "dependency_files": [
-      "requirements-ci.txt",
-      "pyproject.toml"
+      "requirements-ci.txt"
     ],
-    "network_script_count": 1,
-    "network_policy_covered_count": 1,
+    "network_script_count": 0,
+    "network_policy_covered_count": 0,
     "network_policy_missing_count": 0,
-    "file_write_script_count": 9,
-    "permission_required_count": 3,
-    "permission_approved_count": 3,
+    "file_write_script_count": 4,
+    "permission_required_count": 2,
+    "permission_approved_count": 2,
     "permission_missing_count": 0,
     "permission_invalid_count": 0,
     "permission_expired_count": 0,
-    "help_smoke_checked_count": 14,
+    "help_smoke_checked_count": 6,
     "help_smoke_failed_count": 0,
     "interactive_script_count": 0,
     "package_hash_scope": "source-contract-without-generated-reports",
-    "package_hash_file_count": 68,
-    "package_sha256": "67efdf7a3ec8b11598cf963406a50252ff43485977c284ccae96add9b61e45f6"
+    "package_hash_file_count": 35,
+    "package_sha256": "37d886ff9fd5b7decc8e5e9d57c4100f2b04e0a68d8f601ca1c305276ff7968a"
   },
   "failures": [],
   "warnings": [],
@@ -43,24 +42,6 @@
       "uses_subprocess": true,
       "network_urls": [],
       "network_hosts": []
-    },
-    {
-      "path": "scripts\\audit_ap_courses.py",
-      "interface": "cli",
-      "interface_declared": false,
-      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
-      "has_argparse": true,
-      "has_main_guard": true,
-      "uses_input": false,
-      "uses_network": true,
-      "uses_file_write": true,
-      "uses_subprocess": false,
-      "network_urls": [
-        "https://apstudents.collegeboard.org/courses"
-      ],
-      "network_hosts": [
-        "apstudents.collegeboard.org"
-      ]
     },
     {
       "path": "scripts\\bootstrap_runtime.py",
@@ -83,52 +64,10 @@
       ]
     },
     {
-      "path": "scripts\\build_skill_store_package.py",
-      "interface": "cli",
-      "interface_declared": false,
-      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
-      "has_argparse": true,
-      "has_main_guard": true,
-      "uses_input": false,
-      "uses_network": false,
-      "uses_file_write": true,
-      "uses_subprocess": false,
-      "network_urls": [],
-      "network_hosts": []
-    },
-    {
-      "path": "scripts\\capture_release_assets.py",
-      "interface": "cli",
-      "interface_declared": false,
-      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
-      "has_argparse": true,
-      "has_main_guard": true,
-      "uses_input": false,
-      "uses_network": false,
-      "uses_file_write": true,
-      "uses_subprocess": true,
-      "network_urls": [],
-      "network_hosts": []
-    },
-    {
       "path": "scripts\\doctor.py",
       "interface": "cli",
       "interface_declared": true,
       "interface_reason": "Read-only packaged runtime integrity and readiness check.",
-      "has_argparse": true,
-      "has_main_guard": true,
-      "uses_input": false,
-      "uses_network": false,
-      "uses_file_write": false,
-      "uses_subprocess": true,
-      "network_urls": [],
-      "network_hosts": []
-    },
-    {
-      "path": "scripts\\finalize_release_samples.py",
-      "interface": "cli",
-      "interface_declared": false,
-      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
@@ -167,20 +106,6 @@
       "network_hosts": []
     },
     {
-      "path": "scripts\\render_intro_animation.py",
-      "interface": "cli",
-      "interface_declared": false,
-      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
-      "has_argparse": true,
-      "has_main_guard": true,
-      "uses_input": false,
-      "uses_network": false,
-      "uses_file_write": true,
-      "uses_subprocess": true,
-      "network_urls": [],
-      "network_hosts": []
-    },
-    {
       "path": "scripts\\run_runtime.py",
       "interface": "cli",
       "interface_declared": true,
@@ -209,54 +134,6 @@
       ]
     },
     {
-      "path": "scripts\\scan_for_raw_keys.py",
-      "interface": "cli",
-      "interface_declared": false,
-      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
-      "has_argparse": true,
-      "has_main_guard": true,
-      "uses_input": false,
-      "uses_network": false,
-      "uses_file_write": false,
-      "uses_subprocess": false,
-      "network_urls": [],
-      "network_hosts": []
-    },
-    {
-      "path": "scripts\\sync_intro_animation_sources.py",
-      "interface": "cli",
-      "interface_declared": false,
-      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
-      "has_argparse": true,
-      "has_main_guard": true,
-      "uses_input": false,
-      "uses_network": false,
-      "uses_file_write": true,
-      "uses_subprocess": false,
-      "network_urls": [
-        "https://unpkg.com/react@18.3.1/umd/react.development.js",
-        "https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js",
-        "https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
-      ],
-      "network_hosts": [
-        "unpkg.com"
-      ]
-    },
-    {
-      "path": "scripts\\verify_release_samples.py",
-      "interface": "cli",
-      "interface_declared": false,
-      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
-      "has_argparse": true,
-      "has_main_guard": true,
-      "uses_input": false,
-      "uses_network": false,
-      "uses_file_write": false,
-      "uses_subprocess": false,
-      "network_urls": [],
-      "network_hosts": []
-    },
-    {
       "path": "scripts\\write_concept_explanations_from_jobs.py",
       "interface": "cli",
       "interface_declared": true,
@@ -273,8 +150,7 @@
   ],
   "dependencies": {
     "present": [
-      "requirements-ci.txt",
-      "pyproject.toml"
+      "requirements-ci.txt"
     ],
     "pinned": [
       "pypdf==6.14.2",
@@ -288,10 +164,8 @@
     "present": true,
     "path": "security/network_policy.json",
     "schema_version": "1.0",
-    "network_script_count": 1,
-    "covered_scripts": [
-      "scripts\\audit_ap_courses.py"
-    ],
+    "network_script_count": 0,
+    "covered_scripts": [],
     "missing_scripts": [],
     "mismatches": [],
     "default_policy": {
@@ -303,23 +177,13 @@
   "help_smoke": {
     "enabled": true,
     "timeout_seconds": 5.0,
-    "candidate_count": 14,
-    "checked_count": 14,
-    "passed_count": 14,
+    "candidate_count": 6,
+    "checked_count": 6,
+    "passed_count": 6,
     "failed_count": 0,
     "skipped_count": 1,
     "failed_scripts": [],
     "results": [
-      {
-        "path": "scripts\\audit_ap_courses.py",
-        "command": "python3 scripts\\audit_ap_courses.py --help",
-        "returncode": 0,
-        "timed_out": false,
-        "passed": true,
-        "has_help_text": true,
-        "stdout_excerpt": "usage: audit_ap_courses.py [-h] --out OUT [--delay DELAY] [--reuse-pages]\n\noptions:\n  -h, --help     show this help message and exit\n  --out OUT\n  --delay DELAY\n  --reuse-pages  Parse previously saved directory/course HTML instead of\n      ",
-        "stderr_excerpt": ""
-      },
       {
         "path": "scripts\\bootstrap_runtime.py",
         "command": "python3 scripts\\bootstrap_runtime.py --help",
@@ -331,26 +195,6 @@
         "stderr_excerpt": ""
       },
       {
-        "path": "scripts\\build_skill_store_package.py",
-        "command": "python3 scripts\\build_skill_store_package.py --help",
-        "returncode": 0,
-        "timed_out": false,
-        "passed": true,
-        "has_help_text": true,
-        "stdout_excerpt": "usage: build_skill_store_package.py [-h] [--source SOURCE] [--output OUTPUT]\n\nBuild the versioned standard Skill ZIP and SHA-256 file.\n\noptions:\n  -h, --help       show this help message and exit\n  --source SOURCE\n  --output OUTPUT",
-        "stderr_excerpt": ""
-      },
-      {
-        "path": "scripts\\capture_release_assets.py",
-        "command": "python3 scripts\\capture_release_assets.py --help",
-        "returncode": 0,
-        "timed_out": false,
-        "passed": true,
-        "has_help_text": true,
-        "stdout_excerpt": "usage: capture_release_assets.py [-h] [--outputs-root OUTPUTS_ROOT]\n                                 [--docs-assets DOCS_ASSETS]\n                                 [--viewport-width VIEWPORT_WIDTH]\n                                 [--viewport",
-        "stderr_excerpt": ""
-      },
-      {
         "path": "scripts\\doctor.py",
         "command": "python3 scripts\\doctor.py --help",
         "returncode": 0,
@@ -358,16 +202,6 @@
         "passed": true,
         "has_help_text": true,
         "stdout_excerpt": "usage: doctor.py [-h] [--deep]\n\nVerify the packaged handbook runtime.\n\noptions:\n  -h, --help  show this help message and exit\n  --deep      Also run the packaged CLI help command.",
-        "stderr_excerpt": ""
-      },
-      {
-        "path": "scripts\\finalize_release_samples.py",
-        "command": "python3 scripts\\finalize_release_samples.py --help",
-        "returncode": 0,
-        "timed_out": false,
-        "passed": true,
-        "has_help_text": true,
-        "stdout_excerpt": "usage: finalize_release_samples.py [-h] [--outputs-root OUTPUTS_ROOT]\n                                   [--skip-verify]\n\nRegenerate the showcase release samples, export PDFs, and verify final\ncompleteness.\n\noptions:\n  -h, --help           ",
         "stderr_excerpt": ""
       },
       {
@@ -391,16 +225,6 @@
         "stderr_excerpt": ""
       },
       {
-        "path": "scripts\\render_intro_animation.py",
-        "command": "python3 scripts\\render_intro_animation.py --help",
-        "returncode": 0,
-        "timed_out": false,
-        "passed": true,
-        "has_help_text": true,
-        "stdout_excerpt": "usage: render_intro_animation.py [-h] [--html HTML] [--mp4 MP4] [--gif GIF]\n                                 [--fps FPS] [--duration DURATION]\n                                 [--start-offset START_OFFSET] [--width WIDTH]\n                  ",
-        "stderr_excerpt": ""
-      },
-      {
         "path": "scripts\\run_runtime.py",
         "command": "python3 scripts\\run_runtime.py --help",
         "returncode": 0,
@@ -408,36 +232,6 @@
         "passed": true,
         "has_help_text": true,
         "stdout_excerpt": "usage: run_runtime.py [-h] ...\n\nRun a packaged intl-exam-guide command after a -- delimiter.\n\npositional arguments:\n  runtime_args\n\noptions:\n  -h, --help    show this help message and exit",
-        "stderr_excerpt": ""
-      },
-      {
-        "path": "scripts\\scan_for_raw_keys.py",
-        "command": "python3 scripts\\scan_for_raw_keys.py --help",
-        "returncode": 0,
-        "timed_out": false,
-        "passed": true,
-        "has_help_text": true,
-        "stdout_excerpt": "usage: scan_for_raw_keys.py [-h] [--max-bytes MAX_BYTES] [roots ...]\n\nScan text files for raw API-key-looking values.\n\npositional arguments:\n  roots                 Directories or files to scan.\n\noptions:\n  -h, --help            show this h",
-        "stderr_excerpt": ""
-      },
-      {
-        "path": "scripts\\sync_intro_animation_sources.py",
-        "command": "python3 scripts\\sync_intro_animation_sources.py --help",
-        "returncode": 0,
-        "timed_out": false,
-        "passed": true,
-        "has_help_text": true,
-        "stdout_excerpt": "usage: sync_intro_animation_sources.py [-h] [--check]\n\nRebuild the two standalone intro pages from shared animation sources.\n\noptions:\n  -h, --help  show this help message and exit\n  --check     Fail when an index is stale.",
-        "stderr_excerpt": ""
-      },
-      {
-        "path": "scripts\\verify_release_samples.py",
-        "command": "python3 scripts\\verify_release_samples.py --help",
-        "returncode": 0,
-        "timed_out": false,
-        "passed": true,
-        "has_help_text": true,
-        "stdout_excerpt": "usage: verify_release_samples.py [-h] [--outputs-root OUTPUTS_ROOT]\n                                 [--evidence-manifest EVIDENCE_MANIFEST]\n                                 [--legacy-outputs] [--allow-pending]\n\nVerify release sample guide ",
         "stderr_excerpt": ""
       },
       {
@@ -465,58 +259,29 @@
     "reviewed_at": "2026-07-25",
     "required_capabilities": [
       "file_write",
-      "network",
       "subprocess"
     ],
     "approved_capabilities": [
       "file_write",
-      "network",
       "subprocess"
     ],
     "missing_capabilities": [],
     "invalid_capabilities": [],
     "expired_capabilities": [],
-    "approval_count": 3,
-    "required_count": 3,
+    "approval_count": 2,
+    "required_count": 2,
     "missing_count": 0,
     "invalid_count": 0,
     "expired_count": 0,
     "approvals": [
       {
-        "capability": "network",
-        "status": "approved",
-        "scripts": [
-          "scripts\\audit_ap_courses.py"
-        ],
-        "reviewer": "Codex migration audit",
-        "scope": "Pinned dependency bootstrap and official syllabus retrieval from the bounded hosts in security/network_policy.json.",
-        "reason": "The isolated runtime needs pinned package installation, and handbook source acquisition needs the confirmed official exam-board or College Board host.",
-        "expires_at": "2027-07-25",
-        "evidence": [
-          "security/network_policy.json",
-          "references/runtime-contract.md"
-        ],
-        "target_enforcement": {
-          "openai": "Operator-visible network policy metadata",
-          "claude": "Adapter network policy metadata",
-          "generic": "Explicit host allowlist and operator review",
-          "vscode": "Workspace trust plus explicit host allowlist"
-        },
-        "validation": []
-      },
-      {
         "capability": "file_write",
         "status": "approved",
         "scripts": [
           "scripts\\_runtime.py",
-          "scripts\\audit_ap_courses.py",
           "scripts\\bootstrap_runtime.py",
-          "scripts\\build_skill_store_package.py",
-          "scripts\\capture_release_assets.py",
           "scripts\\import_concept_explanations.py",
-          "scripts\\import_infographic_assets.py",
-          "scripts\\render_intro_animation.py",
-          "scripts\\sync_intro_animation_sources.py"
+          "scripts\\import_infographic_assets.py"
         ],
         "reviewer": "Codex migration audit",
         "scope": "Versioned isolated runtime cache, atomic readiness marker, and the handbook output directory explicitly selected by the user.",
@@ -541,10 +306,7 @@
         "scripts": [
           "scripts\\_runtime.py",
           "scripts\\bootstrap_runtime.py",
-          "scripts\\capture_release_assets.py",
           "scripts\\doctor.py",
-          "scripts\\finalize_release_samples.py",
-          "scripts\\render_intro_animation.py",
           "scripts\\run_runtime.py"
         ],
         "reviewer": "Codex migration audit",

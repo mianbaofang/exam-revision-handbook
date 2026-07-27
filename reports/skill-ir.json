@@ -63,23 +63,15 @@
     ],
     "scripts": [
       "scripts\\_runtime.py",
-      "scripts\\audit_ap_courses.py",
       "scripts\\bootstrap_runtime.py",
-      "scripts\\build_skill_store_package.py",
-      "scripts\\capture_release_assets.py",
       "scripts\\doctor.py",
-      "scripts\\finalize_release_samples.py",
       "scripts\\import_concept_explanations.py",
       "scripts\\import_infographic_assets.py",
-      "scripts\\render_intro_animation.py",
       "scripts\\run_runtime.py",
-      "scripts\\scan_for_raw_keys.py",
-      "scripts\\sync_intro_animation_sources.py",
-      "scripts\\verify_release_samples.py",
       "scripts\\write_concept_explanations_from_jobs.py"
     ],
     "assets": [
-      "assets\\runtime\\gcse_igcse_alevel_ap_revision_guide-0.6.2-py3-none-any.whl",
+      "assets\\runtime\\exam_revision_handbook-0.7.1-py3-none-any.whl",
       "assets\\runtime\\runtime-lock.json"
     ],
     "reports": [
@@ -109,8 +101,6 @@
       "reports/conformance_matrix.md",
       "reports/security_trust_report.json",
       "reports/security_trust_report.md",
-      "reports/runtime_permission_probes.json",
-      "reports/runtime_permission_probes.md",
       "reports/skill_atlas.json",
       "reports/skill_atlas.html"
     ]

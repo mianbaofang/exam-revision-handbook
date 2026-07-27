@@ -5,7 +5,7 @@
     "display_name": "Exam Revision Handbook",
     "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
     "maturity": "governed",
-    "updated_at": "2026-07-25",
+    "updated_at": "2026-07-27",
     "core_value": "把一次性经验沉淀为可复用、可评估、可迁移的 Skill 包体。",
     "audience": "Skill 作者、复用团队和后续 reviewer。",
     "deliverables": [
@@ -926,7 +926,7 @@
     "interactive_script_count": 0,
     "package_hash_scope": "source-contract-without-generated-reports",
     "package_hash_file_count": 35,
-    "package_sha256": "55507392665052a03a4981891954944d627f2318e1b2243433a446042a217c60"
+    "package_sha256": "37d886ff9fd5b7decc8e5e9d57c4100f2b04e0a68d8f601ca1c305276ff7968a"
   },
   "skill_atlas": {
     "skill_count": 1,
@@ -949,7 +949,7 @@
     "package": {
       "schema_version": "2.0",
       "name": "exam-revision-handbook",
-      "version": "0.7.0",
+      "version": "0.7.1",
       "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
       "targets": [
         "openai",
@@ -964,8 +964,8 @@
       "trust_level": "managed",
       "license": "MIT",
       "checksums": {
-        "package_sha256": "55507392665052a03a4981891954944d627f2318e1b2243433a446042a217c60",
-        "archive_sha256": "731cd2dd1eebbc82077e81efa6ddb2e3f7dadd9e29b315e610d395cef1a2da99"
+        "package_sha256": "37d886ff9fd5b7decc8e5e9d57c4100f2b04e0a68d8f601ca1c305276ff7968a",
+        "archive_sha256": "6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af"
       },
       "compatibility": {
         "openai": "pass",
@@ -995,12 +995,12 @@
       },
       "distribution": {
         "archive_verified": true,
-        "archive_sha256": "731cd2dd1eebbc82077e81efa6ddb2e3f7dadd9e29b315e610d395cef1a2da99",
+        "archive_sha256": "6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af",
         "package_verification": "reports/package_verification.json",
         "install_simulated": true,
         "install_simulation": "reports/install_simulation.json"
       },
-      "generated_at": "2026-07-25"
+      "generated_at": "2026-07-27"
     },
     "failures": [],
     "warnings": []
@@ -1011,8 +1011,8 @@
       "target_count": 4,
       "adapter_count": 4,
       "archive_present": true,
-      "archive_sha256": "731cd2dd1eebbc82077e81efa6ddb2e3f7dadd9e29b315e610d395cef1a2da99",
-      "archive_entry_count": 104,
+      "archive_sha256": "6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af",
+      "archive_entry_count": 205,
       "nested_skill_entry_count": 0,
       "failure_count": 0,
       "warning_count": 0
@@ -1024,7 +1024,7 @@
     "ok": true,
     "summary": {
       "archive_present": true,
-      "archive_entry_count": 104,
+      "archive_entry_count": 205,
       "nested_skill_entry_count": 0,
       "archive_extracted": true,
       "entrypoint_loaded": true,
@@ -1247,6 +1247,6 @@
     ],
     "maturity_tier": "governed",
     "skill_archetype": "governed",
-    "updated_at": "2026-07-25"
+    "updated_at": "2026-07-27"
   }
 }

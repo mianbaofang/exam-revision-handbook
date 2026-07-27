@@ -2,7 +2,7 @@
   "nodes": [
     {
       "name": "exam-revision-handbook",
-      "path": "exam-revision-handbook"
+      "path": "."
     }
   ],
   "shared_resources": []

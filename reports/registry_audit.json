@@ -6,7 +6,7 @@
   "package": {
     "schema_version": "2.0",
     "name": "exam-revision-handbook",
-    "version": "0.7.0",
+    "version": "0.7.1",
     "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
     "targets": [
       "openai",
@@ -21,8 +21,8 @@
     "trust_level": "managed",
     "license": "MIT",
     "checksums": {
-      "package_sha256": "be5627cc36a3eabca53952447aeff1f42312d0526348b0ab684b7826e16afed2",
-      "archive_sha256": "e32506d9c8ef035fb040c704b20eb99c0aaade4dae752251e4dce77dcd0f2be2"
+      "package_sha256": "37d886ff9fd5b7decc8e5e9d57c4100f2b04e0a68d8f601ca1c305276ff7968a",
+      "archive_sha256": "6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af"
     },
     "compatibility": {
       "openai": "pass",
@@ -52,21 +52,21 @@
     },
     "distribution": {
       "archive_verified": true,
-      "archive_sha256": "e32506d9c8ef035fb040c704b20eb99c0aaade4dae752251e4dce77dcd0f2be2",
+      "archive_sha256": "6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af",
       "package_verification": "reports/package_verification.json",
       "install_simulated": true,
       "install_simulation": "reports/install_simulation.json"
     },
-    "generated_at": "2026-07-25"
+    "generated_at": "2026-07-27"
   },
   "index": {
     "schema_version": "2.0",
-    "generated_at": "2026-07-25",
+    "generated_at": "2026-07-27",
     "package_count": 1,
     "packages": [
       {
         "name": "exam-revision-handbook",
-        "version": "0.7.0",
+        "version": "0.7.1",
         "maturity": "governed",
         "owner": "Ethan",
         "targets": [
@@ -77,7 +77,7 @@
           "generic"
         ],
         "package_metadata": "registry/packages/exam-revision-handbook.json",
-        "package_sha256": "be5627cc36a3eabca53952447aeff1f42312d0526348b0ab684b7826e16afed2"
+        "package_sha256": "37d886ff9fd5b7decc8e5e9d57c4100f2b04e0a68d8f601ca1c305276ff7968a"
       }
     ]
   },

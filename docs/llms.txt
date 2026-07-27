@@ -1,0 +1,46 @@
+# Exam Revision Handbook
+
+> Exam Revision Handbook is an open-source Agent Skill for producing source-backed, image-rich GCSE, IGCSE, A-Level, and College Board AP revision handbooks. It acquires official course requirements, keeps the LLM responsible for syllabus meaning and teaching quality, requires complete visible HTML review, and permits PDF export only after hash-bound approval.
+
+## Primary Links
+
+- [English project page](https://mianbaofang.github.io/exam-revision-handbook/index-en.html)
+- [中文项目主页](https://mianbaofang.github.io/exam-revision-handbook/)
+- [GitHub repository](https://github.com/mianbaofang/exam-revision-handbook)
+- [Canonical SKILL.md](https://raw.githubusercontent.com/mianbaofang/exam-revision-handbook/main/SKILL.md)
+- [Latest release](https://github.com/mianbaofang/exam-revision-handbook/releases/latest)
+- [Workflow contract](https://raw.githubusercontent.com/mianbaofang/exam-revision-handbook/main/references/workflow-contract.md)
+- [Handbook artifact contract](https://raw.githubusercontent.com/mianbaofang/exam-revision-handbook/main/references/revision_guide_spec.md)
+
+## Supported Official Sources
+
+- AQA: UK GCSE and A-Level.
+- OxfordAQA: International GCSE and International A-Level.
+- Pearson Edexcel: UK GCSE and A-Level plus International GCSE and International A-Level.
+- Cambridge International / CAIE: Cambridge IGCSE and International A-Level.
+- College Board: 42 Advanced Placement courses and their core Course and Exam Descriptions.
+
+AS and A2 are stages within A-Level. Other curricula and exam boards do not have automatic official-source acquisition. Manual imports are experimental.
+
+## Core Workflow
+
+1. Complete a blocking preflight, including the external-image-capability question.
+2. Retrieve official evidence for the confirmed board, route, subject, and year.
+3. Let the host LLM map requirements to atomic teaching points and write topic-specific teaching.
+4. Make one justified visual decision for each final teaching point.
+5. Render HTML, have the LLM inspect all of it, repair, rerender, and review again.
+6. Export PDF only from the exact approved HTML and verify delivery hashes.
+
+Python retrieves, extracts, validates, renders, records, and blocks. It does not own syllabus interpretation, teaching content, visual judgment, or final approval.
+
+## Installation
+
+Give the GitHub repository or the versioned release ZIP to a Skill-compatible Agent. The root `SKILL.md` is the single authoritative entry.
+
+Example request:
+
+`Install this Skill, then create an AQA International GCSE Chemistry revision handbook with a Simplified Chinese term glossary and export it as PDF.`
+
+## Safety And Accuracy
+
+This project is not affiliated with or endorsed by any exam board. Generated handbooks must be checked against the official source for the selected course and exam year. A file, passing machine check, or another handbook's approval is never sufficient evidence of teaching quality.

@@ -1,5 +1,51 @@
 # Changelog
 
+## 0.7.1 - 2026-07-27
+
+### Unified Product Identity And Public Discovery
+
+#### Changed
+
+- Unified the public repository, Skill ID, Python distribution metadata,
+  runtime Wheel, release tag, download filename, documentation links, and
+  provider User-Agent under `exam-revision-handbook` version `0.7.1`.
+- Reworked the English and Chinese README entry points around one supported
+  curriculum model: UK GCSE, International GCSE (IGCSE), A-Level with AS/A2
+  stages, and College Board AP, using AQA, Edexcel, CAIE, and College Board
+  official sources where supported.
+- Added a bilingual GitHub Pages entry, canonical and `hreflang` metadata,
+  Open Graph and structured-data metadata, `robots.txt`, `sitemap.xml`, and
+  `llms.txt` so search engines and AI discovery systems can identify the
+  repository by its GCSE, IGCSE, A-Level, AP, AQA, Edexcel, and CAIE scope.
+- Rebuilt the embedded runtime as
+  `exam_revision_handbook-0.7.1-py3-none-any.whl` and updated its locked
+  checksum. The handbook workflow and generation contracts are unchanged in
+  this release.
+- Kept the release download as one complete standard Skill package with the
+  root `SKILL.md`, runtime, providers, references, agents, assets, evaluation
+  fixtures, security policy, and governed reports. Repository-only source,
+  tests, documentation pages, caches, and post-package verification records
+  remain outside the install archive.
+
+#### Verified
+
+- Full regression suite: `502 passed, 163 skipped`. Ruff, compileall, mypy for
+  all 76 source files, governance-path normalization, raw-key scanning, and
+  runtime integrity checks passed.
+- Yao Governed validation passed with `0` blocker-class findings. Review Studio
+  keeps `6` non-blocking warnings for unavailable human blind review, real
+  adoption telemetry, waiver, promotion, and world-class evidence; none of
+  those signals was fabricated.
+- Built `dist/exam-revision-handbook-v0.7.1.zip` twice with the same SHA-256:
+  `59bb417788fc95a11cb5eeca9c63f6c1e1ecf0f920643a68d18cd048be33b437`.
+  The archive contains 102 files beneath one `exam-revision-handbook/` root,
+  exactly one `SKILL.md`, and no unsafe path, machine-specific absolute path,
+  raw key, replacement character, or stale current-version field.
+- Reverse installation from the final ZIP passed the standard and deep runtime
+  doctors, the root CLI and all nine subcommand help probes, and both import
+  helper probes. The isolated demo produced the expected 25-file blocked draft;
+  an unapproved PDF export failed and left the PDF count at zero.
+
 ## 0.7.0 - 2026-07-25
 
 ### Standard Skill Migration

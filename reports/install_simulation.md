@@ -1,7 +1,7 @@
 # Install Simulation
 
 - OK: `True`
-- Package directory: `<SKILL_ROOT>\dist-yao`
+- Package directory: `<SKILL_ROOT>\dist-yao-final`
 - Archive extracted: `True`
 - Nested SKILL.md entries: `0`
 - Entrypoint loaded: `True`
@@ -17,7 +17,7 @@
 
 | Check | Status | Detail |
 | --- | --- | --- |
-| `archive-present` | `pass` | Package archive exists: <SKILL_ROOT>\dist-yao\exam-revision-handbook.zip |
+| `archive-present` | `pass` | Package archive exists: <SKILL_ROOT>\dist-yao-final\exam-revision-handbook.zip |
 | `archive-safe-paths` | `pass` | Archive has no absolute or parent-traversal entries |
 | `single-skill-entrypoint` | `pass` | Installed package exposes only the root SKILL.md entrypoint |
 | `single-top-level` | `pass` | Archive top-level directory is exam-revision-handbook |

@@ -76,7 +76,7 @@ def package_version(source_dir: Path = REPO_ROOT) -> str:
 
 
 def default_output_path() -> Path:
-    return REPO_ROOT / "dist" / f"exam-revision-handbook-v{package_version()}.zip"
+    return REPO_ROOT / "dist" / f"{skill_name(REPO_ROOT)}-v{package_version()}.zip"
 
 
 def selected_files(source_dir: Path) -> list[tuple[Path, Path]]:

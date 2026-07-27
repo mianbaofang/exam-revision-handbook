@@ -1,7 +1,19 @@
-# Exam Revision Handbook：GCSE、IGCSE、A-Level 与 AP
+# Exam Revision Handbook
+
+**一款面向 AI Agent 的开源复习手册 Skill：基于 AQA、Edexcel、CAIE 与
+College Board 官方来源，生成 GCSE、IGCSE、A-Level 与 AP 图文复习手册；先完整
+审查 HTML，再按批准版本导出 PDF。**
 
 <p align="center">
-  <a href="https://mianbaofang.github.io/gcse-igcse-alevel-ap-revision-guide/project-intro-animation.html">
+  <a href="https://github.com/mianbaofang/exam-revision-handbook/releases/latest"><img src="https://img.shields.io/github/v/release/mianbaofang/exam-revision-handbook?style=flat-square&label=release" alt="最新版本"></a>
+  <a href="https://github.com/mianbaofang/exam-revision-handbook/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/mianbaofang/exam-revision-handbook/ci.yml?branch=main&style=flat-square&label=tests" alt="测试状态"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/mianbaofang/exam-revision-handbook?style=flat-square" alt="MIT 许可证"></a>
+  <a href="https://github.com/mianbaofang/exam-revision-handbook/stargazers"><img src="https://img.shields.io/github/stars/mianbaofang/exam-revision-handbook?style=flat-square" alt="GitHub Stars"></a>
+  <img src="https://img.shields.io/badge/Agent%20Skill-SKILL.md-166b63?style=flat-square" alt="标准 Agent Skill">
+</p>
+
+<p align="center">
+  <a href="https://mianbaofang.github.io/exam-revision-handbook/project-intro-animation.html">
     <img src="docs/assets/intro-animation-preview.gif" alt="GCSE、IGCSE、A-Level 与 AP 复习手册 Skill 介绍动画预览" width="100%">
   </a>
 </p>
@@ -9,9 +21,9 @@
 <p align="center">
   <a href="README.md">English</a>
   ·
-  <a href="https://mianbaofang.github.io/gcse-igcse-alevel-ap-revision-guide/">项目主页</a>
+  <a href="https://mianbaofang.github.io/exam-revision-handbook/">项目主页</a>
   ·
-  <a href="https://mianbaofang.github.io/gcse-igcse-alevel-ap-revision-guide/project-intro-animation.html">介绍动画</a>
+  <a href="https://mianbaofang.github.io/exam-revision-handbook/project-intro-animation.html">介绍动画</a>
   ·
   <a href="docs/index.html">项目详情</a>
   ·
@@ -23,6 +35,31 @@
   ·
   <a href="references/revision_guide_spec.md">手册规范</a>
 </p>
+
+## 一分钟开始使用
+
+下载官方
+[v0.7.1 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.1/exam-revision-handbook-v0.7.1.zip)，
+或者直接把仓库链接交给支持 Skill 的 Agent：
+
+```text
+https://github.com/mianbaofang/exam-revision-handbook
+```
+
+然后直接说：
+
+```text
+请安装这个 Skill，然后生成 AQA International GCSE Chemistry 复习手册，附简体中文专业词对照表，并导出 PDF。
+```
+
+| 课程体系 | 当前支持的官方来源 |
+|---|---|
+| GCSE 与 A-Level | AQA、Pearson Edexcel 英国本土路线 |
+| IGCSE 与 International A-Level | OxfordAQA、Pearson Edexcel、Cambridge International / CAIE |
+| 美国大学先修课程 AP | College Board Course and Exam Description |
+
+AS 和 A2 是 A-Level 内部阶段。其他课程体系和考试局不能自动获取官方大纲；手动导入
+仍是实验性兼容路径。
 
 ## 为什么要做这个 Skill
 
@@ -82,17 +119,17 @@ CLI 只是框架调试和草稿 fallback。直接运行 `python scripts/run_runt
 
 这套流程面向四个来源体系统一设计：先把官方 PDF 生成 Markdown companion 和 page-level evidence，让 Analyst 同时读两份输入判断结构并保留页码证据，再围绕当前 topic/source points 写出已复查的概念解释，生成例题、图文学习单元、复习题和 PDF。
 
-## 快速使用
+## 详细使用方法
 
 普通用户不需要安装 Python，也不需要看懂代码。把下面这个 Skill 链接发给你的
 OpenClaw、Hermes 或其他支持 Skill 的 Agent：
 
 ```text
-https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide
+https://github.com/mianbaofang/exam-revision-handbook
 ```
 
 直接下载
-[v0.7.0 标准 Skill ZIP](https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases/download/v0.7.0/exam-revision-handbook-v0.7.0.zip)。
+[v0.7.1 标准 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.1/exam-revision-handbook-v0.7.1.zip)。
 
 然后直接说：
 
@@ -267,7 +304,7 @@ v0.6 使用四个状态词：
 
 ## 版本更新说明
 
-版本更新说明统一放在 [GitHub Releases](https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases)
+版本更新说明统一放在 [GitHub Releases](https://github.com/mianbaofang/exam-revision-handbook/releases)
 和 [CHANGELOG.md](CHANGELOG.md)。中文 README 只保留项目定位、使用方式和核心生成流程。
 
 ## 开发者快速开始
@@ -288,7 +325,7 @@ python scripts\doctor.py
 python scripts\run_runtime.py -- generate --query chemistry --level igcse --out .\outputs\chemistry-9202
 ```
 
-GitHub `main`、对应的 `v0.7.0` tag 和 Release 中的 Skill ZIP 就是同一个当前标准
+GitHub `main`、对应的 `v0.7.1` tag 和 Release 中的 Skill ZIP 就是同一个当前标准
 Skill 版本，不存在单独的“源码版”或“安装版”。需要修改 Python 引擎的贡献者可使用
 `pip install -e ".[dev]"`；ZIP 通过 `assets/runtime/` 中的受控 Wheel 和独立用户缓存运行。
 
@@ -348,7 +385,7 @@ tests/            测试与回归样例
 
 ## 状态
 
-当前 Skill 版本：`v0.7.0`。这个 Skill 已具备公开使用的框架形态；单份手册只有在完成自己的全量 LLM HTML 审查、写入与当前 HTML 绑定的 `agent-product-review.json`、通过 PDF 导出门禁，并具备相应发布证据后，才能称为 final-ready。
+当前 Skill 版本：`v0.7.1`。这个 Skill 已具备公开使用的框架形态；单份手册只有在完成自己的全量 LLM HTML 审查、写入与当前 HTML 绑定的 `agent-product-review.json`、通过 PDF 导出门禁，并具备相应发布证据后，才能称为 final-ready。
 
 ## 作者
 

@@ -1,7 +1,20 @@
-# Exam Revision Handbook Skill for GCSE, IGCSE, A-Level & AP
+# Exam Revision Handbook
+
+**An open-source AI Agent Skill for source-backed GCSE, IGCSE, A-Level, and AP
+revision guides. It retrieves official AQA, Edexcel, CAIE, and College Board
+requirements, turns them into teachable handbooks, reviews the complete HTML,
+and exports PDF only after approval.**
 
 <p align="center">
-  <a href="https://mianbaofang.github.io/gcse-igcse-alevel-ap-revision-guide/project-intro-animation-en.html">
+  <a href="https://github.com/mianbaofang/exam-revision-handbook/releases/latest"><img src="https://img.shields.io/github/v/release/mianbaofang/exam-revision-handbook?style=flat-square&label=release" alt="Latest release"></a>
+  <a href="https://github.com/mianbaofang/exam-revision-handbook/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/mianbaofang/exam-revision-handbook/ci.yml?branch=main&style=flat-square&label=tests" alt="CI status"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/mianbaofang/exam-revision-handbook?style=flat-square" alt="MIT license"></a>
+  <a href="https://github.com/mianbaofang/exam-revision-handbook/stargazers"><img src="https://img.shields.io/github/stars/mianbaofang/exam-revision-handbook?style=flat-square" alt="GitHub stars"></a>
+  <img src="https://img.shields.io/badge/Agent%20Skill-SKILL.md-166b63?style=flat-square" alt="Standard Agent Skill">
+</p>
+
+<p align="center">
+  <a href="https://mianbaofang.github.io/exam-revision-handbook/project-intro-animation-en.html">
     <img src="docs/assets/intro-animation-preview-en.gif" alt="GCSE, IGCSE, A-Level, and AP revision handbook Skill intro preview" width="100%">
   </a>
 </p>
@@ -9,9 +22,9 @@
 <p align="center">
   <a href="README.zh-CN.md">中文 README</a>
   ·
-  <a href="https://mianbaofang.github.io/gcse-igcse-alevel-ap-revision-guide/">Project site</a>
+  <a href="https://mianbaofang.github.io/exam-revision-handbook/">Project site</a>
   ·
-  <a href="https://mianbaofang.github.io/gcse-igcse-alevel-ap-revision-guide/project-intro-animation-en.html">HTML intro</a>
+  <a href="https://mianbaofang.github.io/exam-revision-handbook/project-intro-animation-en.html">HTML intro</a>
   ·
   <a href="docs/index.html">Project details</a>
   ·
@@ -23,6 +36,31 @@
   ·
   <a href="references/revision_guide_spec.md">Handbook spec</a>
 </p>
+
+## Start In One Minute
+
+Download the official
+[v0.7.1 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.1/exam-revision-handbook-v0.7.1.zip),
+or give this repository URL directly to a Skill-compatible Agent:
+
+```text
+https://github.com/mianbaofang/exam-revision-handbook
+```
+
+Then ask:
+
+```text
+Install this Skill, then create an AQA International GCSE Chemistry revision handbook with a Simplified Chinese term glossary and export it as PDF.
+```
+
+| Curriculum | Official sources currently supported |
+|---|---|
+| GCSE and A-Level | AQA and Pearson Edexcel UK routes |
+| IGCSE and International A-Level | OxfordAQA, Pearson Edexcel, and Cambridge International / CAIE |
+| Advanced Placement (AP) | College Board Course and Exam Descriptions |
+
+AS and A2 are stages within A-Level. Other curricula and exam boards do not
+have automatic source acquisition; manual imports remain experimental.
 
 ## Why This Skill Exists
 
@@ -146,17 +184,17 @@ v0.7 status words are intentionally conservative:
   release. No current route should be called certified unless the
   release-evidence manifest says so.
 
-## Quick Start
+## Detailed Usage
 
 Most users do not need to install Python or run commands. Give this Skill link
 to your OpenClaw, Hermes, or other Skill-compatible Agent:
 
 ```text
-https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide
+https://github.com/mianbaofang/exam-revision-handbook
 ```
 
 Download the ready-to-use
-[v0.7.0 standard Skill ZIP](https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases/download/v0.7.0/exam-revision-handbook-v0.7.0.zip).
+[v0.7.1 standard Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.1/exam-revision-handbook-v0.7.1.zip).
 
 Then ask:
 
@@ -391,7 +429,7 @@ translated-body mode:
 ## Release Notes
 
 Version-by-version update notes live in
-[GitHub Releases](https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide/releases)
+[GitHub Releases](https://github.com/mianbaofang/exam-revision-handbook/releases)
 and [CHANGELOG.md](CHANGELOG.md). The README stays focused on what the Skill
 does and how users run it.
 
@@ -405,7 +443,7 @@ Point your Agent runtime (OpenClaw, Hermes, Claude with subagents, etc.) at
 the repository root. The root `SKILL.md` is the only authoritative entry:
 
 ```text
-https://github.com/mianbaofang/gcse-igcse-alevel-ap-revision-guide
+https://github.com/mianbaofang/exam-revision-handbook
 ```
 
 The Agent runtime follows the lightweight Skill workflow:
@@ -448,7 +486,7 @@ python scripts\run_runtime.py -- generate --query chemistry --level igcse --out 
 
 The CLI is for fetching official source material and writing `qualification.json`, `syllabus-evidence.json`, and `source/`. A real teaching handbook still requires Mode 1: an LLM Analyst outline, Writer-authored concepts/visual decisions, rendered HTML, repeated visible LLM review until approval, and gated PDF export afterward.
 
-GitHub `main`, its `v0.7.0` tag, and the attached Skill ZIP are the same current
+GitHub `main`, its `v0.7.1` tag, and the attached Skill ZIP are the same current
 standard Skill release. There is no separate source edition or install
 edition. Contributors changing its Python engine can use
 `pip install -e ".[dev]"`; the ZIP runs the pinned engine from
@@ -558,7 +596,7 @@ See [DISCLAIMER.md](DISCLAIMER.md) and [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md
 
 ## Status
 
-Current Skill version: `v0.7.0`. The Skill is public-ready as a framework for
+Current Skill version: `v0.7.1`. The Skill is public-ready as a framework for
 source-backed handbook generation. An individual handbook is final-ready only
 after its own complete LLM HTML review is recorded in
 `agent-product-review.json` and `review-ledger/`, the exact HTML passes the hash

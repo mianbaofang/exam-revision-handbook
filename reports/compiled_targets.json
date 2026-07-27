@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "ok": true,
-  "generated_at": "2026-07-25",
+  "generated_at": "2026-07-27",
   "skill_dir": "<SKILL_ROOT>",
   "summary": {
     "target_count": 5,
@@ -37,7 +37,7 @@
       "compiled_contract": {
         "name": "exam-revision-handbook",
         "title": "Exam Revision Handbook",
-        "version": "0.7.0",
+        "version": "0.7.1",
         "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
         "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
         "trigger": {
@@ -100,23 +100,15 @@
           ],
           "scripts": [
             "scripts\\_runtime.py",
-            "scripts\\audit_ap_courses.py",
             "scripts\\bootstrap_runtime.py",
-            "scripts\\build_skill_store_package.py",
-            "scripts\\capture_release_assets.py",
             "scripts\\doctor.py",
-            "scripts\\finalize_release_samples.py",
             "scripts\\import_concept_explanations.py",
             "scripts\\import_infographic_assets.py",
-            "scripts\\render_intro_animation.py",
             "scripts\\run_runtime.py",
-            "scripts\\scan_for_raw_keys.py",
-            "scripts\\sync_intro_animation_sources.py",
-            "scripts\\verify_release_samples.py",
             "scripts\\write_concept_explanations_from_jobs.py"
           ],
           "assets": [
-            "assets\\runtime\\gcse_igcse_alevel_ap_revision_guide-0.6.2-py3-none-any.whl",
+            "assets\\runtime\\exam_revision_handbook-0.7.1-py3-none-any.whl",
             "assets\\runtime\\runtime-lock.json"
           ],
           "reports": [
@@ -146,16 +138,14 @@
             "reports/conformance_matrix.md",
             "reports/security_trust_report.json",
             "reports/security_trust_report.md",
-            "reports/runtime_permission_probes.json",
-            "reports/runtime_permission_probes.md",
             "reports/skill_atlas.json",
             "reports/skill_atlas.html"
           ],
           "counts": {
             "references": 7,
-            "scripts": 15,
+            "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 28
           }
         },
         "eval_plan": {
@@ -316,9 +306,9 @@
             "strategy": "Ship the neutral source tree and expose OpenAI-facing interface metadata as a generated companion file.",
             "counts": {
               "references": 7,
-              "scripts": 15,
+              "scripts": 7,
               "assets": 2,
-              "reports": 30
+              "reports": 28
             },
             "generated_files": [
               "targets/openai/adapter.json",
@@ -327,7 +317,7 @@
           },
           "scripts": {
             "strategy": "Keep scripts as local package resources; expose help-smoke and permission metadata for reviewer approval before execution.",
-            "script_count": 15,
+            "script_count": 7,
             "help_smoke_failed_count": 0
           },
           "permissions": {
@@ -484,9 +474,9 @@
           "strategy": "Ship the neutral source tree and expose OpenAI-facing interface metadata as a generated companion file.",
           "counts": {
             "references": 7,
-            "scripts": 15,
+            "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 28
           },
           "generated_files": [
             "targets/openai/adapter.json",
@@ -495,7 +485,7 @@
         },
         "scripts": {
           "strategy": "Keep scripts as local package resources; expose help-smoke and permission metadata for reviewer approval before execution.",
-          "script_count": 15,
+          "script_count": 7,
           "help_smoke_failed_count": 0
         },
         "permissions": {
@@ -588,7 +578,7 @@
       "compiled_contract": {
         "name": "exam-revision-handbook",
         "title": "Exam Revision Handbook",
-        "version": "0.7.0",
+        "version": "0.7.1",
         "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
         "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
         "trigger": {
@@ -651,23 +641,15 @@
           ],
           "scripts": [
             "scripts\\_runtime.py",
-            "scripts\\audit_ap_courses.py",
             "scripts\\bootstrap_runtime.py",
-            "scripts\\build_skill_store_package.py",
-            "scripts\\capture_release_assets.py",
             "scripts\\doctor.py",
-            "scripts\\finalize_release_samples.py",
             "scripts\\import_concept_explanations.py",
             "scripts\\import_infographic_assets.py",
-            "scripts\\render_intro_animation.py",
             "scripts\\run_runtime.py",
-            "scripts\\scan_for_raw_keys.py",
-            "scripts\\sync_intro_animation_sources.py",
-            "scripts\\verify_release_samples.py",
             "scripts\\write_concept_explanations_from_jobs.py"
           ],
           "assets": [
-            "assets\\runtime\\gcse_igcse_alevel_ap_revision_guide-0.6.2-py3-none-any.whl",
+            "assets\\runtime\\exam_revision_handbook-0.7.1-py3-none-any.whl",
             "assets\\runtime\\runtime-lock.json"
           ],
           "reports": [
@@ -697,16 +679,14 @@
             "reports/conformance_matrix.md",
             "reports/security_trust_report.json",
             "reports/security_trust_report.md",
-            "reports/runtime_permission_probes.json",
-            "reports/runtime_permission_probes.md",
             "reports/skill_atlas.json",
             "reports/skill_atlas.html"
           ],
           "counts": {
             "references": 7,
-            "scripts": 15,
+            "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 28
           }
         },
         "eval_plan": {
@@ -867,9 +847,9 @@
             "strategy": "Preserve the source tree directly; write target notes in targets/claude/README.md.",
             "counts": {
               "references": 7,
-              "scripts": 15,
+              "scripts": 7,
               "assets": 2,
-              "reports": 30
+              "reports": 28
             },
             "generated_files": [
               "targets/claude/adapter.json",
@@ -878,7 +858,7 @@
           },
           "scripts": {
             "strategy": "Scripts remain local package resources and must be reviewed through trust and permission reports before use.",
-            "script_count": 15,
+            "script_count": 7,
             "help_smoke_failed_count": 0
           },
           "permissions": {
@@ -1035,9 +1015,9 @@
           "strategy": "Preserve the source tree directly; write target notes in targets/claude/README.md.",
           "counts": {
             "references": 7,
-            "scripts": 15,
+            "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 28
           },
           "generated_files": [
             "targets/claude/adapter.json",
@@ -1046,7 +1026,7 @@
         },
         "scripts": {
           "strategy": "Scripts remain local package resources and must be reviewed through trust and permission reports before use.",
-          "script_count": 15,
+          "script_count": 7,
           "help_smoke_failed_count": 0
         },
         "permissions": {
@@ -1139,7 +1119,7 @@
       "compiled_contract": {
         "name": "exam-revision-handbook",
         "title": "Exam Revision Handbook",
-        "version": "0.7.0",
+        "version": "0.7.1",
         "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
         "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
         "trigger": {
@@ -1202,23 +1182,15 @@
           ],
           "scripts": [
             "scripts\\_runtime.py",
-            "scripts\\audit_ap_courses.py",
             "scripts\\bootstrap_runtime.py",
-            "scripts\\build_skill_store_package.py",
-            "scripts\\capture_release_assets.py",
             "scripts\\doctor.py",
-            "scripts\\finalize_release_samples.py",
             "scripts\\import_concept_explanations.py",
             "scripts\\import_infographic_assets.py",
-            "scripts\\render_intro_animation.py",
             "scripts\\run_runtime.py",
-            "scripts\\scan_for_raw_keys.py",
-            "scripts\\sync_intro_animation_sources.py",
-            "scripts\\verify_release_samples.py",
             "scripts\\write_concept_explanations_from_jobs.py"
           ],
           "assets": [
-            "assets\\runtime\\gcse_igcse_alevel_ap_revision_guide-0.6.2-py3-none-any.whl",
+            "assets\\runtime\\exam_revision_handbook-0.7.1-py3-none-any.whl",
             "assets\\runtime\\runtime-lock.json"
           ],
           "reports": [
@@ -1248,16 +1220,14 @@
             "reports/conformance_matrix.md",
             "reports/security_trust_report.json",
             "reports/security_trust_report.md",
-            "reports/runtime_permission_probes.json",
-            "reports/runtime_permission_probes.md",
             "reports/skill_atlas.json",
             "reports/skill_atlas.html"
           ],
           "counts": {
             "references": 7,
-            "scripts": 15,
+            "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 28
           }
         },
         "eval_plan": {
@@ -1418,9 +1388,9 @@
             "strategy": "Keep optional directories as relative resources next to SKILL.md.",
             "counts": {
               "references": 7,
-              "scripts": 15,
+              "scripts": 7,
               "assets": 2,
-              "reports": 30
+              "reports": 28
             },
             "generated_files": [
               "SKILL.md",
@@ -1429,7 +1399,7 @@
           },
           "scripts": {
             "strategy": "Scripts remain local optional resources and should advertise --help when executable.",
-            "script_count": 15,
+            "script_count": 7,
             "help_smoke_failed_count": 0
           },
           "permissions": {
@@ -1579,9 +1549,9 @@
           "strategy": "Keep optional directories as relative resources next to SKILL.md.",
           "counts": {
             "references": 7,
-            "scripts": 15,
+            "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 28
           },
           "generated_files": [
             "SKILL.md",
@@ -1590,7 +1560,7 @@
         },
         "scripts": {
           "strategy": "Scripts remain local optional resources and should advertise --help when executable.",
-          "script_count": 15,
+          "script_count": 7,
           "help_smoke_failed_count": 0
         },
         "permissions": {
@@ -1674,7 +1644,7 @@
       "compiled_contract": {
         "name": "exam-revision-handbook",
         "title": "Exam Revision Handbook",
-        "version": "0.7.0",
+        "version": "0.7.1",
         "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
         "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
         "trigger": {
@@ -1737,23 +1707,15 @@
           ],
           "scripts": [
             "scripts\\_runtime.py",
-            "scripts\\audit_ap_courses.py",
             "scripts\\bootstrap_runtime.py",
-            "scripts\\build_skill_store_package.py",
-            "scripts\\capture_release_assets.py",
             "scripts\\doctor.py",
-            "scripts\\finalize_release_samples.py",
             "scripts\\import_concept_explanations.py",
             "scripts\\import_infographic_assets.py",
-            "scripts\\render_intro_animation.py",
             "scripts\\run_runtime.py",
-            "scripts\\scan_for_raw_keys.py",
-            "scripts\\sync_intro_animation_sources.py",
-            "scripts\\verify_release_samples.py",
             "scripts\\write_concept_explanations_from_jobs.py"
           ],
           "assets": [
-            "assets\\runtime\\gcse_igcse_alevel_ap_revision_guide-0.6.2-py3-none-any.whl",
+            "assets\\runtime\\exam_revision_handbook-0.7.1-py3-none-any.whl",
             "assets\\runtime\\runtime-lock.json"
           ],
           "reports": [
@@ -1783,16 +1745,14 @@
             "reports/conformance_matrix.md",
             "reports/security_trust_report.json",
             "reports/security_trust_report.md",
-            "reports/runtime_permission_probes.json",
-            "reports/runtime_permission_probes.md",
             "reports/skill_atlas.json",
             "reports/skill_atlas.html"
           ],
           "counts": {
             "references": 7,
-            "scripts": 15,
+            "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 28
           }
         },
         "eval_plan": {
@@ -1953,9 +1913,9 @@
             "strategy": "Install as project or user scoped skill source, preserving relative references and scripts.",
             "counts": {
               "references": 7,
-              "scripts": 15,
+              "scripts": 7,
               "assets": 2,
-              "reports": 30
+              "reports": 28
             },
             "generated_files": [
               "targets/vscode/adapter.json",
@@ -1964,7 +1924,7 @@
           },
           "scripts": {
             "strategy": "Scripts require workspace trust and operator/client approval outside this compiler.",
-            "script_count": 15,
+            "script_count": 7,
             "help_smoke_failed_count": 0
           },
           "permissions": {
@@ -2118,9 +2078,9 @@
           "strategy": "Install as project or user scoped skill source, preserving relative references and scripts.",
           "counts": {
             "references": 7,
-            "scripts": 15,
+            "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 28
           },
           "generated_files": [
             "targets/vscode/adapter.json",
@@ -2129,7 +2089,7 @@
         },
         "scripts": {
           "strategy": "Scripts require workspace trust and operator/client approval outside this compiler.",
-          "script_count": 15,
+          "script_count": 7,
           "help_smoke_failed_count": 0
         },
         "permissions": {
@@ -2219,7 +2179,7 @@
       "compiled_contract": {
         "name": "exam-revision-handbook",
         "title": "Exam Revision Handbook",
-        "version": "0.7.0",
+        "version": "0.7.1",
         "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
         "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
         "trigger": {
@@ -2282,23 +2242,15 @@
           ],
           "scripts": [
             "scripts\\_runtime.py",
-            "scripts\\audit_ap_courses.py",
             "scripts\\bootstrap_runtime.py",
-            "scripts\\build_skill_store_package.py",
-            "scripts\\capture_release_assets.py",
             "scripts\\doctor.py",
-            "scripts\\finalize_release_samples.py",
             "scripts\\import_concept_explanations.py",
             "scripts\\import_infographic_assets.py",
-            "scripts\\render_intro_animation.py",
             "scripts\\run_runtime.py",
-            "scripts\\scan_for_raw_keys.py",
-            "scripts\\sync_intro_animation_sources.py",
-            "scripts\\verify_release_samples.py",
             "scripts\\write_concept_explanations_from_jobs.py"
           ],
           "assets": [
-            "assets\\runtime\\gcse_igcse_alevel_ap_revision_guide-0.6.2-py3-none-any.whl",
+            "assets\\runtime\\exam_revision_handbook-0.7.1-py3-none-any.whl",
             "assets\\runtime\\runtime-lock.json"
           ],
           "reports": [
@@ -2328,16 +2280,14 @@
             "reports/conformance_matrix.md",
             "reports/security_trust_report.json",
             "reports/security_trust_report.md",
-            "reports/runtime_permission_probes.json",
-            "reports/runtime_permission_probes.md",
             "reports/skill_atlas.json",
             "reports/skill_atlas.html"
           ],
           "counts": {
             "references": 7,
-            "scripts": 15,
+            "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 28
           }
         },
         "eval_plan": {
@@ -2498,9 +2448,9 @@
             "strategy": "Preserve references, scripts, assets, evals, reports, and adapter metadata as relative package resources.",
             "counts": {
               "references": 7,
-              "scripts": 15,
+              "scripts": 7,
               "assets": 2,
-              "reports": 30
+              "reports": 28
             },
             "generated_files": [
               "targets/generic/adapter.json"
@@ -2508,7 +2458,7 @@
           },
           "scripts": {
             "strategy": "Expose script and permission metadata for downstream clients or installers to enforce.",
-            "script_count": 15,
+            "script_count": 7,
             "help_smoke_failed_count": 0
           },
           "permissions": {
@@ -2659,9 +2609,9 @@
           "strategy": "Preserve references, scripts, assets, evals, reports, and adapter metadata as relative package resources.",
           "counts": {
             "references": 7,
-            "scripts": 15,
+            "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 28
           },
           "generated_files": [
             "targets/generic/adapter.json"
@@ -2669,7 +2619,7 @@
         },
         "scripts": {
           "strategy": "Expose script and permission metadata for downstream clients or installers to enforce.",
-          "script_count": 15,
+          "script_count": 7,
           "help_smoke_failed_count": 0
         },
         "permissions": {

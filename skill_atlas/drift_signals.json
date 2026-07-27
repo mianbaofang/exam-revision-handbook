@@ -1,8 +1,8 @@
 [
   {
     "name": "exam-revision-handbook",
-    "path": "exam-revision-handbook",
-    "source": "exam-revision-handbook\\reports\\adoption_drift_report.json",
+    "path": ".",
+    "source": "reports\\adoption_drift_report.json",
     "risk_band": "no-data",
     "signal_types": [
       "no telemetry"

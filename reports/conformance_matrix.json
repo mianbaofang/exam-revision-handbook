@@ -38,10 +38,10 @@
         "references resource resolves: references\\scientific_vector_fallback.md",
         "references resource resolves: references\\workflow-contract.md",
         "scripts resource resolves: scripts\\_runtime.py",
-        "scripts resource resolves: scripts\\audit_ap_courses.py",
         "scripts resource resolves: scripts\\bootstrap_runtime.py",
-        "scripts resource resolves: scripts\\build_skill_store_package.py",
-        "scripts resource resolves: scripts\\capture_release_assets.py"
+        "scripts resource resolves: scripts\\doctor.py",
+        "scripts resource resolves: scripts\\import_concept_explanations.py",
+        "scripts resource resolves: scripts\\import_infographic_assets.py"
       ],
       "failures": [],
       "warnings": []
@@ -82,10 +82,10 @@
         "references resource resolves: references\\scientific_vector_fallback.md",
         "references resource resolves: references\\workflow-contract.md",
         "scripts resource resolves: scripts\\_runtime.py",
-        "scripts resource resolves: scripts\\audit_ap_courses.py",
         "scripts resource resolves: scripts\\bootstrap_runtime.py",
-        "scripts resource resolves: scripts\\build_skill_store_package.py",
-        "scripts resource resolves: scripts\\capture_release_assets.py"
+        "scripts resource resolves: scripts\\doctor.py",
+        "scripts resource resolves: scripts\\import_concept_explanations.py",
+        "scripts resource resolves: scripts\\import_infographic_assets.py"
       ],
       "failures": [],
       "warnings": []
@@ -126,14 +126,13 @@
         "references resource resolves: references\\scientific_vector_fallback.md",
         "references resource resolves: references\\workflow-contract.md",
         "scripts resource resolves: scripts\\_runtime.py",
-        "scripts resource resolves: scripts\\audit_ap_courses.py",
         "scripts resource resolves: scripts\\bootstrap_runtime.py",
-        "scripts resource resolves: scripts\\build_skill_store_package.py",
-        "scripts resource resolves: scripts\\capture_release_assets.py"
+        "scripts resource resolves: scripts\\doctor.py",
+        "scripts resource resolves: scripts\\import_concept_explanations.py",
+        "scripts resource resolves: scripts\\import_infographic_assets.py"
       ],
       "failures": [],
       "warnings": [
-        "source checkout directory differs from skill name; package verification must enforce archive top-level identity.",
         "agent-skills uses canonical Agent Skills metadata; provider-native execution transforms are not implemented in v0."
       ]
     },
@@ -173,14 +172,13 @@
         "references resource resolves: references\\scientific_vector_fallback.md",
         "references resource resolves: references\\workflow-contract.md",
         "scripts resource resolves: scripts\\_runtime.py",
-        "scripts resource resolves: scripts\\audit_ap_courses.py",
         "scripts resource resolves: scripts\\bootstrap_runtime.py",
-        "scripts resource resolves: scripts\\build_skill_store_package.py",
-        "scripts resource resolves: scripts\\capture_release_assets.py"
+        "scripts resource resolves: scripts\\doctor.py",
+        "scripts resource resolves: scripts\\import_concept_explanations.py",
+        "scripts resource resolves: scripts\\import_infographic_assets.py"
       ],
       "failures": [],
       "warnings": [
-        "source checkout directory differs from skill name; package verification must enforce archive top-level identity.",
         "vscode uses canonical Agent Skills metadata; provider-native execution transforms are not implemented in v0."
       ]
     },
@@ -220,10 +218,10 @@
         "references resource resolves: references\\scientific_vector_fallback.md",
         "references resource resolves: references\\workflow-contract.md",
         "scripts resource resolves: scripts\\_runtime.py",
-        "scripts resource resolves: scripts\\audit_ap_courses.py",
         "scripts resource resolves: scripts\\bootstrap_runtime.py",
-        "scripts resource resolves: scripts\\build_skill_store_package.py",
-        "scripts resource resolves: scripts\\capture_release_assets.py"
+        "scripts resource resolves: scripts\\doctor.py",
+        "scripts resource resolves: scripts\\import_concept_explanations.py",
+        "scripts resource resolves: scripts\\import_infographic_assets.py"
       ],
       "failures": [],
       "warnings": []
