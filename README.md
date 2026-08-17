@@ -5,6 +5,10 @@ revision guides. It retrieves official AQA, Edexcel, CAIE, and College Board
 requirements, turns them into teachable handbooks, reviews the complete HTML,
 and exports PDF only after approval.**
 
+This is an **AI exam revision handbook** and **GCSE revision AI Agent Skill**
+for source-backed IGCSE and **A-Level revision handbook** workflows, plus AP
+study guides.
+
 <table align="center"><tr><td><a href="https://github.com/mianbaofang/exam-revision-handbook/releases/latest"><img src="https://img.shields.io/github/v/release/mianbaofang/exam-revision-handbook?style=flat-square&amp;label=release" alt="Latest release"></a></td><td><a href="https://github.com/mianbaofang/exam-revision-handbook/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/mianbaofang/exam-revision-handbook/ci.yml?branch=main&amp;style=flat-square&amp;label=tests" alt="CI status"></a></td><td><a href="LICENSE"><img src="https://img.shields.io/github/license/mianbaofang/exam-revision-handbook?style=flat-square" alt="MIT license"></a></td><td><a href="https://github.com/mianbaofang/exam-revision-handbook/stargazers"><img src="https://img.shields.io/github/stars/mianbaofang/exam-revision-handbook?style=flat-square" alt="GitHub stars"></a></td></tr></table>
 
 <p align="center">
@@ -16,26 +20,43 @@ and exports PDF only after approval.**
 <p align="center">
   <a href="README.zh-CN.md">中文 README</a>
   ·
-  <a href="https://mianbaofang.github.io/exam-revision-handbook/">Project site</a>
+  <a href="skills/exam-revision-handbook/SKILL.md">Skill / auto-discovery</a>
   ·
   <a href="https://mianbaofang.github.io/exam-revision-handbook/project-intro-animation-en.html">HTML intro</a>
   ·
-  <a href="docs/index.html">Project details</a>
+  <a href="https://mianbaofang.github.io/exam-revision-handbook/">Project site</a>
   ·
-  <a href="docs/release-evidence/README.md">Release evidence</a>
+  <a href="docs/index.html">Project details</a>
   ·
   <a href="DISCLAIMER.md">Disclaimer</a>
   ·
   <a href="ACKNOWLEDGEMENTS.md">Acknowledgements</a>
+  ·
+  <a href="CHANGELOG.md">Changelog</a>
+  ·
+  <a href="SECURITY.md">Security</a>
   ·
   <a href="references/revision_guide_spec.md">Handbook spec</a>
 </p>
 
 ## Start In One Minute
 
-Download the official
-[v0.7.2 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.2/exam-revision-handbook-v0.7.2.zip),
-or give this repository URL directly to a Skill-compatible Agent:
+The canonical, GitHub CLI discoverable entry is
+[`skills/exam-revision-handbook/`](skills/exam-revision-handbook/). Preview or
+install it with GitHub CLI:
+
+```bash
+gh skill preview mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.7.3
+gh skill install mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.7.3 --agent universal --scope user
+```
+
+The standalone install asset is the official
+[v0.7.3 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.3/exam-revision-handbook-v0.7.3.zip).
+GitHub's source archive is a repository snapshot, not the Skill installer.
+Hosts that need an explicit file should use:
+[`skills/exam-revision-handbook/SKILL.md`](skills/exam-revision-handbook/SKILL.md).
+
+You can also give this repository URL directly to a Skill-compatible Agent:
 
 ```text
 https://github.com/mianbaofang/exam-revision-handbook
@@ -188,7 +209,7 @@ https://github.com/mianbaofang/exam-revision-handbook
 ```
 
 Download the ready-to-use
-[v0.7.2 standard Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.2/exam-revision-handbook-v0.7.2.zip).
+[v0.7.3 standard Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.3/exam-revision-handbook-v0.7.3.zip).
 
 Then ask:
 
@@ -441,8 +462,8 @@ Two operating modes exist. Pick the one that matches your environment.
 
 ### Mode 1: Skill host (preferred, for production handbooks)
 
-Point your Agent runtime (OpenClaw, Hermes, Claude with subagents, etc.) at
-the repository root. The root `SKILL.md` is the only authoritative entry:
+Point your Agent runtime (OpenClaw, Hermes, Claude with subagents, etc.) at the
+discoverable package directory. It is the only authoritative entry:
 
 ```text
 https://github.com/mianbaofang/exam-revision-handbook
@@ -488,7 +509,7 @@ python scripts\run_runtime.py -- generate --query chemistry --level igcse --out 
 
 The CLI is for fetching official source material and writing `qualification.json`, `syllabus-evidence.json`, and `source/`. A real teaching handbook still requires Mode 1: an LLM Analyst outline, Writer-authored concepts/visual decisions, rendered HTML, repeated visible LLM review until approval, and gated PDF export afterward.
 
-GitHub `main`, its `v0.7.2` tag, and the attached Skill ZIP are the same current
+GitHub `main`, its `v0.7.3` tag, and the attached Skill ZIP are the same current
 standard Skill release. There is no separate source edition or install
 edition. Contributors changing its Python engine can use
 `pip install -e ".[dev]"`; the ZIP runs the pinned engine from
@@ -551,15 +572,20 @@ mechanical diagnostics and handbook approval.
 ## Repository Layout
 
 ```text
-SKILL.md         the single authoritative Agent entry
-agents/          platform-facing Skill metadata
-references/      complete workflow, artifact, provider, and runtime contracts
-assets/runtime/  pinned Python engine Wheel and integrity lock
-evals/           trigger, workflow, migration, and output parity fixtures
-reports/         governed Skill and migration evidence
-security/        runtime permission and network policy
-skill_atlas/     generated routing and maintenance metadata
-scripts/         runtime adapters, import helpers, and repository tooling
+skills/exam-revision-handbook/
+  SKILL.md       single authoritative Agent entry and GitHub CLI discovery path
+  agents/        platform-facing Skill metadata
+  references/    complete workflow, artifact, provider, and runtime contracts
+  assets/        pinned Python engine Wheel and integrity lock
+  evals/         trigger, workflow, migration, and output parity fixtures
+  reports/       governed Skill and migration evidence
+  security/      runtime permission and network policy
+  skill_atlas/   generated routing and maintenance metadata
+  scripts/       packaged runtime adapters and import helpers
+agents/          source-repository copies of platform metadata
+references/      source-repository contracts
+assets/runtime/  source-repository runtime lock and Wheel
+scripts/         source-repository maintenance tooling
 src/intl_exam_guide/
   providers/      exam-board source access and parsing
   parsing/        PDF text extraction
@@ -598,7 +624,7 @@ See [DISCLAIMER.md](DISCLAIMER.md) and [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md
 
 ## Status
 
-Current Skill version: `v0.7.2`. The Skill is public-ready as a framework for
+Current Skill version: `v0.7.3`. The Skill is public-ready as a framework for
 source-backed handbook generation. An individual handbook is final-ready only
 after its own complete LLM HTML review is recorded in
 `agent-product-review.json` and `review-ledger/`, the exact HTML passes the hash

@@ -1,0 +1,39 @@
+{
+  "summary": {
+    "skill_name": "exam-revision-handbook",
+    "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
+    "maturity_tier": "governed",
+    "selection_rule": "Pick the three smallest next steps that increase reliability more than they increase context cost.",
+    "recommended_now": "Tighten trigger and exclusions",
+    "recommended_now_why": "The package needs clearer near-neighbor exclusions before it grows.",
+    "defer_for_now": "Create an iteration evidence loop"
+  },
+  "directions": [
+    {
+      "priority": 1,
+      "title": "Tighten trigger and exclusions",
+      "why": "The package needs clearer near-neighbor exclusions before it grows.",
+      "actions": [
+        "Add 3 to 5 should-trigger and should-not-trigger examples.",
+        "Refine the frontmatter description to name the recurring job and non-goals.",
+        "Run a first trigger evaluation pass before expanding the package."
+      ],
+      "unlocks": "Cleaner routing and fewer accidental activations.",
+      "do_now": "Do this first.",
+      "wait_on": "Wait to add broader structure until this move clearly improves reliability."
+    },
+    {
+      "priority": 11,
+      "title": "Create an iteration evidence loop",
+      "why": "The package should show what changed and why after the first draft.",
+      "actions": [
+        "Generate the HTML skill report and keep it aligned with the package.",
+        "Record reference scan choices and non-goals.",
+        "Capture the next iteration choice explicitly before adding more files."
+      ],
+      "unlocks": "A clearer path for the next author or reviewer.",
+      "do_now": "Do this after the first move lands cleanly.",
+      "wait_on": "Wait until the package has evidence that this extra structure is justified."
+    }
+  ]
+}

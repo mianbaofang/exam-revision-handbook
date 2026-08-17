@@ -1,6 +1,6 @@
 # Project Operations Guide / 项目维护说明
 
-Last updated: 2026-08-17 for `v0.7.2`.
+Last updated: 2026-08-17 for `v0.7.3`.
 
 This file defines how to maintain and release the single public project. Read
 [`PROJECT.md`](../PROJECT.md) first.
@@ -10,7 +10,7 @@ This file defines how to maintain and release the single public project. Read
 - Repository: `mianbaofang/exam-revision-handbook`
 - Default branch: `main`
 - Skill name: `exam-revision-handbook`
-- Canonical Skill entry: root `SKILL.md`
+- Canonical Skill entry: `skills/exam-revision-handbook/SKILL.md`
 - Full workflow: `references/workflow-contract.md`
 - Artifact contract: `references/revision_guide_spec.md`
 - Skill version: `manifest.json`
@@ -18,7 +18,7 @@ This file defines how to maintain and release the single public project. Read
 - Engine runtime lock: `assets/runtime/runtime-lock.json`
 - Release record: `CHANGELOG.md` and GitHub Releases
 
-There is no second public repository and no nested authoritative Skill. A clean
+There is no second public repository and no root-level wrapper Skill. A clean
 clone, temporary extraction directory, or release staging directory is only an
 operational copy of this same project. Never describe it as a new product.
 
@@ -33,9 +33,10 @@ open-source maintenance material needed to verify and update its Python engine;
 those files do not form a separate edition.
 
 The Release ZIP is generated from the same tagged commit by
-`scripts/build_skill_store_package.py` and contains one top-level
-`exam-revision-handbook/` directory. Its root contains the authoritative
-`SKILL.md`; there is no second `SKILL.md` below it and no separate workflow.
+`scripts/build_skill_store_package.py` from the discoverable package directory
+and contains one top-level `exam-revision-handbook/` directory. Its root
+contains the authoritative `SKILL.md`; the repository contains no second
+`SKILL.md` or separate workflow.
 
 Maintenance-only content excluded from the Release download includes:
 
@@ -46,7 +47,8 @@ Maintenance-only content excluded from the Release download includes:
 
 Required Skill content in the Release download includes:
 
-- `SKILL.md`, `agents/`, `references/`, and `manifest.json`;
+- `SKILL.md`, `agents/`, `references/`, and `manifest.json` from
+  `skills/exam-revision-handbook/`;
 - pinned runtime Wheel and `runtime-lock.json`;
 - `doctor.py`, runtime bootstrap/adapter scripts, and both import helpers;
 - governed eval, report, security, and Skill Atlas evidence selected for the
@@ -80,7 +82,7 @@ review-ledger hashes.
 
 For workflow or Agent-behavior changes, inspect and synchronize:
 
-- `SKILL.md`
+- `skills/exam-revision-handbook/SKILL.md`
 - `references/workflow-contract.md`
 - `references/revision_guide_spec.md`
 - `agents/interface.yaml` and `agents/openai.yaml`

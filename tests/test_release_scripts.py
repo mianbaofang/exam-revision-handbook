@@ -611,7 +611,7 @@ def test_public_repo_does_not_ship_built_in_image_router():
 
 def test_skill_instructions_include_required_preflight_choices():
     root = Path(__file__).resolve().parents[1]
-    skill_text = (root / "SKILL.md").read_text(encoding="utf-8")
+    skill_text = (root / "skills" / "exam-revision-handbook" / "SKILL.md").read_text(encoding="utf-8")
     workflow_text = (root / "references" / "workflow-contract.md").read_text(
         encoding="utf-8"
     )
@@ -639,7 +639,7 @@ def test_skill_instructions_include_required_preflight_choices():
 
 def test_skill_blocks_until_external_image_capability_is_confirmed():
     repo_root = Path(__file__).resolve().parents[1]
-    skill_text = (repo_root / "SKILL.md").read_text(encoding="utf-8")
+    skill_text = (repo_root / "skills" / "exam-revision-handbook" / "SKILL.md").read_text(encoding="utf-8")
     workflow_text = (repo_root / "references" / "workflow-contract.md").read_text(
         encoding="utf-8"
     )
@@ -684,7 +684,7 @@ def test_public_docs_explain_delivery_matrix_and_final_review():
 
 
 def test_public_skill_and_docs_state_the_automatic_acquisition_boundary():
-    root_skill = Path("SKILL.md").read_text(encoding="utf-8")
+    root_skill = Path("skills/exam-revision-handbook/SKILL.md").read_text(encoding="utf-8")
     workflow = Path("references/workflow-contract.md").read_text(encoding="utf-8")
     readme = Path("README.md").read_text(encoding="utf-8")
     chinese_readme = Path("README.zh-CN.md").read_text(encoding="utf-8")

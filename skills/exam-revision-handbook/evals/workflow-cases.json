@@ -1,0 +1,27 @@
+[
+  {
+    "id": "aqa-accounting-zh",
+    "prompt": "帮我生成 AQA IGCSE 会计复习手册，附中文专业词对照表。",
+    "expected": "The agent treats AQA as the OxfordAQA international route and, in the first response, shows a complete fixed-choice preflight form that asks whether the user can provide or enable an external image-generation Skill or tool and also covers board, level, subject, year/range, support language, explanation style, workflow mode, batch scope, and output directory. It requires key=value replies, waits, and does not download, split, write, render, or generate PDF while any field is missing or invalid. It never infers the external route from image_provider, then prepares detailed syllabus units, concept jobs/review status, worked examples, route-aware visual briefs, and HTML. The LLM personally opens the current HTML, returns problems for rewriting and rerendering until it passes, records per-item evidence and approval for the exact HTML/render/ledger hashes, and only then allows a technically valid PDF candidate to become current; Python inspection cannot approve it."
+  },
+  {
+    "id": "edexcel-ambiguous-subject",
+    "prompt": "我需要 Edexcel IGCSE Accounting 复习手册。",
+    "expected": "In the first response, the agent asks whether the user can provide or enable an external image-generation Skill or tool inside the complete fixed-choice preflight form, requires key=value replies, and waits instead of defaulting to local generation or beginning discovery. It then resolves official Edexcel candidates. If more than one official route matches, it returns the candidates and waits for the user instead of silently reusing an AQA syllabus or guessing a URL."
+  },
+  {
+    "id": "caie-exam-year",
+    "prompt": "帮我生成 CAIE IGCSE Economics 复习手册，附中文专业词对照表。",
+    "expected": "In the first response, the agent asks whether the user can provide or enable an external image-generation Skill or tool inside the complete fixed-choice preflight form and waits with the project blocked until all fields are valid. It checks whether the CAIE page exposes multiple syllabus year ranges. If so, it asks for exam year before selecting the syllabus, then keeps the handbook body English and adds the requested term glossary."
+  },
+  {
+    "id": "image-model-not-callable",
+    "prompt": "用 SenseNova U1 Fast 给复杂图都生出来。",
+    "expected": "The agent verifies that a callable image-generation skill, script, custom provider configuration, or matching asset directory exists. If none exists, it does not pretend SenseNova is callable and instead reports the pending infographic count, visual job IDs, and draft status."
+  },
+  {
+    "id": "final-audit-maintenance",
+    "prompt": "根据最后一轮审查结果修复剩余 P3，并确认复习手册 Skill 已更新。",
+    "expected": "The agent treats this as repository maintenance, not a handbook generation request. It closes the visual_routing, validation/checks, subject_profiles, docs/index.html, weak assertion, and standalone OR-trigger gaps; runs the focused coverage commands plus full pytest/ruff/mypy; updates both the repository skill and installed skill with the final audit closure standard; and reports any residual risk."
+  }
+]

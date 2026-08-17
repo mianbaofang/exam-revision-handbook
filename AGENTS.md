@@ -4,7 +4,7 @@
 
 Read `PROJECT.md` before making changes. Then read:
 
-1. `SKILL.md`
+1. `skills/exam-revision-handbook/SKILL.md`
 2. `references/workflow-contract.md`
 3. `references/revision_guide_spec.md`
 4. `docs/ARCHITECTURE_DECISION_SKILL_WORKFLOW.md`
@@ -12,11 +12,13 @@ Read `PROJECT.md` before making changes. Then read:
 
 ## Single Canonical Skill
 
-- The root `SKILL.md` is authoritative.
+- `skills/exam-revision-handbook/SKILL.md` is authoritative and is the GitHub
+  CLI automatic-discovery entry.
 - GitHub `main`, the matching tag, and its Release download are one current
   standard Skill release. The ZIP is the downloadable form of that release,
   never another edition, structure, or development line.
-- Do not recreate `skill/`, a wrapper `SKILL.md`, or another nested workflow.
+- Do not recreate the retired `skill/` workflow, a root-level wrapper
+  `SKILL.md`, or another nested workflow.
 - `src/` and `tests/` are development support for the same standard Skill, not
   a legacy product.
 - The installable ZIP is built from an allowlist and must keep one top-level
@@ -40,7 +42,7 @@ Read `PROJECT.md` before making changes. Then read:
 - Make the smallest change that satisfies the current request.
 - Preserve unrelated user changes and public assets.
 - Update `CHANGELOG.md` for every completed iteration.
-- Keep `SKILL.md`, references, Agent metadata, evals, README files, and tests in
+- Keep the canonical Skill, references, Agent metadata, evals, README files, and tests in
   sync when their shared contract changes.
 - If engine behavior changes, rebuild and re-lock the embedded Wheel. A source
   change without a matching runtime asset is incomplete.

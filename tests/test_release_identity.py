@@ -33,5 +33,10 @@ def test_release_identity_is_consistent() -> None:
 
 
 def test_skill_frontmatter_uses_canonical_name() -> None:
-    skill = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
+    skill = (REPO_ROOT / "skills" / EXPECTED_NAME / "SKILL.md").read_text(encoding="utf-8")
     assert skill.startswith("---\nname: exam-revision-handbook\n")
+
+
+def test_discoverable_package_is_the_only_repository_skill_entry() -> None:
+    entries = list(REPO_ROOT.rglob("SKILL.md"))
+    assert entries == [REPO_ROOT / "skills" / EXPECTED_NAME / "SKILL.md"]

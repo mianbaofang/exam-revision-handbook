@@ -7,7 +7,7 @@ This is one open-source project, not a family of parallel repositories.
 - Public repository: `mianbaofang/exam-revision-handbook`
 - Product name: **Exam Revision Handbook**
 - Canonical Skill name: `exam-revision-handbook`
-- Current Skill release: `v0.7.2`
+- Current Skill release: `v0.7.3`
 - Canonical branch: `main`
 
 本项目只有一个公开仓库和一条持续迭代线。`v0.7.0` 将原有项目迁移为标准
@@ -24,7 +24,7 @@ release; it is not another edition, structure, or source of truth. `src/` and
 `tests/` are maintenance directories inside the same current version. The
 legacy structure exists only in the external rollback archive.
 
-换句话说，GitHub `main`、对应 tag 和 Release ZIP 就是同一个 `v0.7.2`；ZIP 只是
+换句话说，GitHub `main`、对应 tag 和 Release ZIP 就是同一个 `v0.7.3`；ZIP 只是
 它的下载形式，不是“精简版”、第二套结构或另一条开发线。
 
 ## 2. Product Scope / 产品范围
@@ -45,11 +45,13 @@ Manual imports are experimental and may fail with unknown compatibility errors.
 
 ## 3. One Source Of Truth / 唯一权威入口
 
-The root [SKILL.md](SKILL.md) is the only authoritative Agent entry.
+The [`skills/exam-revision-handbook/SKILL.md`](skills/exam-revision-handbook/SKILL.md)
+file is the only authoritative Agent entry and the GitHub CLI automatic-discovery
+entry.
 
 Read these files in order before changing behavior:
 
-1. `SKILL.md`: compact mandatory workflow and stop conditions.
+1. `skills/exam-revision-handbook/SKILL.md`: compact mandatory workflow and stop conditions.
 2. `references/workflow-contract.md`: complete workflow rule surface.
 3. `references/revision_guide_spec.md`: artifact, review, rendering, and
    delivery contracts.
@@ -57,9 +59,9 @@ Read these files in order before changing behavior:
 5. `docs/ARCHITECTURE_DECISION_SKILL_WORKFLOW.md`: LLM/Python ownership.
 6. `docs/PROJECT_OPERATIONS.md`: maintenance and release procedure.
 
-There must never be another authoritative `SKILL.md` below the repository root.
-In particular, do not recreate `skill/SKILL.md` or turn the root file back into
-a discovery wrapper.
+There must be exactly one `SKILL.md` in the repository, at
+`skills/exam-revision-handbook/SKILL.md`. Do not recreate `skill/SKILL.md` or a
+root-level wrapper.
 
 ## 4. One Current Version / 唯一当前版本
 
@@ -69,7 +71,16 @@ from the same tagged commit as its ready-to-use download; it does not define a
 second project, version, workflow, or structure.
 
 ```text
-SKILL.md         canonical Agent entry
+skills/exam-revision-handbook/
+  SKILL.md       canonical Agent entry, GitHub CLI discovery, and package source
+  agents/        client-facing Skill metadata
+  references/    workflow, artifact, provider, and runtime contracts
+  assets/        pinned runtime Wheel and SHA-256 lock
+  evals/         validation fixtures
+  reports/       governed evidence
+  security/      permission and network policies
+  skill_atlas/   generated routing and maintenance metadata
+  scripts/       packaged runtime adapters and import helpers
 agents/          OpenAI and portable interface metadata
 references/      workflow, artifact, provider, and runtime contracts
 assets/runtime/  pinned Python engine Wheel and SHA-256 lock
@@ -88,15 +99,15 @@ part of this one open-source version. They remain in Git so the Skill can be
 maintained and verified. Building the download only removes files a Skill host
 does not run; it never creates another Skill structure or version.
 
-The v0.7.2 download contains one top-level `exam-revision-handbook/` folder with
+The v0.7.3 download contains one top-level `exam-revision-handbook/` folder with
 its root `SKILL.md`, required metadata, references, runtime assets, governed
 evidence, and user-facing runtime/import scripts. It must contain no nested
 `SKILL.md`, no `src/`, no `tests/`, no `docs/`, no cache, and no local path.
 
 ## 5. Runtime And Version Model / 运行时与版本
 
-- `manifest.json` is the Skill release version and currently records `0.7.2`.
-- Git tags and GitHub Releases follow the Skill version: `v0.7.2`.
+- `manifest.json` is the Skill release version and currently records `0.7.3`.
+- Git tags and GitHub Releases follow the Skill version: `v0.7.3`.
 - `assets/runtime/runtime-lock.json` pins the embedded Python engine and its
   exact Wheel hash.
 - The v0.7.0 migration preserved the validated `0.6.2` engine behavior as its
@@ -145,7 +156,7 @@ global installation or on the repository `src/` tree being present.
 
 When changing workflow rules, review and update:
 
-- `SKILL.md`
+- `skills/exam-revision-handbook/SKILL.md`
 - `references/workflow-contract.md`
 - `references/revision_guide_spec.md`
 - `agents/interface.yaml` and `agents/openai.yaml`
@@ -215,7 +226,7 @@ Before editing:
 
 Before handoff:
 
-1. Confirm only one `SKILL.md` exists in the current repository.
+1. Confirm only one `SKILL.md` exists at `skills/exam-revision-handbook/SKILL.md`.
 2. Show the changed-file scope and deletion scope.
 3. Run the applicable validation and report exact results.
 4. Verify the release ZIP by extracting it into a clean temporary location and

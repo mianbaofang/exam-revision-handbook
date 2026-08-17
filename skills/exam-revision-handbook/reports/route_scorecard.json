@@ -1,0 +1,413 @@
+{
+  "summary": {
+    "total_cases": 17,
+    "correct_cases": 17,
+    "accuracy": 1.0,
+    "ambiguous_case_count": 0,
+    "margin_warning_threshold": 0.08,
+    "misroute_count": 0,
+    "no_route_accuracy": 1.0
+  },
+  "route_stats": {
+    "exam-revision-handbook": {
+      "expected_count": 8,
+      "predicted_count": 8,
+      "correct_count": 8,
+      "precision": 1.0,
+      "recall": 1.0,
+      "average_margin": 0.953
+    },
+    "no_route": {
+      "expected_count": 9,
+      "predicted_count": 9,
+      "correct_count": 9,
+      "precision": 1.0,
+      "recall": 1.0,
+      "average_margin": null
+    }
+  },
+  "confusion_matrix": {
+    "exam-revision-handbook": {
+      "exam-revision-handbook": 8,
+      "no_route": 0
+    },
+    "no_route": {
+      "exam-revision-handbook": 0,
+      "no_route": 9
+    }
+  },
+  "ambiguous_cases": [],
+  "misroutes": [],
+  "cases": [
+    {
+      "family": "handbook-generation",
+      "prompt": "Create an AQA GCSE Biology revision handbook from the official specification.",
+      "expected_route": "exam-revision-handbook",
+      "predicted_route": "exam-revision-handbook",
+      "correct": true,
+      "margin": 0.979,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 0.979,
+          "passed_threshold": true,
+          "threshold": 0.48,
+          "matched_desired_concepts": [
+            "exam_handbook_workflow",
+            "supported_exam_context"
+          ],
+          "matched_negative_concepts": []
+        }
+      ]
+    },
+    {
+      "family": "handbook-generation-zh",
+      "prompt": "帮我生成 CAIE IGCSE Economics 复习手册。",
+      "expected_route": "exam-revision-handbook",
+      "predicted_route": "exam-revision-handbook",
+      "correct": true,
+      "margin": 0.951,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 0.951,
+          "passed_threshold": true,
+          "threshold": 0.48,
+          "matched_desired_concepts": [
+            "exam_handbook_workflow",
+            "supported_exam_context"
+          ],
+          "matched_negative_concepts": []
+        }
+      ]
+    },
+    {
+      "family": "source-acquisition",
+      "prompt": "Download the official Edexcel A-Level Mathematics syllabus and prepare the handbook evidence.",
+      "expected_route": "exam-revision-handbook",
+      "predicted_route": "exam-revision-handbook",
+      "correct": true,
+      "margin": 0.973,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 0.973,
+          "passed_threshold": true,
+          "threshold": 0.48,
+          "matched_desired_concepts": [
+            "exam_handbook_workflow",
+            "supported_exam_context"
+          ],
+          "matched_negative_concepts": []
+        }
+      ]
+    },
+    {
+      "family": "ap-handbook",
+      "prompt": "Build a College Board AP Chemistry revision guide with worked examples and diagrams.",
+      "expected_route": "exam-revision-handbook",
+      "predicted_route": "exam-revision-handbook",
+      "correct": true,
+      "margin": 1.0,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 1.0,
+          "passed_threshold": true,
+          "threshold": 0.48,
+          "matched_desired_concepts": [
+            "exam_handbook_workflow",
+            "supported_exam_context",
+            "teaching_content"
+          ],
+          "matched_negative_concepts": []
+        }
+      ]
+    },
+    {
+      "family": "html-review",
+      "prompt": "Review this generated handbook HTML completely and repair it before PDF export.",
+      "expected_route": "exam-revision-handbook",
+      "predicted_route": "exam-revision-handbook",
+      "correct": true,
+      "margin": 0.841,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 0.841,
+          "passed_threshold": true,
+          "threshold": 0.48,
+          "matched_desired_concepts": [
+            "exam_handbook_workflow"
+          ],
+          "matched_negative_concepts": []
+        }
+      ]
+    },
+    {
+      "family": "visual-review",
+      "prompt": "The visual manifest has pending diagrams; review each teaching visual and rerender the guide.",
+      "expected_route": "exam-revision-handbook",
+      "predicted_route": "exam-revision-handbook",
+      "correct": true,
+      "margin": 0.915,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 0.915,
+          "passed_threshold": true,
+          "threshold": 0.48,
+          "matched_desired_concepts": [
+            "exam_handbook_workflow",
+            "teaching_content"
+          ],
+          "matched_negative_concepts": []
+        }
+      ]
+    },
+    {
+      "family": "pdf-delivery",
+      "prompt": "Export the approved IGCSE handbook PDF and verify the delivery hash.",
+      "expected_route": "exam-revision-handbook",
+      "predicted_route": "exam-revision-handbook",
+      "correct": true,
+      "margin": 0.967,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 0.967,
+          "passed_threshold": true,
+          "threshold": 0.48,
+          "matched_desired_concepts": [
+            "exam_handbook_workflow",
+            "supported_exam_context"
+          ],
+          "matched_negative_concepts": []
+        }
+      ]
+    },
+    {
+      "family": "syllabus-analysis-zh",
+      "prompt": "拆解这份 A-Level 考纲到具体考点，再为每个考点写教学内容。",
+      "expected_route": "exam-revision-handbook",
+      "predicted_route": "exam-revision-handbook",
+      "correct": true,
+      "margin": 1.0,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 1.0,
+          "passed_threshold": true,
+          "threshold": 0.48,
+          "matched_desired_concepts": [
+            "exam_handbook_workflow",
+            "supported_exam_context",
+            "teaching_content"
+          ],
+          "matched_negative_concepts": []
+        }
+      ]
+    },
+    {
+      "family": "explanation-only",
+      "prompt": "What is the difference between GCSE and IGCSE?",
+      "expected_route": "no_route",
+      "predicted_route": "no_route",
+      "correct": true,
+      "margin": null,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 0.0,
+          "passed_threshold": false,
+          "threshold": 0.48,
+          "matched_desired_concepts": [
+            "supported_exam_context"
+          ],
+          "matched_negative_concepts": [
+            "explanation_only"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "translation",
+      "prompt": "Translate this school newsletter into Chinese.",
+      "expected_route": "no_route",
+      "predicted_route": "no_route",
+      "correct": true,
+      "margin": null,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 0.0,
+          "passed_threshold": false,
+          "threshold": 0.48,
+          "matched_desired_concepts": [],
+          "matched_negative_concepts": [
+            "translation_only",
+            "unrelated_artifact"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "code-maintenance",
+      "prompt": "Fix the failing unit test in my Python repository.",
+      "expected_route": "no_route",
+      "predicted_route": "no_route",
+      "correct": true,
+      "margin": null,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 0.0,
+          "passed_threshold": false,
+          "threshold": 0.48,
+          "matched_desired_concepts": [],
+          "matched_negative_concepts": [
+            "repository_maintenance"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "marketing",
+      "prompt": "Create a marketing landing page for a tutoring company.",
+      "expected_route": "no_route",
+      "predicted_route": "no_route",
+      "correct": true,
+      "margin": null,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 0.0,
+          "passed_threshold": false,
+          "threshold": 0.48,
+          "matched_desired_concepts": [],
+          "matched_negative_concepts": [
+            "unrelated_artifact"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "summary-only",
+      "prompt": "Summarize this unrelated PDF in five bullets.",
+      "expected_route": "no_route",
+      "predicted_route": "no_route",
+      "correct": true,
+      "margin": null,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 0.0,
+          "passed_threshold": false,
+          "threshold": 0.48,
+          "matched_desired_concepts": [],
+          "matched_negative_concepts": [
+            "summary_only"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "repository-release",
+      "prompt": "Update the README and GitHub release notes for the exam handbook repository.",
+      "expected_route": "no_route",
+      "predicted_route": "no_route",
+      "correct": true,
+      "margin": null,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 0.0,
+          "passed_threshold": false,
+          "threshold": 0.48,
+          "matched_desired_concepts": [],
+          "matched_negative_concepts": [
+            "repository_maintenance"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "skill-maintenance",
+      "prompt": "Audit the Skill package structure but do not generate a student handbook.",
+      "expected_route": "no_route",
+      "predicted_route": "no_route",
+      "correct": true,
+      "margin": null,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 0.0,
+          "passed_threshold": false,
+          "threshold": 0.48,
+          "matched_desired_concepts": [],
+          "matched_negative_concepts": [
+            "repository_maintenance"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "teacher-resource",
+      "prompt": "Design a generic worksheet template for teachers.",
+      "expected_route": "no_route",
+      "predicted_route": "no_route",
+      "correct": true,
+      "margin": null,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 0.0,
+          "passed_threshold": false,
+          "threshold": 0.48,
+          "matched_desired_concepts": [],
+          "matched_negative_concepts": [
+            "unrelated_artifact"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "brainstorming",
+      "prompt": "Give me three ideas for an AP study app.",
+      "expected_route": "no_route",
+      "predicted_route": "no_route",
+      "correct": true,
+      "margin": null,
+      "ambiguous": false,
+      "ranked_routes": [
+        {
+          "name": "exam-revision-handbook",
+          "score": 0.0,
+          "passed_threshold": false,
+          "threshold": 0.48,
+          "matched_desired_concepts": [],
+          "matched_negative_concepts": [
+            "brainstorm_only",
+            "unrelated_artifact"
+          ]
+        }
+      ]
+    }
+  ]
+}

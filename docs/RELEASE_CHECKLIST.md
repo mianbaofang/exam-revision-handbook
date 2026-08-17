@@ -36,7 +36,8 @@
 - [ ] The resulting ZIP contains one top-level `exam-revision-handbook/`
   directory, with the canonical `SKILL.md` at that Skill root and no second or
   nested `SKILL.md`.
-- [ ] Packaged `SKILL.md` is byte-identical to the repository-root `SKILL.md`;
+- [ ] Packaged `SKILL.md` is byte-identical to
+  `skills/exam-revision-handbook/SKILL.md`;
   a second build has the same SHA-256.
 - [ ] The ZIP contains both concept/visual import helpers and excludes
   repository-only `src/`, `tests/`, `docs/`, `.github/`, and post-package

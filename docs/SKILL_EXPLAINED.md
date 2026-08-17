@@ -6,7 +6,8 @@
 
 ## English
 
-The authoritative Agent entry is the repository-root `SKILL.md`. Its references provide the
+The authoritative Agent entry is `skills/exam-revision-handbook/SKILL.md`, the
+GitHub CLI automatic-discovery path. Its references provide the
 handbook contract and provider notes:
 
 - `references/revision_guide_spec.md`: artifact and delivery contract;
@@ -23,7 +24,7 @@ hashing, and enforcement of the recorded LLM decision.
 
 ```mermaid
 flowchart LR
-  A["User requests a supported handbook"] --> B["Load root SKILL.md"]
+  A["User requests a supported handbook"] --> B["Load skills/exam-revision-handbook/SKILL.md"]
   B --> C["Blocking preflight: confirm external image capability and run choices"]
   C --> D["Extract official Markdown and page evidence"]
   D --> E["LLM Analyst writes atomic syllabus outline"]
@@ -67,7 +68,8 @@ The demo stops at HTML and is not a teaching-grade handbook.
 
 ## 中文
 
-Agent 的唯一权威入口是仓库根目录的 `SKILL.md`。相关 reference 分别保存手册交付合同和来源说明：
+Agent 的唯一权威入口是 `skills/exam-revision-handbook/SKILL.md`，也是 GitHub CLI
+自动发现路径。相关 reference 分别保存手册交付合同和来源说明：
 
 - `references/revision_guide_spec.md`：产物与交付合同；
 - `references/oxfordaqa.md`：AQA 来源说明；
@@ -80,7 +82,7 @@ Agent 的唯一权威入口是仓库根目录的 `SKILL.md`。相关 reference �
 
 ```mermaid
 flowchart LR
-  A["用户要求生成受支持课程手册"] --> B["加载根目录 SKILL.md"]
+  A["用户要求生成受支持课程手册"] --> B["加载 skills/exam-revision-handbook/SKILL.md"]
   B --> C["阻塞式预检：确认外部生图能力与本次选项"]
   C --> D["提取官方 Markdown 与逐页证据"]
   D --> E["LLM Analyst 写原子化大纲"]

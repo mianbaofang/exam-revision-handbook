@@ -11,6 +11,8 @@ from pathlib import Path, PurePosixPath
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+PACKAGE_NAME = "exam-revision-handbook"
+PACKAGE_ROOT = REPO_ROOT / "skills" / PACKAGE_NAME
 TEXT_SUFFIXES = {".json", ".md", ".py", ".txt", ".yaml", ".yml"}
 UPWARD_REFERENCE_CHAIN = re.compile(rb"(?<![A-Za-z0-9_.-])(?:\.\.[/\\])+")
 LOCAL_ABSOLUTE_PATH = re.compile(
@@ -76,11 +78,21 @@ def package_version(source_dir: Path = REPO_ROOT) -> str:
 
 
 def default_output_path() -> Path:
-    return REPO_ROOT / "dist" / f"{skill_name(REPO_ROOT)}-v{package_version()}.zip"
+    return REPO_ROOT / "dist" / f"{skill_name(PACKAGE_ROOT)}-v{package_version(PACKAGE_ROOT)}.zip"
 
 
 def selected_files(source_dir: Path) -> list[tuple[Path, Path]]:
     selected: dict[str, tuple[Path, Path]] = {}
+    runtime_lock_path = source_dir / "assets" / "runtime" / "runtime-lock.json"
+    runtime_lock = (
+        json.loads(runtime_lock_path.read_text(encoding="utf-8"))
+        if runtime_lock_path.is_file()
+        else {}
+    )
+    runtime_file = str(
+        load_manifest(source_dir).get("runtime_file")
+        or runtime_lock.get("engine", {}).get("file", "")
+    )
 
     def include(path: Path) -> None:
         if path.is_symlink() or not path.is_file() or path.suffix == ".pyc":
@@ -90,6 +102,13 @@ def selected_files(source_dir: Path) -> list[tuple[Path, Path]]:
             return
         if relative.parts[:1] == ("reports",) and relative.name in POST_PACKAGE_REPORTS:
             return
+        if (
+            runtime_file
+            and relative.parts[:2] == ("assets", "runtime")
+            and relative.suffix == ".whl"
+        ):
+            if relative.name != runtime_file:
+                return
         selected[relative.as_posix()] = (path, relative)
 
     for name in STANDARD_ROOTS:
@@ -161,7 +180,7 @@ def inspect_package(
             )
         skill_bytes = archive.read(skill_entry)
         if expected_skill is not None and skill_bytes != expected_skill:
-            raise ValueError("Packaged SKILL.md does not match the canonical root SKILL.md.")
+            raise ValueError("Packaged SKILL.md does not match the canonical package SKILL.md.")
         if not skill_bytes.startswith(b"---\n") or b"\nname:" not in skill_bytes:
             raise ValueError("Packaged SKILL.md is missing standard YAML frontmatter.")
         if canonical:
@@ -241,7 +260,7 @@ def build_package(source_dir: Path, output_path: Path) -> dict[str, object]:
             temporary_path,
             expected_name=name,
             expected_skill=package_bytes(skill_path),
-            canonical=source_dir == REPO_ROOT,
+            canonical=source_dir == PACKAGE_ROOT,
         )
         temporary_path.replace(output_path)
     finally:
@@ -251,7 +270,7 @@ def build_package(source_dir: Path, output_path: Path) -> dict[str, object]:
         output_path,
         expected_name=name,
         expected_skill=package_bytes(skill_path),
-        canonical=source_dir == REPO_ROOT,
+        canonical=source_dir == PACKAGE_ROOT,
     )
     checksum_path = output_path.with_suffix(".sha256")
     checksum_path.write_text(
@@ -267,7 +286,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description="Build the versioned standard Skill ZIP and SHA-256 file."
     )
-    parser.add_argument("--source", type=Path, default=REPO_ROOT)
+    parser.add_argument("--source", type=Path, default=PACKAGE_ROOT)
     parser.add_argument("--output", type=Path, default=default_output_path())
     args = parser.parse_args()
     print(json.dumps(build_package(args.source, args.output), indent=2))

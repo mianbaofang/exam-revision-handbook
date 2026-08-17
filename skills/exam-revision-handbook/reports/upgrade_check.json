@@ -1,0 +1,69 @@
+{
+  "ok": true,
+  "schema_version": "2.0",
+  "generated_at": "2026-08-17",
+  "previous": {
+    "name": "exam-revision-handbook",
+    "version": "0.7.2",
+    "targets": [
+      "openai",
+      "claude",
+      "agent-skills",
+      "vscode",
+      "generic"
+    ]
+  },
+  "current": {
+    "name": "exam-revision-handbook",
+    "version": "0.7.3",
+    "targets": [
+      "openai",
+      "claude",
+      "agent-skills",
+      "vscode",
+      "generic"
+    ]
+  },
+  "summary": {
+    "declared_bump": "patch",
+    "recommended_bump": "patch",
+    "breaking_change_count": 0,
+    "added_target_count": 0,
+    "metadata_change_count": 0,
+    "checksum_change_count": 2,
+    "failure_count": 0,
+    "warning_count": 0
+  },
+  "upgrade_diff": {
+    "name_changed": false,
+    "added_targets": [],
+    "removed_targets": [],
+    "compatibility_changes": [],
+    "metadata_changes": [],
+    "checksum_changes": [
+      {
+        "field": "archive_sha256",
+        "from": "98223a1eb3eea9c471b53d96b7f88096c7c7d89eb4d87b5775e91d6d6a6559a3",
+        "to": "72c33d65c622f40bb4d083150030198901738d56b2190ba00ad289ca8d8233ac"
+      },
+      {
+        "field": "package_sha256",
+        "from": "8422c2cfbcf7bbb670edfaeefda71f9c748a21083a3448fd10cf2f2b6f7bc372",
+        "to": "2bab01674d23feb0ee8900e5be406d03c7d621869f48f3703cb79c92fedf388b"
+      }
+    ]
+  },
+  "release_notes": [
+    "Recommended version bump: patch.",
+    "Package or archive checksum changed; reviewers should verify package artifacts before release.",
+    "Package verification evidence: reports/package_verification.md."
+  ],
+  "failures": [],
+  "warnings": [],
+  "artifacts": {
+    "previous_package": "<SKILL_ROOT>\\dist\\previous-package-v0.7.2.json",
+    "current_package": "<SKILL_ROOT>\\dist\\yao-registry\\packages\\exam-revision-handbook.json",
+    "json": "<SKILL_ROOT>\\reports\\upgrade_check.json",
+    "markdown": "<SKILL_ROOT>\\reports\\upgrade_check.md"
+  }
+}

@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.7.3 - 2026-08-17
+
+### GitHub Skill Discovery Path
+
+- Moved the single canonical Skill entry to
+  `skills/exam-revision-handbook/SKILL.md`, the GitHub CLI automatic-discovery
+  path; the repository root no longer contains a second `SKILL.md`.
+- Mirrored the installable runtime, references, metadata, evaluation evidence,
+  security policy, and import helpers inside that package boundary.
+- Updated the deterministic release builder, bilingual README entry points,
+  package metadata, and maintenance documentation to use one discoverable
+  source and one versioned install archive.
+- Rebuilt the embedded runtime Wheel as
+  `exam_revision_handbook-0.7.3-py3-none-any.whl` without changing handbook
+  generation behavior.
+
 ## 0.7.2 - 2026-08-17
 
 - Published the four post-v0.7.1 README presentation commits as one current release.

@@ -35,7 +35,7 @@ Python retrieves, extracts, validates, renders, records, and blocks. It does not
 
 ## Installation
 
-Give the GitHub repository or the versioned release ZIP to a Skill-compatible Agent. The root `SKILL.md` is the single authoritative entry.
+Give the GitHub repository or the versioned release ZIP to a Skill-compatible Agent. In the repository, `skills/exam-revision-handbook/SKILL.md` is the single authoritative discovery entry; in the release ZIP, the same file is placed at the extracted Skill root.
 
 Example request:
 

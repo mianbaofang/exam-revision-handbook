@@ -15,26 +15,41 @@ College Board 官方来源，生成 GCSE、IGCSE、A-Level 与 AP 图文复习�
 <p align="center">
   <a href="README.md">English</a>
   ·
-  <a href="https://mianbaofang.github.io/exam-revision-handbook/">项目主页</a>
+  <a href="skills/exam-revision-handbook/SKILL.md">Skill / 自动发现</a>
   ·
   <a href="https://mianbaofang.github.io/exam-revision-handbook/project-intro-animation.html">介绍动画</a>
   ·
-  <a href="docs/index.html">项目详情</a>
+  <a href="https://mianbaofang.github.io/exam-revision-handbook/">项目主页</a>
   ·
-  <a href="docs/release-evidence/README.md">发布证据</a>
+  <a href="docs/index.html">项目详情</a>
   ·
   <a href="DISCLAIMER.md">免责声明</a>
   ·
   <a href="ACKNOWLEDGEMENTS.md">致谢</a>
+  ·
+  <a href="CHANGELOG.md">更新日志</a>
+  ·
+  <a href="SECURITY.md">安全</a>
   ·
   <a href="references/revision_guide_spec.md">手册规范</a>
 </p>
 
 ## 一分钟开始使用
 
-下载官方
-[v0.7.2 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.2/exam-revision-handbook-v0.7.2.zip)，
-或者直接把仓库链接交给支持 Skill 的 Agent：
+GitHub CLI 自动发现入口是
+[`skills/exam-revision-handbook/`](skills/exam-revision-handbook/)。可以先预览，再安装：
+
+```bash
+gh skill preview mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.7.3
+gh skill install mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.7.3 --agent universal --scope user
+```
+
+独立安装包是官方发布的
+[v0.7.3 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.3/exam-revision-handbook-v0.7.3.zip)。
+GitHub 自动生成的源代码 ZIP 只是仓库快照，不是 Skill 安装包；需要指定文件时使用
+[`skills/exam-revision-handbook/SKILL.md`](skills/exam-revision-handbook/SKILL.md)。
+
+也可以直接把仓库链接交给支持 Skill 的 Agent：
 
 ```text
 https://github.com/mianbaofang/exam-revision-handbook
@@ -88,8 +103,9 @@ CAIE 的 `uk-domestic` 选择仅记录英国考点请求，仍使用 Cambridge I
 其他考试体系或考试局不能使用自动获取功能；手动导入大纲属于未经完整验证的兼容路径，可能出现未知的
 解析、提取、元数据或渲染错误。
 
-**这个项目是框架，不是无人值守的离线内容生成器。** 根目录唯一的 `SKILL.md` 及其
-`references/` 合同会让
+**这个项目是框架，不是无人值守的离线内容生成器。** 唯一的
+[`skills/exam-revision-handbook/SKILL.md`](skills/exam-revision-handbook/SKILL.md)
+及其包内 `references/` 合同会让
 OpenClaw、Hermes 或其它 Agent 的宿主 LLM 按 Analyst、Writer、Reviewer 三个轻量角色工作：
 根据当前官方大纲即时判断 topic 边界、写概念解释、例题、学习路线和每个 topic 的
 `visual_decision`，再单独复查渲染后的手册。Reviewer 可以是用户明确要求时的独立 Agent，
@@ -123,7 +139,7 @@ https://github.com/mianbaofang/exam-revision-handbook
 ```
 
 直接下载
-[v0.7.2 标准 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.2/exam-revision-handbook-v0.7.2.zip)。
+[v0.7.3 标准 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.3/exam-revision-handbook-v0.7.3.zip)。
 
 然后直接说：
 
@@ -327,7 +343,7 @@ python scripts\doctor.py
 python scripts\run_runtime.py -- generate --query chemistry --level igcse --out .\outputs\chemistry-9202
 ```
 
-GitHub `main`、对应的 `v0.7.2` tag 和 Release 中的 Skill ZIP 就是同一个当前标准
+GitHub `main`、对应的 `v0.7.3` tag 和 Release 中的 Skill ZIP 就是同一个当前标准
 Skill 版本，不存在单独的“源码版”或“安装版”。需要修改 Python 引擎的贡献者可使用
 `pip install -e ".[dev]"`；ZIP 通过 `assets/runtime/` 中的受控 Wheel 和独立用户缓存运行。
 
@@ -343,15 +359,20 @@ python scripts/scan_for_raw_keys.py . ./outputs
 ## 目录结构
 
 ```text
-SKILL.md         唯一权威 Agent 入口
-agents/          各平台的 Skill 元数据
-references/      完整工作流、产物、Provider 与运行时合同
-assets/runtime/  固定版本的 Python 引擎 Wheel 与完整性锁
-evals/           触发、工作流、迁移与输出一致性样例
-reports/         标准 Skill 与迁移验证证据
-security/        运行权限和网络策略
-skill_atlas/     路由与维护元数据
-scripts/         运行适配器、导入助手和项目维护工具
+skills/exam-revision-handbook/
+  SKILL.md       唯一权威 Agent 入口和 GitHub CLI 自动发现路径
+  agents/        各平台的 Skill 元数据
+  references/    完整工作流、产物、Provider 与运行时合同
+  assets/        固定版本的 Python 引擎 Wheel 与完整性锁
+  evals/         触发、工作流、迁移与输出一致性样例
+  reports/       标准 Skill 与迁移验证证据
+  security/      运行权限和网络策略
+  skill_atlas/   路由与维护元数据
+  scripts/       运行适配器和导入助手
+agents/          源码仓库中的平台元数据副本
+references/      源码仓库中的工作流合同
+assets/runtime/  源码仓库中的运行时 Wheel 与锁
+scripts/         源码仓库维护工具
 src/intl_exam_guide/
   providers/      各考试局官方页面读取与解析
   parsing/        PDF 文本抽取
@@ -387,7 +408,7 @@ tests/            测试与回归样例
 
 ## 状态
 
-当前 Skill 版本：`v0.7.2`。这个 Skill 已具备公开使用的框架形态；单份手册只有在完成自己的全量 LLM HTML 审查、写入与当前 HTML 绑定的 `agent-product-review.json`、通过 PDF 导出门禁，并具备相应发布证据后，才能称为 final-ready。
+当前 Skill 版本：`v0.7.3`。这个 Skill 已具备公开使用的框架形态；单份手册只有在完成自己的全量 LLM HTML 审查、写入与当前 HTML 绑定的 `agent-product-review.json`、通过 PDF 导出门禁，并具备相应发布证据后，才能称为 final-ready。
 
 ## 作者
 
@@ -407,6 +428,6 @@ python scripts/run_runtime.py -- export-pdf --out <output-dir>
 
 HTML 一旦再次改变，原审查记录立即失效，必须重新查看和审批后才能再次导出 PDF。
 
-## License
+## 许可证
 
 MIT.

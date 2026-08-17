@@ -1,0 +1,241 @@
+{
+  "schema_version": "1.0",
+  "seed": "yao-output-eval-blind-v1",
+  "summary": {
+    "pair_count": 6,
+    "answer_key_separate": true,
+    "with_skill_hidden_count": 6
+  },
+  "pairs": [
+    {
+      "case_id": "complete-runtime-package",
+      "prompt": "Package the existing exam handbook Skill without losing its Python-backed generation capability.",
+      "input_files": [
+        "fixtures/wheel-payload-parity.json"
+      ],
+      "metadata": {
+        "case_type": "file_backed",
+        "tier": "governed"
+      },
+      "review_instruction": "Pick A or B based only on the rubric. Do not infer which output came from the skill.",
+      "rubric": [
+        {
+          "id": "has-entrypoint",
+          "description": "Keeps the standard Skill entrypoint.",
+          "weight": 1.0
+        },
+        {
+          "id": "has-engine",
+          "description": "Includes the executable legacy engine.",
+          "weight": 1.0
+        },
+        {
+          "id": "has-integrity",
+          "description": "Reports byte-level engine parity.",
+          "weight": 1.0
+        }
+      ],
+      "variant_a": {
+        "blind_id": "complete-runtime-package:A",
+        "output": "The rule-only package contains SKILL.md, agents/, and references/, but no executable engine or runtime integrity contract."
+      },
+      "variant_b": {
+        "blind_id": "complete-runtime-package:B",
+        "output": "The standard package contains SKILL.md, agents/interface.yaml, the versioned engine wheel, runtime-lock.json, doctor.py, bootstrap_runtime.py, and run_runtime.py. The wheel payload matches 77/77 legacy source files."
+      }
+    },
+    {
+      "case_id": "cli-command-contract",
+      "prompt": "Prove that the standard Skill keeps the existing command surface.",
+      "input_files": [
+        "fixtures/cli-contract-parity.json"
+      ],
+      "metadata": {
+        "case_type": "contract",
+        "tier": "governed"
+      },
+      "review_instruction": "Pick A or B based only on the rubric. Do not infer which output came from the skill.",
+      "rubric": [
+        {
+          "id": "has-count",
+          "description": "Names complete command comparison.",
+          "weight": 1.0
+        },
+        {
+          "id": "has-commands",
+          "description": "Includes retrieval, review, and delivery commands.",
+          "weight": 1.0
+        },
+        {
+          "id": "preserves-exit",
+          "description": "Preserves the exit contract.",
+          "weight": 1.0
+        }
+      ],
+      "variant_a": {
+        "blind_id": "cli-command-contract:A",
+        "output": "The rule-only package cannot run the legacy CLI, so command names, flags, help text, and exit codes are unavailable."
+      },
+      "variant_b": {
+        "blind_id": "cli-command-contract:B",
+        "output": "The packaged adapter preserves 10/10 CLI help contracts: root plus discover, generate, extract-evidence, demo, review, export-pdf, audit-delivery, index-review-ledger, and inspect; arguments and exit codes pass through unchanged."
+      }
+    },
+    {
+      "case_id": "artifact-tree-parity",
+      "prompt": "Show that a packaged run produces the same controlled artifacts as the legacy engine.",
+      "input_files": [
+        "fixtures/demo-output-parity.json"
+      ],
+      "metadata": {
+        "case_type": "boundary",
+        "tier": "governed"
+      },
+      "review_instruction": "Pick A or B based only on the rubric. Do not infer which output came from the skill.",
+      "rubric": [
+        {
+          "id": "has-tree-count",
+          "description": "Reports the complete output-tree count.",
+          "weight": 1.0
+        },
+        {
+          "id": "has-no-drift",
+          "description": "Confirms no artifact drift.",
+          "weight": 1.0
+        },
+        {
+          "id": "keeps-blocker",
+          "description": "Preserves incomplete-content blocking.",
+          "weight": 1.0
+        }
+      ],
+      "variant_a": {
+        "blind_id": "artifact-tree-parity:A",
+        "output": "No packaged runtime is available, so artifact compatibility is unknown and cannot be executed from the Skill archive."
+      },
+      "variant_b": {
+        "blind_id": "artifact-tree-parity:B",
+        "output": "A same-input dual run produced 25/25 matching normalized artifacts, with no missing, extra, or changed files. Both runs returned the same blocked state until LLM-owned teaching content is supplied."
+      }
+    },
+    {
+      "case_id": "html-before-pdf-gate",
+      "prompt": "Prevent PDF export before the current handbook HTML has passed complete LLM review.",
+      "input_files": [],
+      "metadata": {
+        "case_type": "boundary",
+        "tier": "governed"
+      },
+      "review_instruction": "Pick A or B based only on the rubric. Do not infer which output came from the skill.",
+      "rubric": [
+        {
+          "id": "has-review-chain",
+          "description": "Names the complete review chain.",
+          "weight": 1.0
+        },
+        {
+          "id": "has-hash-binding",
+          "description": "Requires current hash-bound approval.",
+          "weight": 1.0
+        },
+        {
+          "id": "has-blocking-exit",
+          "description": "Preserves failure behavior.",
+          "weight": 1.0
+        }
+      ],
+      "variant_a": {
+        "blind_id": "html-before-pdf-gate:A",
+        "output": "The prose says to review HTML first, but the rule-only archive has no final-review, render-snapshot, ledger, or export implementation."
+      },
+      "variant_b": {
+        "blind_id": "html-before-pdf-gate:B",
+        "output": "The packaged engine keeps review, index-review-ledger, audit-delivery, and export-pdf. PDF export requires the exact current HTML, render snapshot, visual approvals, and review-ledger hashes; stale or pending state returns a blocking exit code."
+      }
+    },
+    {
+      "case_id": "repository-maintenance-neighbor",
+      "prompt": "Update the README and release assets for the exam handbook repository.",
+      "input_files": [],
+      "metadata": {
+        "case_type": "near_neighbor",
+        "tier": "governed"
+      },
+      "review_instruction": "Pick A or B based only on the rubric. Do not infer which output came from the skill.",
+      "rubric": [
+        {
+          "id": "declines-run",
+          "description": "Does not start handbook generation.",
+          "weight": 1.0
+        },
+        {
+          "id": "names-neighbor",
+          "description": "Names the route boundary.",
+          "weight": 1.0
+        },
+        {
+          "id": "no-preflight",
+          "description": "Avoids irrelevant preflight.",
+          "weight": 1.0
+        }
+      ],
+      "variant_a": {
+        "blind_id": "repository-maintenance-neighbor:A",
+        "output": "Start the student-handbook preflight and ask which exam board and subject the user wants."
+      },
+      "variant_b": {
+        "blind_id": "repository-maintenance-neighbor:B",
+        "output": "Do not trigger a handbook generation run. This is repository maintenance, a near-neighbor outside the student-handbook workflow; use repository tools and do not ask the external-image preflight."
+      }
+    },
+    {
+      "case_id": "governed-file-backed-migration",
+      "prompt": "Use the current project as evidence and produce a governed standard Skill with zero known capability loss.",
+      "input_files": [
+        "fixtures/legacy-source-baseline.json",
+        "fixtures/wheel-payload-parity.json",
+        "fixtures/demo-output-parity.json"
+      ],
+      "metadata": {
+        "case_type": "file_backed",
+        "tier": "governed"
+      },
+      "review_instruction": "Pick A or B based only on the rubric. Do not infer which output came from the skill.",
+      "rubric": [
+        {
+          "id": "uses-file-evidence",
+          "description": "Names governed file-backed evidence.",
+          "weight": 1.0
+        },
+        {
+          "id": "has-governance",
+          "description": "Keeps owner and lifecycle review.",
+          "weight": 1.0
+        },
+        {
+          "id": "has-boundaries",
+          "description": "Defines delivery and rollback boundaries.",
+          "weight": 1.0
+        },
+        {
+          "id": "has-reports",
+          "description": "Requires trust and quality evidence.",
+          "weight": 1.0
+        },
+        {
+          "id": "does-not-invent",
+          "description": "Marks unavailable telemetry honestly.",
+          "weight": 1.0
+        }
+      ],
+      "variant_a": {
+        "blind_id": "governed-file-backed-migration:A",
+        "output": "Create a small ZIP from the rule layer and describe it as complete without checking the runtime, installation, permissions, or output parity."
+      },
+      "variant_b": {
+        "blind_id": "governed-file-backed-migration:B",
+        "output": "Use each file-backed fixture as input_files evidence. Preserve owner and review cadence, define the output contract and rollback boundary, publish a trust report and reports/output_quality_scorecard.md, and mark unavailable adoption telemetry as missing evidence. Replacement remains blocked until known capability loss is 0."
+      }
+    }
+  ]
+}

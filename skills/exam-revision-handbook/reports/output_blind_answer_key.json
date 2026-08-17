@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "seed": "yao-output-eval-blind-v1",
+  "summary": {
+    "pair_count": 6,
+    "with_skill_expected_count": 6,
+    "baseline_expected_count": 0
+  },
+  "answers": [
+    {
+      "case_id": "complete-runtime-package",
+      "variant_a_role": "baseline",
+      "variant_b_role": "with_skill",
+      "expected_winner_role": "with_skill",
+      "expected_winner_variant": "B",
+      "score_winner_role": "with_skill",
+      "delta": 100.0
+    },
+    {
+      "case_id": "cli-command-contract",
+      "variant_a_role": "baseline",
+      "variant_b_role": "with_skill",
+      "expected_winner_role": "with_skill",
+      "expected_winner_variant": "B",
+      "score_winner_role": "with_skill",
+      "delta": 100.0
+    },
+    {
+      "case_id": "artifact-tree-parity",
+      "variant_a_role": "baseline",
+      "variant_b_role": "with_skill",
+      "expected_winner_role": "with_skill",
+      "expected_winner_variant": "B",
+      "score_winner_role": "with_skill",
+      "delta": 100.0
+    },
+    {
+      "case_id": "html-before-pdf-gate",
+      "variant_a_role": "baseline",
+      "variant_b_role": "with_skill",
+      "expected_winner_role": "with_skill",
+      "expected_winner_variant": "B",
+      "score_winner_role": "with_skill",
+      "delta": 100.0
+    },
+    {
+      "case_id": "repository-maintenance-neighbor",
+      "variant_a_role": "baseline",
+      "variant_b_role": "with_skill",
+      "expected_winner_role": "with_skill",
+      "expected_winner_variant": "B",
+      "score_winner_role": "with_skill",
+      "delta": 100.0
+    },
+    {
+      "case_id": "governed-file-backed-migration",
+      "variant_a_role": "baseline",
+      "variant_b_role": "with_skill",
+      "expected_winner_role": "with_skill",
+      "expected_winner_variant": "B",
+      "score_winner_role": "with_skill",
+      "delta": 100.0
+    }
+  ]
+}

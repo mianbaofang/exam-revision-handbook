@@ -1,0 +1,9 @@
+{
+  "nodes": [
+    {
+      "name": "exam-revision-handbook",
+      "path": "."
+    }
+  ],
+  "shared_resources": []
+}

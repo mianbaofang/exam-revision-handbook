@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "schema_version": "v1-normalized-output-parity",
+  "legacy_file_count": 25,
+  "candidate_file_count": 25,
+  "missing": [],
+  "extra": [],
+  "changed": []
+}

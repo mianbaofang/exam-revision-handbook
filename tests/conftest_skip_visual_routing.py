@@ -18,7 +18,7 @@ def pytest_collection_modifyitems(config, items):
     skip_marker = pytest.mark.skip(
         reason="Deprecated: Python no longer uses keyword routing for visuals. "
         "LLM Writer judges visual needs in Phase 2. "
-        "See the root SKILL.md for the new workflow."
+        "See skills/exam-revision-handbook/SKILL.md for the new workflow."
     )
 
     for item in items:

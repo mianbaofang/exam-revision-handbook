@@ -7,7 +7,7 @@
   <text x="64" y="110" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#5b677a">One canonical entry. Official-source routes. LLM decisions. Hash-gated delivery.</text>
   <g font-family="Segoe UI, Arial, sans-serif">
     <rect x="64" y="156" width="245" height="210" rx="18" fill="#124f9b"/>
-    <text x="92" y="204" font-size="22" font-weight="800" fill="#fff">Root SKILL.md</text>
+    <text x="92" y="204" font-size="22" font-weight="800" fill="#fff">Canonical SKILL.md</text>
     <text x="92" y="242" font-size="14" fill="#dceaff">when to trigger</text>
     <text x="92" y="272" font-size="14" fill="#dceaff">preflight choices</text>
     <text x="92" y="302" font-size="14" fill="#dceaff">safety rules</text>
