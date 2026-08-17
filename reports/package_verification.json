@@ -1,18 +1,18 @@
 {
   "ok": true,
   "schema_version": "2.0",
-  "generated_at": "2026-07-27",
+  "generated_at": "2026-08-17",
   "skill_dir": "<SKILL_ROOT>",
   "package_dir": "<SKILL_ROOT>\\dist-yao-final",
   "summary": {
     "target_count": 4,
     "adapter_count": 4,
     "archive_present": true,
-    "archive_sha256": "6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af",
-    "archive_entry_count": 205,
+    "archive_sha256": "98223a1eb3eea9c471b53d96b7f88096c7c7d89eb4d87b5775e91d6d6a6559a3",
+    "archive_entry_count": 102,
     "nested_skill_entry_count": 0,
     "failure_count": 0,
-    "warning_count": 0
+    "warning_count": 1
   },
   "checks": [
     {
@@ -624,45 +624,12 @@
       "id": "archive-excludes-generated",
       "status": "pass",
       "detail": "Archive excludes generated dist/, .previews/, and tests/tmp* contents"
-    },
-    {
-      "id": "registry-ok",
-      "status": "pass",
-      "detail": "Registry audit is OK"
-    },
-    {
-      "id": "registry-name-match",
-      "status": "pass",
-      "detail": "Registry package name matches package manifest"
-    },
-    {
-      "id": "registry-version-match",
-      "status": "pass",
-      "detail": "Registry package version matches package manifest"
-    },
-    {
-      "id": "registry-compat-openai",
-      "status": "pass",
-      "detail": "Registry compatibility is reviewable for target: openai"
-    },
-    {
-      "id": "registry-compat-claude",
-      "status": "pass",
-      "detail": "Registry compatibility is reviewable for target: claude"
-    },
-    {
-      "id": "registry-compat-generic",
-      "status": "pass",
-      "detail": "Registry compatibility is reviewable for target: generic"
-    },
-    {
-      "id": "registry-compat-vscode",
-      "status": "pass",
-      "detail": "Registry compatibility is reviewable for target: vscode"
     }
   ],
   "failures": [],
-  "warnings": [],
+  "warnings": [
+    "Registry audit was not supplied; package verification skipped metadata parity checks."
+  ],
   "artifacts": {
     "manifest": "<SKILL_ROOT>\\dist-yao-final\\manifest.json",
     "archive": "<SKILL_ROOT>\\dist-yao-final\\exam-revision-handbook.zip",

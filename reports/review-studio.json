@@ -230,7 +230,7 @@
       "key": "registry-audit",
       "label": "注册审计",
       "status": "pass",
-      "detail": "exam-revision-handbook 0.7.1; 5/5 compatibility entries pass; install pass with 4 adapters; installer permissions 8 enforced / 0 failures",
+      "detail": "exam-revision-handbook 0.7.2; 5/5 compatibility entries pass; install pass with 4 adapters; installer permissions 8 enforced / 0 failures",
       "evidence": "reports/registry_audit.json + reports/install_simulation.json",
       "link": "registry_audit.md",
       "review_action_id": "",
@@ -4025,7 +4025,7 @@
     "compiled_targets": {
       "schema_version": "1.0",
       "ok": true,
-      "generated_at": "2026-07-27",
+      "generated_at": "2026-08-17",
       "skill_dir": "<SKILL_ROOT>",
       "summary": {
         "target_count": 5,
@@ -4061,7 +4061,7 @@
           "compiled_contract": {
             "name": "exam-revision-handbook",
             "title": "Exam Revision Handbook",
-            "version": "0.7.1",
+            "version": "0.7.2",
             "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
             "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
             "trigger": {
@@ -4132,7 +4132,7 @@
                 "scripts\\write_concept_explanations_from_jobs.py"
               ],
               "assets": [
-                "assets\\runtime\\exam_revision_handbook-0.7.1-py3-none-any.whl",
+                "assets\\runtime\\exam_revision_handbook-0.7.2-py3-none-any.whl",
                 "assets\\runtime\\runtime-lock.json"
               ],
               "reports": [
@@ -4162,6 +4162,8 @@
                 "reports/conformance_matrix.md",
                 "reports/security_trust_report.json",
                 "reports/security_trust_report.md",
+                "reports/runtime_permission_probes.json",
+                "reports/runtime_permission_probes.md",
                 "reports/skill_atlas.json",
                 "reports/skill_atlas.html"
               ],
@@ -4169,7 +4171,7 @@
                 "references": 7,
                 "scripts": 7,
                 "assets": 2,
-                "reports": 28
+                "reports": 30
               }
             },
             "eval_plan": {
@@ -4332,7 +4334,7 @@
                   "references": 7,
                   "scripts": 7,
                   "assets": 2,
-                  "reports": 28
+                  "reports": 30
                 },
                 "generated_files": [
                   "targets/openai/adapter.json",
@@ -4500,7 +4502,7 @@
                 "references": 7,
                 "scripts": 7,
                 "assets": 2,
-                "reports": 28
+                "reports": 30
               },
               "generated_files": [
                 "targets/openai/adapter.json",
@@ -4602,7 +4604,7 @@
           "compiled_contract": {
             "name": "exam-revision-handbook",
             "title": "Exam Revision Handbook",
-            "version": "0.7.1",
+            "version": "0.7.2",
             "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
             "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
             "trigger": {
@@ -4673,7 +4675,7 @@
                 "scripts\\write_concept_explanations_from_jobs.py"
               ],
               "assets": [
-                "assets\\runtime\\exam_revision_handbook-0.7.1-py3-none-any.whl",
+                "assets\\runtime\\exam_revision_handbook-0.7.2-py3-none-any.whl",
                 "assets\\runtime\\runtime-lock.json"
               ],
               "reports": [
@@ -4703,6 +4705,8 @@
                 "reports/conformance_matrix.md",
                 "reports/security_trust_report.json",
                 "reports/security_trust_report.md",
+                "reports/runtime_permission_probes.json",
+                "reports/runtime_permission_probes.md",
                 "reports/skill_atlas.json",
                 "reports/skill_atlas.html"
               ],
@@ -4710,7 +4714,7 @@
                 "references": 7,
                 "scripts": 7,
                 "assets": 2,
-                "reports": 28
+                "reports": 30
               }
             },
             "eval_plan": {
@@ -4873,7 +4877,7 @@
                   "references": 7,
                   "scripts": 7,
                   "assets": 2,
-                  "reports": 28
+                  "reports": 30
                 },
                 "generated_files": [
                   "targets/claude/adapter.json",
@@ -5041,7 +5045,7 @@
                 "references": 7,
                 "scripts": 7,
                 "assets": 2,
-                "reports": 28
+                "reports": 30
               },
               "generated_files": [
                 "targets/claude/adapter.json",
@@ -5143,7 +5147,7 @@
           "compiled_contract": {
             "name": "exam-revision-handbook",
             "title": "Exam Revision Handbook",
-            "version": "0.7.1",
+            "version": "0.7.2",
             "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
             "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
             "trigger": {
@@ -5214,7 +5218,7 @@
                 "scripts\\write_concept_explanations_from_jobs.py"
               ],
               "assets": [
-                "assets\\runtime\\exam_revision_handbook-0.7.1-py3-none-any.whl",
+                "assets\\runtime\\exam_revision_handbook-0.7.2-py3-none-any.whl",
                 "assets\\runtime\\runtime-lock.json"
               ],
               "reports": [
@@ -5244,6 +5248,8 @@
                 "reports/conformance_matrix.md",
                 "reports/security_trust_report.json",
                 "reports/security_trust_report.md",
+                "reports/runtime_permission_probes.json",
+                "reports/runtime_permission_probes.md",
                 "reports/skill_atlas.json",
                 "reports/skill_atlas.html"
               ],
@@ -5251,7 +5257,7 @@
                 "references": 7,
                 "scripts": 7,
                 "assets": 2,
-                "reports": 28
+                "reports": 30
               }
             },
             "eval_plan": {
@@ -5414,7 +5420,7 @@
                   "references": 7,
                   "scripts": 7,
                   "assets": 2,
-                  "reports": 28
+                  "reports": 30
                 },
                 "generated_files": [
                   "SKILL.md",
@@ -5575,7 +5581,7 @@
                 "references": 7,
                 "scripts": 7,
                 "assets": 2,
-                "reports": 28
+                "reports": 30
               },
               "generated_files": [
                 "SKILL.md",
@@ -5668,7 +5674,7 @@
           "compiled_contract": {
             "name": "exam-revision-handbook",
             "title": "Exam Revision Handbook",
-            "version": "0.7.1",
+            "version": "0.7.2",
             "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
             "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
             "trigger": {
@@ -5739,7 +5745,7 @@
                 "scripts\\write_concept_explanations_from_jobs.py"
               ],
               "assets": [
-                "assets\\runtime\\exam_revision_handbook-0.7.1-py3-none-any.whl",
+                "assets\\runtime\\exam_revision_handbook-0.7.2-py3-none-any.whl",
                 "assets\\runtime\\runtime-lock.json"
               ],
               "reports": [
@@ -5769,6 +5775,8 @@
                 "reports/conformance_matrix.md",
                 "reports/security_trust_report.json",
                 "reports/security_trust_report.md",
+                "reports/runtime_permission_probes.json",
+                "reports/runtime_permission_probes.md",
                 "reports/skill_atlas.json",
                 "reports/skill_atlas.html"
               ],
@@ -5776,7 +5784,7 @@
                 "references": 7,
                 "scripts": 7,
                 "assets": 2,
-                "reports": 28
+                "reports": 30
               }
             },
             "eval_plan": {
@@ -5939,7 +5947,7 @@
                   "references": 7,
                   "scripts": 7,
                   "assets": 2,
-                  "reports": 28
+                  "reports": 30
                 },
                 "generated_files": [
                   "targets/vscode/adapter.json",
@@ -6104,7 +6112,7 @@
                 "references": 7,
                 "scripts": 7,
                 "assets": 2,
-                "reports": 28
+                "reports": 30
               },
               "generated_files": [
                 "targets/vscode/adapter.json",
@@ -6203,7 +6211,7 @@
           "compiled_contract": {
             "name": "exam-revision-handbook",
             "title": "Exam Revision Handbook",
-            "version": "0.7.1",
+            "version": "0.7.2",
             "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
             "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
             "trigger": {
@@ -6274,7 +6282,7 @@
                 "scripts\\write_concept_explanations_from_jobs.py"
               ],
               "assets": [
-                "assets\\runtime\\exam_revision_handbook-0.7.1-py3-none-any.whl",
+                "assets\\runtime\\exam_revision_handbook-0.7.2-py3-none-any.whl",
                 "assets\\runtime\\runtime-lock.json"
               ],
               "reports": [
@@ -6304,6 +6312,8 @@
                 "reports/conformance_matrix.md",
                 "reports/security_trust_report.json",
                 "reports/security_trust_report.md",
+                "reports/runtime_permission_probes.json",
+                "reports/runtime_permission_probes.md",
                 "reports/skill_atlas.json",
                 "reports/skill_atlas.html"
               ],
@@ -6311,7 +6321,7 @@
                 "references": 7,
                 "scripts": 7,
                 "assets": 2,
-                "reports": 28
+                "reports": 30
               }
             },
             "eval_plan": {
@@ -6474,7 +6484,7 @@
                   "references": 7,
                   "scripts": 7,
                   "assets": 2,
-                  "reports": 28
+                  "reports": 30
                 },
                 "generated_files": [
                   "targets/generic/adapter.json"
@@ -6635,7 +6645,7 @@
                 "references": 7,
                 "scripts": 7,
                 "assets": 2,
-                "reports": 28
+                "reports": 30
               },
               "generated_files": [
                 "targets/generic/adapter.json"
@@ -7357,7 +7367,7 @@
         "interactive_script_count": 0,
         "package_hash_scope": "source-contract-without-generated-reports",
         "package_hash_file_count": 35,
-        "package_sha256": "37d886ff9fd5b7decc8e5e9d57c4100f2b04e0a68d8f601ca1c305276ff7968a"
+        "package_sha256": "8422c2cfbcf7bbb670edfaeefda71f9c748a21083a3448fd10cf2f2b6f7bc372"
       },
       "failures": [],
       "warnings": [],
@@ -7895,17 +7905,17 @@
       },
       "catalog": {
         "workspace_root": "<SKILL_ROOT>",
-        "generated_at": "2026-07-27",
+        "generated_at": "2026-08-17",
         "skills": [
           {
             "name": "exam-revision-handbook",
             "path": ".",
             "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
             "owner": "Ethan",
-            "version": "0.7.1",
+            "version": "0.7.2",
             "status": "active",
             "maturity": "governed",
-            "updated_at": "2026-07-27",
+            "updated_at": "2026-08-17",
             "review_cadence": "per-release",
             "targets": [
               "openai",
@@ -7929,7 +7939,7 @@
               "references/runtime-contract.md",
               "references/scientific_vector_fallback.md",
               "references/workflow-contract.md",
-              "assets/runtime/exam_revision_handbook-0.7.1-py3-none-any.whl",
+              "assets/runtime/exam_revision_handbook-0.7.2-py3-none-any.whl",
               "assets/runtime/runtime-lock.json"
             ],
             "token_set": [
@@ -8298,7 +8308,7 @@
       "package": {
         "schema_version": "2.0",
         "name": "exam-revision-handbook",
-        "version": "0.7.1",
+        "version": "0.7.2",
         "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
         "targets": [
           "openai",
@@ -8313,8 +8323,8 @@
         "trust_level": "managed",
         "license": "MIT",
         "checksums": {
-          "package_sha256": "37d886ff9fd5b7decc8e5e9d57c4100f2b04e0a68d8f601ca1c305276ff7968a",
-          "archive_sha256": "6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af"
+          "package_sha256": "8422c2cfbcf7bbb670edfaeefda71f9c748a21083a3448fd10cf2f2b6f7bc372",
+          "archive_sha256": "98223a1eb3eea9c471b53d96b7f88096c7c7d89eb4d87b5775e91d6d6a6559a3"
         },
         "compatibility": {
           "openai": "pass",
@@ -8344,21 +8354,21 @@
         },
         "distribution": {
           "archive_verified": true,
-          "archive_sha256": "6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af",
+          "archive_sha256": "98223a1eb3eea9c471b53d96b7f88096c7c7d89eb4d87b5775e91d6d6a6559a3",
           "package_verification": "reports/package_verification.json",
           "install_simulated": true,
           "install_simulation": "reports/install_simulation.json"
         },
-        "generated_at": "2026-07-27"
+        "generated_at": "2026-08-17"
       },
       "index": {
         "schema_version": "2.0",
-        "generated_at": "2026-07-27",
+        "generated_at": "2026-08-17",
         "package_count": 1,
         "packages": [
           {
             "name": "exam-revision-handbook",
-            "version": "0.7.1",
+            "version": "0.7.2",
             "maturity": "governed",
             "owner": "Ethan",
             "targets": [
@@ -8369,7 +8379,7 @@
               "generic"
             ],
             "package_metadata": "registry/packages/exam-revision-handbook.json",
-            "package_sha256": "37d886ff9fd5b7decc8e5e9d57c4100f2b04e0a68d8f601ca1c305276ff7968a"
+            "package_sha256": "8422c2cfbcf7bbb670edfaeefda71f9c748a21083a3448fd10cf2f2b6f7bc372"
           }
         ]
       },
@@ -8385,18 +8395,18 @@
     "package_verification": {
       "ok": true,
       "schema_version": "2.0",
-      "generated_at": "2026-07-27",
+      "generated_at": "2026-08-17",
       "skill_dir": "<SKILL_ROOT>",
       "package_dir": "<SKILL_ROOT>\\dist-yao-final",
       "summary": {
         "target_count": 4,
         "adapter_count": 4,
         "archive_present": true,
-        "archive_sha256": "6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af",
-        "archive_entry_count": 205,
+        "archive_sha256": "98223a1eb3eea9c471b53d96b7f88096c7c7d89eb4d87b5775e91d6d6a6559a3",
+        "archive_entry_count": 102,
         "nested_skill_entry_count": 0,
         "failure_count": 0,
-        "warning_count": 0
+        "warning_count": 1
       },
       "checks": [
         {
@@ -9008,45 +9018,12 @@
           "id": "archive-excludes-generated",
           "status": "pass",
           "detail": "Archive excludes generated dist/, .previews/, and tests/tmp* contents"
-        },
-        {
-          "id": "registry-ok",
-          "status": "pass",
-          "detail": "Registry audit is OK"
-        },
-        {
-          "id": "registry-name-match",
-          "status": "pass",
-          "detail": "Registry package name matches package manifest"
-        },
-        {
-          "id": "registry-version-match",
-          "status": "pass",
-          "detail": "Registry package version matches package manifest"
-        },
-        {
-          "id": "registry-compat-openai",
-          "status": "pass",
-          "detail": "Registry compatibility is reviewable for target: openai"
-        },
-        {
-          "id": "registry-compat-claude",
-          "status": "pass",
-          "detail": "Registry compatibility is reviewable for target: claude"
-        },
-        {
-          "id": "registry-compat-generic",
-          "status": "pass",
-          "detail": "Registry compatibility is reviewable for target: generic"
-        },
-        {
-          "id": "registry-compat-vscode",
-          "status": "pass",
-          "detail": "Registry compatibility is reviewable for target: vscode"
         }
       ],
       "failures": [],
-      "warnings": [],
+      "warnings": [
+        "Registry audit was not supplied; package verification skipped metadata parity checks."
+      ],
       "artifacts": {
         "manifest": "<SKILL_ROOT>\\dist-yao-final\\manifest.json",
         "archive": "<SKILL_ROOT>\\dist-yao-final\\exam-revision-handbook.zip",
@@ -9057,14 +9034,14 @@
     "install_simulation": {
       "ok": true,
       "schema_version": "2.0",
-      "generated_at": "2026-07-27",
+      "generated_at": "2026-08-17",
       "skill_dir": "<SKILL_ROOT>",
       "package_dir": "<SKILL_ROOT>\\dist-yao-final",
-      "install_root": "<SKILL_ROOT>\\dist-install-simulation\\simulate-exam-revision-handbook",
-      "installed_skill_dir": "<SKILL_ROOT>\\dist-install-simulation\\simulate-exam-revision-handbook\\exam-revision-handbook",
+      "install_root": "[temporary-install-root]",
+      "installed_skill_dir": "[temporary-install-root]/exam-revision-handbook",
       "summary": {
         "archive_present": true,
-        "archive_entry_count": 205,
+        "archive_entry_count": 102,
         "nested_skill_entry_count": 0,
         "archive_extracted": true,
         "entrypoint_loaded": true,
@@ -9075,7 +9052,7 @@
         "installer_permission_failure_count": 0,
         "permission_target_count": 4,
         "permission_capability_count": 2,
-        "install_root_is_temp": false,
+        "install_root_is_temp": true,
         "failure_count": 0,
         "warning_count": 0
       },
@@ -9303,10 +9280,10 @@
     "upgrade_check": {},
     "manifest": {
       "name": "exam-revision-handbook",
-      "version": "0.7.1",
+      "version": "0.7.2",
       "owner": "Ethan",
       "license": "MIT",
-      "updated_at": "2026-07-27",
+      "updated_at": "2026-08-17",
       "status": "active",
       "maturity_tier": "governed",
       "lifecycle_stage": "governed",
@@ -9331,7 +9308,8 @@
     },
     "frontmatter": {
       "name": "exam-revision-handbook",
-      "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary."
+      "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
+      "license": "MIT"
     },
     "interface": {
       "interface": {

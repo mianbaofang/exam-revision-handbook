@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.2 - 2026-08-17
+
+- Published the four post-v0.7.1 README presentation commits as one current release.
+- Kept status badges and landscape preview pages in stable horizontal rows on GitHub.
+- Bumped the canonical Skill and embedded Python runtime package to 0.7.2 without changing handbook-generation behavior.
+
 ## 0.7.1 - 2026-07-27
 
 ### Unified Product Identity And Public Discovery

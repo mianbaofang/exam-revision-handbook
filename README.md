@@ -34,7 +34,7 @@ and exports PDF only after approval.**
 ## Start In One Minute
 
 Download the official
-[v0.7.1 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.1/exam-revision-handbook-v0.7.1.zip),
+[v0.7.2 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.2/exam-revision-handbook-v0.7.2.zip),
 or give this repository URL directly to a Skill-compatible Agent:
 
 ```text
@@ -188,7 +188,7 @@ https://github.com/mianbaofang/exam-revision-handbook
 ```
 
 Download the ready-to-use
-[v0.7.1 standard Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.1/exam-revision-handbook-v0.7.1.zip).
+[v0.7.2 standard Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.2/exam-revision-handbook-v0.7.2.zip).
 
 Then ask:
 
@@ -488,7 +488,7 @@ python scripts\run_runtime.py -- generate --query chemistry --level igcse --out 
 
 The CLI is for fetching official source material and writing `qualification.json`, `syllabus-evidence.json`, and `source/`. A real teaching handbook still requires Mode 1: an LLM Analyst outline, Writer-authored concepts/visual decisions, rendered HTML, repeated visible LLM review until approval, and gated PDF export afterward.
 
-GitHub `main`, its `v0.7.1` tag, and the attached Skill ZIP are the same current
+GitHub `main`, its `v0.7.2` tag, and the attached Skill ZIP are the same current
 standard Skill release. There is no separate source edition or install
 edition. Contributors changing its Python engine can use
 `pip install -e ".[dev]"`; the ZIP runs the pinned engine from
@@ -598,7 +598,7 @@ See [DISCLAIMER.md](DISCLAIMER.md) and [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md
 
 ## Status
 
-Current Skill version: `v0.7.1`. The Skill is public-ready as a framework for
+Current Skill version: `v0.7.2`. The Skill is public-ready as a framework for
 source-backed handbook generation. An individual handbook is final-ready only
 after its own complete LLM HTML review is recorded in
 `agent-product-review.json` and `review-ledger/`, the exact HTML passes the hash

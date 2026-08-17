@@ -1,6 +1,6 @@
 # Project Operations Guide / 项目维护说明
 
-Last updated: 2026-07-27 for `v0.7.1`.
+Last updated: 2026-08-17 for `v0.7.2`.
 
 This file defines how to maintain and release the single public project. Read
 [`PROJECT.md`](../PROJECT.md) first.

@@ -4,10 +4,10 @@
 - Package directory: `<SKILL_ROOT>\dist-yao-final`
 - Targets: `4 / 4` adapters present
 - Archive present: `True`
-- Archive SHA256: `6f0cdeb066e9cec1020c68fc7678d00f42cfbb82a52ea1cd26c24c90900683af`
+- Archive SHA256: `98223a1eb3eea9c471b53d96b7f88096c7c7d89eb4d87b5775e91d6d6a6559a3`
 - Nested SKILL.md entries: `0`
 - Failures: `0`
-- Warnings: `0`
+- Warnings: `1`
 
 ## Checks
 
@@ -135,13 +135,6 @@
 | `archive-entry-exam-revision-handbook/agents/interface.yaml` | `pass` | Archive contains exam-revision-handbook/agents/interface.yaml |
 | `archive-single-skill-entrypoint` | `pass` | Archive exposes only the root SKILL.md entrypoint |
 | `archive-excludes-generated` | `pass` | Archive excludes generated dist/, .previews/, and tests/tmp* contents |
-| `registry-ok` | `pass` | Registry audit is OK |
-| `registry-name-match` | `pass` | Registry package name matches package manifest |
-| `registry-version-match` | `pass` | Registry package version matches package manifest |
-| `registry-compat-openai` | `pass` | Registry compatibility is reviewable for target: openai |
-| `registry-compat-claude` | `pass` | Registry compatibility is reviewable for target: claude |
-| `registry-compat-generic` | `pass` | Registry compatibility is reviewable for target: generic |
-| `registry-compat-vscode` | `pass` | Registry compatibility is reviewable for target: vscode |
 
 ## Failures
 
@@ -149,4 +142,4 @@
 
 ## Warnings
 
-- None
+- Registry audit was not supplied; package verification skipped metadata parity checks.

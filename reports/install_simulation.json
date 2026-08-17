@@ -1,14 +1,14 @@
 {
   "ok": true,
   "schema_version": "2.0",
-  "generated_at": "2026-07-27",
+  "generated_at": "2026-08-17",
   "skill_dir": "<SKILL_ROOT>",
   "package_dir": "<SKILL_ROOT>\\dist-yao-final",
-  "install_root": "<SKILL_ROOT>\\dist-install-simulation\\simulate-exam-revision-handbook",
-  "installed_skill_dir": "<SKILL_ROOT>\\dist-install-simulation\\simulate-exam-revision-handbook\\exam-revision-handbook",
+  "install_root": "[temporary-install-root]",
+  "installed_skill_dir": "[temporary-install-root]/exam-revision-handbook",
   "summary": {
     "archive_present": true,
-    "archive_entry_count": 205,
+    "archive_entry_count": 102,
     "nested_skill_entry_count": 0,
     "archive_extracted": true,
     "entrypoint_loaded": true,
@@ -19,7 +19,7 @@
     "installer_permission_failure_count": 0,
     "permission_target_count": 4,
     "permission_capability_count": 2,
-    "install_root_is_temp": false,
+    "install_root_is_temp": true,
     "failure_count": 0,
     "warning_count": 0
   },

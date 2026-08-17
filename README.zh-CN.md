@@ -33,7 +33,7 @@ College Board 官方来源，生成 GCSE、IGCSE、A-Level 与 AP 图文复习�
 ## 一分钟开始使用
 
 下载官方
-[v0.7.1 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.1/exam-revision-handbook-v0.7.1.zip)，
+[v0.7.2 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.2/exam-revision-handbook-v0.7.2.zip)，
 或者直接把仓库链接交给支持 Skill 的 Agent：
 
 ```text
@@ -123,7 +123,7 @@ https://github.com/mianbaofang/exam-revision-handbook
 ```
 
 直接下载
-[v0.7.1 标准 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.1/exam-revision-handbook-v0.7.1.zip)。
+[v0.7.2 标准 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.2/exam-revision-handbook-v0.7.2.zip)。
 
 然后直接说：
 
@@ -327,7 +327,7 @@ python scripts\doctor.py
 python scripts\run_runtime.py -- generate --query chemistry --level igcse --out .\outputs\chemistry-9202
 ```
 
-GitHub `main`、对应的 `v0.7.1` tag 和 Release 中的 Skill ZIP 就是同一个当前标准
+GitHub `main`、对应的 `v0.7.2` tag 和 Release 中的 Skill ZIP 就是同一个当前标准
 Skill 版本，不存在单独的“源码版”或“安装版”。需要修改 Python 引擎的贡献者可使用
 `pip install -e ".[dev]"`；ZIP 通过 `assets/runtime/` 中的受控 Wheel 和独立用户缓存运行。
 
@@ -387,7 +387,7 @@ tests/            测试与回归样例
 
 ## 状态
 
-当前 Skill 版本：`v0.7.1`。这个 Skill 已具备公开使用的框架形态；单份手册只有在完成自己的全量 LLM HTML 审查、写入与当前 HTML 绑定的 `agent-product-review.json`、通过 PDF 导出门禁，并具备相应发布证据后，才能称为 final-ready。
+当前 Skill 版本：`v0.7.2`。这个 Skill 已具备公开使用的框架形态；单份手册只有在完成自己的全量 LLM HTML 审查、写入与当前 HTML 绑定的 `agent-product-review.json`、通过 PDF 导出门禁，并具备相应发布证据后，才能称为 final-ready。
 
 ## 作者
 
