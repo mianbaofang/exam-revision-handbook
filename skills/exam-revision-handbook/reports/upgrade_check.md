@@ -1,8 +1,8 @@
 # Upgrade Check
 
 - OK: `True`
-- Previous: `exam-revision-handbook 0.7.2`
-- Current: `exam-revision-handbook 0.7.3`
+- Previous: `exam-revision-handbook 0.7.3`
+- Current: `exam-revision-handbook 0.7.4`
 - Declared bump: `patch`
 - Recommended bump: `patch`
 - Breaking changes: `0`

@@ -31,7 +31,7 @@
         "path": ".",
         "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
         "owner": "Ethan",
-        "version": "0.7.3",
+        "version": "0.7.4",
         "status": "active",
         "maturity": "governed",
         "updated_at": "2026-08-17",
@@ -58,7 +58,7 @@
           "references/runtime-contract.md",
           "references/scientific_vector_fallback.md",
           "references/workflow-contract.md",
-          "assets/runtime/exam_revision_handbook-0.7.3-py3-none-any.whl",
+          "assets/runtime/exam_revision_handbook-0.7.4-py3-none-any.whl",
           "assets/runtime/runtime-lock.json"
         ],
         "token_set": [

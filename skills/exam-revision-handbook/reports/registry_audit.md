@@ -2,12 +2,12 @@
 
 - OK: `True`
 - Package: `exam-revision-handbook`
-- Version: `0.7.3`
+- Version: `0.7.4`
 - Maturity: `governed`
 - Owner: `Ethan`
 - License: `MIT`
-- Package SHA256: `2bab01674d23feb0ee8900e5be406d03c7d621869f48f3703cb79c92fedf388b`
-- Archive SHA256: `72c33d65c622f40bb4d083150030198901738d56b2190ba00ad289ca8d8233ac`
+- Package SHA256: `873fe670b27f21335645b624319061cb7a33e884efdd64944feac5009404beb2`
+- Archive SHA256: `895299f6403368c3e4946e4c33135484bcfe3bf527e5d0eb96886e1ae83383c1`
 - Install simulated: `True`
 
 ## Compatibility
@@ -30,7 +30,7 @@
 
 ## Artifacts
 
-- index: `<SKILL_ROOT>\dist\yao-registry\index.json`
-- package: `<SKILL_ROOT>\dist\yao-registry\packages\exam-revision-handbook.json`
+- index: `<SKILL_ROOT>\dist-v0.7.4-registry\index.json`
+- package: `<SKILL_ROOT>\dist-v0.7.4-registry\packages\exam-revision-handbook.json`
 - json: `<SKILL_ROOT>\reports\registry_audit.json`
 - markdown: `<SKILL_ROOT>\reports\registry_audit.md`

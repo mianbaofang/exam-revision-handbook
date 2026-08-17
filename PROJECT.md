@@ -7,7 +7,7 @@ This is one open-source project, not a family of parallel repositories.
 - Public repository: `mianbaofang/exam-revision-handbook`
 - Product name: **Exam Revision Handbook**
 - Canonical Skill name: `exam-revision-handbook`
-- Current Skill release: `v0.7.3`
+- Current Skill release: `v0.7.4`
 - Canonical branch: `main`
 
 本项目只有一个公开仓库和一条持续迭代线。`v0.7.0` 将原有项目迁移为标准
@@ -24,7 +24,7 @@ release; it is not another edition, structure, or source of truth. `src/` and
 `tests/` are maintenance directories inside the same current version. The
 legacy structure exists only in the external rollback archive.
 
-换句话说，GitHub `main`、对应 tag 和 Release ZIP 就是同一个 `v0.7.3`；ZIP 只是
+换句话说，GitHub `main`、对应 tag 和 Release ZIP 就是同一个 `v0.7.4`；ZIP 只是
 它的下载形式，不是“精简版”、第二套结构或另一条开发线。
 
 ## 2. Product Scope / 产品范围
@@ -99,15 +99,15 @@ part of this one open-source version. They remain in Git so the Skill can be
 maintained and verified. Building the download only removes files a Skill host
 does not run; it never creates another Skill structure or version.
 
-The v0.7.3 download contains one top-level `exam-revision-handbook/` folder with
+The v0.7.4 download contains one top-level `exam-revision-handbook/` folder with
 its root `SKILL.md`, required metadata, references, runtime assets, governed
 evidence, and user-facing runtime/import scripts. It must contain no nested
 `SKILL.md`, no `src/`, no `tests/`, no `docs/`, no cache, and no local path.
 
 ## 5. Runtime And Version Model / 运行时与版本
 
-- `manifest.json` is the Skill release version and currently records `0.7.3`.
-- Git tags and GitHub Releases follow the Skill version: `v0.7.3`.
+- `manifest.json` is the Skill release version and currently records `0.7.4`.
+- Git tags and GitHub Releases follow the Skill version: `v0.7.4`.
 - `assets/runtime/runtime-lock.json` pins the embedded Python engine and its
   exact Wheel hash.
 - The v0.7.0 migration preserved the validated `0.6.2` engine behavior as its

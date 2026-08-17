@@ -3,7 +3,7 @@
   "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
   "systems_doctrine": "Structure drives behavior: improve the boundary, feedback loops, drift watch, and leverage points before adding weight.",
   "stability": {
-    "score": 92,
+    "score": 100,
     "band": "system-ready"
   },
   "boundary_map": {
@@ -56,7 +56,13 @@
       "signal": "Benchmark patterns are useful only after they are abstracted into borrow and avoid guidance.",
       "response": "Borrow one pattern at a time and keep the rest as reviewer-visible evidence.",
       "evidence": "reports/reference-synthesis.md",
-      "current_patterns": []
+      "current_patterns": [
+        "Borrow a first-time operator flow that explains itself before it asks for more structure.",
+        "Borrow a review checkpoint wherever trust matters more than raw speed.",
+        "Borrow the discipline of defining what the skill should not own before growing the package.",
+        "Do not mimic product polish that adds UI bulk without improving clarity.",
+        "Do not force every skill through heavyweight review when the risk is low."
+      ]
     },
     {
       "name": "Output quality loop",
@@ -159,6 +165,12 @@
       "point": "Install output self-repair checks",
       "why": "The likely failure families are: Markdown readability, Code and command safety, Citation and footnote clutter.",
       "move": "Add only the checks that prevent recurring output mistakes."
+    },
+    {
+      "rank": 4,
+      "point": "Borrow one pattern, not a whole product",
+      "why": "External references improve quality when reduced to structure, not copied as surface style.",
+      "move": "Start from: Borrow a first-time operator flow that explains itself before it asks for more structure."
     },
     {
       "rank": 5,

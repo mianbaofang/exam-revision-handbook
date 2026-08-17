@@ -4,8 +4,8 @@
   "generated_at": "2026-08-17",
   "skill_dir": "<SKILL_ROOT>",
   "summary": {
-    "target_count": 4,
-    "pass_count": 4,
+    "target_count": 5,
+    "pass_count": 5,
     "warn_count": 0,
     "block_count": 0,
     "failure_count": 0,
@@ -37,7 +37,7 @@
       "compiled_contract": {
         "name": "exam-revision-handbook",
         "title": "Exam Revision Handbook",
-        "version": "0.7.3",
+        "version": "0.7.4",
         "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
         "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
         "trigger": {
@@ -106,13 +106,15 @@
             "scripts\\write_concept_explanations_from_jobs.py"
           ],
           "assets": [
-            "assets\\runtime\\exam_revision_handbook-0.7.3-py3-none-any.whl",
+            "assets\\runtime\\exam_revision_handbook-0.7.4-py3-none-any.whl",
             "assets\\runtime\\runtime-lock.json"
           ],
           "reports": [
             "reports/intent-context.json",
             "reports/intent-confidence.json",
             "reports/intent-confidence.md",
+            "reports/reference-synthesis.json",
+            "reports/reference-synthesis.md",
             "reports/output-risk-profile.json",
             "reports/output-risk-profile.md",
             "reports/artifact-design-profile.json",
@@ -121,6 +123,8 @@
             "reports/prompt-quality-profile.md",
             "reports/system-model.json",
             "reports/system-model.md",
+            "reports/iteration-directions.json",
+            "reports/iteration-directions.md",
             "reports/skill-overview.json",
             "reports/skill-overview.html",
             "reports/output_quality_scorecard.json",
@@ -145,7 +149,7 @@
             "references": 7,
             "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 34
           }
         },
         "eval_plan": {
@@ -308,7 +312,7 @@
               "references": 7,
               "scripts": 7,
               "assets": 2,
-              "reports": 30
+              "reports": 34
             },
             "generated_files": [
               "targets/openai/adapter.json",
@@ -476,7 +480,7 @@
             "references": 7,
             "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 34
           },
           "generated_files": [
             "targets/openai/adapter.json",
@@ -578,7 +582,7 @@
       "compiled_contract": {
         "name": "exam-revision-handbook",
         "title": "Exam Revision Handbook",
-        "version": "0.7.3",
+        "version": "0.7.4",
         "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
         "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
         "trigger": {
@@ -647,13 +651,15 @@
             "scripts\\write_concept_explanations_from_jobs.py"
           ],
           "assets": [
-            "assets\\runtime\\exam_revision_handbook-0.7.3-py3-none-any.whl",
+            "assets\\runtime\\exam_revision_handbook-0.7.4-py3-none-any.whl",
             "assets\\runtime\\runtime-lock.json"
           ],
           "reports": [
             "reports/intent-context.json",
             "reports/intent-confidence.json",
             "reports/intent-confidence.md",
+            "reports/reference-synthesis.json",
+            "reports/reference-synthesis.md",
             "reports/output-risk-profile.json",
             "reports/output-risk-profile.md",
             "reports/artifact-design-profile.json",
@@ -662,6 +668,8 @@
             "reports/prompt-quality-profile.md",
             "reports/system-model.json",
             "reports/system-model.md",
+            "reports/iteration-directions.json",
+            "reports/iteration-directions.md",
             "reports/skill-overview.json",
             "reports/skill-overview.html",
             "reports/output_quality_scorecard.json",
@@ -686,7 +694,7 @@
             "references": 7,
             "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 34
           }
         },
         "eval_plan": {
@@ -849,7 +857,7 @@
               "references": 7,
               "scripts": 7,
               "assets": 2,
-              "reports": 30
+              "reports": 34
             },
             "generated_files": [
               "targets/claude/adapter.json",
@@ -1017,7 +1025,7 @@
             "references": 7,
             "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 34
           },
           "generated_files": [
             "targets/claude/adapter.json",
@@ -1119,7 +1127,7 @@
       "compiled_contract": {
         "name": "exam-revision-handbook",
         "title": "Exam Revision Handbook",
-        "version": "0.7.3",
+        "version": "0.7.4",
         "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
         "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
         "trigger": {
@@ -1188,13 +1196,15 @@
             "scripts\\write_concept_explanations_from_jobs.py"
           ],
           "assets": [
-            "assets\\runtime\\exam_revision_handbook-0.7.3-py3-none-any.whl",
+            "assets\\runtime\\exam_revision_handbook-0.7.4-py3-none-any.whl",
             "assets\\runtime\\runtime-lock.json"
           ],
           "reports": [
             "reports/intent-context.json",
             "reports/intent-confidence.json",
             "reports/intent-confidence.md",
+            "reports/reference-synthesis.json",
+            "reports/reference-synthesis.md",
             "reports/output-risk-profile.json",
             "reports/output-risk-profile.md",
             "reports/artifact-design-profile.json",
@@ -1203,6 +1213,8 @@
             "reports/prompt-quality-profile.md",
             "reports/system-model.json",
             "reports/system-model.md",
+            "reports/iteration-directions.json",
+            "reports/iteration-directions.md",
             "reports/skill-overview.json",
             "reports/skill-overview.html",
             "reports/output_quality_scorecard.json",
@@ -1227,7 +1239,7 @@
             "references": 7,
             "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 34
           }
         },
         "eval_plan": {
@@ -1390,7 +1402,7 @@
               "references": 7,
               "scripts": 7,
               "assets": 2,
-              "reports": 30
+              "reports": 34
             },
             "generated_files": [
               "SKILL.md",
@@ -1551,7 +1563,7 @@
             "references": 7,
             "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 34
           },
           "generated_files": [
             "SKILL.md",
@@ -1644,7 +1656,7 @@
       "compiled_contract": {
         "name": "exam-revision-handbook",
         "title": "Exam Revision Handbook",
-        "version": "0.7.3",
+        "version": "0.7.4",
         "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
         "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
         "trigger": {
@@ -1713,13 +1725,15 @@
             "scripts\\write_concept_explanations_from_jobs.py"
           ],
           "assets": [
-            "assets\\runtime\\exam_revision_handbook-0.7.3-py3-none-any.whl",
+            "assets\\runtime\\exam_revision_handbook-0.7.4-py3-none-any.whl",
             "assets\\runtime\\runtime-lock.json"
           ],
           "reports": [
             "reports/intent-context.json",
             "reports/intent-confidence.json",
             "reports/intent-confidence.md",
+            "reports/reference-synthesis.json",
+            "reports/reference-synthesis.md",
             "reports/output-risk-profile.json",
             "reports/output-risk-profile.md",
             "reports/artifact-design-profile.json",
@@ -1728,6 +1742,8 @@
             "reports/prompt-quality-profile.md",
             "reports/system-model.json",
             "reports/system-model.md",
+            "reports/iteration-directions.json",
+            "reports/iteration-directions.md",
             "reports/skill-overview.json",
             "reports/skill-overview.html",
             "reports/output_quality_scorecard.json",
@@ -1752,7 +1768,7 @@
             "references": 7,
             "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 34
           }
         },
         "eval_plan": {
@@ -1915,7 +1931,7 @@
               "references": 7,
               "scripts": 7,
               "assets": 2,
-              "reports": 30
+              "reports": 34
             },
             "generated_files": [
               "targets/vscode/adapter.json",
@@ -2080,7 +2096,7 @@
             "references": 7,
             "scripts": 7,
             "assets": 2,
-            "reports": 30
+            "reports": 34
           },
           "generated_files": [
             "targets/vscode/adapter.json",
@@ -2151,6 +2167,535 @@
       "unsupported_features": [
         "VS Code installation scope is documented but not installed by this compiler"
       ],
+      "warnings": [],
+      "failures": []
+    },
+    {
+      "schema_version": "1.0",
+      "target": "generic",
+      "status": "pass",
+      "compiler": {
+        "name": "yao-skill-ir-compiler",
+        "schema_version": "1.0",
+        "source": "skill-ir",
+        "ir_source": "reports\\skill-ir.json",
+        "ir_schema_version": "2.0.0"
+      },
+      "source": {
+        "skill_dir": "<SKILL_ROOT>",
+        "canonical_metadata": "agents/interface.yaml",
+        "declared_targets": [
+          "openai",
+          "claude",
+          "agent-skills",
+          "vscode",
+          "generic"
+        ]
+      },
+      "compiled_contract": {
+        "name": "exam-revision-handbook",
+        "title": "Exam Revision Handbook",
+        "version": "0.7.4",
+        "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
+        "job_to_be_done": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks while enforcing syllabus, visual, review, and delivery gates.",
+        "trigger": {
+          "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
+          "should_trigger": [
+            "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary."
+          ],
+          "should_not_trigger": [
+            "repository README, release, promotional-media, or GitHub maintenance",
+            "unsupported curriculum auto-acquisition",
+            "PDF export before current HTML review approval",
+            "machine diagnostics used as a substitute for LLM content or visual approval",
+            "Python-owned syllabus decomposition, teaching writing, visual routing, or semantic approval"
+          ],
+          "edge_cases": []
+        },
+        "workflow": {
+          "steps": [
+            "First respond with the complete structured preflight, including the explicit external-image-capability question. Infer nothing and block all later work until every field is valid.",
+            "Acquire official evidence only for the confirmed board, qualification, A-Level stage, market, subject, and year.",
+            "The LLM maps every official requirement to atomic teaching points before writing. Python may extract, validate, record, render, and block; it may not own meaning, content, visual judgment, or approval.",
+            "Decide visuals per final teaching point. Decorative text boxes are not explanatory diagrams.",
+            "Use this order: rebuild manifest, import assets, record per-visual LLM approval, then render only. Rebuilds invalidate approvals.",
+            "Render HTML first. The LLM inspects all of it, records item evidence, repairs, rerenders, and repeats until the exact HTML/render/ledger hashes are approved. Machines cannot approve.",
+            "Export PDF only from approved HTML and verify all HTML, review, PDF, and delivery hashes.",
+            "Review every batch subject independently; never share or sample conclusions."
+          ],
+          "decision_points": [
+            "The LLM owns syllabus meaning, teaching content, visual judgment, and approval; Python owns extraction, validation, rendering, recording, and blocking only.",
+            "Every official requirement, visual, review item, and delivery file remains traceable to current source and artifact hashes.",
+            "Hand back the approved PDF plus controlled HTML, evidence, review, and delivery artifacts.",
+            "Ask one focused clarification when the real job, output, or exclusion boundary is unclear.",
+            "Escalate visible tradeoffs when benchmark patterns conflict with local privacy, naming, or governance constraints.",
+            "Do not silently broaden the skill into adjacent jobs just because the examples are nearby."
+          ],
+          "failure_modes": [
+            "Tables can render as dense grids with weak hierarchy or poor mobile readability.",
+            "Long bullets can make the output look complete while hiding the actual decision logic.",
+            "Commands can omit environment assumptions, working directory, or rollback notes.",
+            "Code snippets can look runnable while missing required inputs.",
+            "Footnote markers or dense citation notes can interrupt the reading flow.",
+            "Evidence can be over-attached to obvious statements and under-attached to risky claims.",
+            "Users start invoking the skill for adjacent one-off or explanation-only requests.",
+            "Outputs remain valid but become generic, cluttered, or weakly aligned with the user's domain.",
+            "Borrowed benchmark patterns no longer fit the local job or add ceremony without payoff.",
+            "Skill usage becomes team-critical while ownership, review cadence, or rollback evidence stays informal."
+          ]
+        },
+        "resources": {
+          "references": [
+            "references\\collegeboard-ap.md",
+            "references\\migration-acceptance.md",
+            "references\\oxfordaqa.md",
+            "references\\revision_guide_spec.md",
+            "references\\runtime-contract.md",
+            "references\\scientific_vector_fallback.md",
+            "references\\workflow-contract.md"
+          ],
+          "scripts": [
+            "scripts\\_runtime.py",
+            "scripts\\bootstrap_runtime.py",
+            "scripts\\doctor.py",
+            "scripts\\import_concept_explanations.py",
+            "scripts\\import_infographic_assets.py",
+            "scripts\\run_runtime.py",
+            "scripts\\write_concept_explanations_from_jobs.py"
+          ],
+          "assets": [
+            "assets\\runtime\\exam_revision_handbook-0.7.4-py3-none-any.whl",
+            "assets\\runtime\\runtime-lock.json"
+          ],
+          "reports": [
+            "reports/intent-context.json",
+            "reports/intent-confidence.json",
+            "reports/intent-confidence.md",
+            "reports/reference-synthesis.json",
+            "reports/reference-synthesis.md",
+            "reports/output-risk-profile.json",
+            "reports/output-risk-profile.md",
+            "reports/artifact-design-profile.json",
+            "reports/artifact-design-profile.md",
+            "reports/prompt-quality-profile.json",
+            "reports/prompt-quality-profile.md",
+            "reports/system-model.json",
+            "reports/system-model.md",
+            "reports/iteration-directions.json",
+            "reports/iteration-directions.md",
+            "reports/skill-overview.json",
+            "reports/skill-overview.html",
+            "reports/output_quality_scorecard.json",
+            "reports/output_quality_scorecard.md",
+            "reports/output_blind_review_pack.json",
+            "reports/output_blind_review_pack.md",
+            "reports/output_blind_answer_key.json",
+            "reports/output_review_adjudication.json",
+            "reports/output_review_adjudication.md",
+            "reports/review_annotations.json",
+            "reports/review_annotations.md",
+            "reports/conformance_matrix.json",
+            "reports/conformance_matrix.md",
+            "reports/security_trust_report.json",
+            "reports/security_trust_report.md",
+            "reports/runtime_permission_probes.json",
+            "reports/runtime_permission_probes.md",
+            "reports/skill_atlas.json",
+            "reports/skill_atlas.html"
+          ],
+          "counts": {
+            "references": 7,
+            "scripts": 7,
+            "assets": 2,
+            "reports": 34
+          }
+        },
+        "eval_plan": {
+          "trigger": [
+            "evals\\fixtures\\cli-contract-parity.json",
+            "evals\\fixtures\\demo-output-parity.json",
+            "evals\\fixtures\\legacy-source-baseline.json",
+            "evals\\fixtures\\wheel-payload-parity.json",
+            "evals\\output-cases.jsonl",
+            "evals\\route-cases.json",
+            "evals\\semantic-config.json",
+            "evals\\trigger-cases.json",
+            "evals\\workflow-cases.json"
+          ],
+          "output": [],
+          "adversarial": [],
+          "baseline": "without_skill",
+          "counts": {
+            "trigger": 9,
+            "output": 0,
+            "adversarial": 0,
+            "baseline": 1
+          }
+        },
+        "risk": {
+          "output_risk": "high",
+          "execution_risk": "medium",
+          "trust_boundary": "external"
+        },
+        "governance": {
+          "owner": "Ethan",
+          "maturity": "governed",
+          "review_cadence": "per-release",
+          "review_due": ""
+        },
+        "runtime": {
+          "activation": {
+            "mode": "model-or-manual",
+            "paths": []
+          },
+          "execution": {
+            "context": "inline",
+            "shell": "powershell"
+          },
+          "trust": {
+            "source_tier": "managed",
+            "remote_inline_execution": "forbid",
+            "remote_metadata_policy": "allow-metadata-only"
+          },
+          "adapter_targets": [
+            "openai",
+            "claude",
+            "agent-skills",
+            "vscode",
+            "generic"
+          ],
+          "canonical_format": "agent-skills"
+        },
+        "permissions": {
+          "schema_version": "1.0",
+          "source": "reports\\security_trust_report.json",
+          "source_available": true,
+          "declared_capabilities": [
+            "file_write",
+            "subprocess"
+          ],
+          "review_required": true,
+          "capabilities": {
+            "network": {
+              "required": false,
+              "script_count": 0,
+              "scripts": [],
+              "review_reason": ""
+            },
+            "file_write": {
+              "required": true,
+              "script_count": 4,
+              "scripts": [
+                "scripts\\_runtime.py",
+                "scripts\\bootstrap_runtime.py",
+                "scripts\\import_concept_explanations.py",
+                "scripts\\import_infographic_assets.py"
+              ],
+              "review_reason": "Scripts write local files or generated artifacts."
+            },
+            "subprocess": {
+              "required": true,
+              "script_count": 4,
+              "scripts": [
+                "scripts\\_runtime.py",
+                "scripts\\bootstrap_runtime.py",
+                "scripts\\doctor.py",
+                "scripts\\run_runtime.py"
+              ],
+              "review_reason": "Scripts spawn local commands and need operator review."
+            },
+            "interactive": {
+              "required": false,
+              "script_count": 0,
+              "scripts": [],
+              "review_reason": ""
+            }
+          },
+          "network_policy": {
+            "source": "security/network_policy.json",
+            "covered_scripts": [],
+            "missing_scripts": [],
+            "mismatches": []
+          },
+          "help_smoke": {
+            "enabled": true,
+            "checked_count": 6,
+            "failed_count": 0,
+            "failed_scripts": []
+          },
+          "trust_summary": {
+            "secret_findings": 0,
+            "network_script_count": 0,
+            "file_write_script_count": 4,
+            "subprocess_script_count": 4,
+            "interactive_script_count": 0,
+            "help_smoke_failed_count": 0
+          }
+        },
+        "source_files_count": 6,
+        "target": "generic",
+        "target_permission_contract": {
+          "schema_version": "1.0",
+          "target": "generic",
+          "permission_model": "agent-skills-compatible-metadata",
+          "native_enforcement": false,
+          "representation": "targets/generic/adapter.json::target_permission_contract",
+          "review_required": true,
+          "declared_capabilities": [
+            "file_write",
+            "subprocess"
+          ],
+          "capability_counts": {
+            "network": 0,
+            "file_write": 4,
+            "subprocess": 4,
+            "interactive": 0
+          },
+          "evidence": "reports\\security_trust_report.json",
+          "operator_note": "Generic target exposes permission metadata for downstream clients to enforce or review."
+        },
+        "target_native_contract": {
+          "schema_version": "1.0",
+          "target": "generic",
+          "native_surface": "Agent Skills compatible neutral package",
+          "activation": {
+            "policy": "Use SKILL.md name and description; consumers decide automatic or manual activation.",
+            "trigger_description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
+            "manual_activation_supported": true,
+            "automatic_activation_note": "Depends on the target client route/catalog implementation."
+          },
+          "resources": {
+            "strategy": "Preserve references, scripts, assets, evals, reports, and adapter metadata as relative package resources.",
+            "counts": {
+              "references": 7,
+              "scripts": 7,
+              "assets": 2,
+              "reports": 34
+            },
+            "generated_files": [
+              "targets/generic/adapter.json"
+            ]
+          },
+          "scripts": {
+            "strategy": "Expose script and permission metadata for downstream clients or installers to enforce.",
+            "script_count": 7,
+            "help_smoke_failed_count": 0
+          },
+          "permissions": {
+            "enforcement": "consumer-enforced-or-metadata-only",
+            "native_enforcement": false,
+            "declared_capabilities": [
+              "file_write",
+              "subprocess"
+            ],
+            "review_required": true
+          },
+          "review": {
+            "artifacts": [
+              "targets/generic/adapter.json",
+              "reports/review-studio.html"
+            ],
+            "fallback_behavior": "Neutral source is the runtime fallback.",
+            "unsupported_native_features": []
+          },
+          "install_scope": "generic Agent Skills compatible root"
+        },
+        "degradation_strategy": "Read SKILL.md directly and invoke the packaged Python runtime adapter.",
+        "target_runtime": {
+          "adapter_mode": "agent-skills-compatible",
+          "generated_files": [
+            "targets/generic/adapter.json"
+          ],
+          "metadata_mapping": {
+            "display_name": "targets/generic/adapter.json::display_name",
+            "default_prompt": "targets/generic/adapter.json::default_prompt",
+            "activation": "targets/generic/adapter.json::activation_mode",
+            "execution": "targets/generic/adapter.json::execution_context",
+            "trust": "targets/generic/adapter.json::trust_level",
+            "permissions": "targets/generic/adapter.json::target_permission_contract",
+            "degradation": "targets/generic/adapter.json::degradation_strategy"
+          },
+          "preserved_semantics": [
+            "trigger",
+            "workflow-counts",
+            "resources",
+            "eval-plan",
+            "risk",
+            "governance",
+            "runtime",
+            "trust",
+            "permissions"
+          ],
+          "native_surface": "Agent Skills compatible neutral package"
+        }
+      },
+      "permission_contract": {
+        "schema_version": "1.0",
+        "source": "reports\\security_trust_report.json",
+        "source_available": true,
+        "declared_capabilities": [
+          "file_write",
+          "subprocess"
+        ],
+        "review_required": true,
+        "capabilities": {
+          "network": {
+            "required": false,
+            "script_count": 0,
+            "scripts": [],
+            "review_reason": ""
+          },
+          "file_write": {
+            "required": true,
+            "script_count": 4,
+            "scripts": [
+              "scripts\\_runtime.py",
+              "scripts\\bootstrap_runtime.py",
+              "scripts\\import_concept_explanations.py",
+              "scripts\\import_infographic_assets.py"
+            ],
+            "review_reason": "Scripts write local files or generated artifacts."
+          },
+          "subprocess": {
+            "required": true,
+            "script_count": 4,
+            "scripts": [
+              "scripts\\_runtime.py",
+              "scripts\\bootstrap_runtime.py",
+              "scripts\\doctor.py",
+              "scripts\\run_runtime.py"
+            ],
+            "review_reason": "Scripts spawn local commands and need operator review."
+          },
+          "interactive": {
+            "required": false,
+            "script_count": 0,
+            "scripts": [],
+            "review_reason": ""
+          }
+        },
+        "network_policy": {
+          "source": "security/network_policy.json",
+          "covered_scripts": [],
+          "missing_scripts": [],
+          "mismatches": []
+        },
+        "help_smoke": {
+          "enabled": true,
+          "checked_count": 6,
+          "failed_count": 0,
+          "failed_scripts": []
+        },
+        "trust_summary": {
+          "secret_findings": 0,
+          "network_script_count": 0,
+          "file_write_script_count": 4,
+          "subprocess_script_count": 4,
+          "interactive_script_count": 0,
+          "help_smoke_failed_count": 0
+        }
+      },
+      "target_permission_contract": {
+        "schema_version": "1.0",
+        "target": "generic",
+        "permission_model": "agent-skills-compatible-metadata",
+        "native_enforcement": false,
+        "representation": "targets/generic/adapter.json::target_permission_contract",
+        "review_required": true,
+        "declared_capabilities": [
+          "file_write",
+          "subprocess"
+        ],
+        "capability_counts": {
+          "network": 0,
+          "file_write": 4,
+          "subprocess": 4,
+          "interactive": 0
+        },
+        "evidence": "reports\\security_trust_report.json",
+        "operator_note": "Generic target exposes permission metadata for downstream clients to enforce or review."
+      },
+      "target_native_contract": {
+        "schema_version": "1.0",
+        "target": "generic",
+        "native_surface": "Agent Skills compatible neutral package",
+        "activation": {
+          "policy": "Use SKILL.md name and description; consumers decide automatic or manual activation.",
+          "trigger_description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
+          "manual_activation_supported": true,
+          "automatic_activation_note": "Depends on the target client route/catalog implementation."
+        },
+        "resources": {
+          "strategy": "Preserve references, scripts, assets, evals, reports, and adapter metadata as relative package resources.",
+          "counts": {
+            "references": 7,
+            "scripts": 7,
+            "assets": 2,
+            "reports": 34
+          },
+          "generated_files": [
+            "targets/generic/adapter.json"
+          ]
+        },
+        "scripts": {
+          "strategy": "Expose script and permission metadata for downstream clients or installers to enforce.",
+          "script_count": 7,
+          "help_smoke_failed_count": 0
+        },
+        "permissions": {
+          "enforcement": "consumer-enforced-or-metadata-only",
+          "native_enforcement": false,
+          "declared_capabilities": [
+            "file_write",
+            "subprocess"
+          ],
+          "review_required": true
+        },
+        "review": {
+          "artifacts": [
+            "targets/generic/adapter.json",
+            "reports/review-studio.html"
+          ],
+          "fallback_behavior": "Neutral source is the runtime fallback.",
+          "unsupported_native_features": []
+        },
+        "install_scope": "generic Agent Skills compatible root"
+      },
+      "target_transform": {
+        "target": "generic",
+        "adapter_mode": "agent-skills-compatible",
+        "generated_files": [
+          "targets/generic/adapter.json"
+        ],
+        "metadata_mapping": {
+          "display_name": "targets/generic/adapter.json::display_name",
+          "default_prompt": "targets/generic/adapter.json::default_prompt",
+          "activation": "targets/generic/adapter.json::activation_mode",
+          "execution": "targets/generic/adapter.json::execution_context",
+          "trust": "targets/generic/adapter.json::trust_level",
+          "permissions": "targets/generic/adapter.json::target_permission_contract",
+          "degradation": "targets/generic/adapter.json::degradation_strategy"
+        },
+        "preserved_semantics": [
+          "trigger",
+          "workflow-counts",
+          "resources",
+          "eval-plan",
+          "risk",
+          "governance",
+          "runtime",
+          "trust",
+          "permissions"
+        ],
+        "degradation_strategy": "Read SKILL.md directly and invoke the packaged Python runtime adapter.",
+        "permission_representation": "targets/generic/adapter.json::target_permission_contract",
+        "native_surface": "Agent Skills compatible neutral package",
+        "activation_policy": "Use SKILL.md name and description; consumers decide automatic or manual activation.",
+        "resource_strategy": "Preserve references, scripts, assets, evals, reports, and adapter metadata as relative package resources.",
+        "script_strategy": "Expose script and permission metadata for downstream clients or installers to enforce.",
+        "permission_enforcement": "consumer-enforced-or-metadata-only"
+      },
+      "unsupported_features": [],
       "warnings": [],
       "failures": []
     }

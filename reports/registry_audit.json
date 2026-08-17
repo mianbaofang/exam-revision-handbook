@@ -2,11 +2,11 @@
   "ok": true,
   "schema_version": "2.0",
   "skill_dir": "<SKILL_ROOT>",
-  "registry_dir": "<SKILL_ROOT>\\dist\\yao-registry",
+  "registry_dir": "<SKILL_ROOT>\\dist-v0.7.4-registry",
   "package": {
     "schema_version": "2.0",
     "name": "exam-revision-handbook",
-    "version": "0.7.3",
+    "version": "0.7.4",
     "description": "Create source-backed GCSE, IGCSE, A-Level, and College Board AP revision handbooks from official AQA, Edexcel, CAIE, and College Board sources. Use when acquiring a syllabus, decomposing requirements into atomic teaching points, writing worked examples, planning or reviewing educational visuals, rendering a handbook, reviewing HTML, or exporting an approved PDF. Do not use for unsupported curricula unless the user accepts the experimental manual-import boundary.",
     "targets": [
       "openai",
@@ -21,8 +21,8 @@
     "trust_level": "managed",
     "license": "MIT",
     "checksums": {
-      "package_sha256": "2bab01674d23feb0ee8900e5be406d03c7d621869f48f3703cb79c92fedf388b",
-      "archive_sha256": "72c33d65c622f40bb4d083150030198901738d56b2190ba00ad289ca8d8233ac"
+      "package_sha256": "873fe670b27f21335645b624319061cb7a33e884efdd64944feac5009404beb2",
+      "archive_sha256": "895299f6403368c3e4946e4c33135484bcfe3bf527e5d0eb96886e1ae83383c1"
     },
     "compatibility": {
       "openai": "pass",
@@ -52,7 +52,7 @@
     },
     "distribution": {
       "archive_verified": true,
-      "archive_sha256": "72c33d65c622f40bb4d083150030198901738d56b2190ba00ad289ca8d8233ac",
+      "archive_sha256": "895299f6403368c3e4946e4c33135484bcfe3bf527e5d0eb96886e1ae83383c1",
       "package_verification": "reports/package_verification.json",
       "install_simulated": true,
       "install_simulation": "reports/install_simulation.json"
@@ -66,7 +66,7 @@
     "packages": [
       {
         "name": "exam-revision-handbook",
-        "version": "0.7.3",
+        "version": "0.7.4",
         "maturity": "governed",
         "owner": "Ethan",
         "targets": [
@@ -77,15 +77,15 @@
           "generic"
         ],
         "package_metadata": "registry/packages/exam-revision-handbook.json",
-        "package_sha256": "2bab01674d23feb0ee8900e5be406d03c7d621869f48f3703cb79c92fedf388b"
+        "package_sha256": "873fe670b27f21335645b624319061cb7a33e884efdd64944feac5009404beb2"
       }
     ]
   },
   "failures": [],
   "warnings": [],
   "artifacts": {
-    "index": "<SKILL_ROOT>\\dist\\yao-registry\\index.json",
-    "package": "<SKILL_ROOT>\\dist\\yao-registry\\packages\\exam-revision-handbook.json",
+    "index": "<SKILL_ROOT>\\dist-v0.7.4-registry\\index.json",
+    "package": "<SKILL_ROOT>\\dist-v0.7.4-registry\\packages\\exam-revision-handbook.json",
     "json": "<SKILL_ROOT>\\reports\\registry_audit.json",
     "markdown": "<SKILL_ROOT>\\reports\\registry_audit.md"
   }

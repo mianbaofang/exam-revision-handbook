@@ -40,12 +40,12 @@ GitHub CLI 自动发现入口是
 [`skills/exam-revision-handbook/`](skills/exam-revision-handbook/)。可以先预览，再安装：
 
 ```bash
-gh skill preview mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.7.3
-gh skill install mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.7.3 --agent universal --scope user
+gh skill preview mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.7.4
+gh skill install mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.7.4 --agent universal --scope user
 ```
 
 独立安装包是官方发布的
-[v0.7.3 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.3/exam-revision-handbook-v0.7.3.zip)。
+[v0.7.4 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.4/exam-revision-handbook-v0.7.4.zip)。
 GitHub 自动生成的源代码 ZIP 只是仓库快照，不是 Skill 安装包；需要指定文件时使用
 [`skills/exam-revision-handbook/SKILL.md`](skills/exam-revision-handbook/SKILL.md)。
 
@@ -139,7 +139,7 @@ https://github.com/mianbaofang/exam-revision-handbook
 ```
 
 直接下载
-[v0.7.3 标准 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.3/exam-revision-handbook-v0.7.3.zip)。
+[v0.7.4 标准 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.4/exam-revision-handbook-v0.7.4.zip)。
 
 然后直接说：
 
@@ -343,7 +343,7 @@ python scripts\doctor.py
 python scripts\run_runtime.py -- generate --query chemistry --level igcse --out .\outputs\chemistry-9202
 ```
 
-GitHub `main`、对应的 `v0.7.3` tag 和 Release 中的 Skill ZIP 就是同一个当前标准
+GitHub `main`、对应的 `v0.7.4` tag 和 Release 中的 Skill ZIP 就是同一个当前标准
 Skill 版本，不存在单独的“源码版”或“安装版”。需要修改 Python 引擎的贡献者可使用
 `pip install -e ".[dev]"`；ZIP 通过 `assets/runtime/` 中的受控 Wheel 和独立用户缓存运行。
 
@@ -408,7 +408,7 @@ tests/            测试与回归样例
 
 ## 状态
 
-当前 Skill 版本：`v0.7.3`。这个 Skill 已具备公开使用的框架形态；单份手册只有在完成自己的全量 LLM HTML 审查、写入与当前 HTML 绑定的 `agent-product-review.json`、通过 PDF 导出门禁，并具备相应发布证据后，才能称为 final-ready。
+当前 Skill 版本：`v0.7.4`。这个 Skill 已具备公开使用的框架形态；单份手册只有在完成自己的全量 LLM HTML 审查、写入与当前 HTML 绑定的 `agent-product-review.json`、通过 PDF 导出门禁，并具备相应发布证据后，才能称为 final-ready。
 
 ## 作者
 

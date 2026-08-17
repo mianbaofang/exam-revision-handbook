@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.7.4 - 2026-08-17
+
+### Public Discovery Links
+
+- Corrected the canonical Skill and packaged reference links in `docs/llms.txt`
+  so crawlers and AI discovery tools resolve the actual
+  `skills/exam-revision-handbook/` package boundary.
+- Rebuilt the embedded runtime Wheel and release archive as `0.7.4` without
+  changing handbook generation behavior.
+
 ## 0.7.3 - 2026-08-17
 
 ### GitHub Skill Discovery Path

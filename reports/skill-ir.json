@@ -69,13 +69,15 @@
       "scripts\\write_concept_explanations_from_jobs.py"
     ],
     "assets": [
-      "assets\\runtime\\exam_revision_handbook-0.7.3-py3-none-any.whl",
+      "assets\\runtime\\exam_revision_handbook-0.7.4-py3-none-any.whl",
       "assets\\runtime\\runtime-lock.json"
     ],
     "reports": [
       "reports/intent-context.json",
       "reports/intent-confidence.json",
       "reports/intent-confidence.md",
+      "reports/reference-synthesis.json",
+      "reports/reference-synthesis.md",
       "reports/output-risk-profile.json",
       "reports/output-risk-profile.md",
       "reports/artifact-design-profile.json",
@@ -84,6 +86,8 @@
       "reports/prompt-quality-profile.md",
       "reports/system-model.json",
       "reports/system-model.md",
+      "reports/iteration-directions.json",
+      "reports/iteration-directions.md",
       "reports/skill-overview.json",
       "reports/skill-overview.html",
       "reports/output_quality_scorecard.json",

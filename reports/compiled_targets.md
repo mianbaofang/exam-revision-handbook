@@ -1,8 +1,8 @@
 # Compiled Targets
 
 - OK: `True`
-- Targets: `4`
-- Pass: `4`
+- Targets: `5`
+- Pass: `5`
 - Warn: `0`
 - Block: `0`
 
@@ -14,6 +14,7 @@
 | `claude` | `pass` | Claude-compatible neutral source folder with adapter notes | `neutral-source-plus-adapter` | `file_write, subprocess` | `Use Agent Skills metadata and the same packaged Python runtime adapter.` | targets/claude/adapter.json, targets/claude/README.md |
 | `agent-skills` | `pass` | Agent Skills standard source tree | `neutral-agent-skills-source` | `file_write, subprocess` | `Use the canonical folder directly; Python 3.11+ remains required.` | SKILL.md, agents/interface.yaml |
 | `vscode` | `pass` | VS Code/Copilot Agent Skills project or user scope | `vscode-agent-skills-adapter` | `file_write, subprocess` | `Use the canonical Agent Skills metadata; invoke scripts through the integrated terminal.` | targets/vscode/adapter.json, targets/vscode/README.md |
+| `generic` | `pass` | Agent Skills compatible neutral package | `agent-skills-compatible` | `file_write, subprocess` | `Read SKILL.md directly and invoke the packaged Python runtime adapter.` | targets/generic/adapter.json |
 
 ## Native Behavior Contracts
 
@@ -52,6 +53,15 @@
 - Scripts: Scripts require workspace trust and operator/client approval outside this compiler.
 - Permission enforcement: `client-or-workspace-trust`; native enforcement `False`
 - Review artifacts: SKILL.md, agents/interface.yaml, reports/review-studio.html
+
+### generic
+
+- Native surface: Agent Skills compatible neutral package
+- Activation: Use SKILL.md name and description; consumers decide automatic or manual activation.
+- Resources: Preserve references, scripts, assets, evals, reports, and adapter metadata as relative package resources.
+- Scripts: Expose script and permission metadata for downstream clients or installers to enforce.
+- Permission enforcement: `consumer-enforced-or-metadata-only`; native enforcement `False`
+- Review artifacts: targets/generic/adapter.json, reports/review-studio.html
 
 
 ## Failures

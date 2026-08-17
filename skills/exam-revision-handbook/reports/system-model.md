@@ -2,7 +2,7 @@
 
 Skill: `exam-revision-handbook`
 
-- Stability score: `92/100`
+- Stability score: `100/100`
 - Stability band: `system-ready`
 - Doctrine: Structure drives behavior: improve the boundary, feedback loops, drift watch, and leverage points before adding weight.
 
@@ -53,6 +53,12 @@ Skill: `exam-revision-handbook`
 - Signal: Benchmark patterns are useful only after they are abstracted into borrow and avoid guidance.
 - Response: Borrow one pattern at a time and keep the rest as reviewer-visible evidence.
 - Evidence: reports/reference-synthesis.md
+- Current patterns:
+  - Borrow a first-time operator flow that explains itself before it asks for more structure.
+  - Borrow a review checkpoint wherever trust matters more than raw speed.
+  - Borrow the discipline of defining what the skill should not own before growing the package.
+  - Do not mimic product polish that adds UI bulk without improving clarity.
+  - Do not force every skill through heavyweight review when the risk is low.
 
 ### Output quality loop
 
@@ -149,6 +155,11 @@ Skill: `exam-revision-handbook`
 
 - Why: The likely failure families are: Markdown readability, Code and command safety, Citation and footnote clutter.
 - Move: Add only the checks that prevent recurring output mistakes.
+
+### 4. Borrow one pattern, not a whole product
+
+- Why: External references improve quality when reduced to structure, not copied as surface style.
+- Move: Start from: Borrow a first-time operator flow that explains itself before it asks for more structure.
 
 ### 5. Close the lifecycle loop
 

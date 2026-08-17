@@ -7,10 +7,10 @@
 - [English project page](https://mianbaofang.github.io/exam-revision-handbook/index-en.html)
 - [中文项目主页](https://mianbaofang.github.io/exam-revision-handbook/)
 - [GitHub repository](https://github.com/mianbaofang/exam-revision-handbook)
-- [Canonical SKILL.md](https://raw.githubusercontent.com/mianbaofang/exam-revision-handbook/main/SKILL.md)
+- [Canonical SKILL.md](https://raw.githubusercontent.com/mianbaofang/exam-revision-handbook/main/skills/exam-revision-handbook/SKILL.md)
 - [Latest release](https://github.com/mianbaofang/exam-revision-handbook/releases/latest)
-- [Workflow contract](https://raw.githubusercontent.com/mianbaofang/exam-revision-handbook/main/references/workflow-contract.md)
-- [Handbook artifact contract](https://raw.githubusercontent.com/mianbaofang/exam-revision-handbook/main/references/revision_guide_spec.md)
+- [Workflow contract](https://raw.githubusercontent.com/mianbaofang/exam-revision-handbook/main/skills/exam-revision-handbook/references/workflow-contract.md)
+- [Handbook artifact contract](https://raw.githubusercontent.com/mianbaofang/exam-revision-handbook/main/skills/exam-revision-handbook/references/revision_guide_spec.md)
 
 ## Supported Official Sources
 
