@@ -104,6 +104,23 @@ def test_doctor_source_wheel_payload_parity_detects_stale_source_fix(tmp_path):
     assert stale["changed"] == ["intl_exam_guide/__init__.py"]
 
 
+def test_doctor_payload_parity_ignores_line_ending_differences(tmp_path):
+    """Windows builds a CRLF wheel from an LF checkout; that is not a stale wheel."""
+
+    source_root = tmp_path / "src" / "intl_exam_guide"
+    source_root.mkdir(parents=True)
+    init_path = source_root / "__init__.py"
+    init_path.write_bytes(b'__version__ = "0.8.0"\n')
+    wheel_path = tmp_path / "engine.whl"
+    with zipfile.ZipFile(wheel_path, "w") as archive:
+        archive.writestr("intl_exam_guide/__init__.py", b'__version__ = "0.8.0"\r\n')
+
+    result = DOCTOR._source_wheel_payload_checks(tmp_path, wheel_path, "intl_exam_guide")
+
+    assert result["status"] == "pass"
+    assert result["changed"] == []
+
+
 def test_doctor_wheel_metadata_and_payload_version_match_lock(tmp_path):
     wheel_path = tmp_path / "engine.whl"
     with zipfile.ZipFile(wheel_path, "w") as archive:

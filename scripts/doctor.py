@@ -22,6 +22,22 @@ from _runtime import (
 SCRIPT_INTERFACE = "cli"
 SCRIPT_INTERFACE_REASON = "Read-only packaged runtime integrity and readiness check."
 SHA256_PATTERN = re.compile(r"[0-9a-f]{64}")
+TEXT_SUFFIXES = {
+    ".css", ".csv", ".html", ".ini", ".js", ".json", ".jsonl", ".md",
+    ".py", ".svg", ".toml", ".txt", ".xml", ".yaml", ".yml",
+}
+
+
+def _payload_bytes(path: Path) -> bytes:
+    """读取包内文本时归一换行，避免 CRLF 检出与 LF wheel 的假差异。"""
+    data = path.read_bytes()
+    return _normalize_payload(data, path.suffix.lower())
+
+
+def _normalize_payload(data: bytes, suffix: str) -> bytes:
+    if suffix in TEXT_SUFFIXES:
+        return data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return data
 
 
 def _read_json(path: Path) -> object:
@@ -273,7 +289,7 @@ def _source_wheel_payload_checks(
                 if name not in wheel_names:
                     missing.append(name)
                     continue
-                if archive.read(name) != path.read_bytes():
+                if _normalize_payload(archive.read(name), path.suffix.lower()) != _payload_bytes(path):
                     changed.append(name)
             extra = sorted(wheel_names - set(source_files))
     except (OSError, zipfile.BadZipFile) as exc:
