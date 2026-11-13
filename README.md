@@ -42,8 +42,15 @@ study guides.
 ## Start In One Minute
 
 The canonical, GitHub CLI discoverable entry is
-[`skills/exam-revision-handbook/`](skills/exam-revision-handbook/). Preview or
-install it with GitHub CLI:
+[`skills/exam-revision-handbook/`](skills/exam-revision-handbook/).
+
+One line with the `skills` CLI (works for Claude Code, Codex, Cursor, Gemini CLI and more; also lists the skill on [skills.sh](https://www.skills.sh/mianbaofang/exam-revision-handbook)):
+
+```bash
+npx skills add mianbaofang/exam-revision-handbook
+```
+
+Preview or install with GitHub CLI:
 
 ```bash
 gh skill preview mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.8.0
