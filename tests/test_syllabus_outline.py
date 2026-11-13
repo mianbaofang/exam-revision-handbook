@@ -153,6 +153,7 @@ def test_syllabus_outline_prompt_includes_dual_track_inputs_and_page_priority():
     assert "provider-, qualification-, and subject-independent" in prompt
     assert "fixed vocabulary or fixed number of items per container" in prompt
     assert "Do not compress a course into a small number of directory-level themes" in prompt
+    assert "source_container_title" in prompt
 
 
 
@@ -569,3 +570,29 @@ def test_outline_validation_accepts_primary_item_with_justified_sub_skill():
     issues = validate_syllabus_outline(outline)
 
     assert [issue for issue in issues if issue.severity == "error"] == []
+
+
+def test_outline_source_container_title_survives_qualification_roundtrip():
+    outline = outline_base()
+    outline["topics"][0]["source_container_title"] = "Ratio and proportion"
+    qualification = Qualification(
+        title="Test Mathematics",
+        code="9999",
+        qualification_type="international_gcse",
+        subject_area="Mathematics",
+        page_url="https://example.test/math",
+        summary=[],
+        topics=[],
+        assessments=[],
+        source=SourceRecord(provider="test", page_url="https://example.test/math"),
+        audience_note="For test students.",
+    )
+
+    result = apply_syllabus_outline_response(qualification, outline)
+
+    assert result.ok
+    assert result.qualification.topics[0].title == "Ratios for comparing quantities"
+    assert result.qualification.topics[0].source_container_title == "Ratio and proportion"
+    restored = Qualification.from_dict(result.qualification.to_dict())
+    assert restored.topics[0].source_container_title == "Ratio and proportion"
+    assert restored.topics[1].source_container_title is None

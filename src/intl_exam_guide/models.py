@@ -17,6 +17,10 @@ class Topic:
     points: list[str] = field(default_factory=list)
     level_tags: list[str] = field(default_factory=list)
     source_snippets: list[SourceSnippet] = field(default_factory=list)
+    # Preserve the official container a teachable topic was split from. The
+    # title is LLM-authored; this field keeps source traceability without
+    # reverting the topic to the container heading.
+    source_container_title: str | None = None
 
 
 @dataclass
@@ -89,6 +93,7 @@ class Qualification:
                 source_snippets=[
                     SourceSnippet(**snippet) for snippet in topic.get("source_snippets", [])
                 ],
+                source_container_title=topic.get("source_container_title"),
             )
             for topic in data.get("topics", [])
         ]

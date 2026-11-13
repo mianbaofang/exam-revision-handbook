@@ -225,7 +225,9 @@ The outline must include:
 - `granularity_audit[]` showing how each `source_coverage` item is taught: independent topic, merged into a topic, prerequisite, or sub-skill;
 - one or more independently assessable source items per final topic, without forcing artificial one-item micro-topics;
 - `cluster_justification` whenever a topic maps multiple source items, plus the visible handbook treatment that will teach each item;
-- each topic mapped to `source_coverage_ids`, `exam_points`, and `source_snippets`.
+- each topic mapped to `source_coverage_ids`, `exam_points`, and `source_snippets`;
+- `source_container_title` preserved on topics split from an official container so
+  traceability survives the teachable rename.
 
 Treat official Topic, Unit, Section, chapter, and table headings as structural containers by default. For every lowest container, determine from source evidence whether it holds one independently assessable requirement, several, or no examinable content. Continue below the heading when the source exposes separate rows, bullets, clauses, codes, conditions, applications, objectives, or other demands that can be taught or assessed independently. A genuine one-requirement container is valid only with a source-based explanation of why no deeper split exists.
 

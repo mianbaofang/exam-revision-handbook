@@ -33,6 +33,7 @@ def build_concept_jobs(plan: GuidePlan) -> list[dict[str, object]]:
                 "id": job_id,
                 "contract_version": "v0.5-visual-decision-pedagogy",
                 "topic_title": guide.topic_title,
+                "source_container_title": topic.source_container_title if topic else None,
                 "student_title": student_title,
                 "output_language": language,
                 "subject_pack": pack.name,

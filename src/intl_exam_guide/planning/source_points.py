@@ -61,6 +61,7 @@ def normalized_student_topic(topic: Topic) -> Topic:
         points=points,
         level_tags=topic.level_tags,
         source_snippets=topic.source_snippets,
+        source_container_title=topic.source_container_title,
     )
 
 

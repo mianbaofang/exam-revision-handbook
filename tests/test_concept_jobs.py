@@ -38,6 +38,7 @@ def sample_plan():
             Topic(
                 title="2.3 - Market failure: External costs and benefits",
                 points=["External costs and benefits affect third parties."],
+                source_container_title="2.3 Market failure",
                 source_snippets=[
                     SourceSnippet(
                         page=12,
@@ -67,6 +68,7 @@ def test_concept_jobs_are_bound_to_current_topic_source():
 
     assert len(jobs) == 1
     assert jobs[0]["topic_title"] == "2.3 - Market failure: External costs and benefits"
+    assert jobs[0]["source_container_title"] == "2.3 Market failure"
     assert jobs[0]["source_points"] == ["External costs and benefits affect third parties"]
     assert jobs[0]["contract_version"] == "v0.5-visual-decision-pedagogy"
     assert jobs[0]["subject_pack"] == "economics"

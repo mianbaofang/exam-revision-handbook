@@ -349,6 +349,7 @@ def build_syllabus_outline_prompt(
             '  "topics": [',
             "    {",
             '      "title": "Teachable knowledge unit named from the source evidence",',
+            '      "source_container_title": "Official container heading this topic was split from, or null for a flat source",',
             '      "parent_path": ["Structural heading from this PDF", "Optional subsection from this PDF"],',
             '      "source_coverage_ids": ["SC001"],',
             '      "split_rationale": "One source row with its clarification forms one teachable unit.",',
@@ -409,6 +410,8 @@ def build_syllabus_outline_prompt(
             "- No official directory-level heading has been silently promoted to a final topic",
             "  unless its audit proves that it contains exactly one indivisible requirement.",
             "- Every topic has exam_points, source_snippets, parent_path, and source_coverage_ids.",
+            "- Preserve source_container_title on every topic that came from an official container;",
+            "  it keeps traceability without reverting the teachable title to the container heading.",
             "- schema_version is v0.5-llm-syllabus-outline.",
             "",
             "HANDOFF NOTE:",
@@ -1207,11 +1210,15 @@ def _topic_from_outline_entry(entry: dict[str, object]) -> Topic:
                     matched_term=str(item.get("matched_term") or entry.get("title") or "").strip(),
                 )
             )
+    container_title = str(
+        entry.get("source_container_title") or entry.get("container_title") or ""
+    ).strip()
     return Topic(
         title=str(entry.get("title") or "").strip(),
         points=points,
         level_tags=tags,
         source_snippets=snippets,
+        source_container_title=container_title or None,
     )
 
 
