@@ -46,6 +46,18 @@ PRINT_RASTER_MIN_BYTES = 1_000_000
 VISUAL_ASSET_EXTENSIONS = {".jpg", ".jpeg", ".png", ".svg", ".webp"}
 
 
+def portable_package_path(path: Path, output_dir: Path) -> str:
+    """Return a package-relative evidence path and never a misleading basename."""
+
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(output_dir.resolve()).as_posix()
+    except ValueError as exc:
+        raise RuntimeError(
+            f"Package evidence path must stay inside the output directory: {path}"
+        ) from exc
+
+
 def write_handbook_package(
     plan: GuidePlan,
     output_dir: Path,
@@ -83,16 +95,9 @@ def write_handbook_package(
     visual_assets = build_visual_asset_lookup(load_visual_manifest(images_dir))
     section_files = write_sections(plan, sections_dir, visual_assets)
 
-    def _portable(path: Path) -> str:
-        """证据文件里只写相对路径，避免把本机绝对路径带进仓库。"""
-        try:
-            return str(path.relative_to(output_dir))
-        except ValueError:
-            return path.name
-
     manifest: dict[str, object] = {
-        "sections_dir": _portable(sections_dir),
-        "images_dir": _portable(images_dir),
+        "sections_dir": portable_package_path(sections_dir, output_dir),
+        "images_dir": portable_package_path(images_dir, output_dir),
         "run_options": plan.run_options.__dict__,
         "section_files": [path.name for path in section_files],
         "image_files": [path.name for path in image_files],

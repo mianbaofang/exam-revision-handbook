@@ -1344,3 +1344,18 @@ def test_audit_delivery_cli_reports_blocked_without_writing_files(tmp_path, caps
     assert result == 2
     assert report["mode"] == "read-only-delivery-audit"
     assert report["delivery_eligible"] is False
+
+
+def test_product_review_evidence_does_not_turn_outside_html_into_basename(tmp_path):
+    output_dir = tmp_path / "output"
+    output_dir.mkdir()
+    outside_html = tmp_path / "outside-handbook.html"
+    outside_html.write_text("<h1>Outside</h1>", encoding="utf-8")
+    (output_dir / "validation.json").write_text(
+        json.dumps({"html": str(outside_html)}), encoding="utf-8"
+    )
+
+    evidence = product_review_evidence(output_dir)
+
+    assert evidence["html_path"] == str(outside_html.resolve())
+    assert evidence["html_path"] != outside_html.name

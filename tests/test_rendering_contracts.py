@@ -23,6 +23,7 @@ from intl_exam_guide.rendering.cover import (
 )
 from intl_exam_guide.rendering.handbook_package import (
     optimize_raster_assets_for_pdf,
+    portable_package_path,
     slugify,
     write_handbook_package,
     write_visual_assets,
@@ -1666,3 +1667,16 @@ def test_write_handbook_package_writes_modular_sections_manifest_and_images(tmp_
     visual_manifest = visual_manifest_payload["visuals"]
     assert visual_manifest[0]["asset_status"] == "svg-draft"
     assert visual_manifest[0]["file"] == manifest["image_files"][0]
+
+
+def test_portable_package_path_does_not_fall_back_to_basename(tmp_path):
+    output_dir = tmp_path / "output"
+    output_dir.mkdir()
+    inside = output_dir / "sections"
+    inside.mkdir()
+    assert portable_package_path(inside, output_dir) == "sections"
+
+    outside = tmp_path / "elsewhere" / "sections"
+    outside.mkdir(parents=True)
+    with pytest.raises(RuntimeError, match="must stay inside"):
+        portable_package_path(outside, output_dir)
