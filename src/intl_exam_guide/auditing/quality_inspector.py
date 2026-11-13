@@ -511,18 +511,53 @@ def _external_visual_route_available_from_output(output_dir: Path) -> bool:
 def check_visual_manifest(output_dir: Path) -> dict[str, Any]:
     path = output_dir / "images" / "visual_manifest.json"
     issues: list[str] = []
-    data: Any = {}
+    entries: list[dict[str, Any]] = []
+    manifest_kind = "missing"
+    expected_visual_count = _expected_visual_count(output_dir, issues)
     if path.exists():
         try:
-            data = json.loads(path.read_text(encoding="utf-8-sig"))
-        except json.JSONDecodeError as exc:
-            # 损坏的 manifest 不能当作空 manifest 放行
-            issues.append(f"visual_manifest.json is not valid JSON: {exc}")
-            data = {}
-    visuals = data.get("visuals", data) if isinstance(data, dict) else data
-    entries = (
-        [entry for entry in visuals if isinstance(entry, dict)] if isinstance(visuals, list) else []
-    )
+            data: Any = json.loads(path.read_text(encoding="utf-8-sig"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+            # A damaged manifest must block, never be treated as an empty one.
+            issues.append(f"visual_manifest.json is not readable JSON: {exc}")
+            manifest_kind = "invalid"
+        else:
+            visuals: Any
+            if isinstance(data, list):
+                manifest_kind = "legacy-list"
+                visuals = data
+            elif (
+                isinstance(data, dict)
+                and data.get("schema_version") == 2
+                and isinstance(data.get("visuals"), list)
+            ):
+                manifest_kind = "v2"
+                visuals = data["visuals"]
+            else:
+                manifest_kind = "unsupported"
+                issues.append(
+                    "visual_manifest.json must be a legacy visual list or a "
+                    "schema_version 2 object with a visuals list."
+                )
+                visuals = []
+            invalid_entries = [
+                index
+                for index, entry in enumerate(visuals, start=1)
+                if not isinstance(entry, dict)
+            ]
+            if invalid_entries:
+                issues.append(
+                    "visual_manifest.json contains non-object visual entries at positions: "
+                    + ", ".join(str(index) for index in invalid_entries[:10])
+                    + "."
+                )
+            entries = [entry for entry in visuals if isinstance(entry, dict)]
+            if not entries and expected_visual_count > 0:
+                issues.append(
+                    "guide-plan.json declares "
+                    f"{expected_visual_count} visual brief(s) but visual_manifest.json "
+                    "contains no usable visual entries."
+                )
     prompts: dict[str, int] = {}
     pending_complex = []
     for raw_entry in entries:
@@ -558,11 +593,36 @@ def check_visual_manifest(output_dir: Path) -> dict[str, Any]:
         issues.append("Five or more visual entries reuse the same prompt.")
     return {
         "present": path.exists(),
+        "manifest_kind": manifest_kind,
+        "expected_visual_count": expected_visual_count,
         "visual_count": len(entries),
         "pending_complex": [item for item in pending_complex if item],
         "repeated_prompt_count": len(repeated),
         "issues": issues,
     }
+
+
+def _expected_visual_count(output_dir: Path, issues: list[str]) -> int:
+    """Read the plan's visual-brief count without silently accepting bad JSON."""
+
+    path = output_dir / "guide-plan.json"
+    if not path.exists():
+        return 0
+    try:
+        data = json.loads(path.read_text(encoding="utf-8-sig"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        issues.append(f"guide-plan.json is not readable JSON: {exc}")
+        return 0
+    if not isinstance(data, dict):
+        issues.append("guide-plan.json must contain a JSON object.")
+        return 0
+    briefs = data.get("visual_briefs")
+    if briefs is None:
+        return 0
+    if not isinstance(briefs, list):
+        issues.append("guide-plan.json visual_briefs must be a list when present.")
+        return 0
+    return len(briefs)
 
 
 def find_placeholder_hits(text: str) -> list[str]:

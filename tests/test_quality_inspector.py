@@ -310,6 +310,74 @@ def test_quality_inspector_fails_non_exact_or_unreviewed_svg(tmp_path):
     assert any("has not been reviewed" in message for message in messages)
 
 
+def test_quality_inspector_fails_corrupt_visual_manifest(tmp_path):
+    write_minimum_package(tmp_path)
+    (tmp_path / "images" / "visual_manifest.json").write_text("{", encoding="utf-8")
+
+    result = inspect_handbook_output(tmp_path)
+    messages = [issue.message for issue in result.issues]
+
+    assert result.inspection_status == "fail"
+    assert any("not readable JSON" in message for message in messages)
+
+
+def test_quality_inspector_fails_unsupported_visual_manifest_schema(tmp_path):
+    write_minimum_package(tmp_path)
+    (tmp_path / "images" / "visual_manifest.json").write_text(
+        json.dumps({"schema_version": 1, "visuals": [{"id": "visual_001"}]}),
+        encoding="utf-8",
+    )
+
+    result = inspect_handbook_output(tmp_path)
+    messages = [issue.message for issue in result.issues]
+
+    assert result.inspection_status == "fail"
+    assert any("schema_version 2" in message for message in messages)
+
+
+def test_quality_inspector_fails_empty_visual_manifest_when_plan_expects_visuals(tmp_path):
+    write_minimum_package(tmp_path)
+    (tmp_path / "guide-plan.json").write_text(
+        json.dumps({"visual_briefs": [{"topic_title": "A"}]}),
+        encoding="utf-8",
+    )
+    (tmp_path / "images" / "visual_manifest.json").write_text(
+        json.dumps({"schema_version": 2, "visuals": []}),
+        encoding="utf-8",
+    )
+
+    result = inspect_handbook_output(tmp_path)
+    messages = [issue.message for issue in result.issues]
+
+    assert result.inspection_status == "fail"
+    assert any("declares 1 visual brief" in message for message in messages)
+
+
+def test_quality_inspector_fails_non_object_visual_manifest_entries(tmp_path):
+    write_minimum_package(tmp_path)
+    (tmp_path / "images" / "visual_manifest.json").write_text(
+        json.dumps({"schema_version": 2, "visuals": [{"id": "visual_001"}, "broken"]}),
+        encoding="utf-8",
+    )
+
+    result = inspect_handbook_output(tmp_path)
+    messages = [issue.message for issue in result.issues]
+
+    assert result.inspection_status == "fail"
+    assert any("non-object visual entries" in message for message in messages)
+
+
+def test_quality_inspector_fails_corrupt_guide_plan_instead_of_hiding_it(tmp_path):
+    write_minimum_package(tmp_path)
+    (tmp_path / "guide-plan.json").write_text("{", encoding="utf-8")
+
+    result = inspect_handbook_output(tmp_path)
+    messages = [issue.message for issue in result.issues]
+
+    assert result.inspection_status == "fail"
+    assert any("guide-plan.json is not readable JSON" in message for message in messages)
+
+
 def test_quality_inspection_writer_and_prompt(tmp_path):
     write_minimum_package(tmp_path)
 
