@@ -37,7 +37,15 @@ College Board 官方来源，生成 GCSE、IGCSE、A-Level 与 AP 图文复习�
 ## 一分钟开始使用
 
 GitHub CLI 自动发现入口是
-[`skills/exam-revision-handbook/`](skills/exam-revision-handbook/)。可以先预览，再安装：
+[`skills/exam-revision-handbook/`](skills/exam-revision-handbook/)。
+
+用 `skills` CLI 一行安装（适用于 Claude Code、Codex、Cursor、Gemini CLI 等；同时会把本 Skill 收录到 [skills.sh](https://www.skills.sh/mianbaofang/exam-revision-handbook)）：
+
+```bash
+npx skills add mianbaofang/exam-revision-handbook
+```
+
+也可以先用 GitHub CLI 预览，再安装：
 
 ```bash
 gh skill preview mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.8.0
