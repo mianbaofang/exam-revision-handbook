@@ -4,6 +4,7 @@ from pathlib import Path
 
 from intl_exam_guide.auditing.concept_jobs import (
     build_concept_jobs,
+    build_concept_writing_prompt,
     concept_jobs_markdown,
     reviewed_concept_titles,
     write_concept_jobs,
@@ -19,6 +20,10 @@ SCRIPT_MODULE = module_from_spec(SCRIPT_SPEC)
 SCRIPT_SPEC.loader.exec_module(SCRIPT_MODULE)
 load_concept_explanations = SCRIPT_MODULE.load_concept_explanations
 apply_concept_explanations = SCRIPT_MODULE.apply_concept_explanations
+
+
+def text_ok_visual_guidance(reason: str) -> dict[str, str]:
+    return {"visual_kind": "none", "no_visual_rationale": reason}
 
 
 def sample_plan():
@@ -86,6 +91,32 @@ def test_concept_jobs_use_visible_source_points_without_pdf_boilerplate():
     assert "Faculty feedback" not in concept_jobs_markdown(jobs)
 
 
+def test_concept_writing_prompt_does_not_claim_unverified_external_route():
+    prompt = build_concept_writing_prompt(
+        jobs=[],
+        style="formal",
+        term_support_language="en",
+        image_method="sensenova",
+    )
+
+    assert "not verified as callable" in prompt
+    assert "A verified external image route is available" not in prompt
+
+
+def test_concept_writing_prompt_prefers_verified_external_route():
+    prompt = build_concept_writing_prompt(
+        jobs=[],
+        style="formal",
+        term_support_language="en",
+        image_method="sensenova",
+        external_visual_capability="yes",
+        image_route_verified=True,
+    )
+
+    assert "A verified external image route is available: sensenova" in prompt
+    assert "prefer external-infographic" in prompt
+
+
 def test_concept_jobs_write_review_files_and_read_reviewed_titles(tmp_path):
     plan = sample_plan()
 
@@ -105,6 +136,9 @@ def test_concept_jobs_write_review_files_and_read_reviewed_titles(tmp_path):
                         "recommended_route": "text-ok",
                         "no_visual_reason": "文字解释和例题已经能清楚说明本 topic 的学习重点。",
                     },
+                    "visual_guidance": text_ok_visual_guidance(
+                        "文字解释和例题已经能清楚说明本 topic 的学习重点。"
+                    ),
                 }
             ],
             ensure_ascii=False,
@@ -132,6 +166,9 @@ def test_import_concept_explanations_accepts_writer_concepts_schema(tmp_path):
                             "recommended_route": "text-ok",
                             "no_visual_reason": "The written explanation already carries the learning clearly.",
                         },
+                        "visual_guidance": text_ok_visual_guidance(
+                            "The written explanation already carries the learning clearly."
+                        ),
                     }
                 ],
             },
@@ -150,6 +187,9 @@ def test_import_concept_explanations_accepts_writer_concepts_schema(tmp_path):
                 "recommended_route": "text-ok",
                 "no_visual_reason": "The written explanation already carries the learning clearly.",
             },
+            "visual_guidance": text_ok_visual_guidance(
+                "The written explanation already carries the learning clearly."
+            ),
         }
     ]
 
@@ -171,6 +211,9 @@ def test_apply_concept_explanations_replaces_matching_topic():
                     "recommended_route": "text-ok",
                     "no_visual_reason": "文字解释和例题已经能清楚说明本 topic 的学习重点。",
                 },
+                "visual_guidance": text_ok_visual_guidance(
+                    "文字解释和例题已经能清楚说明本 topic 的学习重点。"
+                ),
             }
         ],
     )

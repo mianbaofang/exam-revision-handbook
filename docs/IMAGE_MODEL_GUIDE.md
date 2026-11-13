@@ -21,17 +21,28 @@ For many subjects, richer illustrations are still useful:
 
 Use image generation as an optional illustration adapter, not as the source of
 truth. The LLM/Agent should first write source-bound knowledge points and
-practice examples, then record `visual_decision` for every topic. The outcome is
-one of four recommended routes:
+practice examples, then record both `visual_decision` and topic-specific
+`visual_guidance` for every topic. A useful visual is the default whenever a
+diagram, comparison, process, apparatus, field, graph, spatial relationship,
+data pattern, or annotated example can make the source-bound claim easier to
+see. The outcome is one of four recommended routes:
 
-- `text-ok`: no separate visual is needed; include `no_visual_reason` explaining
-  why the worked example/text is the better learning route.
-- `exact-svg`: an SVG is acceptable only when the Writer marks `svg_fit:
-  "exact"` and the asset is reviewed or approved before delivery.
+- `text-ok`: a separate visual is genuinely unnecessary; include a specific
+  `no_visual_reason` and matching `visual_guidance`. Text being able to explain
+  the idea is not enough to omit a useful visual.
+- `exact-svg`: an SVG is a last-resort exception. It is acceptable only when no
+  callable external image route exists, or a separately recorded exactness
+  exception proves that an external image would create an unacceptable semantic
+  risk. The fact that a graph, equation, circuit, or label can be drawn with
+  lines is not enough. The Writer must mark `svg_fit: "exact"`, name the exact
+  structure that must be preserved, and the asset must be reviewed or approved
+  before delivery.
 - `kroki-diagram`: a professional formal diagram is appropriate and must be
   reviewed before delivery.
-- `external-infographic`: the visual becomes a source-bound external infographic
-  job until a callable route or reviewed imported asset exists.
+- `external-infographic`: use a verified external route for richer explanation,
+  realistic/reference appearance, apparatus, scenes, modelling nuance, material
+  appearance, or dense annotation. The visual becomes a source-bound external
+  infographic job until a callable route or reviewed imported asset exists.
 
 The base handbook pipeline does not require an image model, but the first
 preflight exchange must ask whether the user can provide or enable an external image-generation Skill or tool that is callable. This is a capability gate, not a model
@@ -46,12 +57,19 @@ only the route the user confirmed:
   environment variable name.
 
 Never collect the raw key in chat, docs, screenshots, or committed files.
+When a callable `image-gen-flow` GPT or SenseNova channel is supplied, it counts
+as an external route only after the current run verifies that the channel can be
+invoked. A verified route with an unjustified simple-SVG downgrade is a delivery
+blocker.
 
 ## Exact SVG Review Policy
 
-Exact SVG is a reviewed exception, not a local fallback for unfinished images.
-Use it only for visuals whose teaching meaning is fully carried by exact axes,
-geometry, labels, simple tables, simple trees, or simple flows.
+Exact SVG is a reviewed last-resort exception, not a local fallback for
+unfinished images. If a callable external route exists and the user asks to
+avoid SVG, use the external route for graphs, circuits, waves, and relationship
+diagrams, then review the imported raster for exact axes, geometry, labels,
+units, arrows, and topology. Use SVG only when the exact structure cannot be
+reliably represented any other way and that reason is recorded.
 
 Good candidates include number lines, probability trees, statistics charts,
 distance-time graphs, rate curves, pH scales, energy profiles, and simple
@@ -86,7 +104,9 @@ Use this as the integration flow:
 official specification
   -> Python extracts page evidence and external MarkItDown creates source/specification.md
   -> LLM reads Markdown + page evidence and writes syllabus outline and concept/practice content
-  -> LLM records visual_decision: text-ok / exact-svg / kroki-diagram / external-infographic
+  -> LLM records visual_decision + visual_guidance for every topic
+  -> verified external route is preferred for visuals with learning value
+  -> exact-svg is reserved for explicit exactness exceptions
   -> Python records visual manifest and pending jobs
   -> reviewed exact SVG or reviewed raster asset is imported
   -> Python renders HTML only
@@ -186,7 +206,7 @@ python scripts/run_runtime.py -- review --out ./outputs/chemistry-9202
 ## Prompt Template
 
 ```text
-Create a polished educational worksheet infographic for an International GCSE
+Create a diagram-led educational visual for an International GCSE
 or International A-Level revision guide.
 
 Exam board: {exam_board}
@@ -198,12 +218,16 @@ Required labels: {required_labels}
 Language policy: use English labels for the handbook body and visual text;
 preserve official formulae, symbols, and reviewed syllabus terms when needed.
 
-Art direction: use a clean landscape worksheet layout with a large topic
-banner, clear teaching panels, pastel subject colors, readable black labels,
-accurate diagrams or icons, and a small Quick Q&A or practice box. Keep the
-design printable and student-friendly. Do not add institutional logos, exam
-board branding, course-cover headers, watermarks, new syllabus facts, named
-examples, equations, or exam claims beyond the source point.
+Art direction: use a landscape 4:3 aspect ratio by default; landscape 3:2 is
+also acceptable. Do not use a portrait 3:4 image unless the current run
+explicitly requests it. Make the diagram, apparatus, process, graph, field,
+structure, or relationship the dominant teaching content. Keep text minimal:
+short labels, callouts, symbols, units, and at most one brief caption. Do not
+turn the image into a text-heavy poster, worksheet, paragraph panel, slide of
+copied notes, or a second copy of the handbook explanation. Use a clean visual
+hierarchy, pastel subject colors, and readable labels. Do not add institutional
+logos, exam board branding, course-cover headers, watermarks, new syllabus
+facts, named examples, equations, or exam claims beyond the source point.
 
 Visual text is allowed: labels, callouts, legends, axes, captions, and short
 example annotations may be included when they are accurate, legible, and
@@ -226,18 +250,20 @@ improves the topic's learning claim, not only a formal diagram.
 - Economics 曲线图、流程图、场景信息图；
 - 英文文字信息图，必要时保留公式、符号和经复核的官方术语；用户语言支持放在专业词对照表中。
 
-生图应该是可选插图层，不是事实来源。LLM/Agent 应先写出 source-bound 知识点和例题，再为每个 topic 记录 `visual_decision`：
+生图应该是可选插图层，不是事实来源。LLM/Agent 应先写出 source-bound 知识点和例题，再为每个 topic 记录 `visual_decision` 和 topic-specific `visual_guidance`。只要图形、比较、过程、装置、字段、图像、空间关系、数据模式或带标注的例题能帮助学生看懂，就应使用视觉：
 
-- `text-ok`：不需要单独图片，必须写 `no_visual_reason` 说明为什么文字/例题更适合学习。
-- `exact-svg`：只有 Writer 写明 `svg_fit="exact"` 且资产 reviewed/approved 后，SVG 才能交付。
+- `text-ok`：确实不需要单独图片，必须写具体 `no_visual_reason` 和匹配的 `visual_guidance`；“文字也能解释”不等于可以省略有学习价值的图。
+- `exact-svg`：SVG 是最后例外。只有没有可调用外部生图路线，或有单独记录的不可接受外部生图语义风险时才允许；“图表、公式或电路可以用线画出来”本身不构成例外。Writer 必须写明 `svg_fit="exact"`、必须保持精确的结构和外部路线风险，且资产 reviewed/approved 后才能交付。
 - `kroki-diagram`：适合专业正式图表，生成后也必须复核。
-- `external-infographic`：进入外部信息图任务，直到有可调用路线或已复核导入资产。
+- `external-infographic`：有可调用外部路线时，装置、复杂几何、电路、真实场景、材质、建模细节和多面板标注等应优先走该路线，直到有已复核导入资产。
 
-第一次预检必须先询问用户是否能提供或启用本次可调用的外部生图 Skill 或工具；在得到明确回答前，不得下载来源、写手册或默认使用本地生图。不要把模型列表做成生成前菜单。完成每个 topic 的 `visual_decision` 后，再报告复杂视觉 ID，并只使用用户确认且实际可调用的路线：已安装生图 Skill、项目脚本、已复核图片目录，或带模型名、接口 URL、API key 环境变量名的 `custom` 配置。不要在聊天、文档、截图或仓库里暴露真实 key。
+外部生图默认使用横版 `4:3`，也允许横版 `3:2`；除非用户在当前任务中明确要求，否则不要使用竖版 `3:4`。画面必须以图形、装置、过程、图像、场、结构或关系为主，文字只保留短标签、标注、符号、单位和至多一句简短说明。不要把图片做成密集文字海报、练习卷、段落面板或手册解释的复制版。
+
+第一次预检必须先询问用户是否能提供或启用本次可调用的外部生图 Skill 或工具；在得到明确回答前，不得下载来源、写手册或默认使用本地生图。不要把模型列表做成生成前菜单。完成每个 topic 的 `visual_decision` 和 `visual_guidance` 后，再报告复杂视觉 ID，并只使用用户确认且实际可调用的路线：已安装生图 Skill、项目脚本、已复核图片目录，或带模型名、接口 URL、API key 环境变量名的 `custom` 配置。用户提供的 `image-gen-flow` GPT 或 SenseNova 通道也必须先验证可调用。不要在聊天、文档、截图或仓库里暴露真实 key。
 
 ## Exact SVG 复核规则
 
-Exact SVG 是经过复核的例外，不是未完成图片的本地 fallback。只有坐标轴、几何、标签、简单表格、简单树或简单流程能完整承载教学含义时，才可以使用。
+Exact SVG 是经过复核的最后例外，不是未完成图片的本地 fallback。用户有可调用外部路线且要求避免 SVG 时，图表、电路、波形和关系图默认走外部生图；只有记录了不可接受的语义风险、且外部图无法可靠表达时，才可以使用 SVG。
 
 适合场景包括 number line、probability tree、statistics chart、distance-time graph、rate curve、pH scale、energy profile 和简单 labelled geometry。复杂实验装置、经济学场景、密集文字信息图或教学海报必须保持为外部任务，直到有已复核 raster 资产。
 

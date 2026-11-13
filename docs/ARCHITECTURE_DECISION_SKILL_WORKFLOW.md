@@ -8,7 +8,7 @@ cannot be inferred from file presence or modification time.
 The workflow is a lightweight three-role LLM framing, not mandatory multi-agent orchestration. The same host LLM may perform the steps sequentially, or the user may choose to delegate them to separate agents:
 
 1. Analyst: reads `source/specification.md`, `source/markdown-extraction.json`, and `syllabus-evidence.json`, then writes `syllabus-outline.json` with `source_inputs` and `cross_check` audit fields.
-2. Writer: writes `concepts/concept_explanations.json`, `mastery_summary`, and per-topic `visual_decision` records.
+2. Writer: writes `concepts/concept_explanations.json`, `mastery_summary`, and per-topic `visual_decision` plus `visual_guidance` records.
 3. Reviewer: the LLM personally opens the rendered HTML, compares it with evidence and outline files, returns every fixable issue to the Writer, and repeats the render-and-visible-review loop until the current HTML passes. The machine delivery audit checks artifact identity and completeness only; it never supplies the LLM decision.
 
 The Reviewer records per-item evidence and visible screenshot/browser viewport
@@ -30,7 +30,24 @@ analysis, writing, visual planning, rendering, or PDF work until the form is
 complete. A named image route also remains blocked until it is actually
 callable and recorded as verified.
 
-The Writer's visual judgment applies to all subjects. Every topic needs a recorded `visual_decision`; `text-ok` is allowed only when `no_visual_reason` explains why a separate visual would not add learning value. The Reviewer must check every final topic, worked example, answer, source anchor, and rendered visual for factual and semantic accuracy, as well as cross-page repetition and notation residue in HTML. Python diagnostics cannot approve the handbook. PDF export is a separate final step allowed only after `agent-product-review.json` records complete LLM coverage and approval for the exact current HTML SHA-256 and `current-render.json` verifies the immutable render-input snapshot. Export first creates a candidate, then runs technical checks, writes an immutable record under `pdf-exports/`, and finally updates `current-pdf.json`. Any later input or HTML change invalidates the approval and marks the former PDF historical without deleting it.
+The Writer's visual judgment applies to all subjects. Every topic needs a recorded
+`visual_decision` and topic-specific `visual_guidance`; `text-ok` is allowed only
+when a specific `no_visual_reason` explains why a separate visual would not add
+learning value. If a callable external image route is verified, topics that gain
+understanding from apparatus, scenes, modelling, process detail, or rich
+annotation should use `external-infographic` rather than simple line-art SVG.
+Exact SVG remains an explicit exception for exact geometry, scale, notation, or
+machine-readable structure, or when no external route exists. The Reviewer must
+check every final topic, worked example, answer, source anchor, and rendered
+visual for factual and semantic accuracy, as well as cross-page repetition and
+notation residue in HTML. Python diagnostics cannot approve the handbook. PDF
+export is a separate final step allowed only after `agent-product-review.json`
+records complete LLM coverage and approval for the exact current HTML SHA-256
+and `current-render.json` verifies the immutable render-input snapshot. Export
+first creates a candidate, then runs technical checks, writes an immutable record
+under `pdf-exports/`, and finally updates `current-pdf.json`. Any later input or
+HTML change invalidates the approval and marks the former PDF historical without
+deleting it.
 
 Visual assets have a separate state transition and must follow this order:
 

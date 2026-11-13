@@ -53,6 +53,16 @@ PLACEHOLDER_PATTERNS = [
     r"^learning\s+objective$",
 ]
 
+GENERIC_SECTION_CLUSTER_PATTERNS = (
+    "listed statements share",
+    "share one defined",
+    "source container is preserved",
+    "source container is retained",
+    "retained as the source container",
+    "preserved separately for traceability",
+    "for traceability",
+)
+
 
 @dataclass(frozen=True)
 class SyllabusEvidencePage:
@@ -232,6 +242,9 @@ def build_syllabus_outline_prompt(
             "   - topics[] is the final list consumed by the handbook writer. Each entry should",
             "     be one teachable knowledge unit or a tightly linked cluster justified by the",
             "     current syllabus evidence.",
+            "   - Do not default to one final topic per official section. A section is a",
+            "     container. Split its atomic exam points into final topics unless a specific",
+            "     source-based teaching dependency proves that they must be taught together.",
             "   - Use a split-first rule: each final topic maps at least one independently",
             "     assessable source item. A tightly linked topic may map several independent",
             "     items when the audit explains why separate teaching would be misleading",
@@ -954,6 +967,30 @@ def _validate_topic_primary_coverage(
                             "atomic items should not be separate topics.",
                         )
                     )
+                else:
+                    why_not_separate = str(cluster.get("why_not_separate") or "").strip()
+                    normalized_reason = _normalize_text(why_not_separate)
+                    if any(
+                        pattern in normalized_reason
+                        for pattern in GENERIC_SECTION_CLUSTER_PATTERNS
+                    ):
+                        issues.append(
+                            SyllabusOutlineIssue(
+                                "error",
+                                f"Topic {index} cluster_justification is generic and "
+                                "container-based; explain the specific exam-point "
+                                "teaching dependency instead.",
+                            )
+                        )
+        split_rationale = _normalize_text(str(topic.get("split_rationale") or ""))
+        if any(pattern in split_rationale for pattern in GENERIC_SECTION_CLUSTER_PATTERNS):
+            issues.append(
+                SyllabusOutlineIssue(
+                    "error",
+                    f"Topic {index} split_rationale preserves a source container instead "
+                    "of explaining the exam-point split.",
+                )
+            )
 
     for coverage_id, target_titles in coverage_to_topics.items():
         if len(target_titles) > 1:

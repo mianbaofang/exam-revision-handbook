@@ -15,6 +15,7 @@ from intl_exam_guide.planning.concept_integration import (
     collect_concept_jobs,
     concept_entries_from_explanations,
 )
+from intl_exam_guide.planning.async_guide_plan import build_guide_plan_with_writer_agent
 from intl_exam_guide.planning.guide_plan import build_guide_plan
 from intl_exam_guide.planning.identifiers import stable_requirement_id
 from intl_exam_guide.rendering.output_names import default_handbook_stem
@@ -219,6 +220,14 @@ class TestCanonicalConceptEntries:
                         "learning_claim": "Force-arrow geometry carries this relationship more clearly than text alone.",
                         "visual_teaching_value": "Students can see the resultant direction and label positions."
                     },
+                    "visual_guidance": {
+                        "visual_kind": "force diagram",
+                        "composition": "A central particle with labelled force arrows and a resultant arrow.",
+                        "reading_order": "Read the particle first, then compare the force arrows and the resultant direction.",
+                        "required_elements": ["particle", "force arrows", "resultant label"],
+                        "student_inference": "The resultant direction determines the acceleration direction.",
+                        "exactness_exception": "Arrow directions and labels are the exact vector relationship being taught.",
+                    },
                     "visual_spec": {
                         "type": "force arrows on a particle",
                         "complexity": "svg-basic",
@@ -226,6 +235,16 @@ class TestCanonicalConceptEntries:
                         "focus_point": "resultant force direction",
                         "trigger": "force arrows exactly express the vector relationship",
                         "prompt": "Create a clean force-arrow diagram for one particle with labelled resultant force.",
+                        "semantic_contract": {
+                            "schema_version": "v1-visual-semantic-contract",
+                            "learning_claim": "Force arrows show the resultant direction.",
+                            "intended_inference": "The resultant direction determines acceleration.",
+                            "visual_kind": "force diagram",
+                            "required_elements": ["particle", "force arrows"],
+                            "required_relationships": ["force arrows combine into resultant"],
+                            "required_labels": ["resultant force"],
+                            "forbidden_misconceptions": ["one force arrow is the resultant by itself"],
+                        },
                     },
                 }
             ],
@@ -260,11 +279,30 @@ class TestCanonicalConceptEntries:
                         "learning_claim": "A formal force relation diagram clarifies the model.",
                         "visual_teaching_value": "Students can read the relation as a structured diagram.",
                     },
+                    "visual_guidance": {
+                        "visual_kind": "force relationship diagram",
+                        "composition": "A formal relation graph connecting resultant force, mass, and acceleration.",
+                        "reading_order": "Read the resultant force node, then follow the relation to mass and acceleration.",
+                        "required_elements": ["resultant force", "mass", "acceleration", "relation arrows"],
+                        "student_inference": "The relation graph shows how the variables combine in the model.",
+                        "exactness_exception": "The formal nodes and relationship labels are the exact teaching claim.",
+                    },
                     "visual_spec": {
                         "type": "force relationship graph",
+                        "svg_fit": "exact",
                         "focus_point": "resultant force direction",
                         "trigger": "Kroki can express the formal relationship exactly.",
                         "prompt": "Create a Kroki diagram showing resultant force and acceleration direction.",
+                        "semantic_contract": {
+                            "schema_version": "v1-visual-semantic-contract",
+                            "learning_claim": "The formal graph links force to acceleration.",
+                            "intended_inference": "Students follow the labelled relation between variables.",
+                            "visual_kind": "force relationship diagram",
+                            "required_elements": ["resultant force", "mass", "acceleration"],
+                            "required_relationships": ["force relation points to acceleration"],
+                            "required_labels": ["resultant force", "acceleration"],
+                            "forbidden_misconceptions": ["mass is the same quantity as force"],
+                        },
                     },
                 }
             ],
@@ -316,6 +354,85 @@ class TestCanonicalConceptEntries:
                 ],
             )
 
+    def test_apply_concept_entries_rejects_visual_without_semantic_contract(
+        self, sample_qualification
+    ):
+        plan = build_guide_plan(sample_qualification, questions_per_topic=1)
+        topic_title = plan.topic_guides[0].topic_title
+
+        with pytest.raises(VisualDecisionContractError, match="semantic contract"):
+            apply_concept_entries(
+                plan,
+                [
+                    {
+                        "topic_title": topic_title,
+                        "explanations": [
+                            "A force changes motion when it produces a resultant.",
+                            "The diagram makes the vector relationship explicit.",
+                        ],
+                        "visual_decision": {"recommended_route": "exact-svg"},
+                        "visual_guidance": {
+                            "visual_kind": "force diagram",
+                            "composition": "A particle with labelled force arrows.",
+                            "reading_order": "Read the particle, arrows, then resultant.",
+                            "required_elements": ["particle", "force arrows"],
+                            "student_inference": "The resultant direction determines acceleration.",
+                            "exactness_exception": "Arrow directions are the exact relationship taught.",
+                        },
+                        "visual_spec": {
+                            "type": "force arrows",
+                            "svg_fit": "exact",
+                            "prompt": "Draw the labelled force arrows.",
+                        },
+                    }
+                ],
+            )
+
+    def test_verified_external_route_requires_svg_exclusion_reason(self, sample_qualification):
+        plan = build_guide_plan(
+            sample_qualification,
+            questions_per_topic=1,
+            external_visual_capability="yes",
+            image_method="sensenova",
+            image_route_verified=True,
+        )
+        topic_title = plan.topic_guides[0].topic_title
+
+        with pytest.raises(VisualDecisionContractError, match="external_route_exclusion_reason"):
+            apply_concept_entries(
+                plan,
+                [
+                    {
+                        "topic_title": topic_title,
+                        "explanations": ["A force changes motion.", "The resultant sets acceleration."],
+                        "visual_decision": {"recommended_route": "exact-svg"},
+                        "visual_guidance": {
+                            "visual_kind": "force diagram",
+                            "composition": "A particle with labelled force arrows.",
+                            "reading_order": "Read the particle, arrows, then resultant.",
+                            "required_elements": ["particle", "force arrows"],
+                            "student_inference": "The resultant direction determines acceleration.",
+                            "exactness_exception": "Arrow directions are the exact relationship taught.",
+                        },
+                        "visual_spec": {
+                            "type": "force arrows",
+                            "svg_fit": "exact",
+                            "prompt": "Draw the labelled force arrows.",
+                            "semantic_contract": {
+                                "schema_version": "v1-visual-semantic-contract",
+                                "learning_claim": "Force arrows show the resultant direction.",
+                                "intended_inference": "The resultant direction determines acceleration.",
+                                "visual_kind": "force diagram",
+                                "required_elements": ["particle", "force arrows"],
+                                "required_relationships": ["force arrows combine into resultant"],
+                                "required_labels": ["resultant force"],
+                                "forbidden_misconceptions": ["one arrow is the resultant alone"],
+                            },
+                        },
+                    }
+                ],
+            )
+
     def test_build_guide_plan_stays_planning_only(self, sample_qualification):
         with pytest.raises(TypeError):
             build_guide_plan(sample_qualification, llm_provider=object())  # type: ignore[arg-type]
@@ -358,3 +475,42 @@ class TestSkillHostConceptFlow:
         assert entries[0]["visual_decision"]["recommended_route"] == "text-ok"
         assert entries[0]["visual_decision"]["source"] == "python-draft-fallback"
         assert "no_visual_reason" in entries[0]["visual_decision"]
+
+
+class TestAsyncGuidePlanVisualPolicy:
+    @pytest.mark.anyio
+    async def test_writer_agent_plan_enables_visual_policy_by_default(
+        self, sample_qualification
+    ):
+        class EmptyWriter:
+            async def write_all(self, jobs):
+                return []
+
+        plan = await build_guide_plan_with_writer_agent(
+            sample_qualification,
+            EmptyWriter(),
+            visual_policy_enforced=False,
+        )
+
+        assert plan.run_options.visual_policy_enforced is True
+
+    def test_lower_level_plan_helpers_cannot_disable_visual_policy(
+        self, sample_qualification
+    ):
+        plan = build_guide_plan(
+            sample_qualification,
+            visual_policy_enforced=False,
+        )
+        assert plan.run_options.visual_policy_enforced is True
+
+    def test_run_options_legacy_false_is_normalized_to_true(self):
+        from intl_exam_guide.models import GuideRunOptions
+
+        options = GuideRunOptions(
+            requested_subject="Physics",
+            image_provider="prompt-queue",
+            explanation_style="formal",
+            output_language="en",
+            visual_policy_enforced=False,
+        )
+        assert options.visual_policy_enforced is True

@@ -1,6 +1,6 @@
 # Exact SVG Review Policy
 
-Use this reference when the LLM Writer marks a visual as `complexity: "svg-basic"` with `svg_fit: "exact"`.
+Use this reference only when the LLM Writer marks a visual as `complexity: "svg-basic"` with `svg_fit: "exact"` and records a documented, unavoidable exactness exception. SVG is a last resort; do not use it merely because a diagram can be drawn with lines.
 
 This is not a user-facing image-model choice. It is the review contract for simple diagrams whose meaning is fully carried by geometry, axes, labels, tables, trees, timelines, or simple flows.
 

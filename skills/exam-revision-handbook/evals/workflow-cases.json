@@ -17,7 +17,17 @@
   {
     "id": "image-model-not-callable",
     "prompt": "用 SenseNova U1 Fast 给复杂图都生出来。",
-    "expected": "The agent verifies that a callable image-generation skill, script, custom provider configuration, or matching asset directory exists. If none exists, it does not pretend SenseNova is callable and instead reports the pending infographic count, visual job IDs, and draft status."
+    "expected": "The agent verifies that a callable image-generation skill, script, custom provider configuration, or matching asset directory exists. If none exists, it does not pretend SenseNova is callable and instead reports the pending infographic count, visual job IDs, and draft status. If a callable route is verified, it prefers source-bound external-infographic jobs for topics that gain learning value from richer visuals and does not silently downgrade them to simple SVG."
+  },
+  {
+    "id": "visual-policy-external-route",
+    "prompt": "这次可以调用 image-gen-flow 的 SenseNova 或 GPT 生图。请生成一份包含电路、实验装置和运动过程的 A-Level Physics 复习手册。",
+    "expected": "The agent records visual_decision and visual_guidance for every topic. It uses external-infographic for circuit, apparatus, motion-process, and other topics whose learning improves through richer visuals, with topic-specific composition, reading order, required elements, and student inference. External visual prompts default to landscape 4:3, allow landscape 3:2, and do not use portrait 3:4 unless explicitly requested. The image is diagram-led with only short labels, callouts, symbols, units, and at most one brief caption; it must not become a text-heavy poster, worksheet, paragraph panel, or copied handbook page. It uses exact-SVG only for an explicit exactness exception, and never treats simple line-art SVG as the default replacement for a verified external image route."
+  },
+  {
+    "id": "topic-split-atomic-exam-points",
+    "prompt": "按 OxfordAQA 官方 section 做一份 AS Physics 复习手册，topic 就直接用官方 section。",
+    "expected": "The agent does not accept one-topic-per-section as the split. It treats official sections, units, chapters and table headings as containers, extracts the atomic exam points beneath them, and builds final teachable topics from the actual exam actions, dependencies and assessment logic. It may cluster atomic points only with a specific source-based teaching justification and visible treatment for every mapped point. It rejects generic rationales such as preserving the section container for traceability, and it does not claim the handbook is final until the Analyst outline passes the atomic-exam-point split contract."
   },
   {
     "id": "final-audit-maintenance",

@@ -1,7 +1,7 @@
 interface:
   display_name: "Exam Revision Handbook"
   short_description: "Create reviewed GCSE, IGCSE, A-Level, and AP handbooks"
-  default_prompt: "Use $exam-revision-handbook. First ask: Can you provide or enable an external image-generation Skill or tool for this run? Wait for the complete preflight."
+  default_prompt: "Use $exam-revision-handbook. First ask: Can you provide or enable an external image-generation Skill or tool for this run? Wait for the complete preflight. After preflight, require per-topic visual_decision and visual_guidance; use a verified external infographic route for any visual that adds learning value, and do not silently replace it with simple SVG."
 compatibility:
   canonical_format: "agent-skills"
   adapter_targets:

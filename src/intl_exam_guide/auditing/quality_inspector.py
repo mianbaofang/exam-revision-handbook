@@ -199,6 +199,50 @@ def inspect_handbook_output(output_dir: Path) -> QualityInspectionResult:
                 f"missing visual_spec: {sample}.",
             )
         )
+    missing_visual_guidance = concept_checks.get("missing_visual_guidance", [])
+    if missing_visual_guidance:
+        sample = ", ".join(str(item) for item in missing_visual_guidance[:5])
+        issues.append(
+            InspectionIssue(
+                "error",
+                "visuals",
+                "Every Writer topic must include topic-specific visual_guidance; "
+                f"missing: {sample}.",
+            )
+        )
+    incomplete_visual_guidance = concept_checks.get("incomplete_visual_guidance", [])
+    if incomplete_visual_guidance:
+        sample = ", ".join(str(item) for item in incomplete_visual_guidance[:5])
+        issues.append(
+            InspectionIssue(
+                "error",
+                "visuals",
+                "visual_guidance is incomplete for these topics; "
+                f"required composition, reading_order, required_elements, and student_inference: {sample}.",
+            )
+        )
+    text_ok_visual_guidance_errors = concept_checks.get("text_ok_visual_guidance_errors", [])
+    if text_ok_visual_guidance_errors:
+        sample = ", ".join(str(item) for item in text_ok_visual_guidance_errors[:5])
+        issues.append(
+            InspectionIssue(
+                "error",
+                "visuals",
+                "text-ok topics must use visual_kind='none' and a concrete rationale matching "
+                f"no_visual_reason; invalid: {sample}.",
+            )
+        )
+    external_route_svg_downgrades = concept_checks.get("external_route_svg_downgrades", [])
+    if external_route_svg_downgrades:
+        sample = ", ".join(str(item) for item in external_route_svg_downgrades[:5])
+        issues.append(
+            InspectionIssue(
+                "error",
+                "visuals",
+                "A verified external image route is available; exact SVG/Kroki requires a "
+                f"topic-specific exclusion reason, and must not be a silent downgrade: {sample}.",
+            )
+        )
 
     visual_checks = check_visual_manifest(output_dir)
     checks["visuals"] = visual_checks
@@ -263,9 +307,10 @@ def build_quality_inspector_prompt(output_dir: Path) -> str:
             "A. Files: named handbook HTML, qualification.json, syllabus-outline.json, guide-plan.json, validation.json, concept_jobs.json.",
             "B. Module structure: cover, how-to-use, topic map, glossary when applicable, topic guides, practice, exam structure, revision checklist.",
             "C. Topic completeness: topic count matches qualification.json and each topic has visible teaching content.",
-            "D. Concept import: concept_explanations.json exists when the package is being considered complete; every topic records visual_decision, and text-ok decisions include no_visual_reason.",
-            "E. Formatting: no visible [insert ...], [LLM fills ...], undefined, null, or TODO text.",
-            "F. Visuals: manifest exists, visual prompts are not repeated five or more times, pending complex assets are explicit, and the recommended route is distinct from the rendered asset state.",
+            "D. Concept import: concept_explanations.json exists when the package is being considered complete; every Writer topic records visual_decision and topic-specific visual_guidance, and text-ok decisions include a concrete matching rationale.",
+            "E. Reviewer semantic gate: the host LLM Reviewer must independently reopen every text-ok topic and decide whether any diagram, annotated example, process, apparatus, graph, spatial model, comparison, or richer image would improve learning. A specific-sounding rationale is not proof. If a useful visual is optional, use it and return the topic to the Writer for a non-text route.",
+            "F. Formatting: no visible [insert ...], [LLM fills ...], undefined, null, or TODO text.",
+            "G. Visuals: manifest exists, visual prompts are not repeated five or more times, pending complex assets are explicit, and the recommended route is distinct from the rendered asset state.",
             "",
             "## 4. Decision",
             "",
@@ -347,7 +392,12 @@ def check_concept_explanations(output_dir: Path, topic_count: int) -> dict[str, 
     missing_no_visual_reasons = []
     text_ok_with_visual_specs = []
     missing_visual_specs = []
+    missing_visual_guidance = []
+    incomplete_visual_guidance = []
+    text_ok_visual_guidance_errors = []
+    external_route_svg_downgrades = []
     visual_decision_count = 0
+    external_route_available = _external_visual_route_available_from_output(output_dir)
     for index, entry in enumerate(concept_entries, start=1):
         title = str(entry.get("topic_title") or entry.get("concept_term") or f"entry {index}")
         visual_decision = entry.get("visual_decision")
@@ -363,6 +413,7 @@ def check_concept_explanations(output_dir: Path, topic_count: int) -> dict[str, 
         source = str(visual_decision.get("source") or "").strip()
         if workflow_state == FALLBACK_VISUAL_DECISION_STATE or source == "python-draft-fallback":
             fallback_visual_decisions.append(title)
+        is_fallback = title in fallback_visual_decisions
         has_visual_spec = isinstance(entry.get("visual_spec"), dict)
         reason = str(visual_decision.get("no_visual_reason") or "").strip()
         if route == "text-ok":
@@ -372,6 +423,54 @@ def check_concept_explanations(output_dir: Path, topic_count: int) -> dict[str, 
                 text_ok_with_visual_specs.append(title)
         elif not has_visual_spec:
             missing_visual_specs.append(f"{title} ({route})")
+        guidance = entry.get("visual_guidance")
+        # Python fallbacks are retained for migration/recovery diagnostics and
+        # are already blocked by fallback_visual_decisions. Formal Writer
+        # entries must carry a separate, topic-specific guidance object.
+        if is_fallback:
+            continue
+        if not isinstance(guidance, dict):
+            missing_visual_guidance.append(title)
+            continue
+        visual_kind = str(guidance.get("visual_kind") or "").strip()
+        if route == "text-ok":
+            rationale = str(guidance.get("no_visual_rationale") or "").strip()
+            if (
+                visual_kind.lower() != "none"
+                or len(rationale) < 12
+                or " ".join(rationale.split()) != " ".join(reason.split())
+            ):
+                text_ok_visual_guidance_errors.append(title)
+            continue
+        required_guidance = {
+            "composition": guidance.get("composition"),
+            "reading_order": guidance.get("reading_order"),
+            "required_elements": guidance.get("required_elements"),
+            "student_inference": guidance.get("student_inference"),
+        }
+        missing_labels = [
+            label
+            for label, value in required_guidance.items()
+            if not (
+                isinstance(value, str)
+                and value.strip()
+                or isinstance(value, list)
+                and any(str(item).strip() for item in value)
+            )
+        ]
+        if not visual_kind or missing_labels:
+            incomplete_visual_guidance.append(
+                f"{title} ({', '.join(missing_labels) or 'visual_kind'})"
+            )
+        if route in {"exact-svg", "kroki-diagram"}:
+            exactness_exception = str(guidance.get("exactness_exception") or "").strip()
+            external_exclusion = str(
+                guidance.get("external_route_exclusion_reason") or ""
+            ).strip()
+            if len(exactness_exception) < 12:
+                incomplete_visual_guidance.append(f"{title} (exactness_exception)")
+            if external_route_available and len(external_exclusion) < 12:
+                external_route_svg_downgrades.append(f"{title} ({route})")
     return {
         "present": path.exists(),
         "entry_count": entry_count,
@@ -383,19 +482,49 @@ def check_concept_explanations(output_dir: Path, topic_count: int) -> dict[str, 
         "missing_visual_specs": missing_visual_specs,
         "missing_no_visual_reasons": missing_no_visual_reasons,
         "text_ok_with_visual_specs": text_ok_with_visual_specs,
+        "missing_visual_guidance": missing_visual_guidance,
+        "incomplete_visual_guidance": incomplete_visual_guidance,
+        "text_ok_visual_guidance_errors": text_ok_visual_guidance_errors,
+        "external_route_svg_downgrades": external_route_svg_downgrades,
+        "external_route_available": external_route_available,
     }
+
+
+def _external_visual_route_available_from_output(output_dir: Path) -> bool:
+    """Read the recorded run options without making a new provider decision."""
+
+    candidates = [output_dir / "guide-plan.json", output_dir / "run-options.json"]
+    for path in candidates:
+        data = read_json(path)
+        if not isinstance(data, dict):
+            continue
+        options = data.get("run_options") if isinstance(data.get("run_options"), dict) else data
+        if not isinstance(options, dict):
+            continue
+        capability = str(options.get("external_visual_capability") or "").strip().lower()
+        method = str(options.get("image_method") or "").strip()
+        if capability == "yes" and bool(options.get("image_route_verified")) and method:
+            return True
+    return False
 
 
 def check_visual_manifest(output_dir: Path) -> dict[str, Any]:
     path = output_dir / "images" / "visual_manifest.json"
-    data = read_json(path)
+    issues: list[str] = []
+    data: Any = {}
+    if path.exists():
+        try:
+            data = json.loads(path.read_text(encoding="utf-8-sig"))
+        except json.JSONDecodeError as exc:
+            # 损坏的 manifest 不能当作空 manifest 放行
+            issues.append(f"visual_manifest.json is not valid JSON: {exc}")
+            data = {}
     visuals = data.get("visuals", data) if isinstance(data, dict) else data
     entries = (
         [entry for entry in visuals if isinstance(entry, dict)] if isinstance(visuals, list) else []
     )
     prompts: dict[str, int] = {}
     pending_complex = []
-    issues = []
     for raw_entry in entries:
         entry = sync_visual_manifest_entry(raw_entry)
         prompt = str(entry.get("prompt") or "").strip()

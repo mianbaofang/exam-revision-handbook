@@ -1,4 +1,4 @@
 """GCSE, IGCSE, A-Level, and AP revision handbook generator."""
 
 __all__ = ["__version__"]
-__version__ = "0.7.4"
+__version__ = "0.8.0"

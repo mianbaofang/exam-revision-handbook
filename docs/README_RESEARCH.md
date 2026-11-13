@@ -33,10 +33,11 @@ Only README and documentation presentation decisions were borrowed:
 The core architecture, source-traceability model, OxfordAQA provider, parser,
 validation gates, and generated guide structure are project-specific.
 
-## Why No AI-generated Raster Hero Yet
+## Current Visual Policy
 
-The repository currently uses SVG diagrams rather than AI-generated raster
-artwork. This keeps the visuals editable, lightweight, and copyright-clean. If a
-future branded illustration is needed, route image generation through an
-external workflow that the maintainer can actually call, then keep the generated
-prompt metadata with the asset.
+This research note is historical and does not define the runtime visual route.
+The current Skill prefers a reviewed external raster infographic whenever it
+adds teaching value, with landscape `4:3` as the default and `3:2` also allowed.
+SVG is a last-resort exactness exception only: it must be explicitly justified,
+marked `svg_fit="exact"`, and reviewed before delivery. A simple line-art SVG is
+not a substitute for a richer external visual when a callable image route exists.

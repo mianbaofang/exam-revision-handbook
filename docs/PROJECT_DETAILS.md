@@ -196,7 +196,10 @@ IGCSE、A-Level 与 AP AI Revision Guide Skill 是一个开源流水线，用来
 5. 给每个知识单元匹配页码级 source snippets；
 6. 按用户选择的风格生成学生能读懂的讲解和原创例题；
 7. 二次分析哪些知识点和例题需要图文结合；
-8. 由宿主 LLM/Agent 判断每个条目是纯文字、exact-SVG 候选，还是外部信息图 brief；
+8. 由宿主 LLM/Agent 为每个条目写 `visual_decision` 和
+   `visual_guidance`，并判断是 `text-ok`、exact-SVG、Kroki 还是外部信息图
+   brief；只要视觉能增加理解就必须使用。用户提供并验证了外部路线时，
+   丰富解释优先走 external-infographic，不得无理由降级成简单线条 SVG；
    Python 只记录 manifest，并只渲染 reviewed/approved 的视觉资产；
 9. 渲染完整交付包：HTML、PDF、`sections/`、`images/`、manifest、source metadata
    和 validation；
@@ -208,9 +211,15 @@ IGCSE、A-Level 与 AP AI Revision Guide Skill 是一个开源流水线，用来
 - **运行时下载**：公开 PDF 不提交到仓库，避免版权和版本问题。
 - **页码级追溯**：topic block 可以显示匹配到的 source snippets。
 - **明确语言策略**：学生手册正文保持英文；用户选择的辅助语言只用于 30-50 个专业词对照表。
-- **图文学习层**：先生成可追溯的基础知识点和例题，再由 AI 判断哪些条目需要图文
-  结合讲解。只有 LLM 写明 `svg_fit="exact"` 且资产 reviewed/approved 的场景才能使用 SVG；复杂实验装置、几何、电路、经济学场景或密集文字信息图
-  先进入 source-bound visual brief 和 prompt queue，只有用户提供可调用路线或已审核图片资产时才生成、导入或挂接；如果路线可调用，应由 Agent 自动执行，并记录 prompt/source metadata。
+- **图文学习层**：先生成可追溯的基础知识点和例题，再由 AI 为每个条目写
+  `visual_decision` 与 `visual_guidance`。只要图形、比较、过程、装置、几何、
+  电路、空间关系或数据模式能增加理解就应配图；只有明确说明独立视觉不会
+  增加学习价值时才允许 `text-ok`。只有没有可调用外部路线，或精确几何、
+  比例、符号、机器可读结构本身就是教学内容时，才能使用写明
+  `svg_fit="exact"` 且 reviewed/approved 的 SVG；复杂实验装置、几何、电路、
+  经济学场景或密集文字信息图应优先进入 external-infographic，只有用户提供
+  可调用路线或已审核图片资产时才生成、导入或挂接；如果路线可调用，应由
+  Agent 自动执行，并记录 prompt/source metadata。
 - **叙事讲解模式**：topic block 可以切换成生活场景、侦探推理、动漫闯关感等讲法，
   默认不复刻受保护 IP。
 - **给孩子用的谨慎逻辑**：例题必须原创、绑定来源，并建议正式备考前由学科老师复核。

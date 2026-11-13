@@ -13,7 +13,7 @@ from pathlib import Path, PurePosixPath
 REPO_ROOT = Path(__file__).resolve().parents[1]
 PACKAGE_NAME = "exam-revision-handbook"
 PACKAGE_ROOT = REPO_ROOT / "skills" / PACKAGE_NAME
-TEXT_SUFFIXES = {".json", ".md", ".py", ".txt", ".yaml", ".yml"}
+TEXT_SUFFIXES = {".json", ".jsonl", ".md", ".py", ".txt", ".yaml", ".yml", ".html", ".xml", ".svg"}
 UPWARD_REFERENCE_CHAIN = re.compile(rb"(?<![A-Za-z0-9_.-])(?:\.\.[/\\])+")
 LOCAL_ABSOLUTE_PATH = re.compile(
     rb"(?i)(?<![A-Za-z0-9])(?:[A-Z]:[\\/]|/(?:Users|home)/)"

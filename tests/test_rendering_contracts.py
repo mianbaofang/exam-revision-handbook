@@ -251,7 +251,7 @@ def test_stylesheet_keeps_handbook_cover_responsive_and_print_contracts():
         ".practice-block",
         ".generated-infographic-grid",
         ".story-modes",
-        "@media screen and (max-width: 760px)",
+        "@media screen and (max-width: 820px)",
         "@media print",
     ]:
         assert selector in css
@@ -383,7 +383,7 @@ def test_render_cover_keeps_first_page_to_course_identity():
     assert "Oxford International AQA Examinations" in html
     assert "exam-board-badge" not in html
     assert "Accounting Example" in html
-    assert "Course code" in html
+    assert "AS entry code" in html
     assert "9215" in html
     assert "Target exam year" in html
     assert "2028" in html
@@ -409,7 +409,7 @@ def test_render_cover_keeps_term_support_generic_without_sample_content():
     assert "class=\"cover board-aqa cover-template-aqa\"" in english
     assert "Oxford International AQA Examinations" in english
     assert "Mathematics" in english
-    assert "Course code" in english
+    assert "AS entry code" in english
     assert "9660" in english
     assert "cover-signal-grid" in english
     assert "Unit P1" not in english
@@ -1080,6 +1080,18 @@ def test_source_snippet_display_text_hides_unreadable_pdf_extraction():
     cleaned = source_snippet_display_text("Requirement \ufffd corrupted extraction")
 
     assert cleaned == "Official source text is retained in the evidence package."
+
+
+def test_source_snippet_display_text_preserves_formula_parentheses():
+    cleaned = source_snippet_display_text(
+        "Define emf ε = E/Q and use ε = I(R + r) for a supply with internal resistance."
+    )
+    calculation = source_snippet_display_text("I = ε/(R + r) = 1.50/3.0 = 0.50 A.")
+
+    assert "ε = I(R + r)" in cleaned
+    assert "R +;" not in cleaned
+    assert "I = ε/(R + r)" in calculation
+    assert "R +;" not in calculation
 
 
 def test_source_snippet_display_text_cleans_split_pearson_bullets():

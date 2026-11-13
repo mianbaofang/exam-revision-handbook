@@ -137,6 +137,19 @@ class GuideRunOptions:
     image_model: str | None = None
     image_endpoint_url: str | None = None
     image_api_key_env: str | None = None
+    # These fields preserve the first-turn visual preflight in every generated
+    # plan. A model name alone is not evidence that the route is callable.
+    external_visual_capability: str | None = None
+    image_method: str | None = None
+    image_route_verified: bool = False
+    visual_policy_enforced: bool = True
+
+    def __post_init__(self) -> None:
+        """Keep the canonical visual contract enabled for every run record."""
+
+        # The field is retained for compatibility with older serialized plans,
+        # but no caller may use it to reopen the retired visual-policy bypass.
+        self.visual_policy_enforced = True
 
 
 @dataclass

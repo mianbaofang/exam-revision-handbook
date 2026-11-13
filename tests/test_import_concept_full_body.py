@@ -11,6 +11,10 @@ SCRIPT_SPEC.loader.exec_module(SCRIPT_MODULE)
 apply_concept_explanations = SCRIPT_MODULE.apply_concept_explanations
 
 
+def text_ok_visual_guidance(reason: str) -> dict[str, str]:
+    return {"visual_kind": "none", "no_visual_rationale": reason}
+
+
 def test_apply_concept_explanations_replaces_full_topic_body():
     guide = SimpleNamespace(
         topic_title="2.3 - Market failure: External costs and benefits",
@@ -46,6 +50,9 @@ def test_apply_concept_explanations_replaces_full_topic_body():
                     "recommended_route": "text-ok",
                     "no_visual_reason": "The side-effect distinction is already taught clearly by the analogy and worked example.",
                 },
+                "visual_guidance": text_ok_visual_guidance(
+                    "The side-effect distinction is already taught clearly by the analogy and worked example."
+                ),
             }
         ],
     )
@@ -103,6 +110,9 @@ def test_apply_concept_explanations_puts_writer_mastery_first():
                     "recommended_route": "text-ok",
                     "no_visual_reason": "This import test only checks Writer mastery text; no separate visual is needed here.",
                 },
+                "visual_guidance": text_ok_visual_guidance(
+                    "This import test only checks Writer mastery text; no separate visual is needed here."
+                ),
             }
         ],
         force=True,

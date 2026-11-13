@@ -28,6 +28,7 @@ def cover_context(
     language: str,
 ) -> dict[str, str]:
     code = qualification.code or ""
+    family_name, family_code = split_family_code(qualification)
     version = cover_version_label(qualification, options, language)
     year = (
         options.exam_year
@@ -38,7 +39,8 @@ def cover_context(
         "board_class": html_attribute_escape(board["class_name"]),
         "board_short": board["short"],
         "board_full": board["full"],
-        "qtype": qualification_type_display(qualification),
+        "qtype": family_name or qualification_type_display(qualification),
+        "family_code_html": cover_family_code(family_code, language),
         "subject": cover_subject_title(qualification, language),
         "study_title": cover_study_title(qualification, language),
         "code_html": cover_course_code(code, language),
@@ -88,10 +90,10 @@ def render_fixed_cover(
       <span>{exam_board_label}</span>
       <strong>{html_escape(context["board_full"])}</strong>
     </div>
-    <div class="cover-signature-card">
-      <span>{html_escape(context["board_short"])}</span>
-      <strong>{guide_label}</strong>
-      <em>{html_escape(context["qtype"])}</em>
+  <div class="cover-signature-card">
+    <span>{html_escape(context["board_short"])}</span>
+    <strong>{guide_label}</strong>
+    {context["family_code_html"] or f'<em>{html_escape(context["qtype"])}</em>'}
     </div>
   </div>
   <div class="cover-main cover-{template_name}-main">
@@ -117,13 +119,28 @@ def render_fixed_cover(
 def cover_course_code(code: str, language: str) -> str:
     if not code:
         return ""
-    label = "Course code" if language == "en" else "课程代码"
+    label = "AS entry code" if language == "en" else "AS 入科代码"
     return (
         '<div class="course-code">'
         f"<span>{html_escape(label)}</span>"
         f"<strong>{html_escape(code)}</strong>"
         "</div>"
     )
+
+
+def cover_family_code(code: str, language: str) -> str:
+    if not code:
+        return ""
+    label = "Qualification family code" if language == "en" else "资格族代码"
+    return f"<em>{html_escape(label)}: {html_escape(code)}</em>"
+
+
+def split_family_code(qualification: Qualification) -> tuple[str, str]:
+    family = qualification.qualification_family or qualification.source.qualification_family or ""
+    match = re.match(r"^(.*?)(?:\s*\((\d{3,6})\))$", family.strip())
+    if match:
+        return match.group(1).strip(), match.group(2)
+    return family.strip(), ""
 
 
 def cover_signal_grid(language: str) -> str:
@@ -247,7 +264,9 @@ def cover_study_title(qualification: Qualification, language: str) -> str:
 
     qtype = qualification_type_display(qualification)
     normalized = qtype.lower().replace("-", " ")
-    if "igcse" in normalized or "international gcse" in normalized:
+    if qualification.qualification_type == "international_as_a_level" and "subsidiary" in qualification.title.lower():
+        level = "AS"
+    elif "igcse" in normalized or "international gcse" in normalized:
         level = "IGCSE"
     elif "advanced placement" in normalized:
         level = "AP"

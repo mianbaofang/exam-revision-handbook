@@ -41,6 +41,10 @@ def write_minimum_package(tmp_path, *, html_text=MODULE_TEXT, concept_count=2):
                         "recommended_route": "text-ok",
                         "no_visual_reason": "The topic is sufficiently taught by the worked example and checklist.",
                     },
+                    "visual_guidance": {
+                        "visual_kind": "none",
+                        "no_visual_rationale": "The topic is sufficiently taught by the worked example and checklist.",
+                    },
                 }
                 for index in range(concept_count)
             ]
@@ -153,6 +157,10 @@ def test_quality_inspector_fails_invalid_visual_route(tmp_path):
                         "recommended_route": "text-ok",
                         "no_visual_reason": "The worked example already carries the learning clearly.",
                     },
+                    "visual_guidance": {
+                        "visual_kind": "none",
+                        "no_visual_rationale": "The worked example already carries the learning clearly.",
+                    },
                 },
             ]
         ),
@@ -186,6 +194,10 @@ def test_quality_inspector_fails_python_fallback_visual_decision(tmp_path):
                         "recommended_route": "text-ok",
                         "no_visual_reason": "The worked example already carries the learning clearly.",
                     },
+                    "visual_guidance": {
+                        "visual_kind": "none",
+                        "no_visual_rationale": "The worked example already carries the learning clearly.",
+                    },
                 },
             ]
         ),
@@ -210,6 +222,10 @@ def test_quality_inspector_fails_text_ok_with_visual_spec(tmp_path):
                         "recommended_route": "text-ok",
                         "no_visual_reason": "The worked example already carries the learning clearly.",
                     },
+                    "visual_guidance": {
+                        "visual_kind": "none",
+                        "no_visual_rationale": "The worked example already carries the learning clearly.",
+                    },
                     "visual_spec": {"type": "diagram", "prompt": "Draw an unnecessary diagram."},
                 },
                 {
@@ -217,6 +233,10 @@ def test_quality_inspector_fails_text_ok_with_visual_spec(tmp_path):
                     "visual_decision": {
                         "recommended_route": "text-ok",
                         "no_visual_reason": "The worked example already carries the learning clearly.",
+                    },
+                    "visual_guidance": {
+                        "visual_kind": "none",
+                        "no_visual_rationale": "The worked example already carries the learning clearly.",
                     },
                 },
             ]
@@ -301,4 +321,7 @@ def test_quality_inspection_writer_and_prompt(tmp_path):
     assert payload["inspection_status"] == "pass"
     assert "Fast Package Check" in prompt
     assert "pass_to_reviewer" in prompt
+    assert "independently reopen every text-ok topic" in prompt
+    assert "A specific-sounding rationale is not proof" in prompt
+    assert "If a useful visual is optional, use it" in prompt
     assert (tmp_path / "quality-inspection-prompt.md").exists()

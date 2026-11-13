@@ -83,9 +83,16 @@ def write_handbook_package(
     visual_assets = build_visual_asset_lookup(load_visual_manifest(images_dir))
     section_files = write_sections(plan, sections_dir, visual_assets)
 
+    def _portable(path: Path) -> str:
+        """证据文件里只写相对路径，避免把本机绝对路径带进仓库。"""
+        try:
+            return str(path.relative_to(output_dir))
+        except ValueError:
+            return path.name
+
     manifest: dict[str, object] = {
-        "sections_dir": str(sections_dir),
-        "images_dir": str(images_dir),
+        "sections_dir": _portable(sections_dir),
+        "images_dir": _portable(images_dir),
         "run_options": plan.run_options.__dict__,
         "section_files": [path.name for path in section_files],
         "image_files": [path.name for path in image_files],
@@ -396,6 +403,8 @@ def optimize_raster_assets_for_pdf(
         try:
             with Image.open(source) as image:
                 prepared_image = ImageOps.exif_transpose(image)
+                if prepared_image is None:
+                    continue
                 width, height = prepared_image.size
                 if (
                     source.stat().st_size < PRINT_RASTER_MIN_BYTES

@@ -7,11 +7,18 @@ The binding workflow boundary is `docs/ARCHITECTURE_DECISION_SKILL_WORKFLOW.md`:
 The shipped workflow uses three lightweight roles:
 
 1. **Analyst** reads `syllabus-evidence.json` and writes `syllabus-outline.json`.
-2. **Writer** writes `concepts/concept_explanations.json`, `mastery_summary`, and per-topic `visual_decision` records.
+2. **Writer** writes `concepts/concept_explanations.json`, `mastery_summary`, and per-topic `visual_decision` plus `visual_guidance` records.
 3. **Reviewer** personally opens the rendered HTML, compares it with the source evidence and outline, returns issues to the Writer, and repeats the visible review after rerendering until the current HTML passes.
 
 These names are operating roles, not mandatory separate agents. The same host LLM can perform them sequentially. A runtime may delegate them to separate agents only when the user explicitly asks for that orchestration.
 
 Do not require a project-manager role, mandatory quality-inspector role, `agent-orchestration.json`, release-state certification, or extra delivery gates unless there is a fresh product decision. Mechanical quality inspection can still exist as a supporting package check, but it is not an independent approval role.
 
-Visual judgment is all-subject and Writer-owned. Every topic must record `visual_decision`; `recommended_route: "text-ok"` is valid only with `no_visual_reason`, and non-text routes are not complete until the visual manifest shows a reviewed rendered asset.
+Visual judgment is all-subject and Writer-owned. Every topic must record
+`visual_decision` plus topic-specific `visual_guidance`; `recommended_route:
+"text-ok"` is valid only with a specific `no_visual_reason`. When a callable
+external image route is verified, the Writer should prefer
+`external-infographic` for any visual that adds learning value and must not
+silently replace it with simple line-art SVG. Exact SVG and other non-text
+routes are not complete until the visual manifest shows a reviewed rendered
+asset.

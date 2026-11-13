@@ -240,9 +240,14 @@ python scripts/render_intro_animation.py --html docs/project-intro-animation-en.
 - [ ] `validation.json.review_summary` has the expected topic, guide, practice-card, diagram, and source-snippet counts.
 - [ ] Generated HTML includes source checks.
 - [ ] Generated HTML includes website listing metadata when discovered from a subject page.
-- [ ] Every final topic has a Writer-authored `visual_decision`; `text-ok` topics
-  include a specific `no_visual_reason`, and non-text routes have reviewed assets
-  or remain explicitly pending.
+- [ ] Every final topic has Writer-authored `visual_decision` and
+  topic-specific `visual_guidance`; `text-ok` topics include a specific
+  `no_visual_reason`, and non-text routes have reviewed assets or remain
+  explicitly pending.
+- [ ] When a callable external image route is verified, topics that benefit from
+  richer explanation use `external-infographic` rather than an unjustified
+  simple SVG downgrade. Exact-SVG choices record the exactness exception and
+  `svg_fit="exact"`.
 - [ ] Generated HTML includes practice cards with command words, solution steps, and answer checkpoints.
 - [ ] Generated HTML records the selected term-support language in `run-options.json`.
 - [ ] Handbook body, template labels, examples, diagram text, and image prompts remain English.

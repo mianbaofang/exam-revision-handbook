@@ -57,6 +57,19 @@ def build_concept_jobs(plan: GuidePlan) -> list[dict[str, object]]:
                     output_language=language,
                     pack=pack,
                 ),
+                "visual_policy": {
+                    "visual_guidance_required": True,
+                    "external_route_available": bool(
+                        plan.run_options.external_visual_capability == "yes"
+                        and plan.run_options.image_route_verified
+                        and str(plan.run_options.image_method or "").strip().lower()
+                        not in {"", "none", "disabled", "prompt-queue"}
+                    ),
+                    "image_method": plan.run_options.image_method
+                    or plan.run_options.image_provider,
+                    "prefer_external_infographic_when_learning_value_exists": True,
+                    "simple_svg_is_not_default": True,
+                },
             }
         )
     return jobs
@@ -156,6 +169,8 @@ def build_concept_writing_prompt(
     style: str,
     term_support_language: str,
     image_method: str,
+    external_visual_capability: str | None = None,
+    image_route_verified: bool = False,
 ) -> str:
     """
     Build detailed prompt for LLM Writer to write concept explanations for all topics.
@@ -178,20 +193,43 @@ def build_concept_writing_prompt(
     }
     style_desc = style_descriptions.get(style, "Clear and student-appropriate")
 
+    method = (image_method or "").strip()
+    external_route_available = (
+        str(external_visual_capability or "").strip().lower() == "yes"
+        and bool(image_route_verified)
+        and method.lower() not in {"", "none", "disabled", "prompt-queue"}
+    )
+
     image_guidance = ""
-    if image_method == "prompt-queue":
+    if external_route_available:
+        image_guidance = (
+            f"A verified external image route is available: {method}. When a topic gains learning value from "
+            "apparatus, process detail, realistic context, modelling, or rich annotation, prefer external-infographic "
+            "and write a topic-specific visual_guidance object. Do not silently downgrade that need to simple SVG. "
+            "Use exact-svg or Kroki only when exact geometry, notation, scale, or machine-readable structure is the "
+            "teaching claim and record the external-route exclusion reason."
+        )
+    elif method == "prompt-queue":
         image_guidance = (
             "You are specifying what visuals are needed. Python records non-text visual specs as pending jobs for review/import.\n"
             "Every topic still needs visual_decision; only exact-fit SVG specs may use svg-basic, and all other non-text visual specs become external infographic jobs."
         )
-    elif image_method == "custom":
+    elif method == "custom":
         image_guidance = (
-            "You are specifying what visuals are needed. Python will call the user's custom API for non-text visual specs.\n"
-            "Every topic still needs visual_decision; be specific in prompts for exact-svg, kroki-diagram, or external-infographic routes."
+            "A custom image method is recorded but has not been verified as callable for this run. Keep complex visual specs explicit and pending until verification.\n"
+            "Every topic still needs visual_decision; do not claim a verified external route or silently downgrade a useful visual to simple SVG."
+        )
+    elif method and method not in {"none", "disabled"}:
+        image_guidance = (
+            f"An image method is recorded ({method}) but is not verified as callable for this run. Keep complex visual "
+            "specs pending, write topic-specific visual_guidance, and do not claim a verified external route or silently "
+            "downgrade a useful visual to simple SVG."
         )
     else:
         image_guidance = (
-            "No image generation configured. Still record visual_decision for every topic; choose text-ok with no_visual_reason unless a separate reviewed visual is essential."
+            "No external image generation route is verified. Still record visual_decision and visual_guidance for every "
+            "topic; use text-ok only with a concrete reason, or specify an exact SVG/Kroki route when exact structure "
+            "is the teaching claim."
         )
 
     glossary_guidance = ""
@@ -269,12 +307,24 @@ def build_concept_writing_prompt(
             '   - If YES and labels/geometry fully carry the meaning: set recommended_route: "exact-svg" and include visual_spec with complexity: "svg-basic" and svg_fit: "exact".',
             '   - If YES and the need is a professional formal diagram: set recommended_route: "kroki-diagram" and include visual_spec for a reviewed Kroki route.',
             '   - If YES and the need requires realism, rich annotation, apparatus, scenes, or modelling nuance: set recommended_route: "external-infographic" and include visual_spec for a reviewed image asset route.',
+            "   - Always include visual_guidance as a separate object for the same topic.",
+            "   - text-ok visual_guidance: visual_kind='none' and no_visual_rationale matching no_visual_reason.",
+            "   - Non-text visual_guidance: visual_kind, composition, reading_order, required_elements, and student_inference.",
+            "   - exact-svg/Kroki visual_guidance: also state exactness_exception; if an external route is verified, state external_route_exclusion_reason.",
             "   - exact-svg example:",
             "     {",
             '       "visual_decision": {',
             '         "recommended_route": "exact-svg",',
             '         "learning_claim": "A simple branching structure carries the repeated-choice calculation more clearly than text alone.",',
             '         "visual_teaching_value": "Students can follow each branch and see where values combine."',
+            "       },",
+            '       "visual_guidance": {',
+            '         "visual_kind": "decision tree",',
+            '         "composition": "A left-to-right branching structure with the source-bound conditions labelled.",',
+            '         "reading_order": "Read the root condition, then follow each branch to the resulting case.",',
+            '         "required_elements": ["root condition", "branch labels", "end states"],',
+            '         "student_inference": "The branch selected by the condition determines the correct case outcome.",',
+            '         "exactness_exception": "Branch labels and order are the exact teaching claim."',
             "       },",
             '       "visual_spec": {',
             '         "type": "branching decision tree",',
@@ -291,6 +341,10 @@ def build_concept_writing_prompt(
             '         "recommended_route": "text-ok",',
             '         "no_visual_reason": "The topic is best learned through the worked example and source anchor; a separate image would repeat the same short relationship.",',
             '         "learning_claim": "The explanation already gives the needed sequence and check."',
+            "       },",
+            '       "visual_guidance": {',
+            '         "visual_kind": "none",',
+            '         "no_visual_rationale": "The topic is best learned through the worked example and source anchor; a separate image would repeat the same short relationship."',
             "       }",
             "     }",
             "",
@@ -322,6 +376,10 @@ def build_concept_writing_prompt(
             '        "recommended_route": "text-ok",',
             '        "no_visual_reason": "The worked example is clearer than a repeated image for this topic."',
             "      },",
+            '      "visual_guidance": {',
+            '        "visual_kind": "none",',
+            '        "no_visual_rationale": "The worked example is clearer than a repeated image for this topic."',
+            "      },",
             '      "visual_spec": { ... } // ONLY for exact-svg, kroki-diagram, or external-infographic routes',
             "    }",
             "  ],",
@@ -347,8 +405,8 @@ def build_concept_writing_prompt(
             "   Only add visual_spec when a diagram/chart/infographic genuinely helps understanding.",
             "",
             "4. Visual judgment is YOUR responsibility for every topic and every subject.",
-            "   Think: 'Would a diagram make this clearer for a student, or is text sufficient?'",
-            "   If text is sufficient, visual_decision must still record recommended_route='text-ok' and no_visual_reason.",
+            "   Think: 'Would a diagram or richer image make this clearer for a student, or is text genuinely sufficient?'",
+            "   If text is sufficient, visual_decision must still record recommended_route='text-ok', no_visual_reason, and matching visual_guidance.",
             "",
             "5. Worked examples must be COMPLETE.",
             "   Problem + full solution + check. Not just 'solve this problem'.",
@@ -363,10 +421,10 @@ def build_concept_writing_prompt(
             "AFTER YOU OUTPUT THIS JSON:",
             "- Python will validate your JSON schema and import content to guide-plan.json",
             "- Python may render HTML after Analyst and Writer artifacts exist; it must not generate PDF before LLM HTML approval",
-            "- Writer must make an independent visual_decision for every final topic; there is no one-visual-per-subject quota and no topic is forced to use an image",
+            "- Writer must make an independent visual_decision and visual_guidance record for every final topic; text-ok is a reasoned exception, not a default",
             "- external-infographic may be a source-bound explanatory visual or realistic/reference/example image, not only a formal diagram",
             "- visual labels, callouts, legends, captions, and short annotations are allowed when accurate, legible, and source-bound; the Skill does not require text-free images",
-            "- Python validates that every topic records visual_decision; text-ok decisions need no_visual_reason",
+            "- Python validates that every topic records visual_decision and visual_guidance; text-ok decisions need a concrete matching rationale",
             "- If you specified visual_spec, Python records pending visual entries; the host LLM must generate or import exact SVG/Kroki/infographic assets and review them before final delivery",
             "- Mechanical checks are diagnostics only; the LLM Reviewer must personally open the rendered HTML, repair and rerender until it passes, then approve that exact HTML hash before PDF export",
             "",
@@ -387,7 +445,7 @@ def build_concept_writing_prompt(
             "- Every concept_jobs.json topic is covered exactly once",
             f"- Style remains consistently {style}",
             "- Each worked example has problem, solution, and check",
-            "- Every topic has visual_decision; visual_spec appears only where it materially improves understanding",
+            "- Every topic has visual_decision and visual_guidance; visual_spec appears only where it materially improves understanding",
             f"- Glossary contains 30-50 terms if {term_support_language} is not en",
             "- No placeholder text such as '[insert explanation here]' remains",
             "",

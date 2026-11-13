@@ -291,6 +291,43 @@ def test_outline_validation_rejects_collapsed_declared_structure_title_without_c
     assert any("reuses a declared structure title" in message for message in messages)
 
 
+def test_outline_validation_rejects_generic_section_cluster_reason():
+    outline = outline_base()
+    outline["topics"] = [
+        {
+            "title": "Ratio and proportion teaching unit",
+            "parent_path": ["1.1 Ratio and proportion"],
+            "source_coverage_ids": ["SC001", "SC002"],
+            "split_rationale": (
+                "The numbered specification sub-section is retained as the source "
+                "container and reframed as one teaching unit."
+            ),
+            "cluster_justification": {
+                "relationship": "same_concept",
+                "why_not_separate": (
+                    "The listed statements share one defined model; the source "
+                    "container is preserved separately for traceability."
+                ),
+            },
+            "exam_points": ["Use ratios and solve direct proportion problems."],
+            "source_snippets": [
+                {
+                    "page": 4,
+                    "text": "Use ratios to compare quantities. Solve direct proportion problems.",
+                    "matched_term": "Ratio and proportion",
+                }
+            ],
+        }
+    ]
+    for item in outline["granularity_audit"]:
+        item["target_topic_title"] = "Ratio and proportion teaching unit"
+
+    messages = [issue.message for issue in validate_syllabus_outline(outline)]
+
+    assert any("cluster_justification is generic" in message for message in messages)
+    assert any("split_rationale preserves a source container" in message for message in messages)
+
+
 def test_outline_validation_rejects_source_coverage_without_stable_ids():
     outline = outline_base()
     outline["source_coverage"] = [

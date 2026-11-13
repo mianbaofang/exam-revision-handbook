@@ -130,13 +130,18 @@ def build_content_only_image_prompt(
     clean_type = clean_prompt_phrase(visual_type)
     label_clause = prompt_label_clause(visible_points, language)
     return (
-        "Create a polished educational worksheet infographic for a revision guide. "
+        "Create a diagram-led educational visual for a revision guide. "
         f"Topic: {subject}: {clean_focus}. "
         f"Visual task: {clean_type}. "
-        "Use a clean landscape layout with a large topic banner, clear teaching panels, "
-        "pastel subject colors, readable black labels, accurate diagrams or icons, "
-        "and a small Quick Q&A or practice box. "
-        "Show only the diagrams, formulas, and short labels needed for this topic. "
+        "Use a landscape 4:3 aspect ratio by default; a landscape 3:2 image is also "
+        "acceptable, but do not use a portrait 3:4 image. "
+        "Make the diagram, apparatus, process, graph, or visual relationship the "
+        "dominant teaching content. Keep text minimal: short labels, callouts, "
+        "symbols, units, and at most one brief caption. Do not turn the image into "
+        "a text-heavy poster, worksheet, paragraph panel, or slide of copied notes. "
+        "Use a clean visual hierarchy, accurate geometry or process flow, pastel "
+        "subject colors, and readable labels. Show only the diagrams, formulas, "
+        "and short labels needed for this topic. "
         "Do not add institutional logos, course-cover headers, badges, footers, "
         f"or watermarks.{label_clause}"
     )

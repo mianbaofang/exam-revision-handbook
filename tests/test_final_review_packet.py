@@ -666,7 +666,8 @@ def test_export_reviewed_pdf_allows_current_html_llm_approval(monkeypatch, tmp_p
     assert calls[0][1] != pdf_path
     assert calls[0][1].name.endswith(".candidate.pdf")
     assert pdf_path.exists()
-    assert validation["pdf"] == str(pdf_path)
+    # 证据文件只写相对路径，避免把本机绝对路径带进仓库
+    assert validation["pdf"] == "guide.pdf"
     assert validation["pdf_export_gate"]["reviewed_html_sha256"] == file_sha256(html_path)
     assert validation["pdf_export_gate"]["status"] == "passed"
     assert inspect_current_pdf(tmp_path)["complete"] is True

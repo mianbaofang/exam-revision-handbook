@@ -10,6 +10,7 @@ from intl_exam_guide.auditing.concept_jobs import write_concept_jobs
 from intl_exam_guide.llm.provider import ConceptExplanation, ConceptJob
 from intl_exam_guide.models import GuidePlan, Qualification
 from intl_exam_guide.planning.concept_integration import (
+    _external_visual_route_available,
     apply_concept_entries,
     collect_concept_jobs,
     concept_entries_from_explanations,
@@ -47,10 +48,23 @@ async def build_guide_plan_with_writer_agent(
     image_model: str | None = None,
     image_endpoint_url: str | None = None,
     image_api_key_env: str | None = None,
+    external_visual_capability: str | None = None,
+    image_method: str | None = None,
+    image_route_verified: bool = False,
+    visual_policy_enforced: bool = True,
     output_dir: Path | None = None,
     **_: object,
 ) -> GuidePlan:
-    """Run Analyst outline first, then build a plan and apply WriterAgent concepts."""
+    """Run Analyst outline first, then build a plan and apply WriterAgent concepts.
+
+    ``visual_policy_enforced`` remains in the signature for callers that passed
+    the legacy flag, but the canonical async Skill route always enforces the
+    visual contract. A false legacy value must not reopen the old bypass.
+    """
+
+    # Keep the public parameter backward-compatible while making the runtime
+    # policy authoritative for every async WriterAgent invocation.
+    visual_policy_enforced = True
 
     if output_dir:
         write_syllabus_evidence(qualification, output_dir, [])
@@ -87,6 +101,10 @@ async def build_guide_plan_with_writer_agent(
         image_model=image_model,
         image_endpoint_url=image_endpoint_url,
         image_api_key_env=image_api_key_env,
+        external_visual_capability=external_visual_capability,
+        image_method=image_method,
+        image_route_verified=image_route_verified,
+        visual_policy_enforced=visual_policy_enforced,
     )
 
     handbook_topics = [
@@ -108,6 +126,10 @@ async def build_guide_plan_with_writer_agent(
         logger.error("WriterAgent generation failed: %s. Keeping draft plan.", exc)
         return guide_plan
 
-    entries = concept_entries_from_explanations(jobs, explanations)
+    entries = concept_entries_from_explanations(
+        jobs,
+        explanations,
+        external_route_available=_external_visual_route_available(guide_plan),
+    )
     apply_concept_entries(guide_plan, entries)
     return guide_plan

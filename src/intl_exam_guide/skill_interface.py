@@ -21,6 +21,7 @@ from intl_exam_guide.llm.provider import ConceptExplanation, ConceptJob
 from intl_exam_guide.models import GuidePlan, Qualification
 from intl_exam_guide.parsing.markdown_companion import write_markdown_companion
 from intl_exam_guide.planning.concept_integration import (
+    _external_visual_route_available,
     apply_concept_entries,
     concept_entry_from_callback_response,
     fallback_visual_decision,
@@ -82,6 +83,9 @@ class SkillHandbookGenerator:
         explanation_style: str = "friendly",
         output_language: str = "en",
         skip_pdf: bool = False,
+        external_visual_capability: str | None = None,
+        image_method: str | None = None,
+        image_route_verified: bool = False,
     ) -> Path:
         output_path = Path(output_dir)
         output_path.mkdir(parents=True, exist_ok=True)
@@ -98,6 +102,10 @@ class SkillHandbookGenerator:
             explanation_style=explanation_style,
             output_language=output_language,
             requested_subject=qualification.subject_area or qualification.title,
+            external_visual_capability=external_visual_capability,
+            image_method=image_method,
+            image_route_verified=image_route_verified,
+            visual_policy_enforced=True,
         )
 
         self._write_base_artifacts(plan, output_path)
@@ -107,7 +115,10 @@ class SkillHandbookGenerator:
             self._report_progress(
                 "concepts", 3, 7, f"Writing {len(concept_jobs)} concept explanations..."
             )
-            entries = await self._write_concept_entries_async(concept_jobs)
+            entries = await self._write_concept_entries_async(
+                concept_jobs,
+                external_route_available=_external_visual_route_available(plan),
+            )
             if entries:
                 imported, missing = apply_concept_entries(plan, entries)
                 self._write_concept_explanations(output_path, entries)
@@ -169,13 +180,19 @@ class SkillHandbookGenerator:
     async def _write_concept_entries_async(
         self,
         jobs: list[dict[str, object]],
+        *,
+        external_route_available: bool | None = None,
     ) -> list[dict[str, object]]:
         entries: list[dict[str, object]] = []
         for index, job in enumerate(jobs, start=1):
             logger.info("Writing concept %s/%s: %s", index, len(jobs), job.get("topic_title"))
             try:
                 response = await self.llm_callback(self._build_concept_prompt(job))
-                entry = concept_entry_from_callback_response(job, response)
+                entry = concept_entry_from_callback_response(
+                    job,
+                    response,
+                    external_route_available=external_route_available,
+                )
                 if entry:
                     entries.append(entry)
             except Exception as exc:
@@ -206,23 +223,36 @@ class SkillHandbookGenerator:
             )
             subject = str(job.get("subject_pack") or "")
             level = ""
+        visual_policy = job.get("visual_policy", {}) if isinstance(job, dict) else {}
+        policy_lines = [
+            "Visual policy is mandatory for this topic:",
+            "- Include visual_guidance for every topic, including text-ok.",
+            "- Use text-ok only when a separate visual genuinely adds no learning value, and explain why.",
+            "- If a verified external image route is available and the topic benefits from apparatus, process, field, graph, particle model, scene, or rich annotation, prefer external-infographic.",
+            "- Do not silently replace a useful external infographic with simple line-art SVG.",
+            "- Use exact-svg only for an explicit exactness exception: geometry, scale, symbols, or machine-readable structure are the teaching claim, or no external route is callable.",
+        ]
+        if isinstance(visual_policy, dict):
+            policy_lines.append(f"- Runtime visual policy state: {json.dumps(visual_policy, ensure_ascii=False)}")
         return "\n".join(
             [
                 "Write the final concept explanations for this handbook topic.",
-                "Return JSON only, with keys: topic_title, essence, analogy, mastery_summary, mini_worked_example, pitfall, explanations, visual_decision, and optional visual_spec.",
+                "Return JSON only, with keys: topic_title, essence, analogy, mastery_summary, mini_worked_example, pitfall, explanations, visual_decision, visual_guidance, and optional visual_spec.",
                 "The explanations value must be a list of 2-4 direct student-facing bullets.",
                 "The mastery_summary value must be one concrete student-facing sentence for the Study Roadmap 'What to master' column.",
                 "Stay inside the topic title and source points. Do not write a procedural checklist.",
                 "Use print-ready math/science notation in student-facing text: b², t³, x<sup>−1/2</sup>, √(...), ≤, ≥, ≠, θ, μ. Do not leave b^2, t^3, x^(-1/2), sqrt(...), <=, >=, or !=.",
                 "Always include visual_decision. Use recommended_route='text-ok' only with a clear no_visual_reason explaining why a diagram would not improve learning.",
-                "Make this visual decision independently for this topic after reading its explanation and worked example. There is no one-visual-per-subject quota, no requirement that every topic has an image, and no limit that only one topic may use external generation.",
+                "Make this visual decision independently for this topic after reading its explanation and worked example. Every topic needs a visual plan; text-ok is an exception, not the default.",
+                "There is no one-visual-per-subject quota; this means multiple topics may use visuals, not that any topic may omit visual_guidance.",
                 "External generation may create a source-bound teaching infographic or a realistic/reference/example image when realism, apparatus, scene, material appearance, process detail, or rich annotation improves the learning claim. It is not limited to formal diagrams.",
-                "Exact SVG/Kroki is preferred for geometry-, axis-, table-, label-, or relationship-first meaning that must be exact; choose text-ok when a separate image would not improve this topic.",
+                "Use exact SVG/Kroki only when exact geometry, scale, symbols, or machine-readable structure is the teaching claim; otherwise prefer a verified external infographic when a visual adds learning value, and choose text-ok only when a separate image would not improve this topic.",
                 "Visuals may contain text labels, callouts, legends, axes, captions, or short example annotations. The rule is not 'images must contain no text': all visible text must be accurate, legible, source-bound, and consistent with the handbook.",
                 "Never create a generic subject poster or reuse one visual plan across unrelated topics. Each visual_spec must name the topic-specific learning claim and source points.",
-                "Prefer exact SVG for coordinate models, processes, tables, curves, simple flows, trees, timelines, and other label/geometry-first visuals.",
-                "Prefer infographic for abstract mechanisms, multiple factors, policy transmission, pros/cons, realism, rich annotation, apparatus, scenes, or modelling assumptions.",
+                "For coordinate models, processes, tables, curves, simple flows, trees, timelines, and other label/geometry-first visuals, choose exact SVG only when exactness itself carries the teaching claim; otherwise use the verified external infographic route when available.",
+                "Prefer external infographic for abstract mechanisms, multiple factors, policy transmission, pros/cons, realism, rich annotation, apparatus, scenes, or modelling assumptions when the route is verified.",
                 "Add visual_spec only when the visual_decision route is exact-svg, kroki-diagram, or external-infographic.",
+                *policy_lines,
                 "For visual_spec, use complexity='svg-basic' with svg_fit='exact' only for exact-fit diagrams such as axes, set regions, simple flows, tables, trees, or timelines.",
                 "Use complexity='infographic' for visuals needing nuance, realistic setup, multiple linked states, rich annotation, or modelling assumptions.",
                 f"Topic title: {topic_title}",
@@ -250,6 +280,11 @@ class SkillHandbookGenerator:
                 example=str(entry.get("mini_worked_example") or "") or None,
                 common_misconception=str(entry.get("pitfall") or "") or None,
                 status="generated",
+                metadata={
+                    key: entry[key]
+                    for key in ("visual_decision", "visual_guidance", "visual_spec", "mastery_summary")
+                    if key in entry
+                },
             )
         try:
             data = json.loads(response)
@@ -264,6 +299,11 @@ class SkillHandbookGenerator:
             example=data.get("example"),
             common_misconception=data.get("common_misconception") or data.get("misconception"),
             status="generated" if data.get("explanation") else "failed",
+            metadata={
+                key: data[key]
+                for key in ("visual_decision", "visual_guidance", "visual_spec", "mastery_summary")
+                if key in data
+            },
         )
 
     async def _generate_concepts_async(self, jobs: list[ConceptJob]) -> list[ConceptExplanation]:
@@ -363,12 +403,18 @@ class IncrementalGenerator:
         questions_per_topic: int = 1,
         explanation_style: str = "friendly",
         output_language: str = "en",
+        external_visual_capability: str | None = None,
+        image_method: str | None = None,
+        image_route_verified: bool = False,
     ):
         self.qualification = qualification
         self.output_dir = Path(output_dir)
         self.questions_per_topic = questions_per_topic
         self.explanation_style = explanation_style
         self.output_language = output_language
+        self.external_visual_capability = external_visual_capability
+        self.image_method = image_method
+        self.image_route_verified = image_route_verified
         self.plan: GuidePlan | None = None
         self.concept_jobs: list[dict[str, object]] = []
         self.concept_explanations: list[ConceptExplanation] = []
@@ -382,6 +428,10 @@ class IncrementalGenerator:
             explanation_style=self.explanation_style,
             output_language=self.output_language,
             requested_subject=self.qualification.subject_area or self.qualification.title,
+            external_visual_capability=self.external_visual_capability,
+            image_method=self.image_method,
+            image_route_verified=self.image_route_verified,
+            visual_policy_enforced=True,
         )
         (self.output_dir / "qualification.json").write_text(
             json.dumps(self.plan.qualification.to_dict(), ensure_ascii=False, indent=2),
@@ -426,6 +476,7 @@ class IncrementalGenerator:
         visual_spec: dict[str, object] | None = None,
         mastery_summary: str = "",
         visual_decision: dict[str, object] | None = None,
+        visual_guidance: dict[str, object] | None = None,
     ) -> None:
         if not self.plan:
             raise ValueError("Must call step1_prepare first")
@@ -437,6 +488,8 @@ class IncrementalGenerator:
             metadata["mastery_summary"] = mastery_summary.strip()
         if visual_decision:
             metadata["visual_decision"] = visual_decision
+        if visual_guidance:
+            metadata["visual_guidance"] = visual_guidance
         if visual_spec:
             metadata["visual_spec"] = visual_spec
         self.concept_explanations.append(
@@ -572,10 +625,21 @@ class IncrementalGenerator:
                 entry["visual_decision"] = fallback_visual_decision(
                     "No separate visual was submitted by the Writer for this incremental entry."
                 )
+            visual_guidance = explanation.metadata.get("visual_guidance")
+            if isinstance(visual_guidance, dict):
+                entry["visual_guidance"] = visual_guidance
             visual_spec = explanation.metadata.get("visual_spec")
             if isinstance(visual_spec, dict):
                 entry["visual_spec"] = visual_spec
-            validate_visual_decision_entry(entry, allow_fallback=True)
+            validate_visual_decision_entry(
+                entry,
+                allow_fallback=True,
+                external_route_available=(
+                    _external_visual_route_available(self.plan)
+                    if self.plan is not None
+                    else None
+                ),
+            )
             entries.append(entry)
         return entries
 

@@ -40,12 +40,12 @@ GitHub CLI 自动发现入口是
 [`skills/exam-revision-handbook/`](skills/exam-revision-handbook/)。可以先预览，再安装：
 
 ```bash
-gh skill preview mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.7.4
-gh skill install mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.7.4 --agent universal --scope user
+gh skill preview mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.8.0
+gh skill install mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.8.0 --agent universal --scope user
 ```
 
 独立安装包是官方发布的
-[v0.7.4 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.4/exam-revision-handbook-v0.7.4.zip)。
+[v0.8.0 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.8.0/exam-revision-handbook-v0.8.0.zip)。
 GitHub 自动生成的源代码 ZIP 只是仓库快照，不是 Skill 安装包；需要指定文件时使用
 [`skills/exam-revision-handbook/SKILL.md`](skills/exam-revision-handbook/SKILL.md)。
 
@@ -139,7 +139,7 @@ https://github.com/mianbaofang/exam-revision-handbook
 ```
 
 直接下载
-[v0.7.4 标准 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.4/exam-revision-handbook-v0.7.4.zip)。
+[v0.8.0 标准 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.8.0/exam-revision-handbook-v0.8.0.zip)。
 
 然后直接说：
 
@@ -166,7 +166,7 @@ https://github.com/mianbaofang/exam-revision-handbook
 6. 是否存在本次可调用的信息图/生图路线：已安装 Skill、自定义 API + 环境变量、项目脚本，或已有图片目录。没有可调用路线时，Agent 只能继续生成 draft，并把复杂信息图标记为 pending。
 
 注意：不需要在一开始选择具体生图模型，但第一次预检必须先回答“本次是否有可调用的外部生图 Skill 或工具”。在得到明确回答前，Agent 不得下载来源、写手册或默认使用本地生图。等每个 topic 的配图决策完成后，再报告实际需要生成或复核的复杂视觉 ID。
-如果你有可调用的生图 API、Skill、脚本或已经生成好的图片目录，Agent 应调用已确认的路线并自动导入或挂接结果；如果没有，复杂信息图应保留为待生成/待复核任务。SVG 只允许用于 `svg_fit="exact"` 且已复核的精确图。
+如果你有可调用的生图 API、Skill、脚本或已经生成好的图片目录，Writer 必须在确实有学习增益的 topic 使用视觉，并优先调用已确认的外部信息图路线，而不是退回简单线条 SVG；如果用户明确要求尽量不用 SVG，这一偏好就是本次运行的硬约束，图表、电路、波形和关系图也默认走外部生图并在复核时检查坐标轴、符号、单位、箭头和拓扑。如果没有外部路线，复杂信息图应保留为待生成/待复核任务，不得静默降级。SVG 只允许用于 `svg_fit="exact"` 且已复核的精确图，或有单独记录的、外部生图会造成不可接受语义风险的最后例外。
 
 ## 会生成什么
 
@@ -198,8 +198,8 @@ outputs/chemistry-9202/
 - 官方大纲整理出的知识点结构；
 - 从每个 topic/source job 复查后的学生友好概念解释；
 - 原创例题、步骤和答案检查点；
-- 每个 topic 的 `visual_decision`，包括不需要单独图片时的 `text-ok` 理由；
-- 已复核的 exact-SVG/Kroki/图片资产和复杂信息图需求清单；
+- 每个 topic 的 `visual_decision` 和 `visual_guidance`；只有确实不增加学习价值时，才允许写带具体理由的 `text-ok`；
+- 已复核的外部信息图、exact-SVG/Kroki/图片资产和复杂信息图需求清单；
 - 最终备考复习题；
 - 可打印 HTML，以及审查通过后由门禁命令导出的 PDF。
 
@@ -285,20 +285,22 @@ v0.6 使用四个状态词：
 
 ## 图文与讲解风格
 
-孩子愿意看的手册不能只有文字。生成流程会做两次判断：
+孩子愿意看的手册不能默认只有文字。生成流程会做两次判断：
 
 1. 先根据官方大纲生成知识点、讲解和例题。
 2. 再判断哪些知识点或例题需要图文结合讲解。
 
-宿主 LLM/Agent 判断每个 topic 到底需要纯文字、exact-SVG、Kroki 专业图，还是更复杂的信息图。这个判断适用于所有科目：任何科目都可能需要图，任何 topic 也都可以在理由充分时选择 `text-ok`。Writer 必须为每个 topic 写 `visual_decision`；如果选择 `text-ok`，必须写 `no_visual_reason` 说明为什么单独图片不会增加学习价值。SVG 只允许用于几何、坐标轴、标签、简单表格或简单流程能完整表达含义的场景；Writer 必须写明 `svg_fit="exact"`，并且资产经过 reviewed 或 approved 后才能进入最终交付。
+宿主 LLM/Agent 必须为每个 topic 写 `visual_decision` 和 topic-specific `visual_guidance`。这个判断适用于所有科目：任何科目都可能需要图，`text-ok` 只是例外，必须写出为什么单独图片不会增加学习价值。只要图形、比较、过程、装置、场景、字段、图像、粒子模型、空间关系、数据模式或带标注的例题能帮助学生看懂，就应使用视觉；不能因为“文字也能解释”或 SVG 更快而省略。用户提供并验证了外部生图路线时，装置、复杂几何、电路、真实场景、材质、建模细节、多面板标注，以及用户指定不想使用 SVG 的图表和波形，都默认走 `external-infographic`；不要用简单线条 SVG 代替。SVG 只允许用于 `svg_fit="exact"` 且经 reviewed 或 approved 的、确实不可替代的精确结构，必须写明不可接受的外部生图语义风险。
 
-如果用户没有可调用的生图模型，复杂视觉内容会保留在 `images/infographic_jobs.json` 和 `images/infographic_jobs.md` 中。Python 框架不会用本地 deterministic SVG 冒充复杂信息图。Kroki 或 SVG 输出只能作为已复核的 exact-fit 资产，不能替代高密度信息图。
+如果用户没有可调用的生图模型，复杂视觉内容会保留在 `images/infographic_jobs.json` 和 `images/infographic_jobs.md` 中。Python 框架不会用本地 deterministic SVG 冒充复杂信息图。Kroki 或 SVG 输出只能作为已复核的 exact-fit 资产，不能替代高密度信息图；有已验证的外部路线却无理由降级为简单 SVG 时，交付应被阻塞。
 
 推荐的外部生图模型包括：
 
 - OpenAI GPT Image 2.0；
 - Qwen Image 2.0 Pro；
 - SenseNova U1 Fast。
+
+这些模型可以通过用户提供的 `image-gen-flow` GPT 或 SenseNova 通道，或其它可调用 Skill/API 接入；只有本次运行实际验证成功后，才算可用路线。
 
 这些只是推荐选项，不代表每个用户都能直接调用。用户需要自己提供可用的 API、Skill、脚本或图片目录。
 生图只负责解释已经选中的知识点，不能编造大纲里没有的考试结论。
@@ -343,7 +345,7 @@ python scripts\doctor.py
 python scripts\run_runtime.py -- generate --query chemistry --level igcse --out .\outputs\chemistry-9202
 ```
 
-GitHub `main`、对应的 `v0.7.4` tag 和 Release 中的 Skill ZIP 就是同一个当前标准
+GitHub `main`、对应的 `v0.8.0` tag 和 Release 中的 Skill ZIP 就是同一个当前标准
 Skill 版本，不存在单独的“源码版”或“安装版”。需要修改 Python 引擎的贡献者可使用
 `pip install -e ".[dev]"`；ZIP 通过 `assets/runtime/` 中的受控 Wheel 和独立用户缓存运行。
 
@@ -408,7 +410,7 @@ tests/            测试与回归样例
 
 ## 状态
 
-当前 Skill 版本：`v0.7.4`。这个 Skill 已具备公开使用的框架形态；单份手册只有在完成自己的全量 LLM HTML 审查、写入与当前 HTML 绑定的 `agent-product-review.json`、通过 PDF 导出门禁，并具备相应发布证据后，才能称为 final-ready。
+当前 Skill 版本：`v0.8.0`。这个 Skill 已具备公开使用的框架形态；单份手册只有在完成自己的全量 LLM HTML 审查、写入与当前 HTML 绑定的 `agent-product-review.json`、通过 PDF 导出门禁，并具备相应发布证据后，才能称为 final-ready。
 
 ## 作者
 

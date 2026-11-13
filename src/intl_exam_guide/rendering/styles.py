@@ -277,10 +277,12 @@ a { color: var(--blue); }
   display: grid;
   gap: 18px;
   min-width: 0;
+  max-width: 100%;
 }
 .qualification-pill {
-  width: max-content;
+  width: fit-content;
   max-width: 100%;
+  min-width: 0;
   padding: 8px 11px;
   color: #ffffff;
   background: rgba(255, 255, 255, .10);
@@ -289,15 +291,18 @@ a { color: var(--blue); }
   font-weight: 850;
   letter-spacing: 0;
   text-transform: uppercase;
+  overflow-wrap: anywhere;
 }
 h1 { max-width: 920px; font-size: 52px; line-height: 1.05; margin: 18px 0; letter-spacing: 0; }
 .cover-title-lockup h1 {
   max-width: 760px;
+  min-width: 0;
   margin: 0;
   color: #ffffff;
   font-size: 72px;
   line-height: .94;
   text-wrap: pretty;
+  overflow-wrap: anywhere;
 }
 .course-code {
   display: inline-grid;
@@ -451,7 +456,7 @@ th, td { border: 1px solid var(--line); padding: 10px 12px; vertical-align: top;
 }
 .topic-nav-links {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
 }
 .topic-nav a {
@@ -466,8 +471,8 @@ th, td { border: 1px solid var(--line); padding: 10px 12px; vertical-align: top;
   border: 1px solid var(--line);
   font-size: 12px;
   line-height: 1.25;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 .topic-nav span {
   flex: 0 0 auto;
@@ -549,11 +554,20 @@ th, td { border: 1px solid var(--line); padding: 10px 12px; vertical-align: top;
 }
 .infographic-image {
   display: block;
-  width: 100%;
-  max-height: 560px;
+  width: min(100%, 1040px);
+  max-height: none;
+  margin-inline: auto;
   object-fit: contain;
   background: #ffffff;
   border: 1px solid var(--line);
+}
+.infographic-zoom {
+  display: block;
+  width: 100%;
+}
+.generated-infographic .visual-notes {
+  width: min(100%, 1040px);
+  margin-inline: auto;
 }
 .infographic-card {
   border: 1px solid var(--line);
@@ -687,22 +701,56 @@ th, td { border: 1px solid var(--line); padding: 10px 12px; vertical-align: top;
 .stage-list li { padding: 10px 12px; background: #f3f7fb; border-left: 4px solid var(--green); }
 .warning { color: var(--red); font-weight: 700; }
 .final { background: #f4fff9; }
-@media screen and (max-width: 760px) {
+@media screen and (max-width: 820px) {
+  body { overflow-x: hidden; }
   h1 { font-size: 38px; }
   a, th, td { overflow-wrap: anywhere; word-break: break-word; }
   table { table-layout: fixed; }
   .cover-mast, .cover-main, .cover-footer, .cover-identity-grid, .cover-signal-grid, .delivery-status-grid, .overview-grid, .assessment-grid, .topic-grid, .practice-block, .guide-grid, .visual-grid, .generated-infographic-grid, .story-modes, .concept-html-map, .concept-html-map ol { grid-template-columns: 1fr; }
   .cover {
     min-height: auto;
-    padding: 36px 24px;
+    width: 100%;
+    padding: 36px 20px 36px 30px;
     grid-template-rows: auto;
   }
-  .cover::after { right: 0; width: 44%; opacity: .72; }
+  .cover::after { right: -8%; width: 30%; opacity: .58; }
+  .cover-mast, .cover-main, .cover-footer, .cover-title-lockup { min-width: 0; width: 100%; max-width: 100%; }
   .cover-signature-card { min-height: auto; }
   .cover-spec-card { min-height: 180px; }
-  .cover-title-lockup h1 { font-size: 44px; }
+  .cover-title-lockup,
+  .cover-title-lockup h1,
+  .qualification-pill { max-width: 100%; }
+  .cover-title-lockup h1 { width: 100%; max-width: 100%; font-size: 40px; line-height: .98; overflow-wrap: anywhere; word-break: break-word; white-space: normal; }
+  .exam-board-name strong,
+  .cover-signature-card strong,
+  .cover-spec-card strong,
+  .cover-identity-grid strong,
+  .cover-signal-grid strong { overflow-wrap: anywhere; word-break: normal; }
+  .exam-board-name strong { font-size: 16px; }
+  .cover-spec-card { width: 100%; justify-self: stretch; }
+  .cover-spec-card strong { max-width: 100%; font-size: 26px; }
   .course-code { grid-template-columns: 1fr; }
   .topic-nav { position: static; }
+  .topic-nav-links { grid-template-columns: 1fr; }
+  .generated-infographic .infographic-zoom {
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+  .generated-infographic .infographic-image {
+    width: 560px;
+    max-width: none;
+    margin-inline: 0;
+  }
+}
+@media screen and (max-width: 480px) {
+  .cover { padding-left: 28px; padding-right: 16px; }
+  .cover-title-lockup h1 { width: 100%; max-width: 100%; font-size: 30px; overflow-wrap: normal; word-break: normal; hyphens: none; }
+  h1 { font-size: 32px; }
+  h2 { font-size: 24px; }
+  th, td { padding: 8px 7px; }
+}
+@media screen and (min-width: 761px) and (max-width: 820px) {
+  .cover-title-lockup h1 { font-size: 56px; }
 }
 @media print {
   @page { size: A4; margin: 3.5mm; }
@@ -774,14 +822,41 @@ th, td { border: 1px solid var(--line); padding: 10px 12px; vertical-align: top;
   .practice-block .practice:nth-child(n+2) { display: none; }
   .visual-example { margin: 2mm 0 0; break-inside: avoid-page; }
   .visual-example figcaption { margin-bottom: 1.5mm; }
+  .generated-infographic {
+    break-inside: avoid-page;
+    page-break-inside: avoid;
+    padding: 0;
+    border: 0;
+  }
+  .generated-infographic figcaption {
+    break-after: avoid-page;
+    page-break-after: avoid;
+  }
   .visual-grid,
   .generated-infographic-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1.55fr) minmax(64mm, 1fr);
     gap: 2mm;
     align-items: start;
+    break-before: avoid-page;
+    page-break-before: avoid;
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
   .visual-svg { max-height: none; object-fit: contain; }
-  .infographic-image { max-height: 92mm; object-fit: contain; }
+  .generated-infographic .infographic-image {
+    width: 100%;
+    max-height: 112mm;
+    object-fit: contain;
+  }
+  .generated-infographic .visual-notes {
+    width: auto;
+    margin-inline: 0;
+    font-size: 8.8px;
+    line-height: 1.3;
+    break-before: auto;
+    page-break-before: auto;
+  }
+  .generated-infographic .infographic-zoom { overflow: visible; }
   a { color: inherit; text-decoration: none; }
 }
 """

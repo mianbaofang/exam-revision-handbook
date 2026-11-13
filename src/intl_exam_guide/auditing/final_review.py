@@ -355,7 +355,13 @@ def product_review_evidence(output_dir: Path) -> dict[str, object]:
         "complete": not issues,
         "issues": issues,
         "review": review if isinstance(review, dict) else {},
-        "html_path": str(html_path) if html_path.exists() else None,
+        "html_path": (
+            str(html_path.relative_to(output_dir))
+            if html_path.is_relative_to(output_dir)
+            else html_path.name
+        )
+        if html_path.exists()
+        else None,
         "current_html_sha256": current_html_sha256,
         "expected_topic_count": len(expected_topic_titles),
         "expected_topic_titles": expected_topic_titles,
@@ -814,7 +820,9 @@ def export_reviewed_pdf(
             json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
         )
         raise
-    payload["pdf"] = str(pdf_path)
+    payload["pdf"] = (
+        str(pdf_path.relative_to(output_dir)) if pdf_path.is_relative_to(output_dir) else pdf_path.name
+    )
     payload["pdf_error"] = None
     payload["pdf_export_gate"] = {
         "llm_html_review_required": True,
@@ -839,7 +847,11 @@ def export_reviewed_pdf(
                 json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
             )
             raise
-        payload["delivery_copy"] = str(delivered)
+        payload["delivery_copy"] = (
+            str(delivered.relative_to(output_dir))
+            if delivered.is_relative_to(output_dir)
+            else delivered.name
+        )
         payload["delivery_error"] = None
     validation_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     return pdf_path

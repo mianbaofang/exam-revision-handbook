@@ -66,6 +66,17 @@ def test_scope_exclusion_notes_do_not_become_handbook_topics():
     assert all("will not be set" not in brief.topic_title for brief in plan.visual_briefs)
 
 
+def test_scope_exclusion_note_does_not_hide_topic_with_applicable_skill():
+    topic = Topic(
+        title="Polarisation",
+        points=[
+            "Use polarisation as evidence for transverse waves and apply Polaroid or aerial alignment examples; Malus's law is not required."
+        ],
+    )
+
+    assert is_scope_exclusion_topic(topic) is False
+
+
 def test_validation_counts_only_teachable_handbook_topics_for_coverage():
     qualification = sample_math_qualification()
     plan = build_guide_plan(

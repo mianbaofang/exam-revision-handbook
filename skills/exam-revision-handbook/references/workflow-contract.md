@@ -15,11 +15,12 @@ quota. The handbook quality is uncontrolled if these boundaries are skipped.
 
 Before each handoff, check that the current artifact still satisfies the Skill:
 the Analyst reached independently assessable source requirements, the Writer
-made a separate visual decision for every final topic, the LLM Reviewer opened
-the current HTML and repaired/reviewed it until approval, and PDF export is
-blocked until that approval is hash-bound to the current HTML. If a requirement
-cannot be satisfied, stop at the relevant draft/review-ready state and report
-the blocker. Never silently reinterpret the rule or claim completion.
+made a separate visual decision and visual guidance record for every final
+topic, the LLM Reviewer opened the current HTML and repaired/reviewed it until
+approval, and PDF export is blocked until that approval is hash-bound to the
+current HTML. If a requirement cannot be satisfied, stop at the relevant
+draft/review-ready state and report the blocker. Never silently reinterpret the
+rule or claim completion.
 
 ## Core Rule
 
@@ -52,7 +53,7 @@ the architecture decision record in the source checkout before changing scope.
 
 - Four fixed source themes: OxfordAQA blue/red, Pearson Edexcel teal/blue, Cambridge red/navy, and College Board AP blue/yellow/aqua.
 - An 8-module handbook framework: Cover, How to Use, Study Roadmap, optional Term Glossary, Topic Guides, Practice Workbook, Exam Structure, Revision Checklist.
-- Artifact contracts for `qualification.json`, `syllabus-evidence.json`, `syllabus-outline.json`, and `concepts/concept_explanations.json`, including per-topic `visual_decision` records.
+- Artifact contracts for `qualification.json`, `syllabus-evidence.json`, `syllabus-outline.json`, and `concepts/concept_explanations.json`, including per-topic `visual_decision` and `visual_guidance` records.
 - A Python rendering engine that turns approved artifacts into named HTML and optional PDF outputs, with visual manifests that separate the Writer's recommended route from the asset actually rendered.
 - A read-only delivery audit and immutable render-snapshot contract. Formal delivery uses `current-render.json` to bind one exact HTML render to its input hashes; historical files remain readable but cannot be selected by modification time for approval.
 
@@ -137,11 +138,24 @@ This is a blocking question. Wait for the user's answer; do not infer it from in
 
 After the answer:
 
-- callable external route: verify the named route can actually be invoked, then reserve it for source-bound `external-infographic` jobs;
-- no external route: use `text-ok`, exact SVG, or Kroki only when the topic itself justifies that route, and leave `external-infographic` jobs pending;
-- route claimed but not callable: treat it as unavailable until verified and ask whether to continue with pending complex visuals.
+- callable external route: verify the named route can actually be invoked,
+  then reserve it for source-bound `external-infographic` jobs. For every topic
+  whose learning would benefit from a richer visual, the Writer must prefer
+  that route over a simple SVG and record the reason, composition, and student
+  reading path in `visual_guidance`;
+- no external route: use `exact-svg` or `kroki-diagram` only when exact
+  geometry, scale, notation, or formal structure is the teaching claim. Keep
+  other useful visual jobs as pending `external-infographic` work; do not
+  silently downgrade them to line-art SVGs. `text-ok` still requires proof
+  that a separate visual is genuinely unnecessary;
+- route claimed but not callable: treat it as unavailable until verified and ask
+  whether to continue with pending complex visuals. Do not represent a local
+  fallback as the requested external model.
 
-Never turn the entire handbook into locally generated images merely because the external route is absent. Visual availability does not decide learning value; the Writer's topic-specific `visual_decision` does. A missing or unconfirmed answer keeps the run at preflight.
+Never turn the entire handbook into locally generated images merely because the
+external route is absent. Visual availability does not decide learning value;
+the Writer's topic-specific `visual_decision` and `visual_guidance` do. A
+missing or unconfirmed answer keeps the run at preflight.
 
 During the first preflight exchange, explicitly offer the workflow-mode choice:
 
@@ -217,6 +231,14 @@ Treat official Topic, Unit, Section, chapter, and table headings as structural c
 
 This rule is independent of provider, qualification, and subject. The lowest requirement may be knowledge, a conceptual relationship, calculation, practical work, source or data analysis, extended writing, language performance, portfolio evidence, or another source-bound demand. The Analyst must not use provider templates, subject templates, command-verb lists, topic-count targets, candidate hints, or Python fallback topics as the final split.
 
+Official sections are not automatically final topics. Do not emit one topic per
+official section unless that section contains exactly one atomic exam point and
+the evidence proves no deeper independent split. A section with several exam
+points must either become several final topics or carry a specific
+`cluster_justification` that explains the teaching dependency and the visible
+treatment of every mapped point. Generic container-based wording is not a valid
+merge rationale.
+
 ### 3. Writer Writes Concepts And Visual Decisions
 
 The host LLM writes `concepts/concept_explanations.json` from the current topic jobs and source evidence.
@@ -232,7 +254,15 @@ For each topic, provide:
 - `pitfall`;
 - `mastery_summary`: one concrete student-facing sentence for the Study Roadmap `What to master` column;
 - `visual_decision`: the Writer's learning-value judgment for the topic;
-- optional `visual_spec` only when `visual_decision.recommended_route` asks for an exact SVG, Kroki diagram, or external infographic.
+- `visual_guidance`: the Writer's topic-specific visual teaching plan. This is
+  required for every topic, including `text-ok`; it records either the visual
+  composition and student reading path, or why the completed topic genuinely
+  needs no separate visual. For non-text routes it must name `visual_kind`,
+  `composition`, `reading_order`, `required_elements`, and
+  `student_inference`; for `text-ok` it must name `visual_kind: "none"` and a
+  specific `no_visual_rationale`;
+- optional `visual_spec` only when `visual_decision.recommended_route` asks for
+  an exact SVG, Kroki diagram, or external infographic.
 
 Each completed Writer entry must also set `content_provenance: "llm-authored"`
 and `delivery_eligible: true`. A missing visual decision, a
@@ -246,30 +276,64 @@ Use proper student-facing mathematical/scientific notation where the subject nee
 
 Visual decisions belong to the Writer and must be recorded for every topic:
 
-- always include `visual_decision` after the topic explanation and worked example exist;
-- make the decision independently for each final topic. There is no one-visual-per-subject quota, no requirement that every topic has an image, and no rule limiting external generation to one topic;
-- use `recommended_route: "text-ok"` only when a clear `no_visual_reason` explains why a separate visual would not improve learning;
-- use `recommended_route: "exact-svg"` only for label/geometry-first diagrams that can be reviewed as exact SVG with `svg_fit: "exact"`;
-- use `recommended_route: "kroki-diagram"` when a professional formal diagram is more suitable than an LLM-authored SVG;
-- use `recommended_route: "external-infographic"` when this topic needs a source-bound explanatory infographic, realistic/reference/example image, apparatus, scene, material appearance, process detail, rich annotation, or modelling nuance;
-- add `visual_spec` only for `exact-svg`, `kroki-diagram`, or `external-infographic` decisions, not for `text-ok`;
+- always include `visual_decision` and `visual_guidance` after the topic
+  explanation, worked example, pitfall, and mastery summary exist;
+- make the decision independently for each final topic. There is no one-image-
+  per-subject quota and no limit of one external-generation job per subject;
+- use a visual whenever a diagram, comparison, process, apparatus, field,
+  graph, particle model, geometry, spatial relationship, data pattern, causal
+  chain, or annotated example can make the source-bound learning claim easier
+  for a student to see. "Could be explained in text" is not sufficient reason
+  to omit a useful visual;
+- use `recommended_route: "text-ok"` only when the Writer explicitly records
+  `no_visual_reason` and `visual_guidance` proving that a separate visual would
+  not improve learning for this completed topic. Lack of time, lack of a
+  provider, or convenience is not a valid reason;
+- when a callable external image route has been verified, prefer
+  `recommended_route: "external-infographic"` for every topic that benefits
+  from richer explanation, realistic/reference appearance, apparatus, scene,
+  material texture, modelling nuance, or multi-panel annotation. The visual
+  guidance must describe the intended composition, visual reading order,
+  required elements, source-bound labels, and the inference a student should
+  make;
+- use `recommended_route: "exact-svg"` only when no callable external image
+  route is available, or when a separately recorded exactness exception proves
+  that an external image would create an unacceptable semantic risk. The fact
+  that a graph, equation, circuit, or label can be drawn with lines is not an
+  exception. Include `svg_fit: "exact"`, name the exact structure that must be
+  preserved, and record why the external route cannot safely depict it in
+  `visual_guidance`;
+- use `recommended_route: "kroki-diagram"` only for a similarly exact formal
+  diagram when an external infographic would be less accurate or less useful;
+  record that reason in `visual_guidance`;
+- add `visual_spec` for every non-`text-ok` decision, and never treat a route
+  choice alone as a visual asset;
 - every non-text `visual_spec` must contain `semantic_contract` with
   `schema_version: "v1-visual-semantic-contract"`, a topic-specific
   `learning_claim`, `intended_inference`, `visual_kind`, non-empty
   `required_elements`, `required_relationships`, `required_labels`, and
   `forbidden_misconceptions`;
 - visual assets may contain accurate, legible text labels, callouts, legends, axes, captions, and short example annotations. The Skill does not require text-free images. It requires that visible text be source-bound and consistent with the handbook;
-- never create a generic subject poster or reuse one visual plan across unrelated topics. Each visual decision and visual spec must state the topic-specific learning claim and source points;
+- never create a generic subject poster or reuse one visual plan across unrelated topics. Each visual decision, visual guidance record, and visual spec must state the topic-specific learning claim and source points;
 - do not request board logos or course-cover packaging;
 - do not claim an infographic exists until a reviewed image is saved under `images/`.
 
-An SVG file is not automatically an explanatory visual. An exact-SVG made only
-of text and decorative rectangles is a layout card and must be rejected. A
-real table or matrix may legitimately use rectangles and text when its semantic
-contract declares that visual kind and the comparison relationship. Process
-and feedback visuals require explicit directional connectors; feedback review
-must also confirm the return path and target state. These are generic visual
-grammar rules, not subject-specific templates.
+An SVG file is not automatically an explanatory visual. A simple line drawing
+or an SVG made only of text and decorative rectangles is not an acceptable
+replacement for a richer external infographic when a verified external image
+route is available. An exact-SVG made only of text and decorative rectangles is
+a layout card and must be rejected. A real table or matrix may legitimately use
+rectangles and text when its semantic contract declares that visual kind and the
+comparison relationship. Process and feedback visuals require explicit
+directional connectors; feedback review must also confirm the return path and
+target state. These are generic visual grammar rules, not subject-specific
+templates.
+
+When the user has a callable external image route and asks to avoid SVG, that
+preference is a hard visual-routing constraint for the run. Keep the topic on
+`external-infographic` and review the generated diagram for axes, symbols,
+labels, units, and topology instead of falling back to line art. A current
+handbook must not contain a broad batch of SVGs created by a subject template.
 
 The visual manifest uses the v0.5 route/asset split: `recommended_route` records the Writer's intended learning route, while `rendered_asset` records whether a real SVG/Kroki/image asset is actually present in the HTML/PDF.
 
@@ -317,6 +381,13 @@ handbook in draft/review-ready state.
 The active LLM Reviewer must personally open or screenshot the named HTML output and visually inspect the complete student-facing handbook. Reading source code, diffs, extracted text, `validation.json`, `quality-inspection.json`, or `final-review-packet.json` is not a substitute for looking at the rendered HTML. Python must never supply the approval decision. Sampling a few pages, topics, examples, or visuals is not sufficient for final approval.
 
 Review every final topic. For each topic, verify the subject facts, definitions, causal or mathematical relationships, teaching explanation, worked question, solution steps, final answer, units, and source anchor. Confirm every official requirement is visibly taught and traceable from the handbook directory/table of contents, not only mapped in JSON.
+
+Independently reopen every `text-ok` topic during review. Decide from the
+completed teaching content whether any diagram, annotated example, process,
+apparatus, graph, spatial model, comparison, or richer image would improve
+learning. A specific-sounding `no_visual_reason` is not proof by itself. If a
+visual would be useful even though the topic can also be explained in text,
+return the topic to the Writer and require a non-text route.
 
 Review every visual that actually renders in HTML. Inspect its subject meaning, not only whether it loads or looks polished: labels, arrows, positions, structures, relationships, scales, units, captions, and correspondence with the associated topic must be accurate. A visual with a factual or semantic error must be regenerated or replaced and reviewed again.
 
@@ -446,7 +517,12 @@ Stop or downgrade the handoff when:
 - a PDF candidate fails technical validation, `current-pdf.json` is missing/stale, or a delivery copy does not match the approved PDF hash;
 - topic explanations are template filler or subject-mismatched;
 - roadmap mastery summaries are missing, duplicated, or Python-generated;
-- a topic is missing `visual_decision`, or a `text-ok` decision lacks `no_visual_reason`;
+- a topic is missing `visual_decision` or `visual_guidance`, a `text-ok`
+  decision lacks a specific `no_visual_reason`, or a large/unexplained run of
+  `text-ok` decisions shows that useful visuals were omitted;
+- a verified external image route is available but a topic that benefits from
+  richer explanation is downgraded to a simple SVG without a documented
+  exactness exception;
 - a non-text visual lacks the complete semantic contract, or an exact-SVG is a text card without independent structure, relationship, quantity, or spatial meaning;
 - visual decisions were made by subject-level quota, one-image-per-subject batching, or a reused generic visual plan instead of independently for each topic;
 - an image was rejected or omitted solely because it contains text, rather than because its text is inaccurate, illegible, unsupported, or unnecessary;

@@ -101,7 +101,14 @@ def build_guide_plan(
     image_model: str | None = None,
     image_endpoint_url: str | None = None,
     image_api_key_env: str | None = None,
+    external_visual_capability: str | None = None,
+    image_method: str | None = None,
+    image_route_verified: bool = False,
+    visual_policy_enforced: bool = True,
 ) -> GuidePlan:
+    # Keep this lower-level helper aligned with the canonical Skill contract.
+    # The legacy flag remains accepted for compatibility but cannot disable it.
+    visual_policy_enforced = True
     run_options = build_run_options(
         qualification=qualification,
         requested_subject=requested_subject,
@@ -112,6 +119,10 @@ def build_guide_plan(
         image_model=image_model,
         image_endpoint_url=image_endpoint_url,
         image_api_key_env=image_api_key_env,
+        external_visual_capability=external_visual_capability,
+        image_method=image_method,
+        image_route_verified=image_route_verified,
+        visual_policy_enforced=visual_policy_enforced,
     )
     body_language = handbook_body_language(run_options.output_language)
     body_options = replace(run_options, output_language=body_language)
@@ -198,6 +209,11 @@ def is_scope_exclusion_topic(topic: Topic) -> bool:
         "includes",
         "including",
         "to include",
+        "apply",
+        "applies",
+        "describe",
+        "explain",
+        "use",
         "use of",
         "application of",
         "applications of",
@@ -215,7 +231,14 @@ def build_run_options(
     image_model: str | None,
     image_endpoint_url: str | None,
     image_api_key_env: str | None,
+    external_visual_capability: str | None = None,
+    image_method: str | None = None,
+    image_route_verified: bool = False,
+    visual_policy_enforced: bool = True,
 ) -> GuideRunOptions:
+    # Preserve the public parameter for old callers while preventing a direct
+    # helper invocation from reopening the retired visual-policy bypass.
+    visual_policy_enforced = True
     provider = normalize_image_provider(
         image_provider, image_model, image_endpoint_url, image_api_key_env
     )
@@ -230,6 +253,10 @@ def build_run_options(
         image_model=image_model,
         image_endpoint_url=image_endpoint_url,
         image_api_key_env=image_api_key_env,
+        external_visual_capability=external_visual_capability,
+        image_method=image_method or image_provider,
+        image_route_verified=bool(image_route_verified),
+        visual_policy_enforced=bool(visual_policy_enforced),
     )
 
 

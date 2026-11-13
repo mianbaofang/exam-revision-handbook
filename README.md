@@ -46,12 +46,12 @@ The canonical, GitHub CLI discoverable entry is
 install it with GitHub CLI:
 
 ```bash
-gh skill preview mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.7.4
-gh skill install mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.7.4 --agent universal --scope user
+gh skill preview mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.8.0
+gh skill install mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.8.0 --agent universal --scope user
 ```
 
 The standalone install asset is the official
-[v0.7.4 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.4/exam-revision-handbook-v0.7.4.zip).
+[v0.8.0 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.8.0/exam-revision-handbook-v0.8.0.zip).
 GitHub's source archive is a repository snapshot, not the Skill installer.
 Hosts that need an explicit file should use:
 [`skills/exam-revision-handbook/SKILL.md`](skills/exam-revision-handbook/SKILL.md).
@@ -209,7 +209,7 @@ https://github.com/mianbaofang/exam-revision-handbook
 ```
 
 Download the ready-to-use
-[v0.7.4 standard Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.4/exam-revision-handbook-v0.7.4.zip).
+[v0.8.0 standard Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.8.0/exam-revision-handbook-v0.8.0.zip).
 
 Then ask:
 
@@ -243,9 +243,12 @@ Before generation starts, the Agent should confirm:
    infographic route for this run. If yes, collect the route type, such as an
    installed image-generation Skill, a custom API endpoint plus environment
    variable name, a project script, or an existing generated-asset directory.
-   If no, explain that exact SVG/Kroki assets still require an LLM exact-fit
-   decision and review, while dense infographics will remain pending; then ask
-   whether to continue as a draft-with-pending-images run.
+   When a route is available, the Writer must use a visual whenever it adds
+   learning value and prefer a reviewed `external-infographic` over simple
+   line-art SVG for richer explanations. If no route is available, explain that
+   exact SVG/Kroki assets still require an LLM exact-fit decision and review,
+   while useful richer visuals remain pending rather than being silently
+   downgraded; then ask whether to continue as a draft-with-pending-images run.
 
 The user should not be forced through a generic image-model menu. The required
 early question is whether a callable image route exists at all. After the base
@@ -281,8 +284,11 @@ The handbook package includes:
 - syllabus-based topic structure;
 - student-friendly explanations reviewed from per-topic source jobs;
 - original worked examples with steps and answer checkpoints;
-- per-topic `visual_decision` records, including `text-ok` reasons when a separate visual would not add learning value;
-- reviewed exact-SVG/Kroki/image assets where they fit, plus pending complex-infographic briefs;
+- per-topic `visual_decision` and `visual_guidance` records, including a
+  specific `text-ok` reason only when a separate visual would not add learning
+  value;
+- reviewed external-infographic, exact-SVG, or Kroki assets where they fit,
+  plus pending complex-infographic briefs when no callable route is available;
 - final revision questions;
 - printable HTML plus a PDF exported only after current-HTML LLM approval.
 
@@ -388,30 +394,41 @@ compatibility errors.
 
 ## Visuals And Writing Styles
 
-A useful handbook cannot be text-only. The workflow has two passes:
+A useful handbook cannot be text-only by default. The workflow has two passes:
 
 1. Build topic explanations and worked examples from the official syllabus.
 2. Decide which topics or examples need visual explanation.
 
-The host LLM/Agent decides whether each topic or worked example needs text only,
-an exact SVG candidate, or a richer infographic. SVG is allowed only when the
-visual meaning is fully carried by exact geometry, axes, labels, simple tables,
-or simple flows; the Writer must mark `svg_fit: "exact"`, and the asset must be
-reviewed or approved before final delivery. Richer items become visual briefs:
-lab apparatus, complex geometry, circuits, economics scenes, or text-heavy
-educational infographics.
+The host LLM/Agent records both `visual_decision` and topic-specific
+`visual_guidance` for every topic or worked example. `text-ok` is an exception:
+it requires a concrete explanation of why a separate visual adds no learning
+value. If a callable external image route is verified, topics that benefit from
+apparatus, scenes, modelling nuance, material appearance, multi-step processes,
+or rich annotation should use a reviewed `external-infographic` rather than a
+simple line-art SVG. When the user asks to avoid SVG and a callable image route
+exists, that is the default for graphs, circuits, waves, and relationship
+diagrams too. Exact SVG is allowed only when no external route exists or a
+separately recorded exactness exception proves that an external image would
+create an unacceptable semantic risk; the Writer must mark `svg_fit: "exact"`
+and the asset must be reviewed or approved before final delivery. Richer items
+become topic-specific visual briefs, not generic subject posters.
 
 When no callable image model is available, complex visuals remain queued in
 `images/infographic_jobs.json` and `images/infographic_jobs.md`. The Python
 framework does not create local deterministic SVG stand-ins for those briefs.
 Kroki or SVG outputs are treated as reviewed exact-fit assets, not substitutes
-for dense infographics.
+for dense infographics. A verified external route with an unjustified simple
+SVG downgrade is a delivery blocker.
 
 Recommended external image models include:
 
 - OpenAI GPT Image 2.0;
 - Qwen Image 2.0 Pro;
 - SenseNova U1 Fast.
+
+These may be exposed through a callable `image-gen-flow` channel (for example,
+its GPT or SenseNova route) or another user-provided Skill/API. The route must
+be verified for the current run before it is treated as available.
 
 These are recommendations, not guaranteed built-in capabilities. Users need to
 provide their own callable API, Skill, script, or generated image assets. Images
@@ -509,7 +526,7 @@ python scripts\run_runtime.py -- generate --query chemistry --level igcse --out 
 
 The CLI is for fetching official source material and writing `qualification.json`, `syllabus-evidence.json`, and `source/`. A real teaching handbook still requires Mode 1: an LLM Analyst outline, Writer-authored concepts/visual decisions, rendered HTML, repeated visible LLM review until approval, and gated PDF export afterward.
 
-GitHub `main`, its `v0.7.4` tag, and the attached Skill ZIP are the same current
+GitHub `main`, its `v0.8.0` tag, and the attached Skill ZIP are the same current
 standard Skill release. There is no separate source edition or install
 edition. Contributors changing its Python engine can use
 `pip install -e ".[dev]"`; the ZIP runs the pinned engine from
@@ -624,7 +641,7 @@ See [DISCLAIMER.md](DISCLAIMER.md) and [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md
 
 ## Status
 
-Current Skill version: `v0.7.4`. The Skill is public-ready as a framework for
+Current Skill version: `v0.8.0`. The Skill is public-ready as a framework for
 source-backed handbook generation. An individual handbook is final-ready only
 after its own complete LLM HTML review is recorded in
 `agent-product-review.json` and `review-ledger/`, the exact HTML passes the hash

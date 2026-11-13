@@ -67,7 +67,7 @@ def render_html(
         else f"{subject_display_name(qualification)}学习复习手册"
     )
     parts = [
-        f'<!doctype html><html lang="{html_lang}"><head><meta charset="utf-8">',
+        f'<!doctype html><html lang="{html_lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">',
         f"<title>{html_escape(page_title)}</title>",
         f"<style>{stylesheet()}</style></head><body>",
         render_cover(qualification, body_options),
@@ -891,7 +891,9 @@ def source_snippet_display_text(text: str) -> str:
     if has_unreadable_source_text(text):
         return "Official source text is retained in the evidence package."
     source = re.sub(r"\s*•\s*", "; ", text)
-    parts = re.split(r"\s+(?=[a-z]\)\s+)", source, flags=re.IGNORECASE)
+    # Split extracted syllabus bullets only outside parenthesised formulae. A
+    # naive ``a)`` regex treats the ``r)`` in ``R + r)`` as a bullet marker.
+    parts = split_source_bullet_markers(source)
     if len(parts) > 1:
         raw_parts = [clean_source_point(part).strip(" ;:") for part in parts]
         cleaned_parts = merge_wrapped_source_points(
@@ -902,6 +904,37 @@ def source_snippet_display_text(text: str) -> str:
         cleaned = clean_source_point(source)
     cleaned = re.sub(r"\s+", " ", cleaned).strip(" ;")
     return cleaned or "Source text recorded in the structured source files."
+
+
+def split_source_bullet_markers(source: str) -> list[str]:
+    """Split lettered source bullets without breaking formula parentheses."""
+
+    parts: list[str] = []
+    start = 0
+    depth = 0
+    index = 0
+    while index < len(source):
+        char = source[index]
+        if char == "(":
+            depth += 1
+        elif char == ")" and depth:
+            depth -= 1
+        if char.isspace() and depth == 0:
+            marker = index
+            while marker < len(source) and source[marker].isspace():
+                marker += 1
+            if (
+                marker + 2 < len(source)
+                and source[marker].isalpha()
+                and source[marker + 1] == ")"
+                and source[marker + 2].isspace()
+            ):
+                parts.append(source[start:index].strip())
+                start = marker
+                index = marker
+        index += 1
+    parts.append(source[start:].strip())
+    return [part for part in parts if part]
 
 
 def has_unreadable_source_text(text: str) -> bool:

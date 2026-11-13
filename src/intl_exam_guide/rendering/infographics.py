@@ -53,7 +53,9 @@ def _render_generated_infographic(
 <figure class="visual-example generated-infographic" aria-label="Generated infographic for {html_escape(title)}">
   <figcaption>{render_icon("visual")}<span>{html_escape(caption)}</span></figcaption>
   <div class="generated-infographic-grid">
-    <img class="infographic-image" src="images/{html_attribute_escape(filename)}" alt="{html_escape(title)} infographic for {html_escape(visual.focus_point)}">
+    <a class="infographic-zoom" href="images/{html_attribute_escape(filename)}" target="_blank" rel="noopener" title="Open full-size infographic" aria-label="Open full-size infographic for {html_escape(title)}">
+      <img class="infographic-image" src="images/{html_attribute_escape(filename)}" alt="{html_escape(title)} infographic for {html_escape(visual.focus_point)}">
+    </a>
     <div class="visual-notes">
       <div class="visual-source">{html_escape(source_prefix)}: {html_escape(source_label)}</div>
       <p class="visual-question">{html_escape(question)} <strong>{html_escape(visual.focus_point)}</strong>.</p>

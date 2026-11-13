@@ -164,9 +164,9 @@ def test_supported_board_palettes_remain_fixed_and_layout_overrides_are_removed(
 def test_narrow_screen_cover_rules_do_not_apply_to_a4_print_layout() -> None:
     css = stylesheet()
 
-    assert "@media screen and (max-width: 760px)" in css
-    assert "@media (max-width: 760px)" not in css
-    narrow_screen_rules = css.split("@media screen and (max-width: 760px)", 1)[1].split(
+    assert "@media screen and (max-width: 820px)" in css
+    assert "@media (max-width: 820px)" not in css
+    narrow_screen_rules = css.split("@media screen and (max-width: 820px)", 1)[1].split(
         "@media print", 1
     )[0]
     assert "min-height: auto" in narrow_screen_rules
