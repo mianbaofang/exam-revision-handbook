@@ -21,8 +21,8 @@ LOCAL_ABSOLUTE_PATH = re.compile(
 STANDARD_ROOTS = (
     "SKILL.md",
     "LICENSE",
+    "VERSION",
     "manifest.json",
-    "requirements-ci.txt",
     "agents",
     "assets",
     "evals",
@@ -186,9 +186,13 @@ def inspect_package(
         if canonical:
             required = {
                 skill_entry,
+                f"{expected_name}/VERSION",
+                f"{expected_name}/manifest.json",
                 f"{expected_name}/agents/openai.yaml",
                 f"{expected_name}/references/workflow-contract.md",
                 f"{expected_name}/assets/runtime/runtime-lock.json",
+                f"{expected_name}/scripts/doctor.py",
+                f"{expected_name}/scripts/bootstrap_runtime.py",
                 f"{expected_name}/scripts/run_runtime.py",
                 f"{expected_name}/scripts/import_concept_explanations.py",
                 f"{expected_name}/scripts/import_infographic_assets.py",
@@ -239,6 +243,14 @@ def build_package(source_dir: Path, output_path: Path) -> dict[str, object]:
     if output_path.suffix.lower() != ".zip":
         raise ValueError("Skill-store package output must use the .zip extension.")
     name = skill_name(source_dir)
+    version_file = source_dir / "VERSION"
+    if version_file.is_file() and (source_dir / "manifest.json").is_file():
+        version = package_version(source_dir)
+        packaged_version = version_file.read_text(encoding="utf-8").strip()
+        if packaged_version != version:
+            raise ValueError(
+                f"VERSION file is {packaged_version or 'empty'} but manifest.json is {version}."
+            )
     files = selected_files(source_dir)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     temporary_path = output_path.with_suffix(".zip.tmp")

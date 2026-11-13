@@ -46,13 +46,24 @@ def test_skill_store_package_places_authoritative_skill_at_archive_root(tmp_path
         assert archive.read(f"{prefix}SKILL.md") == source_skill.replace(
             b"\r\n", b"\n"
         ).replace(b"\r", b"\n")
+        manifest = json.loads(
+            (REPO_ROOT / "skills" / "exam-revision-handbook" / "manifest.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        assert archive.read(f"{prefix}VERSION").decode("utf-8").strip() == manifest["version"]
         assert f"{prefix}agents/openai.yaml" in names
         assert f"{prefix}references/revision_guide_spec.md" in names
+        assert f"{prefix}VERSION" in names
+        assert f"{prefix}manifest.json" in names
+        assert f"{prefix}scripts/doctor.py" in names
+        assert f"{prefix}scripts/bootstrap_runtime.py" in names
         assert f"{prefix}scripts/import_concept_explanations.py" in names
         assert f"{prefix}scripts/import_infographic_assets.py" in names
         assert not any(name.startswith(f"{prefix}src/") for name in names)
         assert not any(name.startswith(f"{prefix}tests/") for name in names)
         assert not any(name.startswith(f"{prefix}docs/") for name in names)
+        assert f"{prefix}requirements-ci.txt" not in names
         assert f"{prefix}reports/package_verification.json" not in names
         for name in names:
             if Path(name).suffix.lower() in {
@@ -167,3 +178,49 @@ def test_skill_store_package_rejects_machine_specific_paths(tmp_path: Path):
 
     assert result.returncode != 0
     assert "machine-specific absolute paths" in result.stderr
+
+
+def test_extracted_skill_doctor_checks_installed_root_and_version(tmp_path: Path):
+    output = tmp_path / "skill.zip"
+    build_package(output)
+    install_root = tmp_path / "install"
+    with zipfile.ZipFile(output) as archive:
+        archive.extractall(install_root)
+    skill_root = install_root / "exam-revision-handbook"
+    assert (skill_root / "VERSION").is_file()
+    assert not (skill_root / "src").exists()
+
+    result = subprocess.run(
+        [sys.executable, str(skill_root / "scripts" / "doctor.py"), "--static"],
+        cwd=skill_root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    checks = {check["check"]: check for check in payload["checks"]}
+    assert payload["ok"] is True
+    assert checks["version-files"]["layout"] == "installed"
+    assert checks["version-files"]["status"] == "pass"
+    assert checks["catalog-version"]["status"] == "pass"
+    assert checks["wheel-payload-version"]["status"] == "pass"
+    assert checks["isolated-runtime"]["status"] == "skipped"
+
+
+def test_packaged_runtime_scripts_match_repository_scripts():
+    packaged = REPO_ROOT / "skills" / "exam-revision-handbook" / "scripts"
+    scripts = REPO_ROOT / "scripts"
+    names = [
+        "_runtime.py",
+        "bootstrap_runtime.py",
+        "doctor.py",
+        "run_runtime.py",
+        "import_concept_explanations.py",
+        "import_infographic_assets.py",
+        "write_concept_explanations_from_jobs.py",
+    ]
+
+    for name in names:
+        assert (scripts / name).read_bytes() == (packaged / name).read_bytes(), name

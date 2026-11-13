@@ -65,6 +65,20 @@ def main() -> int:
         )
         return 1
 
+    # The plan starts as a Python scaffold. Once every topic has been replaced by
+    # LLM-authored entries, carry that provenance into the plan-level delivery gate.
+    if (
+        imported == len(explanations)
+        and explanations
+        and all(
+            entry.get("content_provenance") == "llm-authored"
+            and entry.get("delivery_eligible") is True
+            for entry in explanations
+            if isinstance(entry, dict)
+        )
+    ):
+        plan.content_provenance = "llm-authored"
+
     plan_path.write_text(json.dumps(plan.to_dict(), ensure_ascii=False, indent=2), encoding="utf-8")
     concepts_dir = output_dir / "concepts"
     concepts_dir.mkdir(parents=True, exist_ok=True)

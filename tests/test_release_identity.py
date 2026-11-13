@@ -37,6 +37,29 @@ def test_skill_frontmatter_uses_canonical_name() -> None:
     assert skill.startswith("---\nname: exam-revision-handbook\n")
 
 
+def test_skill_runtime_copy_matches_root_runtime() -> None:
+    root_runtime = REPO_ROOT / "assets" / "runtime"
+    skill_runtime = REPO_ROOT / "skills" / EXPECTED_NAME / "assets" / "runtime"
+    root_lock = json.loads((root_runtime / "runtime-lock.json").read_text(encoding="utf-8"))
+    wheel_name = root_lock["engine"]["file"]
+
+    for name in ("runtime-lock.json", wheel_name):
+        assert (root_runtime / name).read_bytes() == (skill_runtime / name).read_bytes(), name
+
+
+def test_skill_atlas_catalog_versions_match_manifest() -> None:
+    manifest = json.loads((REPO_ROOT / "manifest.json").read_text(encoding="utf-8"))
+    for catalog_path in (
+        REPO_ROOT / "skill_atlas" / "catalog.json",
+        REPO_ROOT / "skills" / EXPECTED_NAME / "skill_atlas" / "catalog.json",
+    ):
+        catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+        entry = next(
+            item for item in catalog["skills"] if item.get("name") == EXPECTED_NAME
+        )
+        assert entry["version"] == manifest["version"], catalog_path
+
+
 def test_discoverable_package_is_the_only_repository_skill_entry() -> None:
     entries = list(REPO_ROOT.rglob("SKILL.md"))
     assert entries == [REPO_ROOT / "skills" / EXPECTED_NAME / "SKILL.md"]
