@@ -32,7 +32,7 @@
     "license": "https://opensource.org/license/mit",
     "programmingLanguage": "Python",
     "runtimePlatform": "Agent Skills compatible hosts",
-    "version": "0.7.4",
+    "version": "0.8.0",
     "dateModified": "2026-08-17",
     "keywords": "GCSE, IGCSE, A-Level, AP, AQA, Edexcel, CAIE, College Board, revision guide, Agent Skill"
   }
@@ -818,11 +818,11 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div>
-          <div class="kicker">四个官方来源体系 · v0.7.4</div>
+          <div class="kicker">四个官方来源体系 · v0.8.0</div>
           <h1>Exam Revision Handbook</h1>
           <p class="lead">支持自动获取 AQA、Edexcel 的英国本土 GCSE、国际 IGCSE 与 A-Level 大纲，CAIE 的 Cambridge International IGCSE 与 A-Level 大纲，以及 College Board AP CED。把 Skill 链接交给你的 Agent，先完成外部生图能力预检，再确认来源体系、科目、语言和讲解风格；LLM 完成全量 HTML 审查后，才会导出可打印 PDF。其他体系不能自动获取，手动导入也可能出现未知兼容错误。</p>
           <div class="action-row">
-            <a class="button" href="https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.7.4/exam-revision-handbook-v0.7.4.zip">下载 Skill</a>
+            <a class="button" href="https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.8.0/exam-revision-handbook-v0.8.0.zip">下载 Skill</a>
             <a class="button secondary" href="index-en.html">English</a>
             <a class="button secondary" href="PROJECT_DETAILS.md">查看项目详情</a>
             <a class="button secondary" href="project-intro-animation.html">播放介绍动画</a>
@@ -960,7 +960,7 @@
             <div class="num">04 · 图形</div>
             <div>
               <h3>专业图形分流</h3>
-              <p>每个 topic 先由 Writer 判断视觉学习价值：文字足够就写明 text-ok 理由；精确图走 exact-SVG 或 Kroki；复杂信息图走外部生图并复核导入。</p>
+              <p>每个 topic 都要有 visual_decision 和 visual_guidance：只有独立视觉确实不增加学习价值时才写 text-ok；能帮助理解的复杂视觉优先走已验证的外部生图路线，exact-SVG 只保留给精确结构例外并复核导入。</p>
             </div>
           </article>
           <article class="flow-item">
@@ -1051,7 +1051,7 @@
           </article>
           <article class="check">
             <h3>图文学习单元</h3>
-            <p>AI 先判断哪些内容需要图，再决定用 SVG 还是复杂信息图模型生成。</p>
+            <p>AI 为每个 topic 先写视觉指导；有学习增益且外部路线可用时优先生成信息图，简单 SVG 不能作为默认替代。</p>
           </article>
           <article class="check">
             <h3>例题与复习题</h3>
@@ -1065,7 +1065,7 @@
       <div class="shell">
         <div class="section-head">
           <h2>孩子愿意看的手册，不能只有文字。</h2>
-          <p>流程是：先在预检中确认是否有可调用的外部生图能力，再根据官方大纲生成知识点和例题；Writer 为每个 topic 独立判断是否需要图文结合；exact SVG 必须复核通过，复杂信息图先进入待生成队列，有可调用能力时由 Agent 自动生成和导入。</p>
+          <p>流程是：先在预检中确认是否有可调用的外部生图能力，再根据官方大纲生成知识点和例题；Writer 为每个 topic 写 visual_decision 与 visual_guidance；有学习增益且路线可调用时由 Agent 优先生成并导入外部信息图，exact SVG 只用于精确结构例外并复核通过。</p>
         </div>
         <div class="language">
           <article>
@@ -1075,7 +1075,7 @@
           </article>
           <article>
             <h3>模型只是建议</h3>
-            <p>GPT Image 2.0、Qwen Image 2.0 Pro、SenseNova U1 Fast 是推荐外部选项；如果用户有对应 Skill/API，Agent 可以自动调用。没有可调用能力时，复杂图只交付配图需求清单；SVG 只用于已复核的 exact-fit 资产。</p>
+            <p>GPT Image 2.0、Qwen Image 2.0 Pro、SenseNova U1 Fast 是推荐外部选项；如果用户有对应 Skill/API（包括 image-gen-flow 的 GPT 或 SenseNova 通道），Agent 可以验证后自动调用。没有可调用能力时，复杂图只交付配图需求清单；SVG 只用于已复核的 exact-fit 资产。</p>
             <div class="sample">配图需求清单 + exact SVG 复核</div>
           </article>
           <article>

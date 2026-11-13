@@ -1,5 +1,124 @@
 # Changelog
 
+## 0.8.0 - 2026-11-13
+
+### AS Physics 2027 Delivery Closeout - 2026-09-09
+
+- Closed the current OxfordAQA International AS Physics 2027 handbook against
+  the repaired 94-topic content, 94 landscape infographic assets, current HTML
+  render snapshot, LLM review ledger, approved PDF, and desktop delivery copy.
+- Verified that the project HTML and both desktop HTML copies share SHA-256
+  `4264385f0bfc4f4ea8dd0714803823d0aac32a598fc66ffef4d98ad3033d3b94`, and
+  that the project PDF and desktop delivery PDF share SHA-256
+  `8884731744c1557a30e59955f57c9ccece7df0f5f3d7979375f863ceeb0d30c4`.
+- Marked earlier 33-topic and pre-repair accuracy/layout reports as historical
+  superseded evidence so stale blockers cannot be mistaken for current status.
+
+### SVG Last-Resort Routing - 2026-09-08
+
+- Changed the AS Physics topic-split builder so a verified APIMart GPT Image 2
+  route uses `external-infographic` for every visual by default, including
+  graphs, circuits, waves, and relationship diagrams.
+- Removed the one-off exact-SVG builder so it cannot recreate a broad batch of
+  simple line-art assets. SVG remains a documented, reviewed last exception for
+  structures that an external image cannot represent reliably.
+- Added the user's SVG-avoidance preference to the canonical Skill, workflow
+  contract, revision-guide specification, README guidance, and image-model
+  guide. External visuals remain landscape-first (`4:3`, with `3:2` allowed),
+  diagram-led, and limited to short labels rather than copied handbook text.
+- Updated the README research note so it no longer describes SVG as the current
+  default visual route; it now points maintainers to the external-raster-first
+  policy and exact-SVG exception gate.
+
+### AS Physics Topic-Split Content Gate - 2026-09-08
+
+- Changed the OxfordAQA International AS Physics topic-split draft builder to
+  require an authored, source-bound content record for every final topic.
+- Corrected the Analyst split after an independent semantic audit: the current
+  outline has 94 teachable topics covering all 128 official atomic points once,
+  with separate uncertainty, equilibrium, centre-of-mass, material-energy,
+  radiation, meter/graph, circuit-conservation, damping, and electron-volt
+  boundaries. Phase-difference definition versus measurement is explicitly
+  separated, and scope exclusions remain boundary notes rather than student
+  topic titles.
+- Generic fallback explanations, worked-example scaffolds, and copied
+  "identify the relationship" text now fail the build instead of entering the
+  handbook draft.
+- Added a merge helper for independently authored topic batches; the current
+  draft remains separate from the older 33-topic desktop handbook until full
+  HTML and visual review is complete.
+
+### Visual Planning Contract Tightening - 2026-09-07
+
+- Made external visual prompts diagram-led and landscape-first: `4:3` is the
+  default, `3:2` is allowed, and portrait `3:4` is prohibited unless explicitly
+  requested. Prompts now cap image text to short labels/callouts and prohibit
+  text-heavy posters or copied handbook paragraphs.
+- Changed generated-infographic rendering so each external image starts a new
+  print page, can use the full printable width, and keeps its review notes on a
+  following page instead of shrinking the image to fit beside them.
+- Regenerated the 16 one-K raster visuals in the OxfordAQA AS Physics desktop
+  handbook with APIMart GPT Image 2 at `1K`, `4:3`, using diagram-led prompts;
+  the three existing 2K visuals were preserved. The old text-heavy one-K
+  portrait posters were replaced and the HTML was rerendered and print-checked.
+- Completed a source-bound content audit against all 33 International AS
+  Physics sections. Fixed the section 3.5.5 terminology to use `first harmonic`
+  instead of `fundamental`, added the missing section 3.3.3 thickness-gauge
+  applications for paper, aluminium and steel, and recorded the audit in
+  `reports/as-physics-content-audit.md`.
+- Made the topic-split contract explicit in the Skill entry point and workflow
+  contracts: official sections are containers, not automatic topics; final
+  topics must be grouped from atomic exam points, and generic
+  section-preservation justifications are rejected by the outline validator.
+- Required every topic to carry both `visual_decision` and topic-specific
+  `visual_guidance`, including an explicit rationale when `text-ok` is chosen.
+- Made verified external image routes the preferred path for explanatory,
+  realistic, apparatus, scene, modelling, and richly annotated visuals.
+- Restricted `exact-svg` and `kroki-diagram` to cases where exact geometry,
+  notation, or formal structure is the teaching claim, or no callable external
+  image route exists; simple line-art SVG is no longer an implicit substitute.
+- Added delivery blockers for missing visual guidance and unjustified SVG
+  downgrades, while keeping visual judgment and approval with the host LLM.
+- Made every runtime entry normalize the visual-policy flag to enabled, and
+  required the Reviewer to independently challenge every `text-ok` rationale;
+  a useful optional visual must be used rather than waived by wording alone.
+- Rebuilt and re-locked the embedded runtime after enforcing the visual policy
+  in the engine; the canonical and packaged Wheel hashes now match the current
+  source implementation.
+- Removed two legacy prompt phrases that broadly preferred exact SVG for
+  processes and curves; exact SVG/Kroki is now described only as an explicit
+  exactness exception, with verified external infographics preferred whenever
+  they add teaching value.
+
+### 2026-09-07 Responsive Layout Repair
+
+- Expanded the independent desktop Chinese guide breakpoint to `820px`, keeping the table of contents in two columns at `1440x900` and switching metadata, topic content, and navigation to one column at `768x1024` and `390x844`.
+- Re-rendered and verified all three viewports with no horizontal overflow, 17 loaded image references, zero broken images, 33 topics, and navigation columns `1/1/2`.
+- Refreshed both desktop delivery-manifest copies with the current HTML, tablet/mobile/desktop snapshots, top snapshots, and render-check evidence. The independent PDF was not re-exported and is explicitly recorded as stale and unbound to the current HTML; canonical `current-pdf.json` and `current-delivery.json` remain untouched.
+
+### OxfordAQA International AS Physics 2027 Desktop Guide
+
+- Removed the local Chinese bypass generator
+  `scripts/create_chinese_as_physics_handbook.py`; the desktop artifact remains
+  historical evidence and must not be treated as the canonical Skill output.
+- Generated a 33-topic HTML, Markdown, and PDF study guide for OxfordAQA
+  International AS Physics (qualification family 9630, AS code 9631) for the
+  2027 exam year in a user-requested desktop workspace (local path intentionally not recorded in the repository).
+- Recorded the current HTML render checks, image-load check, and desktop/mobile
+  screenshots. The repository's canonical Skill contract remains English-body
+  plus Chinese glossary; the desktop artifact is a separate user-requested
+  Chinese study guide and does not change that contract.
+- Kept the SenseNova circuits candidate out of the final visual set because its
+  series-cell topology remained ambiguous on semantic review.
+- Updated `PROJECT_HANDOFF.md` to separate the blocked canonical runtime chain
+  from the independently generated desktop Chinese guide, and recorded the
+  hash-verified desktop delivery manifest and repaired `390x844` overflow check.
+- Refreshed both desktop delivery-manifest copies with the current artifact
+  hashes and sizes, corrected the canonical validation summary to `35` errors
+  and `33` warnings from the current run evidence, and recorded the blocked
+  delivery state. Targeted import tests, Ruff, compileall, and `git diff --check`
+  passed.
+
 ## 0.7.4 - 2026-08-17
 
 ### Public Discovery Links
@@ -958,7 +1077,7 @@
   topic-specific mastery statements, worked content, and visual decisions.
 - Refreshed the four root-level delivery PDFs so they exactly match the
   approved subject-folder exports, rather than retaining earlier PDF copies.
-- Updated `C:\\Users\\Ethan\\Desktop\\Handbook\\delivery-record.json` to bind
+- Updated the local delivery-record.json binding (path withheld as LOCAL_PATH) to bind
   the delivery list to the current approved HTML hashes, root PDF hashes, file
   sizes, and final page counts.
 
