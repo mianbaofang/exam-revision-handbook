@@ -42,12 +42,26 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Verify packaged engine
-        run: python scripts/doctor.py
+      - name: Verify packaged engine metadata
+        run: python scripts/doctor.py --static
+      - name: Bootstrap isolated runtime
+        run: python scripts/bootstrap_runtime.py
+      - name: Verify packaged engine and runtime
+        run: python scripts/doctor.py --deep
       - name: Verify portable governance reports
         run: python scripts/normalize_governance_reports.py --check
       - name: Build standard Skill archive
         run: python scripts/build_skill_store_package.py
+      - name: Verify extracted Skill archive
+        run: |
+          rm -rf /tmp/exam-revision-handbook-install
+          mkdir -p /tmp/exam-revision-handbook-install
+          unzip -q dist/exam-revision-handbook-v*.zip -d /tmp/exam-revision-handbook-install
+          cd /tmp/exam-revision-handbook-install/exam-revision-handbook
+          python scripts/doctor.py --deep
+          python scripts/run_runtime.py -- --help
+          python scripts/import_concept_explanations.py --help
+          python scripts/import_infographic_assets.py --help
       - name: Probe packaged runtime
         run: python scripts/run_runtime.py -- --help
       - name: Probe import helpers

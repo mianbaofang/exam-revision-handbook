@@ -47,7 +47,7 @@ Maintenance-only content excluded from the Release download includes:
 
 Required Skill content in the Release download includes:
 
-- `SKILL.md`, `agents/`, `references/`, and `manifest.json` from
+- `SKILL.md`, `VERSION`, `agents/`, `references/`, and `manifest.json` from
   `skills/exam-revision-handbook/`;
 - pinned runtime Wheel and `runtime-lock.json`;
 - `doctor.py`, runtime bootstrap/adapter scripts, and both import helpers;
@@ -132,7 +132,9 @@ python -m ruff check .
 python -m compileall -q src tests scripts evals
 python -m mypy src/intl_exam_guide
 python scripts/scan_for_raw_keys.py .
-python scripts/doctor.py
+python scripts/doctor.py --static
+python scripts/bootstrap_runtime.py
+python scripts/doctor.py --deep
 python scripts/normalize_governance_reports.py --check
 python scripts/build_skill_store_package.py
 git diff --check
@@ -198,7 +200,7 @@ Before release:
 
 1. Extract the final versioned ZIP into a clean temporary directory.
 2. Confirm exactly one root Skill folder and one `SKILL.md`.
-3. Run `python scripts/doctor.py` from the extracted Skill.
+3. Run `python scripts/doctor.py --deep` from the extracted Skill.
 4. Run all ten CLI help probes through `scripts/run_runtime.py`.
 5. Run `--help` for the concept and infographic import helpers.
 6. Execute an isolated synthetic demo and compare its normalized artifact tree

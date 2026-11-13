@@ -10,6 +10,16 @@
 > 交付审计为 `delivery_eligible: true`，无 blocker、无 warning。旧的 33-topic、
 > 中文旁路和 pre-repair accuracy/layout 报告均仅作历史证据。
 
+> **2026-11-13 本地 candidate 复查**：`source_container_title` 已落地到
+> `Topic` 模型、`Qualification.from_dict`、outline→Qualification 转换、
+> `guide-plan.json` 序列化和 concept jobs；下方 2026-09-06 快照中“尚未携带
+> 该字段”的说法仅代表当时状态。治理报告 `install_simulation`、
+> `package_verification`、`registry_audit`、`runtime_permission_probes` 仍是
+> v0.7.4 证据，`packaged_runtime_import` 仍是 v0.6.2；`review-studio` 和
+> `skill-overview` 虽含 0.8.0 字符串，但归档哈希仍是 v0.7.4 的
+> `895299f6...`。这些不得当作 v0.8.0 当前通过证据；本机没有 Yao 生成器，
+> 未伪造重生成结果。
+
 **项目：** Exam Revision Handbook
 **仓库：** `mianbaofang/exam-revision-handbook`
 **工作目录：** `(仓库工作目录)`

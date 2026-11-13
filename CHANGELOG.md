@@ -2,6 +2,38 @@
 
 ## 0.8.0 - 2026-11-13
 
+### Local Candidate Review - 2026-11-13
+
+- Made `quality-inspector` fail closed on a corrupt, unsupported-schema,
+  non-object-entry, or unexpectedly empty `visual_manifest.json`, and on an
+  unreadable `guide-plan.json`; it no longer treats these states as an empty
+  manifest.
+- Hardened `doctor.py`: it now checks the installed root's `VERSION` and
+  `manifest.json`, both Skill Atlas catalogs, runtime-lock identity, wheel
+  METADATA and actual wheel `__version__`, Skill/root runtime-copy byte parity,
+  and source/Wheel payload parity. Added `--static` for cold-start metadata
+  checks; strict mode still fails when the isolated runtime is not bootstrapped.
+- Packaged `VERSION` in the install ZIP and removed the repository-only
+  `requirements-ci.txt`; the builder now rejects a VERSION/manifest mismatch.
+- Fixed the CI cold-start order: static metadata check, bootstrap, `doctor
+  --deep`, then an extracted-archive doctor/CLI/helper probe.
+- Removed the outside-output basename fallback in evidence pointers; outside
+  HTML/PDF/delivery-copy evidence now records a valid absolute pointer, and
+  package evidence paths fail closed instead of pointing at the wrong file.
+- Landed `source_container_title` in the `Topic` model, `from_dict` round-trip,
+  outline-to-Qualification conversion, `guide-plan.json` serialization, concept
+  jobs, and the outline prompt; it is no longer a documentation-only field.
+- Rebuilt the embedded Wheel and re-locked both runtime-lock copies at
+  `4115686945254b6cc53dab982cf74970368651e14ada1586f1d933a4f756a13b`.
+- Local validation: 530 passed / 163 skipped, Ruff and mypy clean, `doctor.py
+  --static` and `doctor.py --deep` pass, and an extracted v0.8.0 candidate ZIP
+  passes installed-root doctor, CLI, and both helper probes.
+- Historical governance reports (`install_simulation`, `package_verification`,
+  `registry_audit`, `runtime_permission_probes`, `packaged_runtime_import`) and
+  the v0.7.4 archive hashes embedded in `review-studio`/`skill-overview` remain
+  stale evidence. They are not claimed as v0.8.0 verification; Yao was not
+  available locally, so they were not regenerated or rewritten.
+
 ### AS Physics 2027 Delivery Closeout - 2026-09-09
 
 - Closed the current OxfordAQA International AS Physics 2027 handbook against
