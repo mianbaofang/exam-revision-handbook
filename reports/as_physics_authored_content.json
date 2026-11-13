@@ -1,0 +1,2100 @@
+{
+  "SI base units and prefixes": {
+    "topic_id": "concept_001",
+    "concept_term": "SI base units and prefixes",
+    "explanations": [
+      "The six base quantities required here are mass, length, time, amount of substance, thermodynamic temperature and electric current. Their SI base units are kilogram (kg), metre (m), second (s), mole (mol), kelvin (K) and ampere (A), respectively.",
+      "A prefix multiplies the unit by a power of ten: T = 10¹², G = 10⁹, M = 10⁶, k = 10³, c = 10⁻², m = 10⁻³, μ = 10⁻⁶, n = 10⁻⁹, p = 10⁻¹² and f = 10⁻¹⁵. Convert to the unprefixed SI unit before combining quantities in an equation.",
+      "Derived SI units are formed by combining base units; for example, N = kg m s⁻² and J = kg m² s⁻². A prefix applies to the whole unit symbol: 1 mm² = (10⁻³ m)² = 10⁻⁶ m², not 10⁻³ m². Candela definitions and dimensional analysis are outside this AS scope."
+    ],
+    "essence": "Match each required physical quantity to its SI base unit and treat every prefix as an exact power-of-ten multiplier.",
+    "analogy": "A prefix is a scale setting on a measuring instrument: the displayed number changes, but the physical quantity does not.",
+    "mastery_summary": "You can name the required SI base units, translate every listed prefix into standard form, and handle squared or cubed prefixed units correctly.",
+    "mini_worked_example": "Convert 3.6 mg mm⁻³ into kg m⁻³.",
+    "worked_solution_steps": [
+      "Convert the mass unit: 3.6 mg = 3.6 × 10⁻⁶ kg.",
+      "Convert the volume unit: 1 mm³ = (10⁻³ m)³ = 10⁻⁹ m³.",
+      "Divide using the converted units: 3.6 × 10⁻⁶ kg / 10⁻⁹ m³ = 3.6 × 10³ kg m⁻³.",
+      "State the result in standard SI form: 3.6 × 10³ kg m⁻³."
+    ],
+    "pitfall": "Do not apply a prefix factor only once when the unit is squared or cubed.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Energy-unit conversion": {
+    "topic_id": "concept_002",
+    "concept_term": "Energy-unit conversion",
+    "explanations": [
+      "The electronvolt is an energy unit: 1 eV = 1.60 × 10⁻¹⁹ J. Therefore convert eV to J by multiplying by 1.60 × 10⁻¹⁹, and J to eV by dividing by this value.",
+      "A kilowatt-hour is the energy transferred by a power of 1 kW for 1 h. Hence 1 kW h = 1000 W × 3600 s = 3.60 × 10⁶ J.",
+      "These conversions change only the unit, not the amount of energy. Preserve an appropriate number of significant figures from the data."
+    ],
+    "essence": "Convert energy units through fixed equality factors: 1 eV = 1.60 × 10⁻¹⁹ J and 1 kW h = 3.60 × 10⁶ J.",
+    "analogy": "Converting joules, electronvolts and kilowatt-hours is like expressing the same distance in metres, micrometres or kilometres.",
+    "mastery_summary": "You can move reliably between J, eV and kW h and can derive the kW h conversion from power multiplied by time.",
+    "mini_worked_example": "A device transfers 0.75 kW h of energy. Calculate this energy in joules and in electronvolts.",
+    "worked_solution_steps": [
+      "Use 1 kW h = 3.60 × 10⁶ J.",
+      "Energy = 0.75 × 3.60 × 10⁶ = 2.70 × 10⁶ J.",
+      "Use 1 eV = 1.60 × 10⁻¹⁹ J, so energy in eV = (2.70 × 10⁶) / (1.60 × 10⁻¹⁹).",
+      "Energy = 1.69 × 10²⁵ eV, to three significant figures."
+    ],
+    "pitfall": "Do not treat kW h as a unit of power; the multiplication by time makes it a unit of energy.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Measurement errors and quality": {
+    "topic_id": "concept_003",
+    "concept_term": "Measurement errors and quality",
+    "explanations": [
+      "Random error causes readings to scatter unpredictably about a mean. Repeated measurements and averaging reduce its effect, although they do not remove the underlying variation.",
+      "Systematic error shifts readings consistently in one direction, for example through a zero error or poor calibration. Repetition does not remove it; the method or instrument must be checked, calibrated or corrected.",
+      "Precision describes the spread of repeated values, accuracy describes closeness to the accepted value, resolution is the smallest detectable change, repeatability uses the same method and operator, and reproducibility tests changed conditions such as operator or equipment."
+    ],
+    "essence": "Diagnose whether measurement quality is limited by scatter, bias or instrument resolution, then choose a remedy that addresses that cause.",
+    "analogy": "Shots clustered away from a target are precise but systematically inaccurate; widely scattered shots show poor precision.",
+    "mastery_summary": "You can distinguish random from systematic error, select an effective improvement, and use accuracy, precision, resolution, repeatability and reproducibility correctly.",
+    "mini_worked_example": "A balance reads 0.18 g when empty. Five readings of a sample are 12.42, 12.39, 12.44, 12.40 and 12.43 g. Identify the two error features and state suitable actions.",
+    "worked_solution_steps": [
+      "The non-zero empty reading is a zero error and therefore a systematic error.",
+      "Correct each reading by subtracting 0.18 g, or re-zero/calibrate the balance before measuring.",
+      "The variation among the five readings is random error.",
+      "Repeat more readings and calculate a mean to reduce the effect of the random scatter; repetition alone would not remove the 0.18 g bias."
+    ],
+    "pitfall": "Do not claim that averaging removes a systematic error.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Absolute and percentage uncertainty": {
+    "topic_id": "concept_004",
+    "concept_term": "Absolute and percentage uncertainty",
+    "explanations": [
+      "Absolute uncertainty has the same unit as the measured quantity. Fractional uncertainty is Δx/x, and percentage uncertainty is (Δx/x) × 100%.",
+      "Use the uncertainty form that matches the question and keep the unit for an absolute uncertainty.",
+      "An uncertainty is a tolerance band around a measurement, not a second measurement.",
+      "You can calculate absolute, fractional and percentage uncertainty and select the required form."
+    ],
+    "essence": "Express measurement tolerance as an absolute amount, a fraction or a percentage as required.",
+    "analogy": "The uncertainty is a tolerance band around a measured value.",
+    "mastery_summary": "You can calculate absolute, fractional and percentage uncertainty and select the required form.",
+    "mini_worked_example": "A length is (25.0 ± 0.2) cm. Calculate its percentage uncertainty.",
+    "worked_solution_steps": [
+      "The absolute uncertainty is 0.2 cm and the measured length is 25.0 cm.",
+      "Fractional uncertainty = 0.2/25.0 = 0.008.",
+      "Percentage uncertainty = 0.008 × 100% = 0.8%.",
+      "Report 0.8% because percentage uncertainty has no physical unit."
+    ],
+    "pitfall": "Do not quote an absolute uncertainty as a percentage without dividing by the measured value.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Combining uncertainties": {
+    "topic_id": "concept_005",
+    "concept_term": "Combining uncertainties",
+    "explanations": [
+      "For addition or subtraction, add absolute uncertainties. For multiplication or division, add fractional or percentage uncertainties.",
+      "If y = x^n, the fractional uncertainty in y is |n| times the fractional uncertainty in x.",
+      "Each input contributes a margin; the mathematical operation determines whether margins add as amounts or proportions.",
+      "You can propagate uncertainty through sums, differences, products, quotients and powers."
+    ],
+    "essence": "Match the uncertainty rule to the arithmetic operation: absolute for sums and differences, fractional for products, quotients and powers.",
+    "analogy": "Each input contributes a margin; the operation decides whether margins add as amounts or proportions.",
+    "mastery_summary": "You can propagate uncertainty through sums, differences, products, quotients and powers.",
+    "mini_worked_example": "A rectangle has L = (12.4 ± 0.1) cm and W = (5.2 ± 0.1) cm. Find the percentage uncertainty in its area.",
+    "worked_solution_steps": [
+      "Area A = LW, so multiplication requires fractional uncertainties.",
+      "ΔA/A = 0.1/12.4 + 0.1/5.2 = 0.0273.",
+      "Percentage uncertainty = 0.0273 × 100% = 2.73%.",
+      "The area has a percentage uncertainty of about 2.7%."
+    ],
+    "pitfall": "Do not add the two absolute length uncertainties when calculating the area.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Graph uncertainty and error bars": {
+    "topic_id": "concept_006",
+    "concept_term": "Graph uncertainty and error bars",
+    "explanations": [
+      "Error bars show the range of plausible values for each measured point. Draw them using the relevant uncertainty.",
+      "For a straight-line graph, draw acceptable steepest and shallowest lines through the error bars. Gradient or intercept uncertainty is commonly half the full range.",
+      "If no error bars are supplied, use the stated measurement information and the spread of the plotted points to judge acceptable limiting lines; do not invent error bars or treat the best-fit line alone as an uncertainty estimate.",
+      "Use the same axes, units and plotted quantities for the best-fit and limiting lines."
+    ],
+    "essence": "Use error bars and acceptable limiting lines to estimate uncertainty in a graph gradient or intercept.",
+    "analogy": "The best-fit line is one plausible model; limiting lines show the allowed range of models.",
+    "mastery_summary": "You can draw error bars and estimate gradient or intercept uncertainty from limiting lines.",
+    "mini_worked_example": "Best-fit, steepest and shallowest gradients are 2.40, 2.75 and 2.10 N m⁻¹. Find the gradient uncertainty.",
+    "worked_solution_steps": [
+      "The full gradient range is 2.75 - 2.10 = 0.65 N m⁻¹.",
+      "Use half the full range for the uncertainty estimate.",
+      "Gradient uncertainty = 0.65/2 = 0.325 N m⁻¹.",
+      "Report approximately (2.40 ± 0.33) N m⁻¹."
+    ],
+    "pitfall": "Do not use point scatter alone as the gradient uncertainty without acceptable limiting lines.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Significant figures and uncertainty reporting": {
+    "topic_id": "concept_007",
+    "concept_term": "Significant figures and uncertainty reporting",
+    "explanations": [
+      "Round the uncertainty to one significant figure, or sometimes two when its leading digit is 1 or 2.",
+      "Round the measured value to the same decimal place as the uncertainty.",
+      "The uncertainty sets the precision of the final number; extra digits imply unsupported precision.",
+      "You can link significant figures in a result to its uncertainty."
+    ],
+    "essence": "Round the uncertainty first, then round the measured value to the same decimal place.",
+    "analogy": "The uncertainty sets the ruler resolution for the final number.",
+    "mastery_summary": "You can link significant figures in a result to its uncertainty and present a consistent final measurement.",
+    "mini_worked_example": "A calculation gives 12.347 m with uncertainty 0.26 m. Report the result.",
+    "worked_solution_steps": [
+      "The uncertainty begins with 2, so two significant figures are reasonable: 0.26 m.",
+      "It ends at the hundredths place.",
+      "Round the value to the hundredths place: 12.35 m.",
+      "Report (12.35 ± 0.26) m."
+    ],
+    "pitfall": "Do not report 12.347 ± 0.26 m with unsupported thousandths.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Order-of-magnitude estimation": {
+    "topic_id": "concept_008",
+    "concept_term": "Order-of-magnitude estimation",
+    "explanations": [
+      "An order of magnitude is a power of ten. Write the estimate in standard form and choose the nearest power of ten rather than preserving unjustified detail.",
+      "A useful estimate combines simple geometric or physical assumptions with familiar benchmark values. State assumptions so that the reasoning can be assessed.",
+      "For a value a × 10ⁿ with 1 ≤ a < 10, the nearest order of magnitude is 10ⁿ when a < √10 and 10ⁿ⁺¹ when a > √10."
+    ],
+    "essence": "Reduce a physical situation to defensible approximate values and powers of ten, then keep only the scale justified by those assumptions.",
+    "analogy": "An order-of-magnitude estimate is a map viewed from high altitude: it shows scale and direction, not street-level detail.",
+    "mastery_summary": "You can choose plausible estimates, combine them transparently and state the nearest power-of-ten result without false precision.",
+    "mini_worked_example": "Estimate the order of magnitude of the mass of air in a classroom 8 m long, 6 m wide and 3 m high. Take air density as 1 kg m⁻³.",
+    "worked_solution_steps": [
+      "Estimate the room volume: V ≈ 8 × 6 × 3 ≈ 1.4 × 10² m³.",
+      "Use m = ρV with ρ ≈ 1 kg m⁻³.",
+      "The estimated mass is m ≈ 1 × 1.4 × 10² ≈ 1.4 × 10² kg.",
+      "The coefficient 1.4 is below √10, so the nearest order of magnitude is 10² kg."
+    ],
+    "pitfall": "Do not give several significant figures when the input values were only rough estimates.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Scalar and vector quantities": {
+    "topic_id": "concept_009",
+    "concept_term": "Scalar and vector quantities",
+    "explanations": [
+      "A scalar has magnitude only; a vector has magnitude and direction. Distance, speed and mass are scalars; displacement, velocity, acceleration and weight are vectors.",
+      "Add vectors head-to-tail by scale drawing or resolve them into perpendicular components.",
+      "A directed journey needs both how far and which way; displacement is not distance.",
+      "You can classify the required quantities and add or resolve vectors."
+    ],
+    "essence": "Keep direction attached to vector quantities and use component or scale-drawing methods for vector addition.",
+    "analogy": "A directed journey needs both distance and direction, so displacement is not distance.",
+    "mastery_summary": "You can classify the required quantities and add or resolve vectors with consistent directions.",
+    "mini_worked_example": "A boat travels 3.0 m east and then 4.0 m north. Find its displacement magnitude.",
+    "worked_solution_steps": [
+      "The two displacements are perpendicular components.",
+      "Use Pythagoras: d = √(3.0² + 4.0²).",
+      "d = √25 = 5.0 m.",
+      "The displacement is 5.0 m north-east; path distance is 7.0 m."
+    ],
+    "pitfall": "Do not add perpendicular vector magnitudes as though they were collinear.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Equilibrium and resultant force": {
+    "topic_id": "concept_010",
+    "concept_term": "Equilibrium and resultant force",
+    "explanations": [
+      "For a point in equilibrium, the vector sum of all forces is zero, so horizontal and vertical components balance.",
+      "Rest and constant velocity both have zero acceleration and can describe equilibrium.",
+      "Equilibrium is a force condition, not a statement that no forces act.",
+      "You can resolve coplanar forces and test ΣF_x = 0 and ΣF_y = 0."
+    ],
+    "essence": "Equilibrium requires zero resultant force, so horizontal and vertical components balance even when individual forces are non-zero.",
+    "analogy": "A balanced tug has forces present in both directions but no acceleration.",
+    "mastery_summary": "You can resolve coplanar forces and test ΣF_x = 0 and ΣF_y = 0 for rest or constant velocity.",
+    "mini_worked_example": "A 50 N weight is supported by an inclined cable at 35° above the horizontal and a horizontal cable. Find the inclined-cable tension.",
+    "worked_solution_steps": [
+      "The angle is measured above the horizontal, so the vertical component of the inclined tension is T sin 35°.",
+      "Only the inclined cable supplies an upward component, so set T sin 35° = 50 N for vertical equilibrium.",
+      "T = 50/sin 35° = 87 N, to two significant figures.",
+      "The horizontal cable balances the horizontal component; this is consistent with ΣF_x = 0."
+    ],
+    "pitfall": "Do not conclude that equilibrium means zero velocity.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Moments, couples and the principle of moments": {
+    "topic_id": "concept_011",
+    "concept_term": "Moments, couples and the principle of moments",
+    "explanations": [
+      "The moment of a force about a point is Fd⊥, where d⊥ is the perpendicular distance to the force line of action.",
+      "A couple consists of equal, opposite coplanar forces; its resultant is zero but its moment is one force times the separation.",
+      "For rotational equilibrium, clockwise moments equal anticlockwise moments about any point.",
+      "You can calculate force and couple moments and apply the principle of moments."
+    ],
+    "essence": "Rotational effect is force times perpendicular lever arm; rotational equilibrium balances clockwise and anticlockwise moments.",
+    "analogy": "A door opens more easily at the handle because the perpendicular lever arm is larger.",
+    "mastery_summary": "You can calculate force and couple moments and apply the principle of moments.",
+    "mini_worked_example": "A 200 N beam weight acts 2.0 m from a hinge. An upward force acts 4.0 m from the hinge. Find the force for equilibrium.",
+    "worked_solution_steps": [
+      "Take moments about the hinge so hinge force has zero moment.",
+      "Clockwise moment = 200 × 2.0 = 400 N m.",
+      "Set F × 4.0 = 400 N m.",
+      "F = 100 N."
+    ],
+    "pitfall": "Do not use a non-perpendicular distance as the lever arm.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Centre of mass": {
+    "topic_id": "concept_012",
+    "concept_term": "Centre of mass",
+    "explanations": [
+      "The centre of mass is the point at which a body's mass may be treated as concentrated for translational motion.",
+      "For a uniform regular solid, symmetry places the centre of mass at its geometric centre.",
+      "The geometric-centre rule requires uniform density and regular symmetry.",
+      "You can locate the centre of mass of a uniform regular solid and state the condition."
+    ],
+    "essence": "For a uniform regular solid, symmetry places the centre of mass at its geometric centre.",
+    "analogy": "A symmetric object balances at its exact geometric middle.",
+    "mastery_summary": "You can locate the centre of mass of a uniform regular solid and state the condition that makes the rule valid.",
+    "mini_worked_example": "Where is the centre of mass of a uniform rectangular block 2.0 m × 1.0 m × 0.50 m?",
+    "worked_solution_steps": [
+      "The block is uniform and rectangular, so its mass distribution is symmetric.",
+      "The centre is halfway along each dimension.",
+      "From one corner its coordinates are (1.0 m, 0.50 m, 0.25 m).",
+      "Thus it is at the geometric centre."
+    ],
+    "pitfall": "Do not apply the geometric-centre rule to an irregular or non-uniform object.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Kinematic quantities and average values": {
+    "topic_id": "concept_013",
+    "concept_term": "Kinematic quantities and average values",
+    "explanations": [
+      "Displacement is the directed change in position, while distance is total path length. Velocity is the rate of change of displacement, v = Δs/Δt; speed is the rate of change of distance.",
+      "Acceleration is the rate of change of velocity, a = Δv/Δt. Acceleration and velocity may have opposite signs when an object is slowing down.",
+      "Average velocity is total displacement divided by total time. Instantaneous velocity is the velocity at one moment and may be obtained from the gradient of a tangent to a displacement-time graph."
+    ],
+    "essence": "Use directed changes for displacement, velocity and acceleration, and distinguish an interval average from a value at one instant.",
+    "analogy": "Average velocity describes the whole trip with one arrow; instantaneous velocity is the reading at one precise moment.",
+    "mastery_summary": "You can define and calculate displacement, speed, velocity and acceleration, including correct signs and average-versus-instantaneous distinctions.",
+    "mini_worked_example": "A runner completes one 400 m lap in 80 s and finishes at the starting point. Find the average speed and average velocity.",
+    "worked_solution_steps": [
+      "The total distance travelled is 400 m.",
+      "Average speed = distance/time = 400/80 = 5.0 m s⁻¹.",
+      "The final position equals the initial position, so displacement is 0 m.",
+      "Average velocity = displacement/time = 0/80 = 0 m s⁻¹."
+    ],
+    "pitfall": "Do not use total distance when calculating average velocity.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Motion graphs": {
+    "topic_id": "concept_014",
+    "concept_term": "Motion graphs",
+    "explanations": [
+      "The gradient of a displacement-time graph is velocity. A curved graph has changing velocity, and its instantaneous velocity is the gradient of a tangent.",
+      "The gradient of a velocity-time graph is acceleration, while the signed area between the graph and the time axis is displacement.",
+      "The signed area under an acceleration-time graph is change in velocity. Areas below the time axis contribute negatively."
+    ],
+    "essence": "Gradients give rates of change and signed areas give accumulated change; identify both axes before interpreting either.",
+    "analogy": "A gradient tells how fast the next quantity is being produced, while an area totals everything produced over an interval.",
+    "mastery_summary": "You can interpret straight and curved motion graphs, obtain instantaneous rates from tangents and use signed areas correctly.",
+    "mini_worked_example": "A velocity-time graph rises uniformly from 2.0 m s⁻¹ at t = 0 to 8.0 m s⁻¹ at t = 3.0 s. Find the acceleration and displacement.",
+    "worked_solution_steps": [
+      "Acceleration is the graph gradient: a = (8.0 - 2.0)/3.0 = 2.0 m s⁻².",
+      "Displacement is the area under the velocity-time graph.",
+      "Use the trapezium area: s = ½(2.0 + 8.0) × 3.0.",
+      "The displacement is 15 m."
+    ],
+    "pitfall": "Do not call the area under a displacement-time graph a standard kinematic quantity; velocity comes from its gradient.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Uniform acceleration equations": {
+    "topic_id": "concept_015",
+    "concept_term": "Uniform acceleration equations",
+    "explanations": [
+      "The equations v = u + at, s = (u + v)t/2, s = ut + ½at² and v² = u² + 2as apply only when acceleration is constant.",
+      "Choose a positive direction before assigning signs. Quantities directed opposite to that axis, including acceleration or displacement, are negative.",
+      "Select the equation containing the known quantities and the required unknown; avoid introducing an unnecessary extra unknown."
+    ],
+    "essence": "For constant acceleration, define a direction, assign signs consistently and choose the equation that links the available data directly to the target.",
+    "analogy": "The four equations are different views of the same constant-acceleration motion, each omitting one variable.",
+    "mastery_summary": "You can verify that acceleration is uniform, select an efficient equation and solve one-dimensional motion with consistent signs.",
+    "mini_worked_example": "A car moving at 20 m s⁻¹ brakes uniformly at 4.0 m s⁻². Calculate its stopping distance.",
+    "worked_solution_steps": [
+      "Choose the initial direction as positive: u = 20 m s⁻¹, v = 0 and a = -4.0 m s⁻².",
+      "Time is not given or required, so use v² = u² + 2as.",
+      "Substitute: 0² = 20² + 2(-4.0)s.",
+      "Solve to obtain s = 50 m."
+    ],
+    "pitfall": "Do not use these equations when acceleration varies with time.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Free-fall measurement of g": {
+    "topic_id": "concept_016",
+    "concept_term": "Free-fall measurement of g",
+    "explanations": [
+      "For an object released from rest and falling with negligible drag, s = ½gt². A graph of s against t² should therefore be a straight line through the origin with gradient g/2.",
+      "Measure a range of fall distances and corresponding times rather than calculating g from one reading. Repeats reduce timing scatter.",
+      "The measured distance must correspond to the object's displacement during the timed interval. Automatic timing such as light gates reduces reaction-time error."
+    ],
+    "essence": "Linearise free fall as s against t² so that many measurements yield g from twice the best-fit gradient.",
+    "analogy": "Squaring the time straightens the curved free-fall relationship, turning g into a measurable graph gradient.",
+    "mastery_summary": "You can plan and evaluate a free-fall determination of g, construct the correct graph and extract g with units.",
+    "mini_worked_example": "A best-fit graph of fall distance s against t² has gradient 4.82 m s⁻². Determine g.",
+    "worked_solution_steps": [
+      "For release from rest, s = ½gt².",
+      "Compare with y = mx: the gradient of s against t² is g/2.",
+      "Therefore g = 2 × gradient = 2 × 4.82 m s⁻².",
+      "The measured gravitational field strength is g = 9.64 m s⁻²."
+    ],
+    "pitfall": "Do not report the gradient of an s-against-t² graph as g; it equals g/2.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Projectile components and calculation": {
+    "topic_id": "concept_017",
+    "concept_term": "Projectile components and calculation",
+    "explanations": [
+      "In a uniform gravitational field with negligible air resistance, horizontal and vertical motions are independent but share the same time.",
+      "Resolve an initial speed u at angle θ into u_x = u cos θ and u_y = u sin θ. Horizontal acceleration is zero and vertical acceleration is g downward.",
+      "Apply the uniform-acceleration equations separately in each direction. Horizontal velocity remains constant, while vertical velocity changes uniformly."
+    ],
+    "essence": "Split projectile motion into constant horizontal velocity and uniformly accelerated vertical motion, linked by a common time.",
+    "analogy": "A projectile performs two motions at once: a steady sideways glide and an independent vertical fall.",
+    "mastery_summary": "You can resolve launch velocity, choose signs, solve each component with uniform-acceleration equations and recombine information at a common time.",
+    "mini_worked_example": "A ball is launched at 20 m s⁻¹ at 30° above the horizontal. Neglect air resistance and take g = 9.81 m s⁻². Find the time to reach maximum height and the horizontal distance travelled in that time.",
+    "worked_solution_steps": [
+      "Resolve the initial velocity: u_y = 20 sin 30° = 10 m s⁻¹ and u_x = 20 cos 30° = 17.3 m s⁻¹.",
+      "At maximum height v_y = 0. Using v_y = u_y - gt gives t = 10/9.81 = 1.02 s.",
+      "Horizontal speed is constant, so x = u_x t.",
+      "x = 17.3 × 1.02 = 17.7 m."
+    ],
+    "pitfall": "Do not apply g to the horizontal component when air resistance is neglected.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Drag, lift and terminal speed": {
+    "topic_id": "concept_018",
+    "concept_term": "Drag, lift and terminal speed",
+    "explanations": [
+      "Drag is a resistive force opposite relative motion through a fluid, and it generally increases with speed. Friction similarly opposes relative motion between surfaces.",
+      "Lift acts approximately perpendicular to the relative airflow and can support an aircraft or alter a vehicle's normal force and grip.",
+      "A falling object reaches terminal speed when the upward drag balances its weight. The resultant force and acceleration are then zero, although velocity remains non-zero.",
+      "Air resistance makes a projectile path non-symmetric and reduces range and maximum height. A vehicle's maximum steady speed occurs when its driving force equals the total resistance."
+    ],
+    "essence": "As speed changes, fluid forces change the resultant force until a possible balance produces constant terminal or maximum speed.",
+    "analogy": "Moving faster through air is like pushing through increasingly resistant water: the opposing force grows until it can match the driving force.",
+    "mastery_summary": "You can describe drag, lift and friction qualitatively and explain terminal speed, altered trajectories and maximum vehicle speed using force balance.",
+    "mini_worked_example": "A skydiver of mass 75 kg falls at constant terminal speed. Take g = 9.8 m s⁻². State the drag force and explain what happens immediately after the parachute opens.",
+    "worked_solution_steps": [
+      "At terminal speed, acceleration is zero, so the resultant force is zero.",
+      "The weight is mg = 75 × 9.8 = 735 N downward.",
+      "Therefore the drag force is 735 N upward at the original terminal speed.",
+      "Opening the parachute greatly increases drag so drag initially exceeds weight; the resultant is upward and the downward speed decreases until a new, lower terminal speed is reached."
+    ],
+    "pitfall": "Do not say that forces are absent at terminal speed; weight and drag are present and balanced.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Newton's laws and F = ma": {
+    "topic_id": "concept_019",
+    "concept_term": "Newton's laws and F = ma",
+    "explanations": [
+      "Newton's first law states that an object remains at rest or moves with constant velocity unless acted on by a resultant external force.",
+      "Newton's second law states that resultant force equals the rate of change of momentum. For constant mass this becomes ΣF = ma.",
+      "Newton's third law pairs forces of the same type acting on different interacting bodies. The forces are equal in magnitude, opposite in direction and simultaneous, so they do not cancel on one free-body diagram."
+    ],
+    "essence": "Relate motion to the resultant external force, and keep third-law force pairs on their two separate interacting bodies.",
+    "analogy": "A free-body diagram is an account for one object: only forces acting on that object belong in its force total.",
+    "mastery_summary": "You can state all three laws, construct a correct force balance and apply ΣF = ma when mass is constant.",
+    "mini_worked_example": "A 1200 kg car has a driving force of 3000 N and resistive forces totalling 900 N. Find its acceleration and identify the third-law partner to the road's forward force on the tyres.",
+    "worked_solution_steps": [
+      "Calculate the forward resultant force: ΣF = 3000 - 900 = 2100 N.",
+      "Use ΣF = ma because the car's mass is constant.",
+      "a = 2100/1200 = 1.75 m s⁻².",
+      "The third-law partner is the tyres' backward force on the road; it acts on the road, not on the car."
+    ],
+    "pitfall": "Do not pair weight with the normal contact force as a Newton's third-law pair; both act on the same object.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Momentum conservation and collisions": {
+    "topic_id": "concept_020",
+    "concept_term": "Momentum conservation and collisions",
+    "explanations": [
+      "Linear momentum is p = mv and is a vector. Assign a positive direction so that objects moving oppositely have momenta with opposite signs.",
+      "Total momentum is conserved in an isolated system: total momentum before an interaction equals total momentum after it. External impulse must be negligible over the interaction time.",
+      "An elastic collision conserves total kinetic energy as well as momentum. An inelastic collision conserves momentum but transfers some kinetic energy to other stores; if objects stick together, it is perfectly inelastic.",
+      "In an explosion, initially stored energy becomes kinetic energy, while the momenta of the fragments still sum to the initial momentum."
+    ],
+    "essence": "Track momentum with signs across an isolated interaction, then use kinetic energy separately to classify the collision.",
+    "analogy": "Momentum is redistributed among objects like a fixed signed total, even when kinetic energy changes form.",
+    "mastery_summary": "You can solve one-dimensional collisions and explosions using signed momentum and distinguish elastic from inelastic outcomes by kinetic energy.",
+    "mini_worked_example": "A 0.40 kg trolley moving at 3.0 m s⁻¹ collides with a stationary 0.60 kg trolley and they stick together. Find their common speed and classify the collision.",
+    "worked_solution_steps": [
+      "Initial momentum = 0.40 × 3.0 + 0.60 × 0 = 1.2 kg m s⁻¹.",
+      "The combined mass after collision is 0.40 + 0.60 = 1.00 kg.",
+      "Conservation of momentum gives 1.2 = 1.00v, so v = 1.2 m s⁻¹ in the original direction.",
+      "Because the trolleys stick together and kinetic energy decreases, the collision is perfectly inelastic."
+    ],
+    "pitfall": "Do not assume kinetic energy is conserved in every collision; momentum conservation is the general isolated-system rule.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Impulse and force-time graphs": {
+    "topic_id": "concept_021",
+    "concept_term": "Impulse and force-time graphs",
+    "explanations": [
+      "Resultant force is the rate of change of momentum: F = Δp/Δt for a constant average force, or the instantaneous gradient dp/dt conceptually.",
+      "Impulse J equals change in momentum, J = Δp, and also equals FΔt for constant force.",
+      "For a varying force, impulse is the signed area under the force-time graph. Its unit N s is equivalent to kg m s⁻¹."
+    ],
+    "essence": "Impulse accumulates force over time and produces exactly the corresponding vector change in momentum.",
+    "analogy": "A brief large push and a longer small push can deliver the same impulse if their force-time areas are equal.",
+    "mastery_summary": "You can link force, interaction time and momentum change and calculate impulse from rectangular, triangular or composite force-time areas.",
+    "mini_worked_example": "A force on a ball rises linearly from zero to 600 N in 4.0 ms and then falls linearly to zero over the next 2.0 ms. Find the impulse.",
+    "worked_solution_steps": [
+      "The force-time region is a triangle with total base 6.0 ms = 6.0 × 10⁻³ s.",
+      "Impulse equals the graph area: J = ½ × base × height.",
+      "J = ½ × 6.0 × 10⁻³ × 600 = 1.8 N s.",
+      "Therefore the ball's momentum changes by 1.8 kg m s⁻¹ in the force direction."
+    ],
+    "pitfall": "Convert milliseconds to seconds before calculating an impulse in N s.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Impact time and force reduction": {
+    "topic_id": "concept_022",
+    "concept_term": "Impact time and force reduction",
+    "explanations": [
+      "For a fixed change in momentum, average force is F = Δp/Δt. Increasing the time over which an object is brought to rest reduces the average force.",
+      "Crumple zones, airbags, helmets, packaging and landing mats deform to extend stopping time. They do not remove the momentum change; they reduce the force associated with it.",
+      "A real impact force is often variable, so the force-time area remains the impulse. Safety features generally lower and broaden the force-time pulse."
+    ],
+    "essence": "When momentum change is fixed, extending collision time reduces average force.",
+    "analogy": "Catching an egg by moving your hands backward gives the same stop but spreads it over a longer time.",
+    "mastery_summary": "You can use impulse reasoning to explain how safety features reduce injury risk without claiming that they eliminate momentum change.",
+    "mini_worked_example": "A 0.15 kg ball travelling at 20 m s⁻¹ is stopped. Compare the average force if the stopping time is 0.010 s or 0.050 s.",
+    "worked_solution_steps": [
+      "The magnitude of momentum change is Δp = mv = 0.15 × 20 = 3.0 kg m s⁻¹.",
+      "For 0.010 s, average force = 3.0/0.010 = 300 N.",
+      "For 0.050 s, average force = 3.0/0.050 = 60 N.",
+      "Increasing contact time by a factor of five reduces the average force by a factor of five."
+    ],
+    "pitfall": "Do not state that a crumple zone reduces the car's momentum change when the car still comes to rest.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Work and force-displacement graphs": {
+    "topic_id": "concept_023",
+    "concept_term": "Work and force-displacement graphs",
+    "explanations": [
+      "Work done by a constant force is W = Fs cos θ, where θ is the angle between force and displacement. Only the component parallel to displacement transfers energy by work.",
+      "The area under a force-displacement graph equals work done, including when the force varies. Calculate areas from the graph shape and axis scales.",
+      "Work is a scalar measured in joules. A force perpendicular to displacement has zero work because cos 90° = 0."
+    ],
+    "essence": "Work measures energy transfer by the component of force along displacement, or equivalently the area under F against s.",
+    "analogy": "Only the part of a push pointing along the path moves the object forward; a sideways push does no work along that path.",
+    "mastery_summary": "You can resolve a force for work calculations and obtain work from constant or variable force-displacement graphs.",
+    "mini_worked_example": "A 40 N force pulls a box 5.0 m along a floor at 60° above the horizontal. Calculate the work done by this force.",
+    "worked_solution_steps": [
+      "The displacement is horizontal, so use the horizontal component of the force.",
+      "W = Fs cos θ = 40 × 5.0 × cos 60°.",
+      "cos 60° = 0.50, so W = 100 J.",
+      "The work done by the 40 N force is 1.0 × 10² J."
+    ],
+    "pitfall": "Do not use the full force in W = Fs unless force and displacement are parallel.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Power and efficiency": {
+    "topic_id": "concept_024",
+    "concept_term": "Power and efficiency",
+    "explanations": [
+      "Power is the rate of energy transfer or work done: P = ΔW/Δt. At constant velocity with a force parallel to motion, P = Fv.",
+      "For a varying force or speed, instantaneous power is the product of force and velocity components parallel to one another. Average power is total work divided by total time.",
+      "Efficiency = useful output power/input power, or the equivalent energy ratio for the same process. It has no unit and is commonly expressed as a percentage."
+    ],
+    "essence": "Power describes how quickly energy is transferred; efficiency compares the useful part with the total input.",
+    "analogy": "Two pumps may transfer the same total water, but the one that does it sooner has greater power.",
+    "mastery_summary": "You can calculate average and instantaneous power, select the correct force component and express efficiency as a fraction or percentage.",
+    "mini_worked_example": "A lift raises a 600 kg load vertically at constant speed 1.5 m s⁻¹. Its input power is 12 kW. Take g = 9.8 m s⁻². Find useful output power and efficiency.",
+    "worked_solution_steps": [
+      "At constant speed, lifting force equals weight: F = mg = 600 × 9.8 = 5880 N.",
+      "Useful power = Fv = 5880 × 1.5 = 8820 W.",
+      "Efficiency = useful output/input = 8820/12000 = 0.735.",
+      "The efficiency is 73.5%, or 74% to two significant figures."
+    ],
+    "pitfall": "Do not calculate efficiency from useful output divided by wasted output; the denominator is total input.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Energy conservation and stores": {
+    "topic_id": "concept_025",
+    "concept_term": "Energy conservation and stores",
+    "explanations": [
+      "Energy is conserved: it cannot be created or destroyed, but it can be transferred between stores or to the surroundings by work, heating, radiation or electrical transfer.",
+      "The change in gravitational potential energy near Earth's surface is ΔE_p = mgΔh. Kinetic energy is E_k = ½mv².",
+      "Choose clear initial and final states, then equate the energy decrease from one store with the energy increase in other stores when transfers to the surroundings are negligible or included explicitly."
+    ],
+    "essence": "Account for energy transfer between defined initial and final states, using mgh and ½mv² with a consistent height reference.",
+    "analogy": "Energy accounting is a balanced ledger: an amount leaving one store must appear in another store or in the surroundings.",
+    "mastery_summary": "You can apply conservation of energy and calculate changes in gravitational potential and kinetic energy with correct units and reference levels.",
+    "mini_worked_example": "A 0.50 kg ball is released from rest 12 m above the ground. Ignore air resistance. Find its speed just before reaching the ground.",
+    "worked_solution_steps": [
+      "Initial gravitational potential energy relative to the ground is mgh = 0.50 × 9.8 × 12.",
+      "The ball starts from rest, so its initial kinetic energy is zero.",
+      "Conservation of energy gives mgh = ½mv²; mass cancels.",
+      "v = √(2gh) = √(2 × 9.8 × 12) = 15.3 m s⁻¹."
+    ],
+    "pitfall": "Do not use mgh as an absolute energy without specifying a reference height; only changes in gravitational potential energy are physical.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Resistive and elastic energy transfers": {
+    "topic_id": "concept_026",
+    "concept_term": "Resistive and elastic energy transfers",
+    "explanations": [
+      "When a resistive force acts opposite to motion, work is done against it. This transfers energy from moving or gravitational stores to internal energy stores of the object and surroundings.",
+      "An elastic object stores energy when stretched or compressed within its elastic behaviour. In an ideal return, that elastic potential energy can transfer back to kinetic or gravitational potential energy.",
+      "A complete energy equation includes every relevant transfer: for example, loss of gravitational potential energy = gain in kinetic energy + work done against resistance."
+    ],
+    "essence": "Use conservation of energy while explicitly including work against resistance and any elastic store involved.",
+    "analogy": "A resistive force is an energy diversion: some energy that could have become motion is instead spread as heating to the surroundings.",
+    "mastery_summary": "You can write and solve energy balances involving gravitational, kinetic and elastic potential energy together with resistive work.",
+    "mini_worked_example": "A 2.0 kg crate descends 3.0 m and reaches 6.0 m s⁻¹. Calculate the work done against resistive forces. Take g = 9.8 m s⁻².",
+    "worked_solution_steps": [
+      "The loss of gravitational potential energy is mgh = 2.0 × 9.8 × 3.0 = 58.8 J.",
+      "The gain in kinetic energy is ½mv² = ½ × 2.0 × 6.0² = 36.0 J.",
+      "Energy transferred against resistance = 58.8 - 36.0.",
+      "The work done against resistive forces is 22.8 J."
+    ],
+    "pitfall": "Do not set mgh equal to ½mv² when resistance has done work.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Density": {
+    "topic_id": "concept_027",
+    "concept_term": "Density",
+    "explanations": [
+      "Density is mass per unit volume: ρ = m/V, with SI unit kg m^-3.",
+      "For a uniform sample, mass and volume change in the same ratio when the amount changes.",
+      "Density compares how much matter occupies a given space, so dimensions must be converted consistently before calculation.",
+      "This topic isolates the density part of the official bulk-properties statement; Hooke's law and the elastic limit are taught in the next topic."
+    ],
+    "essence": "Density is mass per unit volume, ρ = m/V, and must be calculated with consistent SI units.",
+    "analogy": "Density asks how much matter is packed into each unit of space.",
+    "mastery_summary": "You can calculate density, mass or volume after converting dimensions to SI units and keep this calculation separate from the Hooke's-law model.",
+    "mini_worked_example": "A metal sample has mass 0.540 kg and volume 2.0 × 10⁻⁴ m³. Find density.",
+    "worked_solution_steps": [
+      "Use ρ = m/V.",
+      "Substitute ρ = 0.540/(2.0 × 10⁻⁴).",
+      "ρ = 2.70 × 10³ kg m⁻³.",
+      "State the result to an appropriate number of significant figures."
+    ],
+    "pitfall": "Do not mix cm³ and m³ without conversion.",
+    "source_scope_note": "SC042 also names Hooke's law and the elastic limit; those linked requirements are covered in Hooke's law and spring constant.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Hooke's law and spring constant": {
+    "topic_id": "concept_028",
+    "concept_term": "Hooke's law and spring constant",
+    "explanations": [
+      "Hooke's law states that extension is proportional to force up to the limit of proportionality.",
+      "For a spring in this region, F = kΔL, where k is stiffness in N m^-1; larger k means a stiffer spring.",
+      "The elastic limit is the greatest load for which the object returns to its original length; it is distinct from the limit of proportionality.",
+      "This topic covers the force-extension model, while density is treated separately even though both appear in the official bulk-properties statement."
+    ],
+    "essence": "Within the proportional region, extension is proportional to force and F = kΔL, where k measures stiffness.",
+    "analogy": "A stiffer spring needs more force for the same extension.",
+    "mastery_summary": "You can identify the valid Hooke's-law region, calculate k and distinguish the proportional and elastic limits.",
+    "mini_worked_example": "A spring extends 4.0 cm under a 6.0 N load within its proportional region. Find k.",
+    "worked_solution_steps": [
+      "Convert extension: ΔL = 4.0 cm = 0.040 m.",
+      "Use F = kΔL.",
+      "k = F/ΔL = 6.0/0.040.",
+      "The spring constant is 150 N m⁻¹."
+    ],
+    "pitfall": "Do not use centimetres when k is required in N m⁻¹.",
+    "source_scope_note": "SC042 names the elastic limit alongside density; SC043 supplies the spring-constant relationship. Both are taught here as the Hooke's-law branch, not as a density calculation.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Stress, strain and breaking stress": {
+    "topic_id": "concept_029",
+    "concept_term": "Stress, strain and breaking stress",
+    "explanations": [
+      "Tensile stress is σ = F/A and tensile strain is ε = ΔL/L, using original area and length; strain has no unit.",
+      "Breaking stress is the tensile stress at fracture and allows fair comparison of specimens with different dimensions.",
+      "Stress and strain separate material behaviour from sample size; elastic strain energy is treated in the adjacent energy topic.",
+      "You can calculate tensile stress, tensile strain and breaking stress with correct dimensions and units."
+    ],
+    "essence": "Stress and strain normalise force and extension by original dimensions; breaking stress is stress at fracture.",
+    "analogy": "Stress is like pressure, comparing force with the area over which it acts.",
+    "mastery_summary": "You can calculate tensile stress, tensile strain and breaking stress with correct dimensions.",
+    "mini_worked_example": "A wire has area 2.0 × 10^-6 m² and original length 2.0 m. It carries 120 N and extends 1.5 mm; it fractures at 200 N. Calculate the tensile stress, strain at 120 N and breaking stress.",
+    "worked_solution_steps": [
+      "Tensile stress at 120 N: σ = F/A = 120/(2.0 × 10^-6) = 6.0 × 10^7 Pa.",
+      "Convert extension: ΔL = 1.5 × 10^-3 m, so ε = ΔL/L = 1.5 × 10^-3/2.0 = 7.5 × 10^-4.",
+      "Breaking stress uses the fracture force: σ_break = 200/(2.0 × 10^-6) = 1.0 × 10^8 Pa.",
+      "Stress is measured in Pa; strain is dimensionless. Elastic strain energy is a separate force-extension area calculation."
+    ],
+    "pitfall": "Do not use stretched length or changed area in the AS definitions.",
+    "source_scope_note": "SC044 also names elastic strain energy; that calculation is isolated in Elastic strain energy so each topic has one teachable model.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Elastic strain energy": {
+    "topic_id": "concept_030",
+    "concept_term": "Elastic strain energy",
+    "explanations": [
+      "Elastic strain energy is stored when deformation is elastic and can be recovered on unloading.",
+      "It equals the area under a force-extension graph. For a linear region, E = ½FΔL.",
+      "The triangular formula applies only when force rises linearly from zero.",
+      "You can calculate stored elastic energy and interpret force-extension areas."
+    ],
+    "essence": "Elastic strain energy is recoverable energy stored during elastic deformation and equals the force-extension area.",
+    "analogy": "Stretching a material stores energy like compressing a spring.",
+    "mastery_summary": "You can calculate stored elastic energy and interpret force-extension graph areas.",
+    "mini_worked_example": "A wire is stretched by 1.5 mm under a 120 N force in its linear region. Find stored elastic energy.",
+    "worked_solution_steps": [
+      "Convert extension: ΔL = 1.5 × 10⁻³ m.",
+      "The linear force-extension graph forms a triangle.",
+      "E = ½FΔL = ½ × 120 × 1.5 × 10⁻³.",
+      "E = 9.0 × 10⁻² J."
+    ],
+    "pitfall": "Do not use ½FΔL for a non-linear graph without finding the actual area.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Material behaviour graphs": {
+    "topic_id": "concept_031",
+    "concept_term": "Material behaviour graphs",
+    "explanations": [
+      "On a force-extension graph, the initial straight section is the proportional region. Beyond it, extension may still be elastic until the elastic limit; after that limit, permanent plastic deformation remains when load is removed.",
+      "Fracture is the point where the specimen breaks. A brittle material fractures with little plastic deformation, whereas a ductile material shows substantial plastic extension before fracture.",
+      "Stress-strain graphs permit comparison between materials of different dimensions. Their initial gradient is Young modulus for a linear elastic material."
+    ],
+    "essence": "Read graph regions as changes in material response: proportional, elastic, plastic and fracture are distinct ideas.",
+    "analogy": "A material graph records response as demand rises, from recoverable deformation to permanent change and eventual failure.",
+    "mastery_summary": "You can identify proportional, elastic, plastic and fracture behaviour and distinguish brittle from ductile response on the relevant graph.",
+    "mini_worked_example": "A wire is loaded beyond its elastic limit but below fracture, then unloaded. Describe the unloading result and the material behaviour demonstrated.",
+    "worked_solution_steps": [
+      "The wire was taken beyond its elastic limit, so complete recovery is no longer possible.",
+      "On unloading, extension decreases because the material still has elastic response.",
+      "The wire does not return to its original length.",
+      "The remaining extension is permanent plastic deformation."
+    ],
+    "pitfall": "Do not treat the limit of proportionality and elastic limit as interchangeable labels.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Young modulus calculation and graph": {
+    "topic_id": "concept_032",
+    "concept_term": "Young modulus calculation and graph",
+    "explanations": [
+      "Young modulus is tensile stress divided by tensile strain: E = σ/ε = FL/(AΔL). It is measured in pascals and is a property of the material in its linear elastic region.",
+      "A large Young modulus means a material is stiff: it produces a small strain for a given stress. It does not necessarily mean that the material is strong or difficult to fracture.",
+      "On a stress-strain graph, Young modulus is the gradient of the initial straight-line section."
+    ],
+    "essence": "Young modulus quantifies stiffness through the ratio of stress to strain in the linear elastic region.",
+    "analogy": "Young modulus compares how much a material yields under the same stress, independent of sample length and thickness.",
+    "mastery_summary": "You can calculate E from force, dimensions and extension or obtain it from the gradient of a stress-strain graph, while distinguishing stiffness from strength.",
+    "mini_worked_example": "A wire of length 2.0 m and area 1.5 × 10⁻⁶ m² extends by 0.80 mm under a 90 N force. Find Young modulus.",
+    "worked_solution_steps": [
+      "Convert the extension: ΔL = 0.80 mm = 8.0 × 10⁻⁴ m.",
+      "Use E = FL/(AΔL).",
+      "Substitute: E = (90 × 2.0)/[(1.5 × 10⁻⁶)(8.0 × 10⁻⁴)].",
+      "E = 1.5 × 10¹¹ Pa."
+    ],
+    "pitfall": "Do not use the gradient of a force-extension graph directly as Young modulus; it gives spring constant unless dimensions are included.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Young modulus practical": {
+    "topic_id": "concept_033",
+    "concept_term": "Young modulus practical",
+    "explanations": [
+      "Measure original wire length L, diameter at several positions and orientations with a micrometer, then calculate A = πd²/4 using the mean diameter.",
+      "Increase load in measured steps within the elastic range, record extension with a fiducial marker and scale, avoid parallax and repeat readings. Plot force-extension or stress-strain data.",
+      "Use a long, thin wire for measurable extension, secure the apparatus, check zero errors and stop before the elastic limit. A best-fit graph reduces random scatter."
+    ],
+    "essence": "A valid Young modulus practical measures small extensions and dimensions accurately, stays in the linear elastic region and uses a graph-based gradient.",
+    "analogy": "The experiment magnifies a tiny material response: length makes extension visible, while careful diameter measurement controls a squared uncertainty.",
+    "mastery_summary": "You can evaluate the required wire practical by linking measurement choices to accuracy, precision, safety and validity.",
+    "mini_worked_example": "A student measures one diameter once, uses a 20 cm wire and loads it until the graph curves. Give three improvements and explain each.",
+    "worked_solution_steps": [
+      "Measure diameter at several positions and perpendicular directions with a micrometer and use the mean; this reduces scatter and reveals non-uniformity.",
+      "Use a longer wire with a fiducial marker and scale; larger extension reduces percentage uncertainty and parallax can be controlled.",
+      "Restrict analysis to the straight-line load-extension region so Hooke's law and E remain valid.",
+      "Use a best-fit graph gradient rather than one pair of readings to reduce the influence of random scatter."
+    ],
+    "pitfall": "Do not load the wire beyond its elastic limit and then use all points in one straight-line calculation.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Atomic model and scattering evidence": {
+    "topic_id": "concept_034",
+    "concept_term": "Atomic model and scattering evidence",
+    "explanations": [
+      "Atoms contain a small, positively charged nucleus of protons and neutrons surrounded by electrons. Most atomic volume is empty space.",
+      "Most alpha particles pass through thin foil with little deflection, showing empty space. A small fraction deflect through large angles or rebound, showing that positive charge and most mass are concentrated in a tiny nucleus.",
+      "Scientific models change when new evidence cannot be explained by the previous model; nuclear structure developed through successive scattering and particle observations."
+    ],
+    "essence": "Use the pattern of Rutherford scattering outcomes as evidence for a small, dense, positively charged nucleus and mostly empty atomic space.",
+    "analogy": "Most particles pass through because an atom is a vast sparse region with a tiny but strongly repulsive centre.",
+    "mastery_summary": "You can describe the proton-neutron-electron model, link each scattering observation to a conclusion and explain why models change with evidence.",
+    "mini_worked_example": "Explain why a very small fraction of alpha particles were scattered through angles greater than 90°.",
+    "worked_solution_steps": [
+      "An alpha particle is positively charged.",
+      "A large deflection requires a strong repulsive electrostatic force.",
+      "Such a force occurs only near a concentrated positive charge.",
+      "Therefore the atom contains a small, dense, positively charged nucleus."
+    ],
+    "pitfall": "Do not attribute the large-angle scattering to electrons; their mass and distribution cannot produce the observed strong deflections.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Nuclear notation and specific charge": {
+    "topic_id": "concept_035",
+    "concept_term": "Nuclear notation and specific charge",
+    "explanations": [
+      "A proton has charge +e, a neutron has zero charge and an electron has charge −e. Proton number Z counts protons; nucleon number A counts protons plus neutrons.",
+      "Nuclide notation ᴬ_ZX identifies element X. Neutron number is A − Z, and a neutral atom has Z electrons; an ion has gained or lost electrons.",
+      "Specific charge is charge divided by mass, q/m, in C kg⁻¹. A proton has +e/mₚ; a fully ionised nucleus with proton number Z and nucleon number A has approximately Ze/mₙᵤ𝚌ₗₑᵤₛ; an ion uses its net charge and ion mass.",
+      "State the sign when direction matters and the magnitude when the question asks for specific-charge magnitude."
+    ],
+    "essence": "Read A and Z precisely, conserve them in nuclear equations and calculate specific charge as charge per kilogram.",
+    "analogy": "A counts everyone in the nucleus while Z counts only protons, which define the element's identity.",
+    "mastery_summary": "You can interpret nuclide symbols, find proton/neutron/electron numbers and calculate or compare particle specific charges.",
+    "mini_worked_example": "For ²³₁₁Na⁺, state protons, neutrons and electrons, then compare the specific charge of a proton with the magnitude of an electron's specific charge using e = 1.60 × 10⁻¹⁹ C, mₚ = 1.67 × 10⁻²⁷ kg and mₑ = 9.11 × 10⁻³¹ kg.",
+    "worked_solution_steps": [
+      "Z = 11, so the ion has 11 protons; neutrons = A − Z = 23 − 11 = 12.",
+      "A +1 ion has lost one electron, so it has 10 electrons.",
+      "Proton specific charge = +e/mₚ = +9.58 × 10⁷ C kg⁻¹.",
+      "Electron specific-charge magnitude = e/mₑ = 1.76 × 10¹¹ C kg⁻¹, so the electron value is much larger in magnitude and has the opposite sign."
+    ],
+    "pitfall": "Do not confuse nucleon number with neutron number; neutrons are A - Z.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Particle families and antiparticles": {
+    "topic_id": "concept_036",
+    "concept_term": "Particle families and antiparticles",
+    "explanations": [
+      "Classify particles by their properties and interactions, and recognise that every particle has a corresponding antiparticle.",
+      "An antiparticle has the same mass as its particle partner but opposite charge where the particle is charged. Required examples include positron/electron, antiproton/proton, antineutron/neutron and antineutrino/neutrino.",
+      "Neutral particles can still have distinct antiparticles, so charge alone is not enough to identify every pair."
+    ],
+    "essence": "Recognise particle-antiparticle pairs by matching mass and opposing relevant properties, especially charge.",
+    "analogy": "An antiparticle is a matched counterpart: the same mass label, but an opposite charge sign where charge is present.",
+    "mastery_summary": "You can identify the specified antiparticles and state mass-charge comparisons without treating neutral particles as automatically self-antiparticles.",
+    "mini_worked_example": "State the antiparticle of electron, proton, neutron and neutrino. Compare a positron with an electron.",
+    "worked_solution_steps": [
+      "Electron → positron; proton → antiproton.",
+      "Neutron → antineutron; neutrino → antineutrino.",
+      "A positron has charge +e whereas an electron has charge -e.",
+      "They have equal mass."
+    ],
+    "pitfall": "Do not call a positron a positively charged proton; it is the antiparticle of the electron.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Annihilation, pair production and rest energy": {
+    "topic_id": "concept_037",
+    "concept_term": "Annihilation, pair production and rest energy",
+    "explanations": [
+      "In annihilation, a particle and antiparticle transform their rest energy and any kinetic energy into other particles or photons while conservation laws are satisfied.",
+      "Pair production creates a particle and its antiparticle from sufficient energy. A nearby nucleus or other body may take recoil so momentum is conserved; minimum energy supplies both rest energies.",
+      "Particle and antiparticle have equal mass and rest energy. Rest energy is commonly expressed in MeV; E = mc² calculations are not required at AS."
+    ],
+    "essence": "Annihilation and pair production convert between particle rest energy and other forms while conserving charge and momentum.",
+    "analogy": "Pair production is energy paying the entry cost for two equal-mass particles; annihilation returns that account to other products.",
+    "mastery_summary": "You can explain both processes, compare particle and antiparticle properties and account qualitatively for energy and momentum requirements.",
+    "mini_worked_example": "An electron and positron at rest annihilate. State charge before and after and explain the product momentum condition.",
+    "worked_solution_steps": [
+      "Initial total charge is -e + e = 0.",
+      "Equal rest masses provide their combined rest energy to the products.",
+      "If initially at rest, total initial momentum is zero.",
+      "Products must have total charge zero and total momentum zero; photons emitted in opposite directions satisfy both conditions."
+    ],
+    "pitfall": "Do not describe pair production as creation of one particle only; an antiparticle is required to conserve charge.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Alpha and beta decay equations": {
+    "topic_id": "concept_038",
+    "concept_term": "Alpha and beta decay equations",
+    "explanations": [
+      "In alpha decay, the nucleus emits ^4_2He, so A decreases by 4 and Z decreases by 2.",
+      "In beta-minus decay, a neutron changes into a proton while emitting an electron and an antineutrino; A is unchanged and Z increases by 1.",
+      "In beta-plus decay, a proton changes into a neutron while emitting a positron and a neutrino; A is unchanged and Z decreases by 1.",
+      "A free neutron decays as n → p + e^- + antineutrino. Balance nucleon number and charge in every equation."
+    ],
+    "essence": "Write nuclear decay equations by conserving nucleon number and charge, including the correct neutrino species.",
+    "analogy": "A nuclear equation is a strict inventory: total nucleons and total charge must balance on both sides.",
+    "mastery_summary": "You can complete alpha, beta-minus and beta-plus equations, state the associated neutrino species and account for free-neutron decay.",
+    "mini_worked_example": "Complete: ^14_6C → ____ + ____ + antineutrino.",
+    "worked_solution_steps": [
+      "In beta-minus decay, A remains 14.",
+      "Z increases from 6 to 7, so the daughter is ^14_7N.",
+      "The emitted beta-minus particle is an electron, ^0_-1e.",
+      "Thus ^14_6C → ^14_7N + ^0_-1e + antineutrino."
+    ],
+    "pitfall": "Do not omit the neutrino or antineutrino from a beta-decay equation.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Half-life from graphs and calculations": {
+    "topic_id": "concept_039",
+    "concept_term": "Half-life from graphs and calculations",
+    "explanations": [
+      "Half-life is the time for the number of undecayed nuclei, count rate or activity to fall to half its current value. It is constant for a given isotope under unchanged conditions.",
+      "On a decay graph, choose a convenient activity or count rate and find the interval to half that value; the first plotted point need not be the exact initial value.",
+      "For whole-number half-lives, remaining quantity = initial quantity × (1/2)^n, where n is elapsed time divided by half-life."
+    ],
+    "essence": "Use repeated halving at equal time intervals and distinguish the number of half-lives from elapsed time.",
+    "analogy": "Each half-life removes half of what remains, not half of the original amount each time.",
+    "mastery_summary": "You can read half-life from graphical data and solve whole-number half-life calculations for activity, count rate or nuclei.",
+    "mini_worked_example": "A source has activity 960 Bq and half-life 6.0 h. Find its activity after 18 h.",
+    "worked_solution_steps": [
+      "Number of half-lives n = 18/6.0 = 3.",
+      "After one half-life: 960/2 = 480 Bq.",
+      "After two and three half-lives: 240 Bq then 120 Bq.",
+      "The activity after 18 h is 120 Bq."
+    ],
+    "pitfall": "Do not subtract the same numerical amount after each half-life; radioactive decay is exponential.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Nuclear excited states and gamma emission": {
+    "topic_id": "concept_040",
+    "concept_term": "Nuclear excited states and gamma emission",
+    "explanations": [
+      "An excited nucleus has excess energy. Gamma emission occurs when it falls to a lower nuclear energy state, so A and Z remain unchanged.",
+      "Technetium-99m is useful in imaging because gamma radiation is detected outside the body and its half-life is suitably short.",
+      "Gamma emission changes nuclear energy, not nuclear composition.",
+      "You can explain excited nuclear states, gamma emission and the technetium-99m application."
+    ],
+    "essence": "Gamma emission is a transition between nuclear energy states with no change in proton or nucleon number.",
+    "analogy": "An excited nucleus drops to a lower energy step by releasing a gamma photon.",
+    "mastery_summary": "You can explain excited nuclear states, gamma emission and the technetium-99m application.",
+    "mini_worked_example": "Explain why technetium-99m can be detected during imaging without changing the patient's element composition.",
+    "worked_solution_steps": [
+      "Technetium-99m is an excited nuclear state.",
+      "It emits gamma photons when moving to a lower nuclear energy state.",
+      "Photons leave the body and are detected externally.",
+      "A and Z do not change, so the element remains technetium."
+    ],
+    "pitfall": "Do not describe gamma emission as alpha or beta decay.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Alpha, beta and gamma properties and applications": {
+    "topic_id": "concept_041",
+    "concept_term": "Alpha, beta and gamma properties and applications",
+    "explanations": [
+      "Alpha is strongly ionising and weakly penetrating, beta has intermediate penetration and ionisation, and gamma is weakly ionising but highly penetrating.",
+      "Hazard depends on radiation type, source location, activity, exposure time and shielding; penetration alone does not determine risk.",
+      "Thickness measurements use a source matched to the material: alpha can monitor very thin paper, beta can monitor aluminium foil, and gamma can monitor thicker steel because the detector count changes measurably through the material.",
+      "You can compare penetration, absorption, hazards and applications without treating the three radiations as interchangeable."
+    ],
+    "essence": "Compare radiation by ionisation, penetration, absorption, hazard and practical use rather than by one property alone.",
+    "analogy": "Radiation choice is a trade-off between how strongly it ionises and how far it travels.",
+    "mastery_summary": "You can compare penetration, absorption, hazards and applications of alpha, beta and gamma radiation.",
+    "mini_worked_example": "Match a suitable radiation to each thickness measurement: very thin paper, aluminium foil and thick steel. Explain why the other choices are less suitable in each case.",
+    "worked_solution_steps": [
+      "Use alpha for very thin paper: it is absorbed strongly, so a small change in paper thickness gives a useful count change.",
+      "Use beta for aluminium foil: its intermediate penetration allows a measurable transmitted count while remaining sensitive to thickness.",
+      "Use gamma for thick steel: its high penetration allows radiation to reach the detector through a substantial thickness.",
+      "State the practical trade-off: the source must be neither stopped completely nor transmitted with almost no change."
+    ],
+    "pitfall": "Do not assign beta automatically to paper or rank hazard by penetration alone; match the radiation to material thickness and exposure route.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Inverse-square law and background radiation": {
+    "topic_id": "concept_042",
+    "concept_term": "Inverse-square law and background radiation",
+    "explanations": [
+      "For an isotropic point source with negligible absorption, intensity I follows I ∝ 1/r². Doubling distance reduces intensity to one quarter.",
+      "To verify the law with gamma radiation, keep source activity, detector orientation, counting time and intervening material constant while varying distance. Plot corrected count rate against 1/r².",
+      "Background radiation adds counts not produced by the source. Measure background for a comparable time, convert to count rate and subtract it before testing the relationship."
+    ],
+    "essence": "Correct for background and control geometry before testing the inverse-square relationship between gamma count rate and distance.",
+    "analogy": "The same radiation spreads over the surface of an expanding sphere, so each square metre receives less as distance increases.",
+    "mastery_summary": "You can apply I ∝ 1/r², design a fair verification and correct gamma count data for background radiation.",
+    "mini_worked_example": "A detector records 500 counts min⁻¹ at 0.50 m from a gamma source. Background is 20 counts min⁻¹. Predict the measured count rate at 1.0 m.",
+    "worked_solution_steps": [
+      "Corrected source count rate at 0.50 m = 500 - 20 = 480 counts min⁻¹.",
+      "Doubling distance reduces source count rate by 2² = 4.",
+      "Corrected source count rate at 1.0 m = 480/4 = 120 counts min⁻¹.",
+      "Add background back: predicted measured rate = 120 + 20 = 140 counts min⁻¹."
+    ],
+    "pitfall": "Do not apply the inverse-square law directly to uncorrected counts when background is significant.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Current, potential difference and resistance": {
+    "topic_id": "concept_043",
+    "concept_term": "Current, potential difference and resistance",
+    "explanations": [
+      "Current is rate of flow of charge: I = ΔQ/Δt. Conventional current is defined in the direction positive charge would move.",
+      "Potential difference is work done or energy transferred per unit charge: V = W/Q. It measures energy transferred between two points per coulomb.",
+      "Resistance is the ratio of potential difference to current for a component at a stated condition: R = V/I. Its unit is the ohm, Ω."
+    ],
+    "essence": "Current measures charge flow rate, potential difference measures energy per charge and resistance links them for stated conditions.",
+    "analogy": "Charge is the amount delivered, current is delivery rate and potential difference is the energy supplied to each coulomb.",
+    "mastery_summary": "You can define and calculate I, V and R using their SI units and distinguish energy per charge from charge per time.",
+    "mini_worked_example": "A 12 V supply transfers 360 J through a resistor in 30 s. Calculate charge, current and resistance.",
+    "worked_solution_steps": [
+      "Use V = W/Q, so Q = W/V = 360/12 = 30 C.",
+      "Use I = Q/t = 30/30 = 1.0 A.",
+      "Use R = V/I = 12/1.0.",
+      "The resistance is 12 Ω."
+    ],
+    "pitfall": "Do not define potential difference as energy per unit time; that is related to power.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "I-V characteristics and Ohm's law": {
+    "topic_id": "concept_044",
+    "concept_term": "I-V characteristics and Ohm's law",
+    "explanations": [
+      "An ohmic conductor at constant physical conditions has I ∝ V, producing a straight-line I-V graph through the origin and constant resistance.",
+      "A filament lamp has increasing resistance as current increases because its temperature rises; its I-against-V graph becomes less steep.",
+      "A semiconductor diode conducts very little in reverse bias and below its forward threshold, then current rises rapidly in forward bias. Its resistance is not constant.",
+      "Ohm's law is the special relationship I ∝ V only when physical conditions, particularly temperature, remain constant."
+    ],
+    "essence": "Read the shape of an I-V characteristic as evidence of whether resistance remains constant or changes with temperature, bias or material behaviour.",
+    "analogy": "An ohmic conductor behaves like a constant-width pipe, while a filament lamp effectively narrows as heating increases resistance.",
+    "mastery_summary": "You can recognise and explain the characteristic graphs of an ohmic conductor, filament lamp and diode, and state the condition required for Ohm's law.",
+    "mini_worked_example": "A filament lamp's I-against-V graph becomes less steep as p.d. increases. Explain what happens to its resistance.",
+    "worked_solution_steps": [
+      "On an I-against-V graph, gradient is I/V.",
+      "For a component, R = V/I, so resistance is the reciprocal of I/V.",
+      "A less steep graph has smaller I/V.",
+      "Therefore V/I is larger: filament resistance increases as it becomes hotter."
+    ],
+    "pitfall": "Do not claim that every straight line on an I-V plot demonstrates Ohm's law without checking the origin and constant conditions.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Ideal ammeters and voltmeters": {
+    "topic_id": "concept_045",
+    "concept_term": "Ideal ammeters and voltmeters",
+    "explanations": [
+      "An ideal ammeter has zero resistance and is connected in series to measure branch current without changing it.",
+      "An ideal voltmeter has infinite resistance and is connected in parallel to measure p.d. without drawing current.",
+      "These are ideal assumptions used unless non-ideal meter resistance is stated.",
+      "You can place ideal meters correctly and explain their limiting resistances."
+    ],
+    "essence": "An ideal ammeter is zero resistance in series; an ideal voltmeter is infinite resistance in parallel.",
+    "analogy": "The ammeter is an invisible link in the path; the voltmeter observes across the component without drawing current.",
+    "mastery_summary": "You can place ideal meters correctly and explain their limiting resistances.",
+    "mini_worked_example": "Describe the correct connections for measuring current through and p.d. across a resistor.",
+    "worked_solution_steps": [
+      "Insert the ammeter in series with the resistor.",
+      "Connect the voltmeter in parallel across the resistor terminals.",
+      "Zero ammeter resistance avoids an added series drop.",
+      "Infinite voltmeter resistance avoids diverting current."
+    ],
+    "pitfall": "Do not connect an ammeter in parallel across a supply.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Characteristic graph conventions": {
+    "topic_id": "concept_046",
+    "concept_term": "Characteristic graph conventions",
+    "explanations": [
+      "Read which quantity is on the horizontal axis before interpreting a characteristic graph.",
+      "For an ohmic component, an I-against-V gradient is I/V = 1/R, whereas a V-against-I gradient is V/I = R.",
+      "Exchanging axes produces reciprocal numerical gradients for the same relationship.",
+      "You can interpret either I–V convention and assign the correct gradient units."
+    ],
+    "essence": "The graph axes determine whether the gradient represents resistance or its reciprocal.",
+    "analogy": "Swapping horizontal and vertical axes turns a ratio into its reciprocal.",
+    "mastery_summary": "You can interpret either I–V convention and assign the correct gradient units.",
+    "mini_worked_example": "An I-against-V graph has gradient 0.25 A V⁻¹. Find R and the reversed-axis gradient.",
+    "worked_solution_steps": [
+      "For I against V, gradient = I/V = 1/R.",
+      "R = 1/0.25 = 4.0 Ω.",
+      "For V against I, gradient = V/I.",
+      "The reversed gradient is 4.0 V A⁻¹, equivalent to 4.0 Ω."
+    ],
+    "pitfall": "Do not label a gradient as resistance without checking the vertical axis.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Resistivity": {
+    "topic_id": "concept_047",
+    "concept_term": "Resistivity",
+    "explanations": [
+      "Resistivity is a material property defined by ρ = RA/L, so R = ρL/A. Its SI unit is Ω m.",
+      "For a uniform wire of the same material at constant temperature, resistance increases with length and decreases with cross-sectional area.",
+      "Use cross-sectional area, not surface area. For a circular wire, A = πd²/4, and diameter must be converted to metres before squaring."
+    ],
+    "essence": "Separate resistance due to specimen geometry from resistivity, which characterises the material at a stated temperature.",
+    "analogy": "A longer or narrower route makes charge flow harder; resistivity describes how resistant the material itself is before geometry is considered.",
+    "mastery_summary": "You can rearrange ρ = RA/L, calculate resistivity with correct units and explain length/area effects for uniform wires.",
+    "mini_worked_example": "A wire has resistance 3.0 Ω, length 2.0 m and diameter 0.40 mm. Calculate resistivity.",
+    "worked_solution_steps": [
+      "Convert diameter: d = 0.40 × 10⁻³ m.",
+      "Area A = πd²/4 = 1.26 × 10⁻⁷ m².",
+      "Use ρ = RA/L = 3.0 × 1.26 × 10⁻⁷ / 2.0.",
+      "ρ = 1.9 × 10⁻⁷ Ω m, to two significant figures."
+    ],
+    "pitfall": "Do not use diameter as cross-sectional area or forget that diameter is squared in A = πd²/4.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Temperature effects and thermistors": {
+    "topic_id": "concept_048",
+    "concept_term": "Temperature effects and thermistors",
+    "explanations": [
+      "For a metal, resistance generally increases as temperature rises because lattice vibrations increase electron scattering.",
+      "An NTC thermistor has resistance that decreases as temperature rises, so it can act as a temperature sensor.",
+      "Use a resistance–temperature graph qualitatively unless a calibration is supplied."
+    ],
+    "essence": "Temperature changes resistance through the material response, and an NTC thermistor converts that response into a measurable sensor signal.",
+    "analogy": "A hotter metal is a busier corridor for electrons; an NTC thermistor becomes easier to traverse as it warms.",
+    "mastery_summary": "You can describe metal and NTC resistance trends, interpret a resistance–temperature graph and explain sensor use.",
+    "mini_worked_example": "An NTC thermistor is warmed from 20 °C to 40 °C. What happens to its resistance, and how could a circuit detect the change?",
+    "worked_solution_steps": [
+      "An NTC thermistor has a negative temperature coefficient.",
+      "Its resistance decreases when temperature increases.",
+      "Place it in a potential divider so the resistance change changes the output pd.",
+      "Calibrate or compare output pd with temperature to use it as a sensor."
+    ],
+    "pitfall": "Do not apply the positive metal-resistance trend to an NTC thermistor.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Superconductivity": {
+    "topic_id": "concept_049",
+    "concept_term": "Superconductivity",
+    "explanations": [
+      "A superconductor has negligible electrical resistance below a material-dependent critical temperature.",
+      "For International AS, focus on the critical-temperature condition; detailed critical-field and critical-current limits are outside the assessed scope.",
+      "Applications include low-loss power systems and powerful electromagnets, provided the material is kept below its critical temperature."
+    ],
+    "essence": "Superconductivity is a material state in which resistance effectively vanishes below a critical temperature, enabling specialised applications.",
+    "analogy": "A normal wire is a rough road for charge; a superconducting path is an ideal track only while its conditions stay within limits.",
+    "mastery_summary": "You can explain critical temperature, negligible resistance and why superconductors are useful in applications.",
+    "mini_worked_example": "Why must a superconducting magnet be cooled during operation?",
+    "worked_solution_steps": [
+      "The material is superconducting only below its critical temperature.",
+      "Resistance becomes negligible in that state.",
+      "Warming above the critical temperature removes superconductivity.",
+      "Cooling maintains low-loss current and the magnetic field produced by the magnet."
+    ],
+    "pitfall": "Do not state that every material becomes superconducting at the same temperature.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Series and parallel resistance": {
+    "topic_id": "concept_050",
+    "concept_term": "Series and parallel resistance",
+    "explanations": [
+      "Resistors in series carry the same current and their resistances add: R_total = R₁ + R₂ + … .",
+      "For parallel resistors, the pd is the same across each branch and 1/R_total = 1/R₁ + 1/R₂ + … .",
+      "A parallel combination has a total resistance smaller than its smallest branch resistance."
+    ],
+    "essence": "Equivalent resistance follows whether the same current passes through a chain or the current divides between branches.",
+    "analogy": "Series resistors are extra narrow sections in one route; parallel resistors are additional routes sharing the traffic.",
+    "mastery_summary": "You can calculate equivalent resistance for series and parallel networks and check whether the result is physically sensible.",
+    "mini_worked_example": "Find the equivalent resistance of 4.0 Ω and 12 Ω connected in parallel.",
+    "worked_solution_steps": [
+      "Use 1/R = 1/4.0 + 1/12.",
+      "The reciprocal sum is 0.333 Ω⁻¹.",
+      "Invert to obtain R = 3.0 Ω.",
+      "This is below 4.0 Ω, as required for a parallel combination."
+    ],
+    "pitfall": "Do not add parallel resistances directly; add their reciprocals.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Electrical energy and power": {
+    "topic_id": "concept_051",
+    "concept_term": "Electrical energy and power",
+    "explanations": [
+      "Electrical energy transferred in a circuit is E = IVt, where I is current, V is potential difference and t is time.",
+      "Electrical power is the rate of energy transfer: P = IV. Combining this with Ohm's law gives P = I²R and P = V²/R for an ohmic component.",
+      "Use the equation whose measured quantities are known, and keep energy in joules, power in watts, current in amperes, voltage in volts and resistance in ohms."
+    ],
+    "essence": "Track the rate and total amount of electrical energy transfer, choosing an equivalent power equation that matches the circuit data.",
+    "analogy": "Power is the flow rate of electrical energy, while energy is the total volume delivered during the time interval.",
+    "mastery_summary": "You can calculate E or P from IVt, IV, I²R or V²/R, identify the correct component values, and report SI units.",
+    "mini_worked_example": "A 12 V heater draws 3.0 A for 5.0 min. Find its power and the energy transferred.",
+    "worked_solution_steps": [
+      "Convert the time: t = 5.0 × 60 = 300 s.",
+      "Use P = IV = 12 × 3.0 = 36 W.",
+      "Use E = IVt = 12 × 3.0 × 300 = 10 800 J.",
+      "State the result: the heater transfers 36 W and 1.08 × 10⁴ J in five minutes."
+    ],
+    "pitfall": "Do not use minutes in E = IVt, and do not confuse power in watts with energy in joules.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Series and parallel circuit rules": {
+    "topic_id": "concept_052",
+    "concept_term": "Series and parallel circuit rules",
+    "explanations": [
+      "In series, current is the same through each component and pds add; in parallel, each branch has the same pd and branch currents add.",
+      "For cells in series, emfs add algebraically in the circuit direction and internal resistances add. Identical cells in parallel retain the emf of one cell, share the load current and, in the ideal symmetric model, N identical cells have effective internal resistance r/N.",
+      "Use V = IR for each element after applying the network rule, and check that cells connected in parallel have the same emf before using the equal-sharing model."
+    ],
+    "essence": "Circuit values are determined by topology: series paths share current, while parallel branches share pd.",
+    "analogy": "A single road carries the same traffic through each section; at a junction traffic divides between parallel roads.",
+    "mastery_summary": "You can identify series and parallel quantities, include cell arrangements and solve for unknown current, pd or resistance.",
+    "mini_worked_example": "A 12 V supply is connected to 2.0 Ω and 4.0 Ω in series. Find current and pd across 4.0 Ω. Then compare four identical 1.5 V cells, each of internal resistance 0.40 Ω, in series and in parallel.",
+    "worked_solution_steps": [
+      "R_total = 2.0 + 4.0 = 6.0 Ω.",
+      "I = 12/6.0 = 2.0 A and is the same through both resistors.",
+      "V across 4.0 Ω = IR = 2.0 × 4.0 = 8.0 V; the remaining 4.0 V is across 2.0 Ω.",
+      "For four identical cells in series, emf = 4 × 1.5 = 6.0 V and r_total = 4 × 0.40 = 1.6 Ω.",
+      "For four identical cells in parallel, emf = 1.5 V and r_eff = 0.40/4 = 0.10 Ω; the load current is shared in the idealised symmetric model."
+    ],
+    "pitfall": "Do not use the total supply pd across each series resistor.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Charge and energy conservation in circuits": {
+    "topic_id": "concept_053",
+    "concept_term": "Charge and energy conservation in circuits",
+    "explanations": [
+      "At a junction, charge conservation requires total current entering to equal total current leaving.",
+      "Around a complete dc loop, energy supplied per coulomb equals energy transferred per coulomb in components, so pd rises and drops balance.",
+      "These rules provide checks on circuit equations with several branches or sources."
+    ],
+    "essence": "Kirchhoff reasoning applies conservation of charge at junctions and conservation of energy around loops.",
+    "analogy": "Water cannot accumulate at a steady junction, and a closed journey must return with the same energy balance it started with.",
+    "mastery_summary": "You can write current equations at junctions, pd equations around loops and use both to check a circuit solution.",
+    "mini_worked_example": "A junction receives 1.8 A and 0.7 A and sends 0.9 A through one branch. Find the other outgoing current.",
+    "worked_solution_steps": [
+      "Total entering current is 2.5 A.",
+      "Let the unknown outgoing current be I.",
+      "Charge conservation gives 0.9 + I = 2.5.",
+      "Therefore I = 1.6 A."
+    ],
+    "pitfall": "Do not apply a loop voltage equation as though it were a junction current equation.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Potential divider principle": {
+    "topic_id": "concept_054",
+    "concept_term": "Potential divider principle",
+    "explanations": [
+      "A potential divider uses series resistances so that the supply pd is shared in proportion to resistance.",
+      "For two series resistors R₁ and R₂, the output across R₂ is V_out = V_s R₂/(R₁ + R₂), provided the output load does not significantly alter the divider current.",
+      "A fixed resistor can provide a constant fraction of a supply; changing one resistance changes the output pd."
+    ],
+    "essence": "A series resistance ratio converts a supply voltage into a predictable fraction at the output terminals.",
+    "analogy": "The supply pd is divided like a fixed length of rope split between two people in proportion to the sections they hold.",
+    "mastery_summary": "You can identify the output resistor, calculate V_out from the resistance ratio, and predict how changing a resistance changes the output.",
+    "mini_worked_example": "A 9.0 V supply is connected to 2.0 kΩ and 7.0 kΩ in series. Find the pd across the 7.0 kΩ resistor.",
+    "worked_solution_steps": [
+      "The total resistance is 2.0 + 7.0 = 9.0 kΩ.",
+      "The output resistor is R₂ = 7.0 kΩ.",
+      "Use V_out = V_s R₂/(R₁ + R₂) = 9.0 × 7.0/9.0 = 7.0 V.",
+      "The remaining 2.0 V is across the 2.0 kΩ resistor, confirming that the series pds add to 9.0 V."
+    ],
+    "pitfall": "Use the resistance of the resistor across which the output is measured, not the other series resistor.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Sensor potential dividers": {
+    "topic_id": "concept_055",
+    "concept_term": "Sensor potential dividers",
+    "explanations": [
+      "A variable resistor, thermistor or LDR can form one arm of a potential divider so that a physical change becomes a voltage change.",
+      "An NTC thermistor decreases in resistance as temperature rises; an LDR generally decreases in resistance as light intensity rises. The output response depends on which element is measured across.",
+      "The potentiometer as a measuring instrument is outside the International AS requirement; it should not be treated as a required assessed application here."
+    ],
+    "essence": "A sensor divider produces an electrical signal whose direction and size follow the sensor resistance change and its position in the divider.",
+    "analogy": "The sensor is a gate whose resistance changes with the environment; placing the gate on one side or the other reverses the output trend.",
+    "mastery_summary": "You can state how thermistors and LDRs change resistance, predict V_out qualitatively, and respect the potentiometer scope boundary.",
+    "mini_worked_example": "An NTC thermistor is the lower resistor in a divider. Explain what happens to V_out when temperature increases.",
+    "worked_solution_steps": [
+      "An NTC thermistor has a lower resistance at higher temperature.",
+      "With the thermistor as the lower arm, V_out = V_s R_therm/(R_fixed + R_therm).",
+      "Lowering R_therm lowers the fraction of the supply across the thermistor.",
+      "Therefore V_out decreases as temperature increases, assuming the output is measured across the thermistor."
+    ],
+    "pitfall": "Never state the output trend without saying which divider component the output is measured across.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Emf and internal-resistance equations": {
+    "topic_id": "concept_056",
+    "concept_term": "Emf and internal-resistance equations",
+    "explanations": [
+      "The emf ε is the energy supplied by a source per unit charge: ε = E/Q.",
+      "For a source of emf ε and internal resistance r supplying an external resistance R, ε = I(R + r). Equivalently, terminal pd V = ε − Ir.",
+      "The terminal pd falls below the emf when current flows because energy per coulomb is dissipated inside the source as Ir; calculations must include r when it is not negligible."
+    ],
+    "essence": "Emf is the ideal energy gain per coulomb; internal resistance accounts for the voltage lost inside a real source.",
+    "analogy": "A battery is a pump with friction in its own pipe: the pressure available at the outlet falls when the flow increases.",
+    "mastery_summary": "You can distinguish emf from terminal pd, use ε = I(R + r), calculate the internal voltage loss and solve for circuit quantities.",
+    "mini_worked_example": "A cell has ε = 1.50 V and r = 0.20 Ω and supplies R = 2.80 Ω. Find I and the terminal pd.",
+    "worked_solution_steps": [
+      "The total resistance is R + r = 2.80 + 0.20 = 3.00 Ω.",
+      "Use ε = I(R + r), so I = ε/(R + r) = 1.50/3.00 = 0.500 A.",
+      "The internal voltage loss is Ir = 0.500 × 0.20 = 0.100 V.",
+      "Terminal pd is V = ε − Ir = 1.50 − 0.100 = 1.40 V."
+    ],
+    "pitfall": "Do not call ε the terminal pd when current is flowing, and do not omit r from the total resistance.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Cell practical": {
+    "topic_id": "concept_057",
+    "concept_term": "Cell practical",
+    "explanations": [
+      "The required practical measures the terminal pd V of a cell or battery for different currents I, then uses the relationship V = ε − Ir.",
+      "A graph of terminal pd against current has intercept ε and gradient −r, so both emf and internal resistance are obtained from the best-fit line.",
+      "Use a variable external resistance, record repeat readings, avoid excessive current and include sensible uncertainty and graph-scale choices."
+    ],
+    "essence": "The cell practical turns the terminal-pd equation into a straight-line graph whose intercept and gradient have physical meanings.",
+    "analogy": "Changing the external load probes how much outlet pressure the source loses at each flow rate.",
+    "mastery_summary": "You can describe the circuit and method, plot V against I, extract ε and r, and evaluate reliability and safety.",
+    "mini_worked_example": "A V–I graph for a cell has intercept 1.48 V and gradient −0.32 Ω. State the emf and internal resistance.",
+    "worked_solution_steps": [
+      "Compare the graph with V = ε − Ir, which has intercept ε and gradient −r.",
+      "Read the y-intercept: ε = 1.48 V.",
+      "Take the magnitude of the negative gradient: r = 0.32 Ω.",
+      "Report the signs correctly: the gradient is −0.32 Ω because terminal pd decreases as current increases."
+    ],
+    "pitfall": "Do not quote the gradient as a positive value without explaining that r is its magnitude.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Oscillator periods": {
+    "topic_id": "concept_058",
+    "concept_term": "Oscillator periods",
+    "explanations": [
+      "For a mass–spring oscillator, T = 2π√(m/k), where m is vibrating mass and k is spring constant.",
+      "For a simple pendulum at small amplitude, T = 2π√(l/g), where l is pendulum length and g is gravitational field strength.",
+      "The period is independent of amplitude only within the small-oscillation approximation for the ideal models; the formulae show T ∝ √m, T ∝ 1/√k and T ∝ √l."
+    ],
+    "essence": "The period is set by the system's inertia and restoring strength: mass–spring parameters or pendulum length and g.",
+    "analogy": "A heavier cart or a longer pendulum takes a slower rhythmic step, while a stiffer spring pulls the mass back more quickly.",
+    "mastery_summary": "You can select and apply the correct period equation, use SI units, and predict how changing a parameter affects T.",
+    "mini_worked_example": "A 0.50 kg mass is attached to a spring of k = 200 N m⁻¹. Find its period.",
+    "worked_solution_steps": [
+      "Use the mass–spring relation T = 2π√(m/k).",
+      "Substitute SI values: T = 2π√(0.50/200).",
+      "Evaluate √(0.0025) = 0.050 s.",
+      "Therefore T = 2π × 0.050 = 0.314 s (3 s.f.)."
+    ],
+    "pitfall": "Do not use pendulum length in the mass–spring formula or enter mass in grams.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Oscillation energy": {
+    "topic_id": "concept_059",
+    "concept_term": "Oscillation energy",
+    "explanations": [
+      "In an ideal oscillator, kinetic energy is greatest at equilibrium and potential energy is greatest at maximum displacement.",
+      "For a mass–spring oscillator with amplitude A, elastic potential energy is proportional to x² and kinetic energy is proportional to A² − x². Against displacement, the potential-energy curve is U-shaped, the kinetic-energy curve is inverted and total energy is horizontal.",
+      "Against time, kinetic and potential energy vary as complementary squared sinusoidal curves and repeat twice per displacement cycle, while total mechanical energy remains constant in the ideal model.",
+      "Be able to read or sketch both energy-versus-displacement and energy-versus-time graphs, and explain how damping changes the total-energy behaviour."
+    ],
+    "essence": "Oscillation is an exchange between kinetic and potential stores with constant total energy in the ideal model.",
+    "analogy": "A swing trades gravitational height for speed and then trades speed back for height.",
+    "mastery_summary": "You can relate kinetic, potential and total energy to displacement and time and identify energy maxima at key positions.",
+    "mini_worked_example": "At maximum displacement of an ideal mass–spring oscillator, which energy is maximum and which is zero?",
+    "worked_solution_steps": [
+      "At maximum displacement, the mass is momentarily at rest.",
+      "Kinetic energy is therefore zero.",
+      "Elastic potential energy is maximum.",
+      "With no damping, total energy equals this maximum potential energy and remains constant."
+    ],
+    "pitfall": "Do not place maximum kinetic energy at a turning point.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Damping": {
+    "topic_id": "concept_060",
+    "concept_term": "Damping",
+    "explanations": [
+      "Damping transfers mechanical energy from an oscillator to its surroundings through friction or drag.",
+      "The amplitude and total mechanical energy decrease with time.",
+      "Weak damping allows many oscillations, while sufficiently strong damping can prevent an oscillatory overshoot."
+    ],
+    "essence": "Damping removes energy from an oscillating system and reduces its amplitude over time.",
+    "analogy": "A swing loses height each pass because air resistance and friction take energy.",
+    "mastery_summary": "You can describe damping as energy loss, predict amplitude decay and distinguish lightly from heavily damped motion.",
+    "mini_worked_example": "A pendulum is placed in oil and its amplitude falls rapidly. What has the oil changed?",
+    "worked_solution_steps": [
+      "Oil increases resistive forces on the moving pendulum.",
+      "More mechanical energy is transferred to the surroundings per cycle.",
+      "Amplitude therefore decreases faster with time.",
+      "The motion may become heavily damped and return to equilibrium without many oscillations."
+    ],
+    "pitfall": "Do not say damping changes the equilibrium position; it primarily removes oscillation energy.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Simple-harmonic-systems practical": {
+    "topic_id": "concept_061",
+    "concept_term": "Simple-harmonic-systems practical",
+    "explanations": [
+      "The required practical investigates simple harmonic systems using a mass–spring system and a simple pendulum.",
+      "Measure several periods and divide by the number of oscillations to reduce reaction-time uncertainty; repeat readings and control amplitude.",
+      "For a pendulum test T² against l; for a spring test use T² against m. A straight-line relationship supports the relevant model, with gradient linked to g or k."
+    ],
+    "essence": "Good SHM practical work converts timing data into linear graphs that test the period models and expose systematic error.",
+    "analogy": "Timing ten heartbeats rather than one gives a more trustworthy estimate of the average beat period.",
+    "mastery_summary": "You can plan, process and evaluate both pendulum and mass–spring investigations, including variables, graphs and uncertainty.",
+    "mini_worked_example": "A pendulum makes 20 oscillations in 31.6 s at l = 0.25 m. Calculate T and T².",
+    "worked_solution_steps": [
+      "The measured time is for 20 cycles, so T = 31.6/20 = 1.58 s.",
+      "Square the period: T² = (1.58)² = 2.4964 s².",
+      "Round consistently: T = 1.58 s and T² = 2.50 s².",
+      "Plot this point with other lengths to test whether T² is proportional to l."
+    ],
+    "pitfall": "Do not use the time for all oscillations as T, and do not vary more than one independent variable at a time.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Free and forced vibrations": {
+    "topic_id": "concept_062",
+    "concept_term": "Free and forced vibrations",
+    "explanations": [
+      "A free vibration occurs when a system is displaced and then allowed to oscillate at its natural frequency without a continuing periodic driver.",
+      "A forced vibration is maintained by an external periodic driving force; after transients, the system oscillates at the driving frequency.",
+      "The amplitude of a forced vibration depends on the driving frequency, damping and strength of the driver."
+    ],
+    "essence": "Free motion follows the system's natural frequency; forced motion follows an imposed frequency and may become resonant.",
+    "analogy": "A plucked guitar string chooses its own pitch, whereas a child on a swing can be driven by pushes at chosen intervals.",
+    "mastery_summary": "You can distinguish free and forced vibrations by the presence of a driver and identify the frequency of the steady forced response.",
+    "mini_worked_example": "A tuning fork is struck and then left alone. Is its motion free or forced? What sets its frequency?",
+    "worked_solution_steps": [
+      "After the strike there is no continuing periodic external force.",
+      "The motion is therefore a free vibration.",
+      "Its frequency is approximately the tuning fork's natural frequency.",
+      "Air resistance may damp the amplitude, but it does not provide the periodic drive."
+    ],
+    "pitfall": "A vibration is not forced merely because an initial force started it; forcing requires a continuing periodic driver.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Resonance and damping": {
+    "topic_id": "concept_063",
+    "concept_term": "Resonance and damping",
+    "explanations": [
+      "Resonance occurs when the driving frequency is close to the natural frequency, producing a large response amplitude.",
+      "Damping removes energy from the oscillator. Greater damping lowers the maximum amplitude and makes the resonance curve broader and less sharp.",
+      "A lightly damped system has a high, narrow resonance peak; a heavily damped system has a lower, wider response."
+    ],
+    "essence": "Resonance is efficient energy transfer at frequency matching; damping controls both the size and sharpness of the response.",
+    "analogy": "Pushing a swing in rhythm builds height, but friction makes mistimed pushes less effective and suppresses the peak.",
+    "mastery_summary": "You can explain resonance, relate peak amplitude to driving frequency, and predict how increased damping changes a response graph.",
+    "mini_worked_example": "Two resonance curves have the same natural frequency. Curve B is lower and wider than curve A. Which system is more heavily damped?",
+    "worked_solution_steps": [
+      "Damping reduces the maximum response amplitude.",
+      "Damping also broadens the frequency range over which the response is significant.",
+      "Curve B is both lower and wider than curve A.",
+      "Therefore curve B represents the more heavily damped system."
+    ],
+    "pitfall": "Do not claim damping increases the resonant amplitude; it reduces the peak response in this model.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Resonance applications": {
+    "topic_id": "concept_064",
+    "concept_term": "Resonance applications",
+    "explanations": [
+      "In a mechanical system, resonance can produce very large oscillations when an external frequency matches the natural frequency.",
+      "Stationary-wave situations may involve resonance when a periodic driver excites a natural mode; stationary waves themselves are formed by superposition and boundary conditions.",
+      "Applications require matching useful resonant response with control of unwanted vibration, often by changing damping, stiffness or driving frequency."
+    ],
+    "essence": "Resonance explains strong response when a driving frequency matches a natural mode; stationary-wave formation additionally depends on superposition and boundaries.",
+    "analogy": "A radio selects one station by responding strongly to its tuned frequency; a bridge or string can likewise select a mode.",
+    "mastery_summary": "You can identify the driver, natural frequency and response mode in mechanical and stationary-wave examples, and explain why damping may be needed.",
+    "mini_worked_example": "A string is driven at one of its natural frequencies and develops stable nodes. Explain why its amplitude becomes large.",
+    "worked_solution_steps": [
+      "The driver supplies energy periodically to the string.",
+      "At a natural frequency, the phase of successive driving cycles reinforces the motion.",
+      "Reflected waves interfere with incoming waves to form a stationary pattern.",
+      "Energy transfer is efficient, so antinode amplitude becomes large until damping balances input energy."
+    ],
+    "pitfall": "Do not call every stationary wave or large oscillation resonance: identify a periodic driver and frequency matching with a natural mode.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Wave quantities and phase": {
+    "topic_id": "concept_065",
+    "concept_term": "Wave quantities and phase",
+    "explanations": [
+      "Amplitude is maximum displacement; frequency is cycles per second; wavelength is the distance between adjacent points in phase.",
+      "Wave speed is the rate at which the disturbance or energy pattern propagates. The phase of an oscillation specifies its position within one cycle, such as a crest, equilibrium crossing or trough.",
+      "Phase difference is the relative phase between two oscillations: in phase means equal phase, antiphase means half a cycle apart, and a quarter-cycle separation corresponds to 90° or π/2 rad.",
+      "Numerical phase-difference conversions are practised in the dedicated Phase difference topic, but the definition and identification belong here."
+    ],
+    "essence": "Wave descriptions separate size, timing, spatial repetition, propagation and relative position in a cycle.",
+    "analogy": "For a repeating crowd wave, amplitude is how high people rise, frequency is how often waves pass, and wavelength is the spacing between crests.",
+    "mastery_summary": "You can define and distinguish amplitude, frequency, wavelength, speed, phase and phase difference in diagrams and calculations.",
+    "mini_worked_example": "Two points on a wave are separated by 0.25λ. Identify their phase relationship and state the phase difference.",
+    "worked_solution_steps": [
+      "A separation of one wavelength corresponds to one complete cycle, so 0.25λ is one quarter of a cycle.",
+      "The points are therefore not in phase; one leads or lags the other by a quarter cycle.",
+      "A quarter cycle is 90° or π/2 rad.",
+      "The wavelength itself remains the spatial repeat distance between adjacent points in phase."
+    ],
+    "pitfall": "Do not measure from a crest to the nearest trough and call that one wavelength; that distance is λ/2.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Wave speed equation": {
+    "topic_id": "concept_066",
+    "concept_term": "Wave speed equation",
+    "explanations": [
+      "For a progressive wave, wave speed is c = fλ, where f is frequency and λ is wavelength.",
+      "Frequency and period are reciprocal: f = 1/T, so c = λ/T.",
+      "Use the speed of the relevant medium or wave; for electromagnetic waves in vacuum, the speed is the common constant c."
+    ],
+    "essence": "Speed equals the distance of one wavelength multiplied by the number of cycles passing each second.",
+    "analogy": "If each passing wave crest is one train carriage length apart and ten pass each second, speed is ten carriage lengths per second.",
+    "mastery_summary": "You can rearrange c = fλ and f = 1/T, convert units, and distinguish wave speed from particle oscillation speed.",
+    "mini_worked_example": "A water wave has frequency 2.5 Hz and wavelength 0.80 m. Find its speed.",
+    "worked_solution_steps": [
+      "Use c = fλ.",
+      "Substitute f = 2.5 Hz and λ = 0.80 m.",
+      "c = 2.5 × 0.80 = 2.0 m s⁻¹.",
+      "The wave travels at 2.0 m s⁻¹; this is not the transverse speed of a water particle."
+    ],
+    "pitfall": "Do not use amplitude as λ, and do not confuse frequency with angular frequency.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Phase difference": {
+    "topic_id": "concept_067",
+    "concept_term": "Phase difference",
+    "explanations": [
+      "Phase difference can be stated as an angle in radians or degrees, or as a fraction of one complete cycle.",
+      "One cycle corresponds to 2π rad or 360°. A separation of λ/2 corresponds to π rad, 180° or half a cycle.",
+      "For points on a progressive wave, phase difference depends on their separation relative to λ, subject to the direction of propagation."
+    ],
+    "essence": "Phase difference is the fraction of a cycle by which one oscillation leads or lags another.",
+    "analogy": "Two runners on a circular track can be half a lap apart even though they have the same speed; phase measures that lap fraction.",
+    "mastery_summary": "You can convert between radians, degrees and cycle fractions and infer phase difference from a wave diagram.",
+    "mini_worked_example": "Two points are separated by 0.25λ along a progressive wave. Find their phase difference in degrees and radians.",
+    "worked_solution_steps": [
+      "The fraction of a cycle is 0.25.",
+      "Multiply by 360°: phase difference = 0.25 × 360° = 90°.",
+      "Multiply by 2π rad: phase difference = 0.25 × 2π = π/2 rad.",
+      "One point leads or lags the other by a quarter cycle, depending on the chosen propagation direction."
+    ],
+    "pitfall": "Do not write 0.25 rad for a quarter cycle; the correct angular phase is π/2 rad.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Longitudinal, transverse and energy propagation": {
+    "topic_id": "concept_068",
+    "concept_term": "Longitudinal, transverse and energy propagation",
+    "explanations": [
+      "In a transverse wave, particle or field displacement is perpendicular to the direction of energy propagation; waves on a string and electromagnetic waves are examples.",
+      "In a longitudinal wave, particles oscillate parallel to energy propagation, producing compressions and rarefactions; sound in air is an example.",
+      "All electromagnetic waves travel at the same speed in vacuum, and the field oscillations are transverse even though energy propagates forward."
+    ],
+    "essence": "Classify waves by displacement direction relative to energy transport, not by whether matter travels with the wave.",
+    "analogy": "A stadium wave moves around the stadium while each person moves mainly up and down; energy travels, but the people do not.",
+    "mastery_summary": "You can classify sound, string and electromagnetic waves, draw displacement and propagation directions, and explain energy transport.",
+    "mini_worked_example": "Explain why a sound wave in air is longitudinal.",
+    "worked_solution_steps": [
+      "Air molecules oscillate back and forth about equilibrium.",
+      "Their oscillation is parallel to the direction in which the sound disturbance travels.",
+      "This creates alternating compressions and rarefactions.",
+      "Therefore sound in air is a longitudinal wave, although energy propagates through the medium."
+    ],
+    "pitfall": "Do not say a longitudinal wave cannot transfer energy; energy transfer and particle displacement are different directions.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Ultrasound in medicine": {
+    "topic_id": "concept_069",
+    "concept_term": "Ultrasound in medicine",
+    "explanations": [
+      "Ultrasound is sound with a frequency above the upper limit of human hearing; medical systems transmit short pulses into the body.",
+      "Reflections occur at boundaries between tissues with different acoustic properties. Measuring the echo time gives depth when the sound speed is known.",
+      "Ultrasound can form images and assess motion such as blood flow; it is non-ionising, unlike X-rays, but intensity and exposure should still be controlled."
+    ],
+    "essence": "Medical ultrasound uses reflected high-frequency sound pulses to locate internal boundaries and moving structures.",
+    "analogy": "It is like sonar: a pulse travels out, an echo returns, and the delay reveals how far away the boundary is.",
+    "mastery_summary": "You can explain pulse–echo imaging, relate echo time to depth, and contrast ultrasound with ionising imaging.",
+    "mini_worked_example": "An echo returns 130 μs after a pulse enters tissue. If the sound speed is 1540 m s⁻¹, find the boundary depth.",
+    "worked_solution_steps": [
+      "The pulse travels to the boundary and back, so the measured distance is twice the depth.",
+      "Convert time: 130 μs = 130 × 10⁻⁶ s.",
+      "Round-trip distance = vt = 1540 × 130 × 10⁻⁶ = 0.2002 m.",
+      "Depth = 0.2002/2 = 0.100 m, approximately 10.0 cm."
+    ],
+    "pitfall": "Always divide the pulse–echo distance by two to obtain one-way tissue depth.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Polarisation": {
+    "topic_id": "concept_070",
+    "concept_term": "Polarisation",
+    "explanations": [
+      "Polarisation restricts the direction of oscillation of a transverse wave to one plane or direction.",
+      "Observation of polarisation is evidence that a wave is transverse; longitudinal sound in air cannot be polarised in this way.",
+      "Examples include Polaroid material and aligned aerials for transmission and reception. Malus's law is not required for this qualification."
+    ],
+    "essence": "Polarisation tests whether oscillations have a direction transverse to propagation and can be selected by an analyser.",
+    "analogy": "A narrow rail allows a sliding block to move only along one line, just as a polariser passes one oscillation direction.",
+    "mastery_summary": "You can explain polarisation as evidence for transverse waves and apply it to Polaroid filters and aerial alignment without invoking Malus's law.",
+    "mini_worked_example": "Two aerials are used for a linearly polarised radio signal. Explain why rotating the receiving aerial can reduce the signal.",
+    "worked_solution_steps": [
+      "The transmitting aerial produces an electric-field oscillation in a defined direction.",
+      "The receiving aerial responds most strongly when its conducting elements align with that field direction.",
+      "Rotating it makes the alignment less effective.",
+      "At a perpendicular orientation the received signal can become very small, demonstrating directional polarisation."
+    ],
+    "pitfall": "Do not use the intensity formula associated with Malus's law; the specification explicitly excludes it.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Superposition and stationary-wave formation": {
+    "topic_id": "concept_071",
+    "concept_term": "Superposition and stationary-wave formation",
+    "explanations": [
+      "The principle of superposition states that when waves overlap, the resultant displacement is the algebraic sum of their individual displacements.",
+      "Two waves of equal frequency travelling in opposite directions can interfere to form a stationary wave with fixed nodes and antinodes.",
+      "The accompanying four-frame graphical construction shows the two travelling waves, their point-by-point resultant at successive phases, fixed cancellation at nodes and maximum reinforcement at antinodes.",
+      "In an ideal stationary wave the pattern has no net energy transfer along the medium; it is a superposition pattern, not a single wave travelling at zero speed."
+    ],
+    "essence": "Stationary waves arise from superposition of matched oppositely travelling waves, creating fixed zero and maximum-displacement positions.",
+    "analogy": "Two equal ripples travelling towards each other can make a pattern whose bright and dark locations stay in place even though each ripple moves.",
+    "mastery_summary": "You can apply superposition, identify nodes and antinodes, and explain stationary-wave formation from counter-propagating waves.",
+    "mini_worked_example": "At a node, two equal waves meet in antiphase. What is the resultant displacement at every instant?",
+    "worked_solution_steps": [
+      "At the node the waves have equal amplitudes.",
+      "Antiphase means one displacement is the negative of the other.",
+      "Their algebraic sum is zero at all times.",
+      "Therefore the node remains stationary while neighbouring antinodes oscillate."
+    ],
+    "pitfall": "Do not describe a stationary wave as a single wave travelling at zero speed; it is a superposition pattern.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "First harmonic on a string": {
+    "topic_id": "concept_072",
+    "concept_term": "First harmonic on a string",
+    "explanations": [
+      "For a string of length l fixed at both ends, the first-harmonic frequency is f = (1/2l)√(T/μ).",
+      "T is the string tension and μ is mass per unit length; the first harmonic has nodes at both ends and one antinode at the centre.",
+      "The relationship predicts f ∝ √T, f ∝ 1/√μ and f ∝ 1/l when the other variables are held constant."
+    ],
+    "essence": "The first allowed string mode is set by its length, tension and linear mass density.",
+    "analogy": "A tighter, lighter or shorter string vibrates more rapidly, as in the pitch control of a string instrument.",
+    "mastery_summary": "You can use the first-harmonic equation, identify the mode shape and predict parameter changes while maintaining SI units.",
+    "mini_worked_example": "A string has l = 0.80 m, T = 64 N and μ = 0.010 kg m⁻¹. Find its first-harmonic frequency.",
+    "worked_solution_steps": [
+      "Use f = (1/2l)√(T/μ).",
+      "Compute √(64/0.010) = √6400 = 80.",
+      "Compute 1/(2l) = 1/1.60 = 0.625 m⁻¹.",
+      "f = 0.625 × 80 = 50 Hz."
+    ],
+    "pitfall": "Do not use the total mass in place of μ; μ is mass per unit length.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Stationary-wave applications and harmonics": {
+    "topic_id": "concept_073",
+    "concept_term": "Stationary-wave applications and harmonics",
+    "explanations": [
+      "Stationary waves occur on strings, in air columns and with microwaves when boundary reflections superpose with the incident wave.",
+      "For a string fixed at both ends, the first harmonic has one half-wavelength in the length and higher harmonics add further half-wavelength loops; other systems have boundary conditions that determine their allowed modes.",
+      "Use sound and microwave patterns as application checkpoints: identify nodes and antinodes from the measured signal or probe response, then relate the spacing to wavelength and mode.",
+      "Use first harmonic, second harmonic and third harmonic as the assessed terminology. The terms fundamental and overtone are not used in this qualification; do not substitute them for harmonic numbering in answers."
+    ],
+    "essence": "Different physical systems support discrete stationary-wave modes whose patterns reveal frequency and boundary conditions.",
+    "analogy": "A ruler clamped at one point supports only certain vibration shapes, just as a string or air column supports only allowed modes.",
+    "mastery_summary": "You can interpret stationary-wave patterns in strings, microwaves and sound, count harmonics and connect nodes to boundaries.",
+    "mini_worked_example": "A fixed string shows three half-wavelength loops. State the harmonic number, then describe what a microwave probe would detect at a node and what a sound-column pattern represents.",
+    "worked_solution_steps": [
+      "Fixed ends are nodes and three loops mean three half-wavelengths fit into the string, so the string is in the third harmonic.",
+      "A microwave probe at a node records a minimum field or signal because the resultant amplitude is zero there.",
+      "A sound-column pattern represents pressure or displacement nodes and antinodes set by the air-column boundaries.",
+      "Use first harmonic as the assessed term; do not use fundamental or overtone as answer labels for this qualification."
+    ],
+    "pitfall": "Do not count antinodes as one fewer than the harmonic number for a string fixed at both ends; here they are equal.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Stationary-wave practical": {
+    "topic_id": "concept_074",
+    "concept_term": "Stationary-wave practical",
+    "explanations": [
+      "The practical investigates how stationary-wave frequency depends on string length, tension and mass per unit length.",
+      "Vary one independent variable at a time, identify resonance by a stable node–antinode pattern, and measure length between the fixed points.",
+      "Repeat readings, keep amplitude modest and evaluate uncertainties from length, tension, μ and frequency resolution; a suitable graph tests proportionality or the square-root relationship."
+    ],
+    "essence": "A controlled resonance experiment tests the string model by linking measured mode frequency to l, T and μ.",
+    "analogy": "Changing one ingredient at a time in a recipe reveals its effect; changing several at once hides which variable caused the result.",
+    "mastery_summary": "You can plan and evaluate the string practical, control variables, recognise resonance and choose a graph that linearises the model.",
+    "mini_worked_example": "To test f ∝ √T, what graph should be plotted and what should remain constant?",
+    "worked_solution_steps": [
+      "The model gives f = constant × √T when l and μ are fixed.",
+      "Keep string length and mass per unit length unchanged.",
+      "Vary tension T and record the resonant frequency f.",
+      "Plot f against √T; a straight line through the origin supports the relationship."
+    ],
+    "pitfall": "Do not vary length and tension together when claiming to test one dependence.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Interference, path difference and coherence": {
+    "topic_id": "concept_075",
+    "concept_term": "Interference, path difference and coherence",
+    "explanations": [
+      "Interference is the redistribution of intensity produced when coherent waves overlap; path difference determines whether the superposition is constructive or destructive.",
+      "Coherent sources have a constant phase relationship. A path difference of nλ gives constructive interference, while (n + 1/2)λ gives destructive interference for ideal equal amplitudes.",
+      "A laser and Young's double-slit arrangement provide coherent monochromatic sources, producing regularly spaced bright and dark fringes."
+    ],
+    "essence": "Stable interference needs a stable phase relationship, and the path difference fixes the resulting phase difference.",
+    "analogy": "Two sets of equally timed ripples reinforce at some places and cancel at others; coherence keeps the pattern from drifting.",
+    "mastery_summary": "You can connect path difference, phase and coherence to bright/dark interference and explain the Young double-slit arrangement.",
+    "mini_worked_example": "At a screen point the path difference is 2.0λ. Is the ideal interference constructive or destructive?",
+    "worked_solution_steps": [
+      "The path difference is an integer multiple of wavelength: 2.0λ.",
+      "The corresponding phase difference is 4π rad, equivalent to zero phase difference.",
+      "The waves arrive in phase at that point.",
+      "Therefore constructive interference occurs, giving a bright fringe for equal-amplitude waves."
+    ],
+    "pitfall": "Do not call all unequal paths destructive; an integer-wavelength path difference is constructive.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Fringe spacing": {
+    "topic_id": "concept_076",
+    "concept_term": "Fringe spacing",
+    "explanations": [
+      "For Young's double-slit interference, fringe spacing is w = λD/s, where λ is wavelength, D is slit-to-screen distance and s is slit separation.",
+      "The relation assumes small angles and a screen far enough from the slits for the standard straight-fringe approximation.",
+      "Fringe spacing increases with wavelength and screen distance, and decreases when the slits are farther apart."
+    ],
+    "essence": "Fringe spacing is set by the wavelength-to-geometry ratio in the double-slit arrangement.",
+    "analogy": "A wider projection screen spreads the same repeating pattern farther apart, while closer source lines make the pattern tighter.",
+    "mastery_summary": "You can rearrange w = λD/s, use consistent units and predict how each experimental parameter changes the fringe pattern.",
+    "mini_worked_example": "Light of λ = 600 nm passes through slits separated by 0.30 mm; the screen is 2.0 m away. Find w.",
+    "worked_solution_steps": [
+      "Convert λ = 600 × 10⁻⁹ m and s = 0.30 × 10⁻³ m.",
+      "Use w = λD/s.",
+      "w = (600 × 10⁻⁹ × 2.0)/(0.30 × 10⁻³) = 4.0 × 10⁻³ m.",
+      "The fringe spacing is 4.0 mm."
+    ],
+    "pitfall": "Convert nanometres and millimetres to metres before substitution; otherwise the spacing is wrong by powers of ten.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Interference applications and laser safety": {
+    "topic_id": "concept_077",
+    "concept_term": "Interference applications and laser safety",
+    "explanations": [
+      "White-light interference uses a range of wavelengths, so coloured fringes are visible near the central region and overlap farther away.",
+      "Sound and electromagnetic waves can interfere because superposition applies to all waves; phase and path difference determine reinforcement or cancellation.",
+      "Laser beams can damage eyes and should never be viewed directly or reflected into the eye; use controlled alignment and appropriate safety procedures. How a laser works is outside this requirement."
+    ],
+    "essence": "Interference is a general wave effect, while laser use demands control of the intense, directional beam.",
+    "analogy": "Several colours make a pattern that spreads at different rates, whereas a single-colour laser gives a clean regular fringe system.",
+    "mastery_summary": "You can describe interference in white light, sound and electromagnetic waves and state practical laser hazards without explaining laser construction.",
+    "mini_worked_example": "Why are white-light fringes less numerous and less sharply separated than monochromatic fringes?",
+    "worked_solution_steps": [
+      "White light contains many wavelengths.",
+      "Each wavelength has a different fringe spacing and constructive positions.",
+      "The patterns overlap and lose contrast away from the central region.",
+      "Therefore only a limited set of coloured fringes is clearly resolved."
+    ],
+    "pitfall": "Do not describe a laser as safe merely because its beam is narrow; concentration into the eye increases hazard.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Young's slits and diffraction practical": {
+    "topic_id": "concept_078",
+    "concept_term": "Young's slits and diffraction practical",
+    "explanations": [
+      "The required practical investigates interference with Young's slits and interference by a diffraction grating.",
+      "For Young's slits, measure many fringe spacings across the screen and divide by the number of intervals to reduce reading uncertainty; measure D and slit separation s carefully.",
+      "For a diffraction grating, record the order n and angle θ for symmetric maxima, use d sin θ = nλ, and compare repeated values or orders with the expected wavelength.",
+      "Use a low-power controlled laser, avoid direct eye exposure, repeat readings and compare the calculated wavelength with the source value within uncertainty."
+    ],
+    "essence": "The practical combines a visible interference pattern with calibrated geometry to test wavelength and experimental reliability.",
+    "analogy": "Measuring ten intervals on a ruler gives a better average spacing than judging one small gap.",
+    "mastery_summary": "You can describe the apparatus, collect and process fringe data, evaluate uncertainty and include laser safety controls.",
+    "mini_worked_example": "A Young's-slits pattern gives ten bright-fringe intervals across 42.0 mm with D = 1.50 m and s = 0.25 mm. A separate grating has 600 lines mm^-1 and a first-order maximum at 21.1°. Calculate the wavelength from both methods.",
+    "worked_solution_steps": [
+      "Young's slits: w = 42.0/10 = 4.20 mm = 4.20 × 10^-3 m, so λ = ws/D = 7.0 × 10^-7 m.",
+      "Grating spacing: d = 1/(600 × 10^3) = 1.67 × 10^-6 m.",
+      "For n = 1, λ = d sin θ = (1.67 × 10^-6) sin 21.1° ≈ 6.0 × 10^-7 m.",
+      "Repeat orders or angle readings, estimate uncertainty and discuss the difference between the two values rather than reporting unjustified precision."
+    ],
+    "pitfall": "Count intervals, not bright lines: ten adjacent intervals require eleven line positions.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Single-slit diffraction": {
+    "topic_id": "concept_079",
+    "concept_term": "Single-slit diffraction",
+    "explanations": [
+      "A single narrow slit produces a broad central maximum with weaker side maxima because contributions from different parts of the slit interfere.",
+      "Monochromatic light gives a regular pattern; white light gives wavelength-dependent spreading and coloured edges.",
+      "The central maximum becomes wider when wavelength increases or slit width decreases. An intensity-versus-angular-separation graph is not required."
+    ],
+    "essence": "Diffraction spreads a wave after a narrow aperture, and the spread is controlled by wavelength relative to slit width.",
+    "analogy": "A narrow doorway makes a sound spread widely into a corridor; narrowing the doorway increases the angular spread.",
+    "mastery_summary": "You can describe single-slit patterns and predict central-maximum width from changes in wavelength and slit width.",
+    "mini_worked_example": "A slit is narrowed while the wavelength remains constant. What happens to the central diffraction maximum?",
+    "worked_solution_steps": [
+      "Diffraction is stronger when the slit width is smaller compared with the wavelength.",
+      "The angular spread therefore increases.",
+      "On a distant screen, the central maximum occupies a larger width.",
+      "The core conclusion is conditional on comparing the same measurement arrangement: increasing wavelength or reducing slit width makes the central maximum wider."
+    ],
+    "pitfall": "Do not say a wider slit always gives a wider central maximum; the trend is the reverse.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Transmission gratings": {
+    "topic_id": "concept_080",
+    "concept_term": "Transmission gratings",
+    "explanations": [
+      "For a plane transmission grating at normal incidence, d sin θ = nλ, where d is slit spacing and n is order.",
+      "Gratings separate wavelengths because each wavelength has a different diffraction angle.",
+      "Applications include spectral analysis; operation of a spectrometer is outside the International AS requirement."
+    ],
+    "essence": "A grating converts wavelength into angle through a precisely repeated slit spacing.",
+    "analogy": "A row of identical gaps acts like many synchronised sources, strengthening only directions where all contributions arrive in phase.",
+    "mastery_summary": "You can apply d sin θ = nλ, identify order and spacing, and state the spectrometer scope boundary.",
+    "mini_worked_example": "A grating has 600 lines mm⁻¹. Find the first-order angle for λ = 500 nm.",
+    "worked_solution_steps": [
+      "Convert line density: 600 lines mm⁻¹ gives d = 1/(600 × 10³) = 1.667 × 10⁻⁶ m.",
+      "For first order, n = 1.",
+      "Use sin θ = nλ/d = (1)(500 × 10⁻⁹)/(1.667 × 10⁻⁶) = 0.300.",
+      "θ = sin⁻¹(0.300) = 17.5° (approximately)."
+    ],
+    "pitfall": "Invert the line density to obtain d; do not substitute lines per millimetre directly into the equation.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Refraction and Snell's law": {
+    "topic_id": "concept_081",
+    "concept_term": "Refraction and Snell's law",
+    "explanations": [
+      "The refractive index of a medium is n = c/c_s, where c is the speed of light in vacuum and c_s is its speed in the substance; air is approximately n = 1.",
+      "At a plane boundary, Snell's law is n₁ sin θ₁ = n₂ sin θ₂, with angles measured from the normal.",
+      "When light enters a higher-index medium it slows and bends towards the normal; on entering a lower-index medium it speeds up and bends away, while frequency remains unchanged."
+    ],
+    "essence": "Refraction follows the change in wave speed between media, quantified by refractive index and Snell's law.",
+    "analogy": "A shopping trolley turns when one wheel enters a rough surface first; the wavefront turns when one side changes speed first.",
+    "mastery_summary": "You can calculate refractive index or angles with Snell's law and draw the normal and bending direction correctly.",
+    "mini_worked_example": "Light enters glass n₂ = 1.50 from air at θ₁ = 30°. Find θ₂.",
+    "worked_solution_steps": [
+      "Take n₁ ≈ 1.00 for air and measure θ from the normal.",
+      "Use n₁ sin θ₁ = n₂ sin θ₂, so sin θ₂ = (1.00 sin 30°)/1.50 = 0.333.",
+      "Calculate θ₂ = sin⁻¹(0.333) = 19.5°.",
+      "The smaller angle confirms bending towards the normal in the higher-index glass."
+    ],
+    "pitfall": "Angles are measured from the normal, not from the surface.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Critical angle and total internal reflection": {
+    "topic_id": "concept_082",
+    "concept_term": "Critical angle and total internal reflection",
+    "explanations": [
+      "Total internal reflection occurs when light travels from higher refractive index n₁ to lower n₂ and the incidence angle exceeds the critical angle.",
+      "At the critical angle the refracted ray travels along the boundary, so sin θ_c = n₂/n₁.",
+      "For air as the second medium, n₂ ≈ 1; no refracted ray exists beyond θ_c and the incident light is reflected internally."
+    ],
+    "essence": "The critical angle is the boundary value separating refraction from total internal reflection for a high-to-low index transition.",
+    "analogy": "A ball launched from a deep bowl can escape only below a limiting angle; beyond it, the path turns back inside.",
+    "mastery_summary": "You can state the two conditions for total internal reflection, calculate θ_c and distinguish the critical ray from angles above it.",
+    "mini_worked_example": "Find the critical angle for glass n₁ = 1.50 to air n₂ = 1.00.",
+    "worked_solution_steps": [
+      "The light travels from glass to air, so n₁ > n₂.",
+      "Use sin θ_c = n₂/n₁ = 1.00/1.50 = 0.667.",
+      "Calculate θ_c = sin⁻¹(0.667) = 41.8°.",
+      "Angles greater than 41.8° produce total internal reflection at this interface."
+    ],
+    "pitfall": "Do not apply the critical-angle formula for light travelling from a lower-index medium to a higher-index medium.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Optical fibres": {
+    "topic_id": "concept_083",
+    "concept_term": "Optical fibres",
+    "explanations": [
+      "A step-index optical fibre has a core of higher refractive index surrounded by lower-index cladding, so light is guided by repeated total internal reflection.",
+      "Cladding protects the core boundary, reduces leakage and helps maintain guidance when the fibre is bent within limits.",
+      "Material dispersion arises because different wavelengths travel at different speeds; modal dispersion arises because paths in the core have different lengths. Both broaden pulses, while absorption reduces signal power."
+    ],
+    "essence": "Fibres guide pulses by total internal reflection, but dispersion and absorption limit bandwidth and transmission distance.",
+    "analogy": "A polished corridor keeps a rolling ball inside by reflecting it from the walls; unequal routes make a group arrive spread out.",
+    "mastery_summary": "You can describe step-index structure, guidance, material/modal dispersion, pulse broadening and absorption.",
+    "mini_worked_example": "Why does modal dispersion broaden a digital pulse in a multimode step-index fibre?",
+    "worked_solution_steps": [
+      "Different launch angles create different ray paths through the core.",
+      "Some rays take a longer zig-zag path than others.",
+      "The rays start together but arrive at different times.",
+      "The received pulse is therefore spread in time, which can cause neighbouring bits to overlap."
+    ],
+    "pitfall": "Do not treat cladding as an optional coating only; its lower refractive index is essential for total internal reflection.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Excitation and ionisation": {
+    "topic_id": "concept_084",
+    "concept_term": "Excitation and ionisation",
+    "explanations": [
+      "Excitation occurs when an electron in an atom gains energy and moves to a higher permitted energy level without leaving the atom.",
+      "Ionisation occurs when the electron gains enough energy to leave the atom completely, producing an ion.",
+      "In a fluorescent tube, collisions with accelerated electrons can excite or ionise gas atoms; excited atoms later emit photons as electrons return to lower levels."
+    ],
+    "essence": "Excitation raises an electron within the atom, whereas ionisation removes it from the atom entirely.",
+    "analogy": "Excitation is moving to a higher floor in a building; ionisation is leaving the building through the exit.",
+    "mastery_summary": "You can distinguish excitation from ionisation and apply both processes to electron collisions in a fluorescent tube.",
+    "mini_worked_example": "An electron collision raises a mercury electron to a higher allowed level but leaves the atom neutral. Name the process.",
+    "worked_solution_steps": [
+      "The electron has gained energy.",
+      "It has moved to a higher permitted energy level.",
+      "The atom remains neutral because the electron is still bound.",
+      "Therefore the process is excitation, not ionisation."
+    ],
+    "pitfall": "Do not call every energy-level transition ionisation; ionisation requires removal of the electron from the atom.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Electron volt conversion in atomic collisions": {
+    "topic_id": "concept_085",
+    "concept_term": "Electron volt conversion in atomic collisions",
+    "explanations": [
+      "The electron volt is the energy transferred when one elementary charge moves through 1 V: 1 eV = 1.60 × 10⁻¹⁹ J.",
+      "Convert eV to J by multiplying by 1.60 × 10⁻¹⁹, and convert J to eV by dividing by the same value.",
+      "Use one energy unit consistently when comparing collision energy with atomic-level differences."
+    ],
+    "essence": "The eV is a convenient atomic-energy unit, but calculations with SI constants require conversion to joules.",
+    "analogy": "Changing eV to joules is like changing currency before combining prices; the value is unchanged but the unit must match.",
+    "mastery_summary": "You can convert both directions between eV and J and apply the conversion to electron–atom collision energies.",
+    "mini_worked_example": "Convert 4.2 eV into joules.",
+    "worked_solution_steps": [
+      "Use 1 eV = 1.60 × 10⁻¹⁹ J.",
+      "Multiply 4.2 by 1.60 × 10⁻¹⁹.",
+      "E = 6.72 × 10⁻¹⁹ J.",
+      "Keep appropriate significant figures from the supplied data."
+    ],
+    "pitfall": "Do not multiply when converting joules to eV; that direction requires division.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Line spectra and energy-level transitions": {
+    "topic_id": "concept_086",
+    "concept_term": "Line spectra and energy-level transitions",
+    "explanations": [
+      "Line spectra show discrete wavelengths because atomic electrons occupy discrete energy levels.",
+      "When an electron moves between levels, a photon is emitted or absorbed with energy equal to the level difference.",
+      "Use hf = E₁ − E₂ with the higher and lower levels identified; the difference may be supplied in eV or J."
+    ],
+    "essence": "Discrete spectral lines are evidence that atomic energy changes occur in definite amounts.",
+    "analogy": "A staircase produces separate step heights, not every possible vertical distance; an atom similarly permits selected transitions.",
+    "mastery_summary": "You can interpret line spectra as evidence for discrete levels and calculate transition frequency from hf = ΔE.",
+    "mini_worked_example": "A transition releases 2.50 eV. Find its frequency using h = 6.63 × 10⁻³⁴ J s.",
+    "worked_solution_steps": [
+      "Convert ΔE = 2.50 × 1.60 × 10⁻¹⁹ = 4.00 × 10⁻¹⁹ J.",
+      "Use hf = ΔE, so f = ΔE/h.",
+      "f = 4.00 × 10⁻¹⁹/(6.63 × 10⁻³⁴) = 6.03 × 10¹⁴ Hz.",
+      "The discrete transition therefore gives a discrete spectral line at this frequency."
+    ],
+    "pitfall": "Do not substitute eV directly into hf unless the energy has first been converted to joules.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Characteristic X-rays": {
+    "topic_id": "concept_087",
+    "concept_term": "Characteristic X-rays",
+    "explanations": [
+      "An X-ray tube accelerates electrons through a high pd towards a metal target; rapid deceleration produces a continuous background spectrum (bremsstrahlung).",
+      "Characteristic X-ray lines arise when target-atom inner-shell vacancies are filled by electrons from higher shells, emitting photons with element-specific energies.",
+      "X-rays are used for medical imaging because they are penetrating and absorbed differently by tissues; exposure must be controlled because X-rays are ionising."
+    ],
+    "essence": "An X-ray tube converts electron kinetic energy into a continuous spectrum plus target-specific characteristic lines.",
+    "analogy": "Removing an inner electron leaves a vacancy like a missing lower stair; an upper electron drops into it and releases a characteristic photon.",
+    "mastery_summary": "You can describe the basic X-ray tube, distinguish continuous and characteristic spectra, and explain medical use and ionising risk.",
+    "mini_worked_example": "Why do characteristic X-ray lines identify the target material?",
+    "worked_solution_steps": [
+      "Each element has a distinct set of inner-shell energy levels.",
+      "The energy difference for a shell transition is therefore element-specific.",
+      "The emitted photon has hf equal to that difference.",
+      "Its discrete frequency appears as a characteristic line that can identify the target element."
+    ],
+    "pitfall": "Do not say all X-rays from the tube have characteristic energies; the deceleration background is continuous.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Photon energy": {
+    "topic_id": "concept_088",
+    "concept_term": "Photon energy",
+    "explanations": [
+      "The photon model assigns each electromagnetic quantum energy E = hf, where h is Planck's constant and f is frequency.",
+      "Using c = fλ gives E = hc/λ, so shorter wavelength means greater photon energy.",
+      "Use h = 6.63 × 10⁻³⁴ J s and consistent SI units when calculating photon energies."
+    ],
+    "essence": "Photon energy is proportional to frequency and inversely proportional to wavelength.",
+    "analogy": "Higher-frequency ripples arrive in quicker succession and each quantum carries more energy; shorter wavelength signals are the same idea in space.",
+    "mastery_summary": "You can calculate photon energy from frequency or wavelength and explain the direction of energy change across the spectrum.",
+    "mini_worked_example": "Find the energy of a photon with λ = 600 nm.",
+    "worked_solution_steps": [
+      "Convert wavelength: λ = 600 × 10⁻⁹ m.",
+      "Use E = hc/λ with h = 6.63 × 10⁻³⁴ J s and c = 3.00 × 10⁸ m s⁻¹.",
+      "E = (6.63 × 10⁻³⁴ × 3.00 × 10⁸)/(600 × 10⁻⁹) = 3.32 × 10⁻¹⁹ J.",
+      "A shorter wavelength photon would have a larger energy."
+    ],
+    "pitfall": "Do not use nanometres directly with SI values of h and c.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Threshold frequency and work function": {
+    "topic_id": "concept_089",
+    "concept_term": "Threshold frequency and work function",
+    "explanations": [
+      "The threshold frequency f₀ is the minimum frequency required for photons to eject electrons from a particular material.",
+      "Below f₀, increasing intensity does not eject photoelectrons because each photon still has insufficient energy.",
+      "The work function φ is the minimum energy required to remove an electron; the stopping potential is the retarding pd that just prevents the most energetic photoelectrons reaching the collector."
+    ],
+    "essence": "The photoelectric threshold is an energy-per-photon condition set by the material work function.",
+    "analogy": "A single coin must be large enough to pass a turnstile; more small coins arriving together do not satisfy a one-coin threshold.",
+    "mastery_summary": "You can explain threshold frequency, relate it to work function and distinguish photon energy from beam intensity.",
+    "mini_worked_example": "A metal has work function 2.0 eV. Explain what happens when 1.5 eV photons illuminate it, even at high intensity. In a second case, the maximum photoelectron kinetic energy is 0.80 eV; find the stopping potential.",
+    "worked_solution_steps": [
+      "Each photon supplies only 1.5 eV, below the work function φ = 2.0 eV.",
+      "No individual photon can release an electron, however high the intensity; intensity changes photon number, not photon energy.",
+      "For the second case, Eₖ(max) = eVₛ, so a kinetic energy of 0.80 eV corresponds to Vₛ = 0.80 V.",
+      "This stopping-potential checkpoint links the definition to the measurable retarding pd."
+    ],
+    "pitfall": "Do not claim a brighter beam always ejects electrons; frequency must exceed the material threshold.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Photoelectric equation": {
+    "topic_id": "concept_090",
+    "concept_term": "Photoelectric equation",
+    "explanations": [
+      "The photoelectric equation is hf = φ + E_k(max), where incident photon energy is divided between work function and maximum electron kinetic energy.",
+      "The maximum kinetic energy is related to stopping potential by E_k(max) = eV_s.",
+      "Use the equation to find an unknown frequency, work function, stopping potential or maximum kinetic energy, with all energy units consistent."
+    ],
+    "essence": "Photoemission is an energy balance: photon energy pays the work function and any remainder becomes electron kinetic energy.",
+    "analogy": "A payment first covers an entry fee; the money left over is what the customer can carry away.",
+    "mastery_summary": "You can apply hf = φ + E_k(max), convert eV and J correctly and connect kinetic energy to stopping potential.",
+    "mini_worked_example": "Photons of energy 4.0 eV strike a metal with φ = 2.5 eV. Find the stopping potential.",
+    "worked_solution_steps": [
+      "Use E_k(max) = hf − φ = 4.0 − 2.5 = 1.5 eV.",
+      "For an electron, 1.5 eV corresponds to a stopping potential of 1.5 V.",
+      "Alternatively convert 1.5 eV to joules and divide by e.",
+      "Thus V_s = 1.5 V."
+    ],
+    "pitfall": "Do not add φ and E_k(max); the photon energy equals their sum.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Electron diffraction": {
+    "topic_id": "concept_091",
+    "concept_term": "Electron diffraction",
+    "explanations": [
+      "Electron diffraction produces an interference or diffraction pattern, showing that moving electrons possess wave properties.",
+      "The observation is evidence for wave–particle duality: electrons are detected as particles but propagate with a wavelength.",
+      "The specification does not require details of particular particle-diffraction methods; focus on the evidence and its interpretation."
+    ],
+    "essence": "A diffraction pattern from electrons is direct evidence that matter can display wave behaviour.",
+    "analogy": "Individual electron detections appear as separate events, while the accumulated distribution forms a wave-like pattern.",
+    "mastery_summary": "You can state what electron diffraction demonstrates and avoid inventing apparatus details outside the required scope.",
+    "mini_worked_example": "An electron beam produces rings after passing through a crystal. What conclusion follows?",
+    "worked_solution_steps": [
+      "A regular ring pattern requires constructive and destructive interference.",
+      "Interference is characteristic of waves.",
+      "The interfering entity here is the electron beam.",
+      "Therefore electrons have wave properties as well as particle detection behaviour."
+    ],
+    "pitfall": "Do not conclude that electrons are classical waves only; the evidence supports wave–particle duality.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Photoelectric evidence for photon behaviour": {
+    "topic_id": "concept_092",
+    "concept_term": "Photoelectric evidence for photon behaviour",
+    "explanations": [
+      "The photoelectric effect supports a particulate model of electromagnetic radiation because energy is transferred in individual photons.",
+      "Emission depends on frequency exceeding a threshold and is essentially immediate when the threshold is exceeded; intensity changes the number of emitted electrons, not the maximum energy per electron.",
+      "These observations are not explained by a simple continuous-wave energy accumulation model."
+    ],
+    "essence": "Photoelectric observations reveal quantised, particle-like energy transfer from electromagnetic radiation to electrons.",
+    "analogy": "Electrons receive separate tickets of fixed value rather than slowly collecting a continuous stream of energy.",
+    "mastery_summary": "You can use threshold frequency, intensity and stopping-potential observations as evidence for photons and evaluate the classical-wave conflict.",
+    "mini_worked_example": "At fixed frequency above threshold, the light intensity doubles. What changes and what stays the same?",
+    "worked_solution_steps": [
+      "Doubling intensity increases the photon arrival rate.",
+      "More electrons can be emitted per second, so photocurrent increases.",
+      "Photon energy hf is unchanged because frequency is unchanged.",
+      "Therefore maximum kinetic energy and stopping potential remain unchanged."
+    ],
+    "pitfall": "Do not say intensity controls maximum photoelectron kinetic energy at fixed frequency.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "de Broglie wavelength": {
+    "topic_id": "concept_093",
+    "concept_term": "de Broglie wavelength",
+    "explanations": [
+      "The de Broglie equation assigns wavelength λ = h/mv = h/p to a particle with momentum p = mv.",
+      "For fixed mass, increasing momentum decreases wavelength. For fixed momentum, changing mass does not change wavelength because λ = h/p; for fixed speed, increasing mass increases momentum and therefore decreases wavelength.",
+      "Diffraction becomes less pronounced when the particle wavelength is small compared with the aperture or crystal spacing."
+    ],
+    "essence": "Every moving particle has a wavelength, but observable diffraction depends on how that wavelength compares with the structure it encounters.",
+    "analogy": "A long rope wave can bend around a post, while a tiny-ripple wavelength appears almost straight past the same post.",
+    "mastery_summary": "You can calculate de Broglie wavelength, relate it to momentum and explain why diffraction decreases as momentum increases.",
+    "mini_worked_example": "An electron has momentum 3.0 × 10⁻²⁴ kg m s⁻¹. Find its de Broglie wavelength.",
+    "worked_solution_steps": [
+      "Use λ = h/p.",
+      "Substitute h = 6.63 × 10⁻³⁴ J s and p = 3.0 × 10⁻²⁴ kg m s⁻¹.",
+      "λ = 6.63 × 10⁻³⁴/(3.0 × 10⁻²⁴) = 2.21 × 10⁻¹⁰ m.",
+      "If momentum increases, λ decreases and the diffraction pattern becomes less spread out."
+    ],
+    "pitfall": "Do not use kinetic energy directly as p in λ = h/p; calculate momentum or use a justified alternative relation.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  },
+  "Evidence and changing models of matter": {
+    "topic_id": "concept_094",
+    "concept_term": "Evidence and changing models of matter",
+    "explanations": [
+      "Scientific models of matter change when new evidence cannot be explained adequately by the current model or when improved measurements reveal a limitation.",
+      "Examples in this unit include line spectra supporting discrete atomic energy levels, the photoelectric effect supporting photons, and electron diffraction supporting wave properties of particles.",
+      "A changing model is not arbitrary: it retains successful predictions, explains the new evidence and remains open to further testing."
+    ],
+    "essence": "Physics knowledge develops through evidence-driven model revision rather than through permanent acceptance of one picture of matter.",
+    "analogy": "A map is redrawn when accurate surveying reveals a missing road; useful old routes remain, but the model becomes more complete.",
+    "mastery_summary": "You can link specific observations to changes in models of atoms, radiation and matter and explain why scientific understanding is provisional.",
+    "mini_worked_example": "Explain how electron diffraction changed the model of the electron without making the particle model useless.",
+    "worked_solution_steps": [
+      "Electron detection still occurs as individual localised events, supporting particle behaviour.",
+      "The diffraction pattern requires interference, which is wave behaviour.",
+      "The model is therefore extended to wave–particle duality rather than replaced by a classical wave alone.",
+      "The revised model preserves successful particle predictions while explaining the new evidence."
+    ],
+    "pitfall": "Do not present scientific models as simply true or false; identify which evidence each model explains and where it is limited.",
+    "content_provenance": "llm-authored",
+    "delivery_eligible": true
+  }
+}

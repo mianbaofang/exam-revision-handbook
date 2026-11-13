@@ -1,0 +1,137 @@
+{
+  "manifest_version": "1.0",
+  "generated_at": "2026-09-07",
+  "delivery_kind": "independent_desktop_chinese_study_guide",
+  "status": "generated_not_canonical_final",
+  "output_directory": "LOCAL_PATH",
+  "course": {
+    "provider": "oxfordaqa",
+    "qualification_family": "OxfordAQA International AS and A-level Physics",
+    "qualification_code": "9630",
+    "as_entry_code": "9631",
+    "course_market": "international",
+    "exam_year": "2027",
+    "specification_version": "5.1",
+    "subject": "Physics",
+    "stage": "AS",
+    "support_language": "zh-CN",
+    "explanation_style": "formal",
+    "workflow_mode": "multi-agent",
+    "image_route": "image-gen-flow / APIMart / GPT Image 2"
+  },
+  "official_evidence": {
+    "specification_file": "source/oxfordaqa-2022-specification.pdf",
+    "specification_sha256": "9e2ab37a44dfcad9f621642d1e28caf43721a8ca7723557f578d38ac2ae80aca",
+    "timetable_file": "source/exam-timetables-2027.json",
+    "timetable_sha256": "10a099c7d585af15fc96439c602700aadb4481dcddfca711cf0da2f3ec790d18"
+  },
+  "exam_schedule": {
+    "PH01": "2027-04-26",
+    "PH02": "2027-05-04",
+    "schedule_note": "按 OxfordAQA 2027 May/June timetable 证据记录；最终安排以考试局和考点通知为准。"
+  },
+  "artifacts": [
+    {
+      "path": "AS_Physics_学习指南_AQA_International_2027.html",
+      "sha256": "27ab40d80038968ac51edf273aeb081cd2c5d1f7df504b1cb0cab80bc5205db9",
+      "role": "student_handbook_html",
+      "size_bytes": 54527
+    },
+    {
+      "path": "AS_Physics_学习指南_AQA_International_2027.md",
+      "sha256": "9a64b56b100514e6fe03a479dd468f0b6e5516fe8808ebb7a26183cf72d736c4",
+      "role": "student_handbook_markdown",
+      "size_bytes": 26574
+    },
+    {
+      "path": "AS_Physics_学习指南_AQA_International_2027.pdf",
+      "sha256": "bd7b78d90c44d73baf5780e896331cfa3790cf5f3503fae20201b04e493dd401",
+      "role": "desktop_pdf",
+      "size_bytes": 13618932,
+      "binding_status": "stale_unbound_to_current_html",
+      "source_html_sha256": "8bddae8e81c0987597d40c4946cee5b26e9dda829e390143e0fdef6a4ac5cf8f"
+    },
+    {
+      "path": "render-snapshots/chinese-guide-desktop.png",
+      "sha256": "e3f2fa4c447ab189dd159cb97844e30b44b9e79d16b24441480216d8bd3a6b94",
+      "role": "desktop_render_snapshot",
+      "viewport": "1440x900",
+      "size_bytes": 3966678
+    },
+    {
+      "path": "render-snapshots/chinese-guide-mobile.png",
+      "sha256": "7ac6f9b41df9636d81c942e42741fe78d88837a2744f56c632b19aaa90e5e1c4",
+      "role": "mobile_render_snapshot",
+      "viewport": "390x844",
+      "size_bytes": 3306471
+    },
+    {
+      "path": "render-snapshots/chinese-guide-tablet.png",
+      "sha256": "c763569aa16b53fde9d80b35e1fbd0f8587331df14583b19c8905e86b992338e",
+      "role": "tablet_render_snapshot",
+      "viewport": "768x1024",
+      "size_bytes": 3540120
+    },
+    {
+      "path": "render-snapshots/mobile-current.png",
+      "sha256": "06ec2a88ac22021e37fc479818b69b40d3368ba6eec04601f50afd211d850093",
+      "role": "mobile_top_render_snapshot",
+      "viewport": "390x844",
+      "size_bytes": 130898
+    },
+    {
+      "path": "render-snapshots/tablet-current.png",
+      "sha256": "faed6cb76fe7cc4ff10939e0b4ed408eaeda56549a1d0e0ab6d6882d90ef22c7",
+      "role": "tablet_top_render_snapshot",
+      "viewport": "768x1024",
+      "size_bytes": 273507
+    },
+    {
+      "path": "render-snapshots/desktop-current.png",
+      "sha256": "51f79e987b48668561ab4ad3f825e69601da7d3d0e01ada9951bf49336a67ea4",
+      "role": "desktop_top_render_snapshot",
+      "viewport": "1440x900",
+      "size_bytes": 362732
+    },
+    {
+      "path": "render-snapshots/chinese-guide-render-check.json",
+      "sha256": "7ad4a644228f8bbb7afae6d53d5fa37084b03db727730d320b2c11eab3046d46",
+      "role": "render_check_evidence",
+      "size_bytes": 642
+    },
+    {
+      "path": "render-snapshots/viewport-check.json",
+      "sha256": "df75b13291cdd70d34d66e5192c3630c2ec4b62640444c075bfbd43e199bd7e7",
+      "role": "viewport_check_evidence",
+      "size_bytes": 3156
+    }
+  ],
+  "render_checks": {
+    "desktop_scroll_width": 1440,
+    "desktop_client_width": 1440,
+    "mobile_scroll_width": 390,
+    "mobile_client_width": 390,
+    "image_references": 17,
+    "broken_images": 0,
+    "mobile_overflow": false,
+    "tablet_scroll_width": 768,
+    "tablet_client_width": 768,
+    "tablet_overflow": false,
+    "tablet_nav_column_count": "1"
+  },
+  "canonical_skill_boundary": {
+    "canonical_status": "blocked",
+    "current_pdf_pointer": false,
+    "current_delivery_pointer": false,
+    "full_llm_html_review": false,
+    "visual_review_pending": 17,
+    "validation_errors": 35,
+    "validation_warnings": 33,
+    "note": "本 manifest 记录桌面独立中文交付，不构成 canonical Skill 的 final-ready 或 certified 证明。"
+  },
+  "visual_notes": {
+    "visual_count": 17,
+    "visual_015_status": "approved_apimart_gpt_image_2",
+    "visual_015_note": "已采用 APIMart GPT Image 2 资产；串联/并联电池符号、极性和连接路径已纳入当前导入资产。"
+  }
+}

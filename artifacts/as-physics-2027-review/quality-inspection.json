@@ -1,0 +1,55 @@
+{
+  "schema_version": "v0.5-quality-inspection",
+  "inspection_status": "pass",
+  "recommendation": "pass_to_reviewer",
+  "summary": "Checked handbook package: 94 topic(s), 0 error(s), 0 warning(s).",
+  "checks": {
+    "files": {
+      "handbook_html": true,
+      "qualification.json": true,
+      "syllabus-outline.json": true,
+      "guide-plan.json": true,
+      "validation.json": true,
+      "concepts/concept_jobs.json": true,
+      "concepts/concept_explanations.json": true,
+      "images/visual_manifest.json": true
+    },
+    "topic_count": 94,
+    "modules": {
+      "cover": true,
+      "how_to_use": true,
+      "topic_map": true,
+      "topic_guides": true,
+      "practice": true,
+      "exam_structure": true,
+      "revision_checklist": true
+    },
+    "ascii_math_residue": [],
+    "placeholder_hits": [],
+    "concept_explanations": {
+      "present": true,
+      "entry_count": 94,
+      "expected_topics": 94,
+      "visual_decision_count": 94,
+      "missing_visual_decisions": [],
+      "invalid_visual_routes": [],
+      "fallback_visual_decisions": [],
+      "missing_visual_specs": [],
+      "missing_no_visual_reasons": [],
+      "text_ok_with_visual_specs": [],
+      "missing_visual_guidance": [],
+      "incomplete_visual_guidance": [],
+      "text_ok_visual_guidance_errors": [],
+      "external_route_svg_downgrades": [],
+      "external_route_available": true
+    },
+    "visuals": {
+      "present": true,
+      "visual_count": 94,
+      "pending_complex": [],
+      "repeated_prompt_count": 0,
+      "issues": []
+    }
+  },
+  "issues": []
+}

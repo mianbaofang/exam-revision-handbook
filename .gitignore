@@ -25,3 +25,13 @@ designs/
 .specify/
 .superpowers/
 docs/superpowers/
+
+# 本地运行产物与内置解释器（治理证据 JSON 通过下方例外规则保留）
+.uv-python/
+artifacts/*
+!artifacts/as-physics-2027-review/
+artifacts/as-physics-2027-review/*
+!artifacts/as-physics-2027-review/*.json
+as-physics-contact-sheet-all.png
+artifacts/as-physics-2027-review/syllabus-evidence.json
+artifacts/as-physics-2027-review/delivery-contract.json

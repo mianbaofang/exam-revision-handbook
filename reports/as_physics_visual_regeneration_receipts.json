@@ -1,0 +1,141 @@
+{
+  "schema_version": "v1-as-physics-visual-regeneration",
+  "generated_at": "2026-09-08T22:33:28.507Z",
+  "receipts": [
+    {
+      "visual_id": "visual_069",
+      "provider": "APIMart",
+      "model": "gpt-image-2",
+      "task_id": "task_01M21JBP1K0HXDZAQEHK9FSH0N",
+      "size": "4:3",
+      "resolution": "1k",
+      "prompt": "Create a formal International AS Physics 4:3 landscape teaching visual for 'Ultrasound in medicine'. Show a probe sending a short ultrasound pulse through soft tissue to a soft-tissue/bone boundary, with a weaker reflected echo returning to the probe and a receiver trace showing echo time. Make the boundary, incident pulse, reflected echo, soft tissue and bone visually clear. Do not label the reflected wave 180 degrees or claim a fixed phase reversal; show amplitude and time-of-flight only. Include one compact depth relation d = vt/2. English labels only, diagram-led, no paragraphs, no branding, no portrait composition.",
+      "file": "LOCAL_PATH",
+      "byte_size": 1511567,
+      "sha256": "4ee81ba71d65e25fdb89472f21787ad9b71abebab93c2d6113f5bebbcecace94",
+      "submitted": {
+        "code": 200,
+        "data": [
+          {
+            "status": "submitted",
+            "task_id": "task_01M21JBP1K0HXDZAQEHK9FSH0N"
+          }
+        ]
+      },
+      "completed": {
+        "code": 200,
+        "data": {
+          "actual_time": 37,
+          "completed": 1788906727,
+          "cost": 0.0085,
+          "created": 1788906690,
+          "credits_cost": 0.085,
+          "estimated_time": 100,
+          "id": "task_01M21JBP1K0HXDZAQEHK9FSH0N",
+          "progress": 100,
+          "result": {
+            "images": [
+              {
+                "expires_at": 1788993127,
+                "url": [
+                  "https://getapib.org/f/image/1044132076422033-c1fe253e-6dcd-40ab-8592-733c8cd87123-image_6FSCJ5W8M1ZQ8MZWBDEYDA9JG5_0.png"
+                ]
+              }
+            ]
+          },
+          "status": "completed"
+        }
+      }
+    },
+    {
+      "visual_id": "visual_086",
+      "provider": "APIMart",
+      "model": "gpt-image-2",
+      "task_id": "task_01M21JCZC4CB9KKY9HDRX7RZMA",
+      "size": "4:3",
+      "resolution": "1k",
+      "prompt": "Create a formal International AS Physics 4:3 landscape teaching visual for 'Line spectra and energy-level transitions'. Show discrete horizontal atomic energy levels E2 and E1, an electron dropping from E2 to E1 and emitting one photon with hf = Delta E, plus a separate upward arrow for photon absorption. Include a compact line-spectrum strip with separated spectral lines linked to the allowed energy difference. Do not include a dissipation or thermal-energy branch and do not imply a continuous range of transitions. English labels only, diagram-led, short equations only, no paragraphs, no branding, no portrait composition.",
+      "file": "LOCAL_PATH",
+      "byte_size": 1073685,
+      "sha256": "0bdc94e58491a5b86f430e75139dace53d0e0d39405a143723d082292a6275b8",
+      "submitted": {
+        "code": 200,
+        "data": [
+          {
+            "status": "submitted",
+            "task_id": "task_01M21JCZC4CB9KKY9HDRX7RZMA"
+          }
+        ]
+      },
+      "completed": {
+        "code": 200,
+        "data": {
+          "actual_time": 35,
+          "completed": 1788906767,
+          "cost": 0.0085,
+          "created": 1788906732,
+          "credits_cost": 0.085,
+          "estimated_time": 100,
+          "id": "task_01M21JCZC4CB9KKY9HDRX7RZMA",
+          "progress": 100,
+          "result": {
+            "images": [
+              {
+                "expires_at": 1788993167,
+                "url": [
+                  "https://getapib.org/f/image/4057023211500604-749d3c37-cfea-4c5c-b434-8b41532d4d6f-image_3WR9D9KSVV9K9THMXYERZ1R799_0.png"
+                ]
+              }
+            ]
+          },
+          "status": "completed"
+        }
+      }
+    },
+    {
+      "visual_id": "visual_091",
+      "provider": "APIMart",
+      "model": "gpt-image-2",
+      "task_id": "task_01M21JE897EAHTYBVBBH44T6X3",
+      "size": "4:3",
+      "resolution": "1k",
+      "prompt": "Create a formal International AS Physics 4:3 landscape teaching visual for 'Electron diffraction'. Show an electron gun sending a beam into a thin graphite crystal or polycrystalline film, followed by a screen or detector displaying concentric diffraction rings. Include a small inset contrasting individual electron detections with the accumulated ring pattern, so the wave evidence is clear. Use only short labels such as electron beam, graphite crystal, detector, rings, wave evidence. Do not show a slit or transmission grating and do not include d sin theta = n lambda or any other grating equation. No paragraphs, no branding, no portrait composition.",
+      "file": "LOCAL_PATH",
+      "byte_size": 1549806,
+      "sha256": "944971b7a47263eb4d969f66128a485ce939a517ebeb5041aafc4b7efcece339",
+      "submitted": {
+        "code": 200,
+        "data": [
+          {
+            "status": "submitted",
+            "task_id": "task_01M21JE897EAHTYBVBBH44T6X3"
+          }
+        ]
+      },
+      "completed": {
+        "code": 200,
+        "data": {
+          "actual_time": 32,
+          "completed": 1788906806,
+          "cost": 0.0085,
+          "created": 1788906774,
+          "credits_cost": 0.085,
+          "estimated_time": 100,
+          "id": "task_01M21JE897EAHTYBVBBH44T6X3",
+          "progress": 100,
+          "result": {
+            "images": [
+              {
+                "expires_at": 1788993206,
+                "url": [
+                  "https://getapib.org/f/image/6901357496854660-0808c726-6e4a-4a6a-82f1-30f7b3677fff-image_6SPPFZ090BVDBQREFXXNYDFJ1C_0.png"
+                ]
+              }
+            ]
+          },
+          "status": "completed"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "requested_subject": "OxfordAQA International AS Physics 9631",
+  "image_provider": "custom",
+  "explanation_style": "formal",
+  "output_language": "zh-CN",
+  "exam_year": "2027",
+  "image_model": "gpt-image-2",
+  "image_endpoint_url": "https://api.apib.ai",
+  "image_api_key_env": "APIMART_API_KEY",
+  "external_visual_capability": "yes",
+  "image_method": "apimart-gpt-image-2",
+  "image_route_verified": true,
+  "visual_policy_enforced": true
+}

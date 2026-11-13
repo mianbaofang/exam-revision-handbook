@@ -1,0 +1,748 @@
+{
+  "SI base units and prefixes": {
+    "explanations": [
+      "The six base quantities required here are mass, length, time, amount of substance, thermodynamic temperature and electric current. Their SI base units are kilogram (kg), metre (m), second (s), mole (mol), kelvin (K) and ampere (A), respectively.",
+      "A prefix multiplies the unit by a power of ten: T = 10^12, G = 10^9, M = 10^6, k = 10^3, c = 10^-2, m = 10^-3, μ = 10^-6, n = 10^-9, p = 10^-12 and f = 10^-15. Convert to the unprefixed SI unit before combining quantities in an equation.",
+      "A prefix applies to the whole unit symbol. For example, 1 mm² = (10^-3 m)² = 10^-6 m², not 10^-3 m². Candela definitions and dimensional analysis are outside this AS scope."
+    ],
+    "essence": "Match each required physical quantity to its SI base unit and treat every prefix as an exact power-of-ten multiplier.",
+    "analogy": "A prefix is a scale setting on a measuring instrument: the displayed number changes, but the physical quantity does not.",
+    "mastery_summary": "You can name the required SI base units, translate every listed prefix into standard form, and handle squared or cubed prefixed units correctly.",
+    "mini_worked_example": "Convert 3.6 mg mm^-3 into kg m^-3.",
+    "worked_solution_steps": [
+      "Convert the mass unit: 3.6 mg = 3.6 × 10^-6 kg.",
+      "Convert the volume unit: 1 mm³ = (10^-3 m)³ = 10^-9 m³.",
+      "Divide using the converted units: 3.6 × 10^-6 kg / 10^-9 m³ = 3.6 × 10^3 kg m^-3.",
+      "State the result in standard SI form: 3.6 × 10^3 kg m^-3."
+    ],
+    "pitfall": "Do not apply a prefix factor only once when the unit is squared or cubed."
+  },
+  "Energy-unit conversion": {
+    "explanations": [
+      "The electronvolt is an energy unit: 1 eV = 1.60 × 10^-19 J. Therefore convert eV to J by multiplying by 1.60 × 10^-19, and J to eV by dividing by this value.",
+      "A kilowatt-hour is the energy transferred by a power of 1 kW for 1 h. Hence 1 kW h = 1000 W × 3600 s = 3.60 × 10^6 J.",
+      "These conversions change only the unit, not the amount of energy. Preserve an appropriate number of significant figures from the data."
+    ],
+    "essence": "Convert energy units through fixed equality factors: 1 eV = 1.60 × 10^-19 J and 1 kW h = 3.60 × 10^6 J.",
+    "analogy": "Converting joules, electronvolts and kilowatt-hours is like expressing the same distance in metres, micrometres or kilometres.",
+    "mastery_summary": "You can move reliably between J, eV and kW h and can derive the kW h conversion from power multiplied by time.",
+    "mini_worked_example": "A device transfers 0.75 kW h of energy. Calculate this energy in joules and in electronvolts.",
+    "worked_solution_steps": [
+      "Use 1 kW h = 3.60 × 10^6 J.",
+      "Energy = 0.75 × 3.60 × 10^6 = 2.70 × 10^6 J.",
+      "Use 1 eV = 1.60 × 10^-19 J, so energy in eV = (2.70 × 10^6) / (1.60 × 10^-19).",
+      "Energy = 1.69 × 10^25 eV, to three significant figures."
+    ],
+    "pitfall": "Do not treat kW h as a unit of power; the multiplication by time makes it a unit of energy."
+  },
+  "Measurement errors and quality": {
+    "explanations": [
+      "Random error causes readings to scatter unpredictably about a mean. Repeated measurements and averaging reduce its effect, although they do not remove the underlying variation.",
+      "Systematic error shifts readings consistently in one direction, for example through a zero error or poor calibration. Repetition does not remove it; the method or instrument must be checked, calibrated or corrected.",
+      "Precision describes the spread of repeated values, accuracy describes closeness to the accepted value, resolution is the smallest detectable change, repeatability uses the same method and operator, and reproducibility tests changed conditions such as operator or equipment."
+    ],
+    "essence": "Diagnose whether measurement quality is limited by scatter, bias or instrument resolution, then choose a remedy that addresses that cause.",
+    "analogy": "Shots clustered away from a target are precise but systematically inaccurate; widely scattered shots show poor precision.",
+    "mastery_summary": "You can distinguish random from systematic error, select an effective improvement, and use accuracy, precision, resolution, repeatability and reproducibility correctly.",
+    "mini_worked_example": "A balance reads 0.18 g when empty. Five readings of a sample are 12.42, 12.39, 12.44, 12.40 and 12.43 g. Identify the two error features and state suitable actions.",
+    "worked_solution_steps": [
+      "The non-zero empty reading is a zero error and therefore a systematic error.",
+      "Correct each reading by subtracting 0.18 g, or re-zero/calibrate the balance before measuring.",
+      "The variation among the five readings is random error.",
+      "Repeat more readings and calculate a mean to reduce the effect of the random scatter; repetition alone would not remove the 0.18 g bias."
+    ],
+    "pitfall": "Do not claim that averaging removes a systematic error."
+  },
+  "Uncertainty propagation and reporting": {
+    "explanations": [
+      "Absolute uncertainty has the same unit as the measured quantity. Fractional uncertainty is Δx/x, and percentage uncertainty is (Δx/x) × 100%.",
+      "For addition or subtraction, add absolute uncertainties. For multiplication or division, add fractional or percentage uncertainties. If y = x^n, the fractional uncertainty in y is |n| times the fractional uncertainty in x.",
+      "For a straight-line graph, draw acceptable steepest and shallowest lines through the error bars. The spread in their gradients or intercepts gives an uncertainty estimate; a common symmetric report is half the full range.",
+      "Quote the uncertainty to one significant figure, or sometimes two when its first digit is 1 or 2, then round the measured value to the same decimal place."
+    ],
+    "essence": "Propagate uncertainties using the operation performed, then round the value and its uncertainty consistently.",
+    "analogy": "Each measurement contributes a margin to the final result; the arithmetic operation determines whether those margins add as amounts or as proportions.",
+    "mastery_summary": "You can convert among uncertainty forms, combine uncertainties for all required operations and powers, use error bars, and report a correctly rounded final result.",
+    "mini_worked_example": "A rectangle has length (12.4 ± 0.1) cm and width (5.2 ± 0.1) cm. Calculate its area with an absolute uncertainty.",
+    "worked_solution_steps": [
+      "Calculate the area: A = 12.4 × 5.2 = 64.48 cm².",
+      "For multiplication, add fractional uncertainties: ΔA/A = 0.1/12.4 + 0.1/5.2 = 0.0273.",
+      "Convert to an absolute uncertainty: ΔA = 0.0273 × 64.48 = 1.76 cm².",
+      "Round the uncertainty and value consistently: A = (64 ± 2) cm²."
+    ],
+    "pitfall": "Do not add absolute uncertainties for a product or add percentage uncertainties for a sum."
+  },
+  "Order-of-magnitude estimation": {
+    "explanations": [
+      "An order of magnitude is a power of ten. Write the estimate in standard form and choose the nearest power of ten rather than preserving unjustified detail.",
+      "A useful estimate combines simple geometric or physical assumptions with familiar benchmark values. State assumptions so that the reasoning can be assessed.",
+      "For a value a × 10^n with 1 ≤ a < 10, the nearest order of magnitude is 10^n when a < √10 and 10^(n+1) when a > √10."
+    ],
+    "essence": "Reduce a physical situation to defensible approximate values and powers of ten, then keep only the scale justified by those assumptions.",
+    "analogy": "An order-of-magnitude estimate is a map viewed from high altitude: it shows scale and direction, not street-level detail.",
+    "mastery_summary": "You can choose plausible estimates, combine them transparently and state the nearest power-of-ten result without false precision.",
+    "mini_worked_example": "Estimate the order of magnitude of the mass of air in a classroom 8 m long, 6 m wide and 3 m high. Take air density as 1 kg m^-3.",
+    "worked_solution_steps": [
+      "Estimate the room volume: V ≈ 8 × 6 × 3 ≈ 1.4 × 10^2 m³.",
+      "Use m = ρV with ρ ≈ 1 kg m^-3.",
+      "The estimated mass is m ≈ 1 × 1.4 × 10^2 ≈ 1.4 × 10^2 kg.",
+      "The coefficient 1.4 is below √10, so the nearest order of magnitude is 10^2 kg."
+    ],
+    "pitfall": "Do not give several significant figures when the input values were only rough estimates."
+  },
+  "Scalars, vectors and equilibrium": {
+    "explanations": [
+      "A scalar has magnitude only, whereas a vector has magnitude and direction. Distance, speed and mass are scalars; displacement, velocity, acceleration and weight are vectors.",
+      "Vectors may be added head-to-tail by scale drawing or resolved into perpendicular components and combined by calculation. A negative component indicates direction relative to the chosen axis, not a negative magnitude.",
+      "For a point in equilibrium, the vector sum of all forces is zero. Resolve two or three coplanar forces so that ΣF_x = 0 and ΣF_y = 0.",
+      "Equilibrium means zero acceleration, so an object may be at rest or moving with constant velocity."
+    ],
+    "essence": "Keep direction attached to every vector and identify equilibrium by zero resultant force, not merely by zero velocity.",
+    "analogy": "Vector addition is a journey made of directed steps; if the steps close into a polygon, the resultant is zero.",
+    "mastery_summary": "You can classify scalar and vector quantities, add or resolve vectors, and solve coplanar point-force equilibrium problems.",
+    "mini_worked_example": "A 50 N weight is supported by a horizontal cable and a second cable at 35° above the horizontal. Find the tension in the inclined cable.",
+    "worked_solution_steps": [
+      "The object is in equilibrium, so the vertical components of force sum to zero.",
+      "Only the inclined tension T has an upward component, equal to T sin 35°.",
+      "Set T sin 35° = 50 N.",
+      "T = 50/sin 35° = 87 N, to two significant figures."
+    ],
+    "pitfall": "Do not use ΣF = 0 to mean that every individual force is zero; non-zero forces can balance."
+  },
+  "Moments, couples and centre of mass": {
+    "explanations": [
+      "The moment of a force about a point is force multiplied by the perpendicular distance from that point to the force's line of action: moment = Fd⊥.",
+      "A couple consists of equal, opposite and parallel coplanar forces separated by a perpendicular distance. Its resultant force is zero but its moment is one force multiplied by the separation of the force lines.",
+      "For rotational equilibrium, the sum of clockwise moments about any point equals the sum of anticlockwise moments about that point.",
+      "The centre of mass of a uniform regular solid lies at its geometric centre because the mass distribution is symmetric."
+    ],
+    "essence": "Rotational effect depends on force and perpendicular lever arm; equilibrium requires the clockwise and anticlockwise effects to balance.",
+    "analogy": "A door opens more easily at the handle than near the hinge because the same force has a larger perpendicular lever arm.",
+    "mastery_summary": "You can calculate moments and couple moments, apply the principle of moments and locate the centre of mass of a uniform regular solid.",
+    "mini_worked_example": "A uniform 4.0 m beam of weight 200 N is hinged at one end and held horizontal by an upward force at the other end. Find the upward force.",
+    "worked_solution_steps": [
+      "The beam's centre of mass is at its geometric centre, 2.0 m from the hinge.",
+      "Take moments about the hinge so that the hinge force has zero moment.",
+      "For equilibrium: upward force × 4.0 = 200 × 2.0.",
+      "The upward force is 100 N."
+    ],
+    "pitfall": "Use the perpendicular distance to the line of action, not simply the distance to the point where the force is applied."
+  },
+  "Kinematic quantities and average values": {
+    "explanations": [
+      "Displacement is the directed change in position, while distance is total path length. Velocity is the rate of change of displacement, v = Δs/Δt; speed is the rate of change of distance.",
+      "Acceleration is the rate of change of velocity, a = Δv/Δt. Acceleration and velocity may have opposite signs when an object is slowing down.",
+      "Average velocity is total displacement divided by total time. Instantaneous velocity is the velocity at one moment and may be obtained from the gradient of a tangent to a displacement-time graph."
+    ],
+    "essence": "Use directed changes for displacement, velocity and acceleration, and distinguish an interval average from a value at one instant.",
+    "analogy": "Average velocity describes the whole trip with one arrow; instantaneous velocity is the reading at one precise moment.",
+    "mastery_summary": "You can define and calculate displacement, speed, velocity and acceleration, including correct signs and average-versus-instantaneous distinctions.",
+    "mini_worked_example": "A runner completes one 400 m lap in 80 s and finishes at the starting point. Find the average speed and average velocity.",
+    "worked_solution_steps": [
+      "The total distance travelled is 400 m.",
+      "Average speed = distance/time = 400/80 = 5.0 m s^-1.",
+      "The final position equals the initial position, so displacement is 0 m.",
+      "Average velocity = displacement/time = 0/80 = 0 m s^-1."
+    ],
+    "pitfall": "Do not use total distance when calculating average velocity."
+  },
+  "Motion graphs": {
+    "explanations": [
+      "The gradient of a displacement-time graph is velocity. A curved graph has changing velocity, and its instantaneous velocity is the gradient of a tangent.",
+      "The gradient of a velocity-time graph is acceleration, while the signed area between the graph and the time axis is displacement.",
+      "The signed area under an acceleration-time graph is change in velocity. Areas below the time axis contribute negatively."
+    ],
+    "essence": "Gradients give rates of change and signed areas give accumulated change; identify both axes before interpreting either.",
+    "analogy": "A gradient tells how fast the next quantity is being produced, while an area totals everything produced over an interval.",
+    "mastery_summary": "You can interpret straight and curved motion graphs, obtain instantaneous rates from tangents and use signed areas correctly.",
+    "mini_worked_example": "A velocity-time graph rises uniformly from 2.0 m s^-1 at t = 0 to 8.0 m s^-1 at t = 3.0 s. Find the acceleration and displacement.",
+    "worked_solution_steps": [
+      "Acceleration is the graph gradient: a = (8.0 - 2.0)/3.0 = 2.0 m s^-2.",
+      "Displacement is the area under the velocity-time graph.",
+      "Use the trapezium area: s = ½(2.0 + 8.0) × 3.0.",
+      "The displacement is 15 m."
+    ],
+    "pitfall": "Do not call the area under a displacement-time graph a standard kinematic quantity; velocity comes from its gradient."
+  },
+  "Uniform acceleration equations": {
+    "explanations": [
+      "The equations v = u + at, s = (u + v)t/2, s = ut + ½at² and v² = u² + 2as apply only when acceleration is constant.",
+      "Choose a positive direction before assigning signs. Quantities directed opposite to that axis, including acceleration or displacement, are negative.",
+      "Select the equation containing the known quantities and the required unknown; avoid introducing an unnecessary extra unknown."
+    ],
+    "essence": "For constant acceleration, define a direction, assign signs consistently and choose the equation that links the available data directly to the target.",
+    "analogy": "The four equations are different views of the same constant-acceleration motion, each omitting one variable.",
+    "mastery_summary": "You can verify that acceleration is uniform, select an efficient equation and solve one-dimensional motion with consistent signs.",
+    "mini_worked_example": "A car moving at 20 m s^-1 brakes uniformly at 4.0 m s^-2. Calculate its stopping distance.",
+    "worked_solution_steps": [
+      "Choose the initial direction as positive: u = 20 m s^-1, v = 0 and a = -4.0 m s^-2.",
+      "Time is not given or required, so use v² = u² + 2as.",
+      "Substitute: 0² = 20² + 2(-4.0)s.",
+      "Solve to obtain s = 50 m."
+    ],
+    "pitfall": "Do not use these equations when acceleration varies with time."
+  },
+  "Free-fall measurement of g": {
+    "explanations": [
+      "For an object released from rest and falling with negligible drag, s = ½gt². A graph of s against t² should therefore be a straight line through the origin with gradient g/2.",
+      "Measure a range of fall distances and corresponding times rather than calculating g from one reading. Repeats reduce timing scatter.",
+      "The measured distance must correspond to the object's displacement during the timed interval. Automatic timing such as light gates reduces reaction-time error."
+    ],
+    "essence": "Linearise free fall as s against t² so that many measurements yield g from twice the best-fit gradient.",
+    "analogy": "Squaring the time straightens the curved free-fall relationship, turning g into a measurable graph gradient.",
+    "mastery_summary": "You can plan and evaluate a free-fall determination of g, construct the correct graph and extract g with units.",
+    "mini_worked_example": "A best-fit graph of fall distance s against t² has gradient 4.82 m s^-2. Determine g.",
+    "worked_solution_steps": [
+      "For release from rest, s = ½gt².",
+      "Compare with y = mx: the gradient of s against t² is g/2.",
+      "Therefore g = 2 × gradient = 2 × 4.82 m s^-2.",
+      "The measured gravitational field strength is g = 9.64 m s^-2."
+    ],
+    "pitfall": "Do not report the gradient of an s-against-t² graph as g; it equals g/2."
+  },
+  "Projectile components and calculation": {
+    "explanations": [
+      "In a uniform gravitational field with negligible air resistance, horizontal and vertical motions are independent but share the same time.",
+      "Resolve an initial speed u at angle θ into u_x = u cos θ and u_y = u sin θ. Horizontal acceleration is zero and vertical acceleration is g downward.",
+      "Apply the uniform-acceleration equations separately in each direction. Horizontal velocity remains constant, while vertical velocity changes uniformly."
+    ],
+    "essence": "Split projectile motion into constant horizontal velocity and uniformly accelerated vertical motion, linked by a common time.",
+    "analogy": "A projectile performs two motions at once: a steady sideways glide and an independent vertical fall.",
+    "mastery_summary": "You can resolve launch velocity, choose signs, solve each component with uniform-acceleration equations and recombine information at a common time.",
+    "mini_worked_example": "A ball is launched at 20 m s^-1 at 30° above the horizontal. Neglect air resistance and take g = 9.81 m s^-2. Find the time to reach maximum height and the horizontal distance travelled in that time.",
+    "worked_solution_steps": [
+      "Resolve the initial velocity: u_y = 20 sin 30° = 10 m s^-1 and u_x = 20 cos 30° = 17.3 m s^-1.",
+      "At maximum height v_y = 0. Using v_y = u_y - gt gives t = 10/9.81 = 1.02 s.",
+      "Horizontal speed is constant, so x = u_x t.",
+      "x = 17.3 × 1.02 = 17.7 m."
+    ],
+    "pitfall": "Do not apply g to the horizontal component when air resistance is neglected."
+  },
+  "Drag, lift and terminal speed": {
+    "explanations": [
+      "Drag is a resistive force opposite relative motion through a fluid, and it generally increases with speed. Friction similarly opposes relative motion between surfaces.",
+      "Lift acts approximately perpendicular to the relative airflow and can support an aircraft or alter a vehicle's normal force and grip.",
+      "A falling object reaches terminal speed when the upward drag balances its weight. The resultant force and acceleration are then zero, although velocity remains non-zero.",
+      "Air resistance makes a projectile path non-symmetric and reduces range and maximum height. A vehicle's maximum steady speed occurs when its driving force equals the total resistance."
+    ],
+    "essence": "As speed changes, fluid forces change the resultant force until a possible balance produces constant terminal or maximum speed.",
+    "analogy": "Moving faster through air is like pushing through increasingly resistant water: the opposing force grows until it can match the driving force.",
+    "mastery_summary": "You can describe drag, lift and friction qualitatively and explain terminal speed, altered trajectories and maximum vehicle speed using force balance.",
+    "mini_worked_example": "A skydiver of mass 75 kg falls at constant terminal speed. Take g = 9.8 m s^-2. State the drag force and explain what happens immediately after the parachute opens.",
+    "worked_solution_steps": [
+      "At terminal speed, acceleration is zero, so the resultant force is zero.",
+      "The weight is mg = 75 × 9.8 = 735 N downward.",
+      "Therefore the drag force is 735 N upward at the original terminal speed.",
+      "Opening the parachute greatly increases drag so drag initially exceeds weight; the resultant is upward and the downward speed decreases until a new, lower terminal speed is reached."
+    ],
+    "pitfall": "Do not say that forces are absent at terminal speed; weight and drag are present and balanced."
+  },
+  "Newton's laws and F = ma": {
+    "explanations": [
+      "Newton's first law states that an object remains at rest or moves with constant velocity unless acted on by a resultant external force.",
+      "Newton's second law states that resultant force equals the rate of change of momentum. For constant mass this becomes ΣF = ma.",
+      "Newton's third law pairs forces of the same type acting on different interacting bodies. The forces are equal in magnitude, opposite in direction and simultaneous, so they do not cancel on one free-body diagram."
+    ],
+    "essence": "Relate motion to the resultant external force, and keep third-law force pairs on their two separate interacting bodies.",
+    "analogy": "A free-body diagram is an account for one object: only forces acting on that object belong in its force total.",
+    "mastery_summary": "You can state all three laws, construct a correct force balance and apply ΣF = ma when mass is constant.",
+    "mini_worked_example": "A 1200 kg car has a driving force of 3000 N and resistive forces totalling 900 N. Find its acceleration and identify the third-law partner to the road's forward force on the tyres.",
+    "worked_solution_steps": [
+      "Calculate the forward resultant force: ΣF = 3000 - 900 = 2100 N.",
+      "Use ΣF = ma because the car's mass is constant.",
+      "a = 2100/1200 = 1.75 m s^-2.",
+      "The third-law partner is the tyres' backward force on the road; it acts on the road, not on the car."
+    ],
+    "pitfall": "Do not pair weight with the normal contact force as a Newton's third-law pair; both act on the same object."
+  },
+  "Momentum conservation and collisions": {
+    "explanations": [
+      "Linear momentum is p = mv and is a vector. Assign a positive direction so that objects moving oppositely have momenta with opposite signs.",
+      "Total momentum is conserved in an isolated system: total momentum before an interaction equals total momentum after it. External impulse must be negligible over the interaction time.",
+      "An elastic collision conserves total kinetic energy as well as momentum. An inelastic collision conserves momentum but transfers some kinetic energy to other stores; if objects stick together, it is perfectly inelastic.",
+      "In an explosion, initially stored energy becomes kinetic energy, while the momenta of the fragments still sum to the initial momentum."
+    ],
+    "essence": "Track momentum with signs across an isolated interaction, then use kinetic energy separately to classify the collision.",
+    "analogy": "Momentum is redistributed among objects like a fixed signed total, even when kinetic energy changes form.",
+    "mastery_summary": "You can solve one-dimensional collisions and explosions using signed momentum and distinguish elastic from inelastic outcomes by kinetic energy.",
+    "mini_worked_example": "A 0.40 kg trolley moving at 3.0 m s^-1 collides with a stationary 0.60 kg trolley and they stick together. Find their common speed and classify the collision.",
+    "worked_solution_steps": [
+      "Initial momentum = 0.40 × 3.0 + 0.60 × 0 = 1.2 kg m s^-1.",
+      "The combined mass after collision is 0.40 + 0.60 = 1.00 kg.",
+      "Conservation of momentum gives 1.2 = 1.00v, so v = 1.2 m s^-1 in the original direction.",
+      "Because the trolleys stick together and kinetic energy decreases, the collision is perfectly inelastic."
+    ],
+    "pitfall": "Do not assume kinetic energy is conserved in every collision; momentum conservation is the general isolated-system rule."
+  },
+  "Impulse and force-time graphs": {
+    "explanations": [
+      "Resultant force is the rate of change of momentum: F = Δp/Δt for a constant average force, or the instantaneous gradient dp/dt conceptually.",
+      "Impulse J equals change in momentum, J = Δp, and also equals FΔt for constant force.",
+      "For a varying force, impulse is the signed area under the force-time graph. Its unit N s is equivalent to kg m s^-1."
+    ],
+    "essence": "Impulse accumulates force over time and produces exactly the corresponding vector change in momentum.",
+    "analogy": "A brief large push and a longer small push can deliver the same impulse if their force-time areas are equal.",
+    "mastery_summary": "You can link force, interaction time and momentum change and calculate impulse from rectangular, triangular or composite force-time areas.",
+    "mini_worked_example": "A force on a ball rises linearly from zero to 600 N in 4.0 ms and then falls linearly to zero over the next 2.0 ms. Find the impulse.",
+    "worked_solution_steps": [
+      "The force-time region is a triangle with total base 6.0 ms = 6.0 × 10^-3 s.",
+      "Impulse equals the graph area: J = ½ × base × height.",
+      "J = ½ × 6.0 × 10^-3 × 600 = 1.8 N s.",
+      "Therefore the ball's momentum changes by 1.8 kg m s^-1 in the force direction."
+    ],
+    "pitfall": "Convert milliseconds to seconds before calculating an impulse in N s."
+  },
+  "Impact time and force reduction": {
+    "explanations": [
+      "For a fixed change in momentum, average force is F = Δp/Δt. Increasing the time over which an object is brought to rest reduces the average force.",
+      "Crumple zones, airbags, helmets, packaging and landing mats deform to extend stopping time. They do not remove the momentum change; they reduce the force associated with it.",
+      "A real impact force is often variable, so the force-time area remains the impulse. Safety features generally lower and broaden the force-time pulse."
+    ],
+    "essence": "When momentum change is fixed, extending collision time reduces average force.",
+    "analogy": "Catching an egg by moving your hands backward gives the same stop but spreads it over a longer time.",
+    "mastery_summary": "You can use impulse reasoning to explain how safety features reduce injury risk without claiming that they eliminate momentum change.",
+    "mini_worked_example": "A 0.15 kg ball travelling at 20 m s^-1 is stopped. Compare the average force if the stopping time is 0.010 s or 0.050 s.",
+    "worked_solution_steps": [
+      "The magnitude of momentum change is Δp = mv = 0.15 × 20 = 3.0 kg m s^-1.",
+      "For 0.010 s, average force = 3.0/0.010 = 300 N.",
+      "For 0.050 s, average force = 3.0/0.050 = 60 N.",
+      "Increasing contact time by a factor of five reduces the average force by a factor of five."
+    ],
+    "pitfall": "Do not state that a crumple zone reduces the car's momentum change when the car still comes to rest."
+  },
+  "Work and force-displacement graphs": {
+    "explanations": [
+      "Work done by a constant force is W = Fs cos θ, where θ is the angle between force and displacement. Only the component parallel to displacement transfers energy by work.",
+      "The area under a force-displacement graph equals work done, including when the force varies. Calculate areas from the graph shape and axis scales.",
+      "Work is a scalar measured in joules. A force perpendicular to displacement has zero work because cos 90° = 0."
+    ],
+    "essence": "Work measures energy transfer by the component of force along displacement, or equivalently the area under F against s.",
+    "analogy": "Only the part of a push pointing along the path moves the object forward; a sideways push does no work along that path.",
+    "mastery_summary": "You can resolve a force for work calculations and obtain work from constant or variable force-displacement graphs.",
+    "mini_worked_example": "A 40 N force pulls a box 5.0 m along a floor at 60° above the horizontal. Calculate the work done by this force.",
+    "worked_solution_steps": [
+      "The displacement is horizontal, so use the horizontal component of the force.",
+      "W = Fs cos θ = 40 × 5.0 × cos 60°.",
+      "cos 60° = 0.50, so W = 100 J.",
+      "The work done by the 40 N force is 1.0 × 10^2 J."
+    ],
+    "pitfall": "Do not use the full force in W = Fs unless force and displacement are parallel."
+  },
+  "Power and efficiency": {
+    "explanations": [
+      "Power is the rate of energy transfer or work done: P = ΔW/Δt. At constant velocity with a force parallel to motion, P = Fv.",
+      "For a varying force or speed, instantaneous power is the product of force and velocity components parallel to one another. Average power is total work divided by total time.",
+      "Efficiency = useful output power/input power, or the equivalent energy ratio for the same process. It has no unit and is commonly expressed as a percentage."
+    ],
+    "essence": "Power describes how quickly energy is transferred; efficiency compares the useful part with the total input.",
+    "analogy": "Two pumps may transfer the same total water, but the one that does it sooner has greater power.",
+    "mastery_summary": "You can calculate average and instantaneous power, select the correct force component and express efficiency as a fraction or percentage.",
+    "mini_worked_example": "A lift raises a 600 kg load vertically at constant speed 1.5 m s^-1. Its input power is 12 kW. Take g = 9.8 m s^-2. Find useful output power and efficiency.",
+    "worked_solution_steps": [
+      "At constant speed, lifting force equals weight: F = mg = 600 × 9.8 = 5880 N.",
+      "Useful power = Fv = 5880 × 1.5 = 8820 W.",
+      "Efficiency = useful output/input = 8820/12000 = 0.735.",
+      "The efficiency is 73.5%, or 74% to two significant figures."
+    ],
+    "pitfall": "Do not calculate efficiency from useful output divided by wasted output; the denominator is total input."
+  },
+  "Energy conservation and stores": {
+    "explanations": [
+      "Energy is conserved: it cannot be created or destroyed, but it can be transferred between stores or to the surroundings by work, heating, radiation or electrical transfer.",
+      "The change in gravitational potential energy near Earth's surface is ΔE_p = mgΔh. Kinetic energy is E_k = ½mv².",
+      "Choose clear initial and final states, then equate the energy decrease from one store with the energy increase in other stores when transfers to the surroundings are negligible or included explicitly."
+    ],
+    "essence": "Account for energy transfer between defined initial and final states, using mgh and ½mv² with a consistent height reference.",
+    "analogy": "Energy accounting is a balanced ledger: an amount leaving one store must appear in another store or in the surroundings.",
+    "mastery_summary": "You can apply conservation of energy and calculate changes in gravitational potential and kinetic energy with correct units and reference levels.",
+    "mini_worked_example": "A 0.50 kg ball is released from rest 12 m above the ground. Ignore air resistance. Find its speed just before reaching the ground.",
+    "worked_solution_steps": [
+      "Initial gravitational potential energy relative to the ground is mgh = 0.50 × 9.8 × 12.",
+      "The ball starts from rest, so its initial kinetic energy is zero.",
+      "Conservation of energy gives mgh = ½mv²; mass cancels.",
+      "v = √(2gh) = √(2 × 9.8 × 12) = 15.3 m s^-1."
+    ],
+    "pitfall": "Do not use mgh as an absolute energy without specifying a reference height; only changes in gravitational potential energy are physical."
+  },
+  "Resistive and elastic energy transfers": {
+    "explanations": [
+      "When a resistive force acts opposite to motion, work is done against it. This transfers energy from moving or gravitational stores to internal energy stores of the object and surroundings.",
+      "An elastic object stores energy when stretched or compressed within its elastic behaviour. In an ideal return, that elastic potential energy can transfer back to kinetic or gravitational potential energy.",
+      "A complete energy equation includes every relevant transfer: for example, loss of gravitational potential energy = gain in kinetic energy + work done against resistance."
+    ],
+    "essence": "Use conservation of energy while explicitly including work against resistance and any elastic store involved.",
+    "analogy": "A resistive force is an energy diversion: some energy that could have become motion is instead spread as heating to the surroundings.",
+    "mastery_summary": "You can write and solve energy balances involving gravitational, kinetic and elastic potential energy together with resistive work.",
+    "mini_worked_example": "A 2.0 kg crate descends 3.0 m and reaches 6.0 m s^-1. Calculate the work done against resistive forces. Take g = 9.8 m s^-2.",
+    "worked_solution_steps": [
+      "The loss of gravitational potential energy is mgh = 2.0 × 9.8 × 3.0 = 58.8 J.",
+      "The gain in kinetic energy is ½mv² = ½ × 2.0 × 6.0² = 36.0 J.",
+      "Energy transferred against resistance = 58.8 - 36.0.",
+      "The work done against resistive forces is 22.8 J."
+    ],
+    "pitfall": "Do not set mgh equal to ½mv² when resistance has done work."
+  },
+  "Density, Hooke's law and spring constant": {
+    "explanations": [
+      "Density is mass per unit volume: ρ = m/V. Use SI units kg m^-3 unless another unit is explicitly required.",
+      "Hooke's law states that extension is proportional to applied force only up to the limit of proportionality. For a spring in this region, F = kΔL, where k is stiffness in N m^-1.",
+      "The elastic limit is the greatest load for which the object returns to its original length when the force is removed. It is distinct from the limit of proportionality."
+    ],
+    "essence": "Density compares mass with volume; a Hookean spring has a constant force-per-extension ratio only within its proportional region.",
+    "analogy": "The spring constant is the stiffness of a ruler: a larger k means more force is needed for the same extension.",
+    "mastery_summary": "You can calculate density, identify the Hooke's-law region, use F = kΔL and distinguish the proportional and elastic limits.",
+    "mini_worked_example": "A spring extends by 4.0 cm under a 6.0 N load and remains within its limit of proportionality. Find k.",
+    "worked_solution_steps": [
+      "Convert extension to SI units: ΔL = 4.0 cm = 0.040 m.",
+      "Use F = kΔL.",
+      "Rearrange: k = F/ΔL = 6.0/0.040.",
+      "The spring constant is 150 N m^-1."
+    ],
+    "pitfall": "Do not substitute extension in centimetres into F = kΔL when k is required in N m^-1."
+  },
+  "Stress, strain and elastic strain energy": {
+    "explanations": [
+      "Tensile stress is force divided by original cross-sectional area, σ = F/A. Tensile strain is extension divided by original length, ε = ΔL/L, and has no unit.",
+      "Breaking stress is the stress at fracture. It depends on cross-sectional area as well as breaking force, so it is appropriate for comparing specimens of different sizes.",
+      "The energy stored elastically is the area under a force-extension graph. For a linear Hookean region, E = ½FΔL."
+    ],
+    "essence": "Normalise stretching force and extension by original dimensions, and obtain stored energy from the force-extension area.",
+    "analogy": "Stress and strain separate material behaviour from specimen size, like comparing pressure rather than total force.",
+    "mastery_summary": "You can calculate stress, strain, breaking stress and elastic strain energy with correct dimensions and graph interpretation.",
+    "mini_worked_example": "A wire of area 2.0 × 10^-6 m² extends by 1.5 mm under a 120 N force in its linear region. Find tensile stress and stored energy.",
+    "worked_solution_steps": [
+      "Tensile stress = F/A = 120/(2.0 × 10^-6) = 6.0 × 10^7 Pa.",
+      "Convert extension: ΔL = 1.5 mm = 1.5 × 10^-3 m.",
+      "In the linear region, stored energy = ½FΔL.",
+      "E = ½ × 120 × 1.5 × 10^-3 = 9.0 × 10^-2 J."
+    ],
+    "pitfall": "Do not use stretched length or changed area in the AS definitions; use original length and original area."
+  },
+  "Material behaviour graphs": {
+    "explanations": [
+      "On a force-extension graph, the initial straight section is the proportional region. Beyond it, extension may still be elastic until the elastic limit; after that limit, permanent plastic deformation remains when load is removed.",
+      "Fracture is the point where the specimen breaks. A brittle material fractures with little plastic deformation, whereas a ductile material shows substantial plastic extension before fracture.",
+      "Stress-strain graphs permit comparison between materials of different dimensions. Their initial gradient is Young modulus for a linear elastic material."
+    ],
+    "essence": "Read graph regions as changes in material response: proportional, elastic, plastic and fracture are distinct ideas.",
+    "analogy": "A material graph records response as demand rises, from recoverable deformation to permanent change and eventual failure.",
+    "mastery_summary": "You can identify proportional, elastic, plastic and fracture behaviour and distinguish brittle from ductile response on the relevant graph.",
+    "mini_worked_example": "A wire is loaded beyond its elastic limit but below fracture, then unloaded. Describe the unloading result and the material behaviour demonstrated.",
+    "worked_solution_steps": [
+      "The wire was taken beyond its elastic limit, so complete recovery is no longer possible.",
+      "On unloading, extension decreases because the material still has elastic response.",
+      "The wire does not return to its original length.",
+      "The remaining extension is permanent plastic deformation."
+    ],
+    "pitfall": "Do not treat the limit of proportionality and elastic limit as interchangeable labels."
+  },
+  "Young modulus calculation and graph": {
+    "explanations": [
+      "Young modulus is tensile stress divided by tensile strain: E = σ/ε = FL/(AΔL). It is measured in pascals and is a property of the material in its linear elastic region.",
+      "A large Young modulus means a material is stiff: it produces a small strain for a given stress. It does not necessarily mean that the material is strong or difficult to fracture.",
+      "On a stress-strain graph, Young modulus is the gradient of the initial straight-line section."
+    ],
+    "essence": "Young modulus quantifies stiffness through the ratio of stress to strain in the linear elastic region.",
+    "analogy": "Young modulus compares how much a material yields under the same stress, independent of sample length and thickness.",
+    "mastery_summary": "You can calculate E from force, dimensions and extension or obtain it from the gradient of a stress-strain graph, while distinguishing stiffness from strength.",
+    "mini_worked_example": "A wire of length 2.0 m and area 1.5 × 10^-6 m² extends by 0.80 mm under a 90 N force. Find Young modulus.",
+    "worked_solution_steps": [
+      "Convert the extension: ΔL = 0.80 mm = 8.0 × 10^-4 m.",
+      "Use E = FL/(AΔL).",
+      "Substitute: E = (90 × 2.0)/[(1.5 × 10^-6)(8.0 × 10^-4)].",
+      "E = 1.5 × 10^11 Pa."
+    ],
+    "pitfall": "Do not use the gradient of a force-extension graph directly as Young modulus; it gives spring constant unless dimensions are included."
+  },
+  "Young modulus practical": {
+    "explanations": [
+      "Measure original wire length L, diameter at several positions and orientations with a micrometer, then calculate A = πd²/4 using the mean diameter.",
+      "Increase load in measured steps within the elastic range, record extension with a fiducial marker and scale, avoid parallax and repeat readings. Plot force-extension or stress-strain data.",
+      "Use a long, thin wire for measurable extension, secure the apparatus, check zero errors and stop before the elastic limit. A best-fit graph reduces random scatter."
+    ],
+    "essence": "A valid Young modulus practical measures small extensions and dimensions accurately, stays in the linear elastic region and uses a graph-based gradient.",
+    "analogy": "The experiment magnifies a tiny material response: length makes extension visible, while careful diameter measurement controls a squared uncertainty.",
+    "mastery_summary": "You can evaluate the required wire practical by linking measurement choices to accuracy, precision, safety and validity.",
+    "mini_worked_example": "A student measures one diameter once, uses a 20 cm wire and loads it until the graph curves. Give three improvements and explain each.",
+    "worked_solution_steps": [
+      "Measure diameter at several positions and perpendicular directions with a micrometer and use the mean; this reduces scatter and reveals non-uniformity.",
+      "Use a longer wire with a fiducial marker and scale; larger extension reduces percentage uncertainty and parallax can be controlled.",
+      "Restrict analysis to the straight-line load-extension region so Hooke's law and E remain valid.",
+      "Use a best-fit graph gradient rather than one pair of readings to reduce the influence of random scatter."
+    ],
+    "pitfall": "Do not load the wire beyond its elastic limit and then use all points in one straight-line calculation."
+  },
+  "Atomic model and scattering evidence": {
+    "explanations": [
+      "Atoms contain a small, positively charged nucleus of protons and neutrons surrounded by electrons. Most atomic volume is empty space.",
+      "Most alpha particles pass through thin foil with little deflection, showing empty space. A small fraction deflect through large angles or rebound, showing that positive charge and most mass are concentrated in a tiny nucleus.",
+      "Scientific models change when new evidence cannot be explained by the previous model; nuclear structure developed through successive scattering and particle observations."
+    ],
+    "essence": "Use the pattern of Rutherford scattering outcomes as evidence for a small, dense, positively charged nucleus and mostly empty atomic space.",
+    "analogy": "Most particles pass through because an atom is a vast sparse region with a tiny but strongly repulsive centre.",
+    "mastery_summary": "You can describe the proton-neutron-electron model, link each scattering observation to a conclusion and explain why models change with evidence.",
+    "mini_worked_example": "Explain why a very small fraction of alpha particles were scattered through angles greater than 90°.",
+    "worked_solution_steps": [
+      "An alpha particle is positively charged.",
+      "A large deflection requires a strong repulsive electrostatic force.",
+      "Such a force occurs only near a concentrated positive charge.",
+      "Therefore the atom contains a small, dense, positively charged nucleus."
+    ],
+    "pitfall": "Do not attribute the large-angle scattering to electrons; their mass and distribution cannot produce the observed strong deflections."
+  },
+  "Nuclear notation and specific charge": {
+    "explanations": [
+      "A proton has charge +e, a neutron has zero charge and an electron has charge -e. Proton number Z counts protons; nucleon number A counts protons plus neutrons.",
+      "Nuclide notation ^A_ZX identifies element X. Neutron number is A - Z, and a neutral atom has Z electrons; an ion has gained or lost electrons.",
+      "Specific charge is charge divided by mass, q/m, in C kg^-1. It depends on both charge and particle mass. Atomic mass unit recall is not required at AS."
+    ],
+    "essence": "Read A and Z precisely, conserve them in nuclear equations and calculate specific charge as charge per kilogram.",
+    "analogy": "A counts everyone in the nucleus while Z counts only protons, which define the element's identity.",
+    "mastery_summary": "You can interpret nuclide symbols, find proton/neutron/electron numbers and calculate or compare particle specific charges.",
+    "mini_worked_example": "For ^23_11Na^+, state protons, neutrons and electrons, then calculate the magnitude of electron specific charge using e = 1.60 × 10^-19 C and m_e = 9.11 × 10^-31 kg.",
+    "worked_solution_steps": [
+      "Z = 11, so the ion has 11 protons.",
+      "Neutrons = A - Z = 23 - 11 = 12.",
+      "A +1 ion has lost one electron, so it has 10 electrons.",
+      "|q/m| = 1.60 × 10^-19 / 9.11 × 10^-31 = 1.76 × 10^11 C kg^-1."
+    ],
+    "pitfall": "Do not confuse nucleon number with neutron number; neutrons are A - Z."
+  },
+  "Particle families and antiparticles": {
+    "explanations": [
+      "Classify particles by their properties and interactions, and recognise that every particle has a corresponding antiparticle.",
+      "An antiparticle has the same mass as its particle partner but opposite charge where the particle is charged. Required examples include positron/electron, antiproton/proton, antineutron/neutron and antineutrino/neutrino.",
+      "Neutral particles can still have distinct antiparticles, so charge alone is not enough to identify every pair."
+    ],
+    "essence": "Recognise particle-antiparticle pairs by matching mass and opposing relevant properties, especially charge.",
+    "analogy": "An antiparticle is a matched counterpart: the same mass label, but an opposite charge sign where charge is present.",
+    "mastery_summary": "You can identify the specified antiparticles and state mass-charge comparisons without treating neutral particles as automatically self-antiparticles.",
+    "mini_worked_example": "State the antiparticle of electron, proton, neutron and neutrino. Compare a positron with an electron.",
+    "worked_solution_steps": [
+      "Electron → positron; proton → antiproton.",
+      "Neutron → antineutron; neutrino → antineutrino.",
+      "A positron has charge +e whereas an electron has charge -e.",
+      "They have equal mass."
+    ],
+    "pitfall": "Do not call a positron a positively charged proton; it is the antiparticle of the electron."
+  },
+  "Annihilation, pair production and rest energy": {
+    "explanations": [
+      "In annihilation, a particle and antiparticle transform their rest energy and any kinetic energy into other particles or photons while conservation laws are satisfied.",
+      "Pair production creates a particle and its antiparticle from sufficient energy. A nearby nucleus or other body may take recoil so momentum is conserved; minimum energy supplies both rest energies.",
+      "Particle and antiparticle have equal mass and rest energy. Rest energy is commonly expressed in MeV; E = mc² calculations are not required at AS."
+    ],
+    "essence": "Annihilation and pair production convert between particle rest energy and other forms while conserving charge and momentum.",
+    "analogy": "Pair production is energy paying the entry cost for two equal-mass particles; annihilation returns that account to other products.",
+    "mastery_summary": "You can explain both processes, compare particle and antiparticle properties and account qualitatively for energy and momentum requirements.",
+    "mini_worked_example": "An electron and positron at rest annihilate. State charge before and after and explain the product momentum condition.",
+    "worked_solution_steps": [
+      "Initial total charge is -e + e = 0.",
+      "Equal rest masses provide their combined rest energy to the products.",
+      "If initially at rest, total initial momentum is zero.",
+      "Products must have total charge zero and total momentum zero; photons emitted in opposite directions satisfy both conditions."
+    ],
+    "pitfall": "Do not describe pair production as creation of one particle only; an antiparticle is required to conserve charge."
+  },
+  "Alpha and beta decay equations": {
+    "explanations": [
+      "In alpha decay, the nucleus emits ^4_2He, so A decreases by 4 and Z decreases by 2.",
+      "In beta-minus decay, a neutron changes into a proton while emitting an electron and an antineutrino; A is unchanged and Z increases by 1.",
+      "In beta-plus decay, a proton changes into a neutron while emitting a positron and a neutrino; A is unchanged and Z decreases by 1.",
+      "A free neutron decays as n → p + e^- + antineutrino. Balance nucleon number and charge in every equation."
+    ],
+    "essence": "Write nuclear decay equations by conserving nucleon number and charge, including the correct neutrino species.",
+    "analogy": "A nuclear equation is a strict inventory: total nucleons and total charge must balance on both sides.",
+    "mastery_summary": "You can complete alpha, beta-minus and beta-plus equations, state the associated neutrino species and account for free-neutron decay.",
+    "mini_worked_example": "Complete: ^14_6C → ____ + ____ + antineutrino.",
+    "worked_solution_steps": [
+      "In beta-minus decay, A remains 14.",
+      "Z increases from 6 to 7, so the daughter is ^14_7N.",
+      "The emitted beta-minus particle is an electron, ^0_-1e.",
+      "Thus ^14_6C → ^14_7N + ^0_-1e + antineutrino."
+    ],
+    "pitfall": "Do not omit the neutrino or antineutrino from a beta-decay equation."
+  },
+  "Half-life from graphs and calculations": {
+    "explanations": [
+      "Half-life is the time for the number of undecayed nuclei, count rate or activity to fall to half its current value. It is constant for a given isotope under unchanged conditions.",
+      "On a decay graph, choose a convenient activity or count rate and find the interval to half that value; the first plotted point need not be the exact initial value.",
+      "For whole-number half-lives, remaining quantity = initial quantity × (1/2)^n, where n is elapsed time divided by half-life."
+    ],
+    "essence": "Use repeated halving at equal time intervals and distinguish the number of half-lives from elapsed time.",
+    "analogy": "Each half-life removes half of what remains, not half of the original amount each time.",
+    "mastery_summary": "You can read half-life from graphical data and solve whole-number half-life calculations for activity, count rate or nuclei.",
+    "mini_worked_example": "A source has activity 960 Bq and half-life 6.0 h. Find its activity after 18 h.",
+    "worked_solution_steps": [
+      "Number of half-lives n = 18/6.0 = 3.",
+      "After one half-life: 960/2 = 480 Bq.",
+      "After two and three half-lives: 240 Bq then 120 Bq.",
+      "The activity after 18 h is 120 Bq."
+    ],
+    "pitfall": "Do not subtract the same numerical amount after each half-life; radioactive decay is exponential."
+  },
+  "Nuclear excited states and gamma applications": {
+    "explanations": [
+      "An excited nucleus has excess energy. Gamma emission occurs when it moves to a lower nuclear energy state; A and Z do not change.",
+      "Technetium-99m is useful in imaging because its gamma emission is detected outside the body and its suitably short half-life limits dose.",
+      "Alpha is strongly ionising and weakly penetrating, beta has intermediate penetration and ionisation, and gamma is weakly ionising but highly penetrating. Hazard depends on source location, activity, exposure and shielding.",
+      "In thickness control, compare detector count with a calibration: a thicker absorber gives a lower count for the same source geometry."
+    ],
+    "essence": "Gamma emission changes nuclear energy but not composition; select radiation applications by balancing penetration, ionisation, detectability and dose.",
+    "analogy": "An excited nucleus is on a higher energy step; gamma emission is the photon released when it drops to a lower step.",
+    "mastery_summary": "You can describe gamma emission and applications, and compare alpha, beta and gamma using penetration, ionisation, hazards and shielding.",
+    "mini_worked_example": "Choose a radiation type for measuring paper thickness and explain why the other two are less suitable.",
+    "worked_solution_steps": [
+      "Use beta because it has moderate penetration and its count changes measurably with paper thickness.",
+      "Alpha is absorbed by air or a thin sheet and gives little useful range.",
+      "Gamma is too penetrating for thin paper, so its count changes only slightly with thickness.",
+      "A feedback system can adjust roller pressure when the beta count differs from calibration."
+    ],
+    "pitfall": "Do not state that gamma emission changes proton or nucleon number; it changes only nuclear energy state."
+  },
+  "Inverse-square law and background radiation": {
+    "explanations": [
+      "For an isotropic point source with negligible absorption, intensity I follows I ∝ 1/r². Doubling distance reduces intensity to one quarter.",
+      "To verify the law with gamma radiation, keep source activity, detector orientation, counting time and intervening material constant while varying distance. Plot corrected count rate against 1/r².",
+      "Background radiation adds counts not produced by the source. Measure background for a comparable time, convert to count rate and subtract it before testing the relationship."
+    ],
+    "essence": "Correct for background and control geometry before testing the inverse-square relationship between gamma count rate and distance.",
+    "analogy": "The same radiation spreads over the surface of an expanding sphere, so each square metre receives less as distance increases.",
+    "mastery_summary": "You can apply I ∝ 1/r², design a fair verification and correct gamma count data for background radiation.",
+    "mini_worked_example": "A detector records 500 counts min^-1 at 0.50 m from a gamma source. Background is 20 counts min^-1. Predict the measured count rate at 1.0 m.",
+    "worked_solution_steps": [
+      "Corrected source count rate at 0.50 m = 500 - 20 = 480 counts min^-1.",
+      "Doubling distance reduces source count rate by 2² = 4.",
+      "Corrected source count rate at 1.0 m = 480/4 = 120 counts min^-1.",
+      "Add background back: predicted measured rate = 120 + 20 = 140 counts min^-1."
+    ],
+    "pitfall": "Do not apply the inverse-square law directly to uncorrected counts when background is significant."
+  },
+  "Current, potential difference and resistance": {
+    "explanations": [
+      "Current is rate of flow of charge: I = ΔQ/Δt. Conventional current is defined in the direction positive charge would move.",
+      "Potential difference is work done or energy transferred per unit charge: V = W/Q. It measures energy transferred between two points per coulomb.",
+      "Resistance is the ratio of potential difference to current for a component at a stated condition: R = V/I. Its unit is the ohm, Ω."
+    ],
+    "essence": "Current measures charge flow rate, potential difference measures energy per charge and resistance links them for stated conditions.",
+    "analogy": "Charge is the amount delivered, current is delivery rate and potential difference is the energy supplied to each coulomb.",
+    "mastery_summary": "You can define and calculate I, V and R using their SI units and distinguish energy per charge from charge per time.",
+    "mini_worked_example": "A 12 V supply transfers 360 J through a resistor in 30 s. Calculate charge, current and resistance.",
+    "worked_solution_steps": [
+      "Use V = W/Q, so Q = W/V = 360/12 = 30 C.",
+      "Use I = Q/t = 30/30 = 1.0 A.",
+      "Use R = V/I = 12/1.0.",
+      "The resistance is 12 Ω."
+    ],
+    "pitfall": "Do not define potential difference as energy per unit time; that is related to power."
+  },
+  "I-V characteristics and Ohm's law": {
+    "explanations": [
+      "An ohmic conductor at constant physical conditions has I ∝ V, producing a straight-line I-V graph through the origin and constant resistance.",
+      "A filament lamp has increasing resistance as current increases because its temperature rises; its I-against-V graph becomes less steep.",
+      "A semiconductor diode conducts very little in reverse bias and below its forward threshold, then current rises rapidly in forward bias. Its resistance is not constant.",
+      "Ohm's law is the special relationship I ∝ V only when physical conditions, particularly temperature, remain constant."
+    ],
+    "essence": "Read the shape of an I-V characteristic as evidence of whether resistance remains constant or changes with temperature, bias or material behaviour.",
+    "analogy": "An ohmic conductor behaves like a constant-width pipe, while a filament lamp effectively narrows as heating increases resistance.",
+    "mastery_summary": "You can recognise and explain the characteristic graphs of an ohmic conductor, filament lamp and diode, and state the condition required for Ohm's law.",
+    "mini_worked_example": "A filament lamp's I-against-V graph becomes less steep as p.d. increases. Explain what happens to its resistance.",
+    "worked_solution_steps": [
+      "On an I-against-V graph, gradient is I/V.",
+      "For a component, R = V/I, so resistance is the reciprocal of I/V.",
+      "A less steep graph has smaller I/V.",
+      "Therefore V/I is larger: filament resistance increases as it becomes hotter."
+    ],
+    "pitfall": "Do not claim that every straight line on an I-V plot demonstrates Ohm's law without checking the origin and constant conditions."
+  },
+  "Ideal meters and characteristic graph conventions": {
+    "explanations": [
+      "An ideal ammeter has zero resistance, so it is connected in series and does not alter the circuit current.",
+      "An ideal voltmeter has infinite resistance, so it is connected in parallel and draws no current from the circuit.",
+      "Characteristic graphs may show I against V or V against I. For I against V, gradient = 1/R for an ohmic conductor; for V against I, gradient = R."
+    ],
+    "essence": "Place meters according to what they measure and use the axes, not the title alone, to decide what a gradient represents.",
+    "analogy": "An ideal ammeter is an invisible link in a wire, while an ideal voltmeter observes across a component without taking current.",
+    "mastery_summary": "You can place ideal meters correctly, state their assumed resistances and interpret either convention for characteristic graphs.",
+    "mini_worked_example": "An ohmic resistor has an I-against-V gradient 0.25 A V^-1. Find R and the gradient with axes reversed.",
+    "worked_solution_steps": [
+      "For I against V, gradient = I/V = 1/R.",
+      "R = 1/0.25 = 4.0 Ω.",
+      "For V against I, gradient = V/I.",
+      "The reversed-axis gradient is 4.0 V A^-1, equivalent to 4.0 Ω."
+    ],
+    "pitfall": "Do not connect an ammeter in parallel across a supply; an ideal ammeter would provide a zero-resistance path."
+  },
+  "Resistivity": {
+    "explanations": [
+      "Resistivity is a material property defined by ρ = RA/L, so R = ρL/A. Its SI unit is Ω m.",
+      "For a uniform wire of the same material at constant temperature, resistance increases with length and decreases with cross-sectional area.",
+      "Use cross-sectional area, not surface area. For a circular wire, A = πd²/4, and diameter must be converted to metres before squaring."
+    ],
+    "essence": "Separate resistance due to specimen geometry from resistivity, which characterises the material at a stated temperature.",
+    "analogy": "A longer or narrower route makes charge flow harder; resistivity describes how resistant the material itself is before geometry is considered.",
+    "mastery_summary": "You can rearrange ρ = RA/L, calculate resistivity with correct units and explain length/area effects for uniform wires.",
+    "mini_worked_example": "A wire has resistance 3.0 Ω, length 2.0 m and diameter 0.40 mm. Calculate resistivity.",
+    "worked_solution_steps": [
+      "Convert diameter: d = 0.40 × 10^-3 m.",
+      "Area A = πd²/4 = 1.26 × 10^-7 m².",
+      "Use ρ = RA/L = 3.0 × 1.26 × 10^-7 / 2.0.",
+      "ρ = 1.9 × 10^-7 Ω m, to two significant figures."
+    ],
+    "pitfall": "Do not use diameter as cross-sectional area or forget that diameter is squared in A = πd²/4."
+  },
+  "Temperature effects and thermistors": {
+    "explanations": [
+      "For a metal conductor, resistance increases as temperature increases because lattice vibrations make collisions with charge carriers more frequent.",
+      "A negative-temperature-coefficient thermistor has decreasing resistance as temperature increases. Its resistance-temperature characteristic is non-linear.",
+      "A thermistor can act as a temperature sensor in a potential divider or control circuit: changing resistance changes current or output p.d., which can trigger a response."
+    ],
+    "essence": "Temperature affects metal and NTC thermistor resistance in opposite directions; interpret the curve before predicting a circuit response.",
+    "analogy": "In a heated metal, carriers face more vigorous lattice vibrations; in an NTC thermistor, heating makes more carriers available.",
+    "mastery_summary": "You can describe the required temperature-resistance trends, recognise an NTC curve and explain its use as a sensing component.",
+    "mini_worked_example": "An NTC thermistor is in series with a fixed resistor across a supply; output is across the fixed resistor. Predict the output change when temperature rises.",
+    "worked_solution_steps": [
+      "For an NTC thermistor, temperature rise decreases thermistor resistance.",
+      "Total series resistance decreases, so total current increases.",
+      "The fixed resistor has constant resistance, so its p.d. V = IR increases.",
+      "Therefore the output across the fixed resistor increases."
+    ],
+    "pitfall": "Do not assume every thermistor has increasing resistance with temperature; this topic specifies an NTC thermistor."
+  },
+  "Superconductivity": {
+    "explanations": [
+      "A superconductor has zero electrical resistance when cooled below its material-dependent critical temperature. Above that temperature it behaves as a normal resistive material.",
+      "Zero resistance permits persistent current without electrical power loss in the superconducting path, but maintaining low temperature may itself require energy and engineering systems.",
+      "Applications include powerful electromagnets for MRI scanners and particle accelerators, and low-loss power transmission where cooling and material constraints are justified."
+    ],
+    "essence": "Superconductivity is a temperature-dependent state of zero resistance, valuable where its benefits outweigh cooling and material constraints.",
+    "analogy": "Below its critical temperature, the conductor becomes a route without electrical friction for current.",
+    "mastery_summary": "You can state the critical-temperature condition, explain the electrical consequence and link zero resistance to applications without ignoring cooling requirements.",
+    "mini_worked_example": "Explain why a superconducting cable can reduce electrical loss but may not be the cheapest choice for a short domestic connection.",
+    "worked_solution_steps": [
+      "Below its critical temperature, the cable has zero resistance.",
+      "Resistive power loss P = I²R is therefore zero in the superconducting section.",
+      "The cable must be cooled below its critical temperature, requiring equipment and operating energy.",
+      "For a short connection, cooling cost and complexity may exceed the saving from reduced resistive loss."
+    ],
+    "pitfall": "Do not state that all materials superconduct at room temperature or that zero resistance eliminates every system energy cost."
+  },
+  "Series and parallel resistance": {
+    "explanations": [
+      "For resistors in series, the same current passes through each resistor and total resistance is R_total = R_1 + R_2 + ... . The supply p.d. is shared.",
+      "For resistors in parallel, the same p.d. is across each branch and 1/R_total = 1/R_1 + 1/R_2 + ... . Total current is the sum of branch currents.",
+      "The total resistance of a parallel combination is less than the smallest individual branch resistance because an additional path is available."
+    ],
+    "essence": "Identify whether components share current or potential difference, then use the corresponding series or reciprocal parallel relationship.",
+    "analogy": "Series resistors are obstacles placed one after another on one route; parallel resistors are extra routes that make the overall journey easier.",
+    "mastery_summary": "You can calculate equivalent resistance in series and parallel and use the result to check currents and potential differences.",
+    "mini_worked_example": "A 6.0 Ω resistor and a 3.0 Ω resistor are in parallel; this combination is in series with a 4.0 Ω resistor. Find total resistance.",
+    "worked_solution_steps": [
+      "For the parallel pair, 1/R_p = 1/6.0 + 1/3.0 = 1/2.0.",
+      "Therefore R_p = 2.0 Ω.",
+      "The 2.0 Ω equivalent is in series with the 4.0 Ω resistor.",
+      "R_total = 2.0 + 4.0 = 6.0 Ω."
+    ],
+    "pitfall": "Do not add parallel resistor values directly; the equivalent must be lower than the smallest branch resistance."
+  }
+}

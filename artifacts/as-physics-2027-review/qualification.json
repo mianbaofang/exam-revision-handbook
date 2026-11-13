@@ -1,0 +1,1921 @@
+{
+  "title": "OxfordAQA International Advanced Subsidiary Physics",
+  "code": "9631",
+  "qualification_type": "international_as_a_level",
+  "subject_area": "Physics",
+  "page_url": "https://www.oxfordaqa.com/qualifications/international-as-a-level-physics/",
+  "summary": [
+    "OxfordAQA International AS Physics is a modular international qualification for study outside the United Kingdom.",
+    "The AS stage uses Unit 1 (Mechanics, materials and atoms) and Unit 2 (Electricity, waves and particles).",
+    "Each AS unit is a two-hour, 80-mark written paper worth 50% of AS and 20% of the full International A-level.",
+    "The Version 5.1 specification assesses practical knowledge through written papers rather than a separate practical examination.",
+    "AS content covers sections 3.1 to 3.5; sections 3.6 to 3.13 are International A-level only."
+  ],
+  "topics": [
+    {
+      "title": "SI base units and prefixes",
+      "points": [
+        "Use mass, length, time, amount of substance, temperature and electric current with their associated SI units",
+        "Use SI prefixes T, G, M, k, c, m, μ, n, p and f, including their values and standard form",
+        "Candela definitions and dimensional analysis are outside the International AS requirement"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 12,
+          "text": "Use mass, length, time, amount of substance, temperature and electric current with their associated SI units.",
+          "matched_term": "3.1.1 Use of SI units and their prefixes"
+        },
+        {
+          "page": 12,
+          "text": "Use SI prefixes T, G, M, k, c, m, μ, n, p and f, including their values and standard form.",
+          "matched_term": "3.1.1 Use of SI units and their prefixes"
+        },
+        {
+          "page": 12,
+          "text": "Candela definitions and dimensional analysis are outside the International AS requirement.",
+          "matched_term": "3.1.1 Use of SI units and their prefixes"
+        }
+      ]
+    },
+    {
+      "title": "Energy-unit conversion",
+      "points": [
+        "Convert between units of the same quantity, including J and eV, and J and kW h"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 12,
+          "text": "Convert between units of the same quantity, including J and eV, and J and kW h.",
+          "matched_term": "3.1.1 Use of SI units and their prefixes"
+        }
+      ]
+    },
+    {
+      "title": "Measurement errors and quality",
+      "points": [
+        "random and systematic errors and suggest ways to reduce them",
+        "precision, repeatability, reproducibility, resolution and accuracy"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 12,
+          "text": "Identify random and systematic errors and suggest ways to reduce them.",
+          "matched_term": "3.1.2 Limitation of physical measurements"
+        },
+        {
+          "page": 12,
+          "text": "Distinguish precision, repeatability, reproducibility, resolution and accuracy.",
+          "matched_term": "3.1.2 Limitation of physical measurements"
+        }
+      ]
+    },
+    {
+      "title": "Absolute and percentage uncertainty",
+      "points": [
+        "Use absolute, fractional and percentage uncertainties in final answers"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 12,
+          "text": "Use absolute, fractional and percentage uncertainties in final answers.",
+          "matched_term": "3.1.2 Limitation of physical measurements"
+        }
+      ]
+    },
+    {
+      "title": "Combining uncertainties",
+      "points": [
+        "Combine uncertainties for addition, subtraction, multiplication, division and powers"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 12,
+          "text": "Combine uncertainties for addition, subtraction, multiplication, division and powers.",
+          "matched_term": "3.1.2 Limitation of physical measurements"
+        }
+      ]
+    },
+    {
+      "title": "Graph uncertainty and error bars",
+      "points": [
+        "Use error bars and determine uncertainty in the gradient and intercept of a straight-line graph"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 12,
+          "text": "Use error bars and determine uncertainty in the gradient and intercept of a straight-line graph.",
+          "matched_term": "3.1.2 Limitation of physical measurements"
+        }
+      ]
+    },
+    {
+      "title": "Significant figures and uncertainty reporting",
+      "points": [
+        "Link significant figures in a result to its associated uncertainty"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 12,
+          "text": "Link significant figures in a result to its associated uncertainty.",
+          "matched_term": "3.1.2 Limitation of physical measurements"
+        }
+      ]
+    },
+    {
+      "title": "Order-of-magnitude estimation",
+      "points": [
+        "Estimate physical quantities to the nearest order of magnitude",
+        "Combine estimates with physical knowledge to produce further derived estimates"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 13,
+          "text": "Estimate physical quantities to the nearest order of magnitude.",
+          "matched_term": "3.1.3 Estimation of physical quantities"
+        },
+        {
+          "page": 13,
+          "text": "Combine estimates with physical knowledge to produce further derived estimates.",
+          "matched_term": "3.1.3 Estimation of physical quantities"
+        }
+      ]
+    },
+    {
+      "title": "Scalar and vector quantities",
+      "points": [
+        "scalar and vector quantities using speed/velocity, mass/weight, distance/displacement and acceleration",
+        "Add vectors by calculation or scale drawing"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 13,
+          "text": "Distinguish scalar and vector quantities using speed/velocity, mass/weight, distance/displacement and acceleration.",
+          "matched_term": "3.2.1 Scalars and vectors"
+        },
+        {
+          "page": 13,
+          "text": "Add vectors by calculation or scale drawing.",
+          "matched_term": "3.2.1 Scalars and vectors"
+        }
+      ]
+    },
+    {
+      "title": "Equilibrium and resultant force",
+      "points": [
+        "equilibrium conditions for two or three coplanar forces acting at a point",
+        "Recognise that rest and constant velocity both describe equilibrium"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 13,
+          "text": "Apply equilibrium conditions for two or three coplanar forces acting at a point.",
+          "matched_term": "3.2.1 Scalars and vectors"
+        },
+        {
+          "page": 13,
+          "text": "Recognise that rest and constant velocity both describe equilibrium.",
+          "matched_term": "3.2.1 Scalars and vectors"
+        }
+      ]
+    },
+    {
+      "title": "Moments, couples and the principle of moments",
+      "points": [
+        "the moment of a force about a point as force multiplied by perpendicular distance",
+        "Define a couple as equal and opposite coplanar forces and calculate its moment",
+        "the principle of moments"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 13,
+          "text": "Calculate the moment of a force about a point as force multiplied by perpendicular distance.",
+          "matched_term": "3.2.2 Moments"
+        },
+        {
+          "page": 13,
+          "text": "Define a couple as equal and opposite coplanar forces and calculate its moment.",
+          "matched_term": "3.2.2 Moments"
+        },
+        {
+          "page": 13,
+          "text": "Apply the principle of moments.",
+          "matched_term": "3.2.2 Moments"
+        }
+      ]
+    },
+    {
+      "title": "Centre of mass",
+      "points": [
+        "Locate the centre of mass of a uniform regular solid at its geometric centre"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 13,
+          "text": "Locate the centre of mass of a uniform regular solid at its geometric centre.",
+          "matched_term": "3.2.2 Moments"
+        }
+      ]
+    },
+    {
+      "title": "Kinematic quantities and average values",
+      "points": [
+        "Use displacement, speed, velocity and acceleration, including v = Δs/Δt and a = Δv/Δt",
+        "average and instantaneous speed or velocity"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 13,
+          "text": "Use displacement, speed, velocity and acceleration, including v = Δs/Δt and a = Δv/Δt.",
+          "matched_term": "3.2.3 Motion along a straight line"
+        },
+        {
+          "page": 13,
+          "text": "Distinguish average and instantaneous speed or velocity.",
+          "matched_term": "3.2.3 Motion along a straight line"
+        }
+      ]
+    },
+    {
+      "title": "Motion graphs",
+      "points": [
+        "Interpret gradients and areas on displacement-time, velocity-time and acceleration-time graphs"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 13,
+          "text": "Interpret gradients and areas on displacement-time, velocity-time and acceleration-time graphs.",
+          "matched_term": "3.2.3 Motion along a straight line"
+        }
+      ]
+    },
+    {
+      "title": "Uniform acceleration equations",
+      "points": [
+        "Use the uniform-acceleration equations v = u + at, s = (u + v)t/2, s = ut + ½at² and v² = u² + 2as"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 13,
+          "text": "Use the uniform-acceleration equations v = u + at, s = (u + v)t/2, s = ut + ½at² and v² = u² + 2as.",
+          "matched_term": "3.2.3 Motion along a straight line"
+        }
+      ]
+    },
+    {
+      "title": "Free-fall measurement of g",
+      "points": [
+        "Determine g from a freefall investigation and a graph such as s against t²"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 13,
+          "text": "Determine g from a freefall investigation and a graph such as s against t².",
+          "matched_term": "3.2.3 Motion along a straight line"
+        }
+      ]
+    },
+    {
+      "title": "Projectile components and calculation",
+      "points": [
+        "Resolve projectile motion into independent horizontal and vertical components in a uniform gravitational field",
+        "Solve projectile problems with the equations of uniform acceleration"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 14,
+          "text": "Resolve projectile motion into independent horizontal and vertical components in a uniform gravitational field.",
+          "matched_term": "3.2.4 Projectile motion"
+        },
+        {
+          "page": 14,
+          "text": "Solve projectile problems with the equations of uniform acceleration.",
+          "matched_term": "3.2.4 Projectile motion"
+        }
+      ]
+    },
+    {
+      "title": "Drag, lift and terminal speed",
+      "points": [
+        "friction, lift, drag and terminal speed qualitatively",
+        "that air resistance increases with speed and changes the trajectory and maximum vehicle speed"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 14,
+          "text": "Describe friction, lift, drag and terminal speed qualitatively.",
+          "matched_term": "3.2.4 Projectile motion"
+        },
+        {
+          "page": 14,
+          "text": "Explain that air resistance increases with speed and changes the trajectory and maximum vehicle speed.",
+          "matched_term": "3.2.4 Projectile motion"
+        }
+      ]
+    },
+    {
+      "title": "Newton's laws and F = ma",
+      "points": [
+        "and apply Newton’s first, second and third laws of motion",
+        "Use F = ma when the mass is constant"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 14,
+          "text": "State and apply Newton’s first, second and third laws of motion.",
+          "matched_term": "3.2.5 Newton’s laws of motion"
+        },
+        {
+          "page": 14,
+          "text": "Use F = ma when the mass is constant.",
+          "matched_term": "3.2.5 Newton’s laws of motion"
+        }
+      ]
+    },
+    {
+      "title": "Momentum conservation and collisions",
+      "points": [
+        "Use momentum p = mv and conserve linear momentum in one-dimensional problems",
+        "elastic and inelastic collisions and analyse explosions"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 14,
+          "text": "Use momentum p = mv and conserve linear momentum in one-dimensional problems.",
+          "matched_term": "3.2.6 Momentum"
+        },
+        {
+          "page": 14,
+          "text": "Distinguish elastic and inelastic collisions and analyse explosions.",
+          "matched_term": "3.2.6 Momentum"
+        }
+      ]
+    },
+    {
+      "title": "Impulse and force-time graphs",
+      "points": [
+        "Use force as the rate of change of momentum, impulse as change in momentum, and the area under a force-time graph"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 14,
+          "text": "Use force as the rate of change of momentum, impulse as change in momentum, and the area under a force-time graph.",
+          "matched_term": "3.2.6 Momentum"
+        }
+      ]
+    },
+    {
+      "title": "Impact time and force reduction",
+      "points": [
+        "Relate impact force to contact time in examples such as crumple zones and packaging"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 14,
+          "text": "Relate impact force to contact time in examples such as crumple zones and packaging.",
+          "matched_term": "3.2.6 Momentum"
+        }
+      ]
+    },
+    {
+      "title": "Work and force-displacement graphs",
+      "points": [
+        "work done W = Fs cos θ and interpret the area under a force-displacement graph"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 15,
+          "text": "Calculate work done W = Fs cos θ and interpret the area under a force-displacement graph.",
+          "matched_term": "3.2.7 Work, energy and power"
+        }
+      ]
+    },
+    {
+      "title": "Power and efficiency",
+      "points": [
+        "Use power P = ΔW/Δt = Fv, including variable-force contexts",
+        "efficiency as useful output power divided by input power and express it as a percentage"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 15,
+          "text": "Use power P = ΔW/Δt = Fv, including variable-force contexts.",
+          "matched_term": "3.2.7 Work, energy and power"
+        },
+        {
+          "page": 15,
+          "text": "Calculate efficiency as useful output power divided by input power and express it as a percentage.",
+          "matched_term": "3.2.7 Work, energy and power"
+        }
+      ]
+    },
+    {
+      "title": "Energy conservation and stores",
+      "points": [
+        "conservation of energy",
+        "Use gravitational potential energy ΔEp = mgh and kinetic energy Ek = ½mv²"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 15,
+          "text": "Apply conservation of energy.",
+          "matched_term": "3.2.8 Conservation of energy"
+        },
+        {
+          "page": 15,
+          "text": "Use gravitational potential energy ΔEp = mgh and kinetic energy Ek = ½mv².",
+          "matched_term": "3.2.8 Conservation of energy"
+        }
+      ]
+    },
+    {
+      "title": "Resistive and elastic energy transfers",
+      "points": [
+        "Analyse energy transfers involving gravitational, kinetic and elastic potential energy and work against resistive forces"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 15,
+          "text": "Analyse energy transfers involving gravitational, kinetic and elastic potential energy and work against resistive forces.",
+          "matched_term": "3.2.8 Conservation of energy"
+        }
+      ]
+    },
+    {
+      "title": "Density",
+      "points": [
+        "Use density ρ = m/V, Hooke’s law and the elastic limit"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 15,
+          "text": "Use density ρ = m/V, Hooke’s law and the elastic limit.",
+          "matched_term": "3.2.9 Bulk properties of solids"
+        }
+      ]
+    },
+    {
+      "title": "Hooke's law and spring constant",
+      "points": [
+        "Use stiffness or spring constant k in F = kΔL"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 15,
+          "text": "Use stiffness or spring constant k in F = kΔL.",
+          "matched_term": "3.2.9 Bulk properties of solids"
+        }
+      ]
+    },
+    {
+      "title": "Stress, strain and breaking stress",
+      "points": [
+        "tensile stress, tensile strain, breaking stress and elastic strain energy"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 15,
+          "text": "Calculate tensile stress, tensile strain, breaking stress and elastic strain energy.",
+          "matched_term": "3.2.9 Bulk properties of solids"
+        }
+      ]
+    },
+    {
+      "title": "Elastic strain energy",
+      "points": [
+        "Use stored energy = ½FΔL and interpret the area under a force-extension graph"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 15,
+          "text": "Use stored energy = ½FΔL and interpret the area under a force-extension graph.",
+          "matched_term": "3.2.9 Bulk properties of solids"
+        }
+      ]
+    },
+    {
+      "title": "Material behaviour graphs",
+      "points": [
+        "Interpret elastic, plastic, fracture and brittle behaviour on force-extension and stress-strain graphs"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 15,
+          "text": "Interpret elastic, plastic, fracture and brittle behaviour on force-extension and stress-strain graphs.",
+          "matched_term": "3.2.9 Bulk properties of solids"
+        }
+      ]
+    },
+    {
+      "title": "Young modulus calculation and graph",
+      "points": [
+        "Use Young modulus E = tensile stress/tensile strain = FL/(AΔL)",
+        "Determine Young modulus from a stress-strain graph"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 16,
+          "text": "Use Young modulus E = tensile stress/tensile strain = FL/(AΔL).",
+          "matched_term": "3.2.10 The Young modulus"
+        },
+        {
+          "page": 16,
+          "text": "Determine Young modulus from a stress-strain graph.",
+          "matched_term": "3.2.10 The Young modulus"
+        }
+      ]
+    },
+    {
+      "title": "Young modulus practical",
+      "points": [
+        "Evaluate the load-extension practical for a wire, including measurement and graph choices"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 16,
+          "text": "Evaluate the load-extension practical for a wire, including measurement and graph choices.",
+          "matched_term": "3.2.10 The Young modulus"
+        }
+      ]
+    },
+    {
+      "title": "Atomic model and scattering evidence",
+      "points": [
+        "Use the proton-neutron-electron model and Rutherford scattering as evidence for a nucleus",
+        "how models of nuclear structure changed as evidence improved"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 16,
+          "text": "Use the proton-neutron-electron model and Rutherford scattering as evidence for a nucleus.",
+          "matched_term": "3.3.1 Constituents of the atom"
+        },
+        {
+          "page": 16,
+          "text": "Explain how models of nuclear structure changed as evidence improved.",
+          "matched_term": "3.3.1 Constituents of the atom"
+        }
+      ]
+    },
+    {
+      "title": "Nuclear notation and specific charge",
+      "points": [
+        "Use proton, neutron and electron charge and mass in SI and relative units, including specific charge",
+        "Use proton number Z, nucleon number A and nuclide notation ^A_ZX; atomic mass unit recall is not required at AS"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 16,
+          "text": "Use proton, neutron and electron charge and mass in SI and relative units, including specific charge.",
+          "matched_term": "3.3.1 Constituents of the atom"
+        },
+        {
+          "page": 16,
+          "text": "Use proton number Z, nucleon number A and nuclide notation ^A_ZX; atomic mass unit recall is not required at AS.",
+          "matched_term": "3.3.1 Constituents of the atom"
+        }
+      ]
+    },
+    {
+      "title": "Particle families and antiparticles",
+      "points": [
+        "Classify particles and recognise that every particle has a corresponding antiparticle",
+        "positron, antiproton, antineutron and antineutrino as antiparticles"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 16,
+          "text": "Classify particles and recognise that every particle has a corresponding antiparticle.",
+          "matched_term": "3.3.2 Elementary particles"
+        },
+        {
+          "page": 16,
+          "text": "Identify positron, antiproton, antineutron and antineutrino as antiparticles.",
+          "matched_term": "3.3.2 Elementary particles"
+        }
+      ]
+    },
+    {
+      "title": "Annihilation, pair production and rest energy",
+      "points": [
+        "annihilation and pair production and account for the energies involved",
+        "Compare particle and antiparticle mass, charge and rest energy in MeV; E = mc² is not required in calculations"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 16,
+          "text": "Explain annihilation and pair production and account for the energies involved.",
+          "matched_term": "3.3.2 Elementary particles"
+        },
+        {
+          "page": 16,
+          "text": "Compare particle and antiparticle mass, charge and rest energy in MeV; E = mc² is not required in calculations.",
+          "matched_term": "3.3.2 Elementary particles"
+        }
+      ]
+    },
+    {
+      "title": "Alpha and beta decay equations",
+      "points": [
+        "Write α, β− and β+ decay equations including neutrinos or antineutrinos and know free-neutron decay"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 16,
+          "text": "Write α, β− and β+ decay equations including neutrinos or antineutrinos and know free-neutron decay.",
+          "matched_term": "3.3.3 Radioactivity"
+        }
+      ]
+    },
+    {
+      "title": "Half-life from graphs and calculations",
+      "points": [
+        "Determine half-life from graphical decay data and solve whole-number half-life calculations"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 16,
+          "text": "Determine half-life from graphical decay data and solve whole-number half-life calculations.",
+          "matched_term": "3.3.3 Radioactivity"
+        }
+      ]
+    },
+    {
+      "title": "Nuclear excited states and gamma emission",
+      "points": [
+        "nuclear excited states, γ emission and applications such as technetium-99m"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 16,
+          "text": "Explain nuclear excited states, γ emission and applications such as technetium-99m.",
+          "matched_term": "3.3.3 Radioactivity"
+        }
+      ]
+    },
+    {
+      "title": "Alpha, beta and gamma properties and applications",
+      "points": [
+        "Compare α, β and γ penetration, absorption, hazards and applications, including thickness measurement"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 16,
+          "text": "Compare α, β and γ penetration, absorption, hazards and applications, including thickness measurement.",
+          "matched_term": "3.3.3 Radioactivity"
+        }
+      ]
+    },
+    {
+      "title": "Inverse-square law and background radiation",
+      "points": [
+        "Use and verify the inverse-square law for γ radiation and account for background radiation"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 16,
+          "text": "Use and verify the inverse-square law for γ radiation and account for background radiation.",
+          "matched_term": "3.3.3 Radioactivity"
+        }
+      ]
+    },
+    {
+      "title": "Current, potential difference and resistance",
+      "points": [
+        "Define current as rate of flow of charge and use I = ΔQ/Δt",
+        "Define potential difference as work done per unit charge and use V = W/Q",
+        "Define resistance and use R = V/I"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 17,
+          "text": "Define current as rate of flow of charge and use I = ΔQ/Δt.",
+          "matched_term": "3.4.1 Basics of electricity"
+        },
+        {
+          "page": 17,
+          "text": "Define potential difference as work done per unit charge and use V = W/Q.",
+          "matched_term": "3.4.1 Basics of electricity"
+        },
+        {
+          "page": 17,
+          "text": "Define resistance and use R = V/I.",
+          "matched_term": "3.4.1 Basics of electricity"
+        }
+      ]
+    },
+    {
+      "title": "I-V characteristics and Ohm's law",
+      "points": [
+        "Interpret current-voltage characteristics for an ohmic conductor, semiconductor diode and filament lamp",
+        "Use Ohm’s law as the special case I ∝ V under constant physical conditions"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 17,
+          "text": "Interpret current-voltage characteristics for an ohmic conductor, semiconductor diode and filament lamp.",
+          "matched_term": "3.4.2 Current–voltage characteristics"
+        },
+        {
+          "page": 17,
+          "text": "Use Ohm’s law as the special case I ∝ V under constant physical conditions.",
+          "matched_term": "3.4.2 Current–voltage characteristics"
+        }
+      ]
+    },
+    {
+      "title": "Ideal ammeters and voltmeters",
+      "points": [
+        "Treat ideal ammeters as zero resistance and ideal voltmeters as infinite resistance unless stated otherwise"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 17,
+          "text": "Treat ideal ammeters as zero resistance and ideal voltmeters as infinite resistance unless stated otherwise.",
+          "matched_term": "3.4.2 Current–voltage characteristics"
+        }
+      ]
+    },
+    {
+      "title": "Characteristic graph conventions",
+      "points": [
+        "Read characteristic graphs with either I or V on the horizontal axis"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 17,
+          "text": "Read characteristic graphs with either I or V on the horizontal axis.",
+          "matched_term": "3.4.2 Current–voltage characteristics"
+        }
+      ]
+    },
+    {
+      "title": "Resistivity",
+      "points": [
+        "Use resistivity ρ = RA/L"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 17,
+          "text": "Use resistivity ρ = RA/L.",
+          "matched_term": "3.4.3 Resistivity"
+        }
+      ]
+    },
+    {
+      "title": "Temperature effects and thermistors",
+      "points": [
+        "the qualitative temperature effect on metal resistance and negative-temperature-coefficient thermistors",
+        "thermistors as temperature sensors and interpret resistance-temperature graphs"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 17,
+          "text": "Describe the qualitative temperature effect on metal resistance and negative-temperature-coefficient thermistors.",
+          "matched_term": "3.4.3 Resistivity"
+        },
+        {
+          "page": 17,
+          "text": "Apply thermistors as temperature sensors and interpret resistance-temperature graphs.",
+          "matched_term": "3.4.3 Resistivity"
+        }
+      ]
+    },
+    {
+      "title": "Superconductivity",
+      "points": [
+        "superconductivity below a material-dependent critical temperature and its applications"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 17,
+          "text": "Explain superconductivity below a material-dependent critical temperature and its applications.",
+          "matched_term": "3.4.3 Resistivity"
+        }
+      ]
+    },
+    {
+      "title": "Series and parallel resistance",
+      "points": [
+        "total resistance for series and parallel resistors"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 18,
+          "text": "Calculate total resistance for series and parallel resistors.",
+          "matched_term": "3.4.4 Circuits"
+        }
+      ]
+    },
+    {
+      "title": "Electrical energy and power",
+      "points": [
+        "Use E = IVt and P = IV = I²R = V²/R"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 18,
+          "text": "Use E = IVt and P = IV = I²R = V²/R.",
+          "matched_term": "3.4.4 Circuits"
+        }
+      ]
+    },
+    {
+      "title": "Series and parallel circuit rules",
+      "points": [
+        "Relate current, voltage and resistance in series and parallel circuits, including cells in series and identical cells in parallel"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 18,
+          "text": "Relate current, voltage and resistance in series and parallel circuits, including cells in series and identical cells in parallel.",
+          "matched_term": "3.4.4 Circuits"
+        }
+      ]
+    },
+    {
+      "title": "Charge and energy conservation in circuits",
+      "points": [
+        "conservation of charge and conservation of energy in dc circuits"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 18,
+          "text": "Apply conservation of charge and conservation of energy in dc circuits.",
+          "matched_term": "3.4.4 Circuits"
+        }
+      ]
+    },
+    {
+      "title": "Potential divider principle",
+      "points": [
+        "Use a potential divider to supply a constant or variable potential difference"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 18,
+          "text": "Use a potential divider to supply a constant or variable potential difference.",
+          "matched_term": "3.4.5 Potential divider"
+        }
+      ]
+    },
+    {
+      "title": "Sensor potential dividers",
+      "points": [
+        "variable resistors, thermistors and LDRs in potential-divider circuits",
+        "The potentiometer as a measuring instrument is outside the International AS requirement"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 18,
+          "text": "Apply variable resistors, thermistors and LDRs in potential-divider circuits.",
+          "matched_term": "3.4.5 Potential divider"
+        },
+        {
+          "page": 18,
+          "text": "The potentiometer as a measuring instrument is outside the International AS requirement.",
+          "matched_term": "3.4.5 Potential divider"
+        }
+      ]
+    },
+    {
+      "title": "Emf and internal-resistance equations",
+      "points": [
+        "Define emf ε = E/Q and use ε = I(R + r) for a supply with internal resistance",
+        "the effect of internal resistance on terminal potential difference",
+        "circuit quantities when the internal resistance of the source is not negligible"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 18,
+          "text": "Define emf ε = E/Q and use ε = I(R + r) for a supply with internal resistance.",
+          "matched_term": "3.4.6 Electromotive force and internal resistance"
+        },
+        {
+          "page": 18,
+          "text": "Explain the effect of internal resistance on terminal potential difference.",
+          "matched_term": "3.4.6 Electromotive force and internal resistance"
+        },
+        {
+          "page": 18,
+          "text": "Calculate circuit quantities when the internal resistance of the source is not negligible.",
+          "matched_term": "3.4.6 Electromotive force and internal resistance"
+        }
+      ]
+    },
+    {
+      "title": "Cell practical",
+      "points": [
+        "Evaluate the cell practical by measuring terminal pd against current"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 18,
+          "text": "Evaluate the cell practical by measuring terminal pd against current.",
+          "matched_term": "3.4.6 Electromotive force and internal resistance"
+        }
+      ]
+    },
+    {
+      "title": "Oscillator periods",
+      "points": [
+        "Use T = 2π√(m/k) for a mass-spring system and T = 2π√(l/g) for a simple pendulum"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 19,
+          "text": "Use T = 2π√(m/k) for a mass-spring system and T = 2π√(l/g) for a simple pendulum.",
+          "matched_term": "3.5.1 Oscillating systems"
+        }
+      ]
+    },
+    {
+      "title": "Oscillation energy",
+      "points": [
+        "Relate kinetic, potential and total energy to displacement and time"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 19,
+          "text": "Relate kinetic, potential and total energy to displacement and time.",
+          "matched_term": "3.5.1 Oscillating systems"
+        }
+      ]
+    },
+    {
+      "title": "Damping",
+      "points": [
+        "the effect of damping on oscillations"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 19,
+          "text": "Describe the effect of damping on oscillations.",
+          "matched_term": "3.5.1 Oscillating systems"
+        }
+      ]
+    },
+    {
+      "title": "Simple-harmonic-systems practical",
+      "points": [
+        "Evaluate the required simple-harmonic-systems practical"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 19,
+          "text": "Evaluate the required simple-harmonic-systems practical.",
+          "matched_term": "3.5.1 Oscillating systems"
+        }
+      ]
+    },
+    {
+      "title": "Free and forced vibrations",
+      "points": [
+        "free and forced vibrations"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 19,
+          "text": "Distinguish free and forced vibrations.",
+          "matched_term": "3.5.2 Forced vibrations and resonance"
+        }
+      ]
+    },
+    {
+      "title": "Resonance and damping",
+      "points": [
+        "resonance and how damping changes the sharpness of resonance"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 19,
+          "text": "Explain resonance and how damping changes the sharpness of resonance.",
+          "matched_term": "3.5.2 Forced vibrations and resonance"
+        }
+      ]
+    },
+    {
+      "title": "Resonance applications",
+      "points": [
+        "these ideas to mechanical systems and stationary-wave situations"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 19,
+          "text": "Apply these ideas to mechanical systems and stationary-wave situations.",
+          "matched_term": "3.5.2 Forced vibrations and resonance"
+        }
+      ]
+    },
+    {
+      "title": "Wave quantities and phase",
+      "points": [
+        "Define amplitude, frequency, wavelength, wave speed, phase and phase difference"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 19,
+          "text": "Define amplitude, frequency, wavelength, wave speed, phase and phase difference.",
+          "matched_term": "3.5.3 Progressive waves"
+        }
+      ]
+    },
+    {
+      "title": "Wave speed equation",
+      "points": [
+        "Use c = fλ and f = 1/T"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 19,
+          "text": "Use c = fλ and f = 1/T.",
+          "matched_term": "3.5.3 Progressive waves"
+        }
+      ]
+    },
+    {
+      "title": "Phase difference",
+      "points": [
+        "Measure phase difference in radians, degrees or fractions of a cycle"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 19,
+          "text": "Measure phase difference in radians, degrees or fractions of a cycle.",
+          "matched_term": "3.5.3 Progressive waves"
+        }
+      ]
+    },
+    {
+      "title": "Longitudinal, transverse and energy propagation",
+      "points": [
+        "longitudinal and transverse waves using sound, electromagnetic waves and waves on a string",
+        "Relate particle or field displacement direction to energy propagation; all electromagnetic waves have the same speed in vacuum"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 19,
+          "text": "Distinguish longitudinal and transverse waves using sound, electromagnetic waves and waves on a string.",
+          "matched_term": "3.5.4 Longitudinal and transverse waves"
+        },
+        {
+          "page": 19,
+          "text": "Relate particle or field displacement direction to energy propagation; all electromagnetic waves have the same speed in vacuum.",
+          "matched_term": "3.5.4 Longitudinal and transverse waves"
+        }
+      ]
+    },
+    {
+      "title": "Ultrasound in medicine",
+      "points": [
+        "ultrasound use in medicine"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 19,
+          "text": "Describe ultrasound use in medicine.",
+          "matched_term": "3.5.4 Longitudinal and transverse waves"
+        }
+      ]
+    },
+    {
+      "title": "Polarisation",
+      "points": [
+        "Use polarisation as evidence for transverse waves and apply Polaroid or aerial alignment examples; Malus’s law is not required"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 19,
+          "text": "Use polarisation as evidence for transverse waves and apply Polaroid or aerial alignment examples; Malus’s law is not required.",
+          "matched_term": "3.5.4 Longitudinal and transverse waves"
+        }
+      ]
+    },
+    {
+      "title": "Superposition and stationary-wave formation",
+      "points": [
+        "superposition, nodes, antinodes and stationary waves",
+        "formation from two equal-frequency waves travelling in opposite directions and draw a graphical explanation"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 20,
+          "text": "Explain superposition, nodes, antinodes and stationary waves.",
+          "matched_term": "3.5.5 Principle of superposition of waves and formation of stationary waves"
+        },
+        {
+          "page": 20,
+          "text": "Explain formation from two equal-frequency waves travelling in opposite directions and draw a graphical explanation.",
+          "matched_term": "3.5.5 Principle of superposition of waves and formation of stationary waves"
+        }
+      ]
+    },
+    {
+      "title": "First harmonic on a string",
+      "points": [
+        "Use f = (1/2l)√(T/μ) for the first harmonic on a string"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 20,
+          "text": "Use f = (1/2l)√(T/μ) for the first harmonic on a string.",
+          "matched_term": "3.5.5 Principle of superposition of waves and formation of stationary waves"
+        }
+      ]
+    },
+    {
+      "title": "Stationary-wave applications and harmonics",
+      "points": [
+        "stationary-wave ideas to strings, microwaves and sound, and interpret harmonics"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 20,
+          "text": "Apply stationary-wave ideas to strings, microwaves and sound, and interpret harmonics.",
+          "matched_term": "3.5.5 Principle of superposition of waves and formation of stationary waves"
+        }
+      ]
+    },
+    {
+      "title": "Stationary-wave practical",
+      "points": [
+        "Plan or evaluate experiments varying length, tension and mass per unit length"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 20,
+          "text": "Plan or evaluate experiments varying length, tension and mass per unit length.",
+          "matched_term": "3.5.5 Principle of superposition of waves and formation of stationary waves"
+        }
+      ]
+    },
+    {
+      "title": "Interference, path difference and coherence",
+      "points": [
+        "Use path difference and coherence to explain interference",
+        "laser interference and diffraction and the Young double-slit arrangement"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 20,
+          "text": "Use path difference and coherence to explain interference.",
+          "matched_term": "3.5.6 Interference"
+        },
+        {
+          "page": 20,
+          "text": "Explain laser interference and diffraction and the Young double-slit arrangement.",
+          "matched_term": "3.5.6 Interference"
+        }
+      ]
+    },
+    {
+      "title": "Fringe spacing",
+      "points": [
+        "Use fringe spacing w = λD/s"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 20,
+          "text": "Use fringe spacing w = λD/s.",
+          "matched_term": "3.5.6 Interference"
+        }
+      ]
+    },
+    {
+      "title": "Interference applications and laser safety",
+      "points": [
+        "white-light, sound and electromagnetic-wave interference and state laser safety issues"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 20,
+          "text": "Describe white-light, sound and electromagnetic-wave interference and state laser safety issues.",
+          "matched_term": "3.5.6 Interference"
+        }
+      ]
+    },
+    {
+      "title": "Young's slits and diffraction practical",
+      "points": [
+        "Evaluate the required Young’s-slits and diffraction-grating practical"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 20,
+          "text": "Evaluate the required Young’s-slits and diffraction-grating practical.",
+          "matched_term": "3.5.6 Interference"
+        }
+      ]
+    },
+    {
+      "title": "Single-slit diffraction",
+      "points": [
+        "single-slit diffraction with monochromatic and white light",
+        "how central-maximum width changes with wavelength and slit width"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 20,
+          "text": "Describe single-slit diffraction with monochromatic and white light.",
+          "matched_term": "3.5.7 Diffraction"
+        },
+        {
+          "page": 20,
+          "text": "Explain how central-maximum width changes with wavelength and slit width.",
+          "matched_term": "3.5.7 Diffraction"
+        }
+      ]
+    },
+    {
+      "title": "Transmission gratings",
+      "points": [
+        "Use the plane transmission grating equation d sinθ = nλ and state applications",
+        "The operation of a spectrometer is outside the International AS requirement"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 20,
+          "text": "Use the plane transmission grating equation d sinθ = nλ and state applications.",
+          "matched_term": "3.5.7 Diffraction"
+        },
+        {
+          "page": 20,
+          "text": "The operation of a spectrometer is outside the International AS requirement.",
+          "matched_term": "3.5.7 Diffraction"
+        }
+      ]
+    },
+    {
+      "title": "Refraction and Snell's law",
+      "points": [
+        "Use refractive index n = c/cs and take air as approximately n = 1",
+        "Snell’s law n₁ sin θ₁ = n₂ sin θ₂"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 20,
+          "text": "Use refractive index n = c/cs and take air as approximately n = 1.",
+          "matched_term": "3.5.8 Refraction at a plane surface"
+        },
+        {
+          "page": 20,
+          "text": "Apply Snell’s law n₁ sin θ₁ = n₂ sin θ₂.",
+          "matched_term": "3.5.8 Refraction at a plane surface"
+        }
+      ]
+    },
+    {
+      "title": "Critical angle and total internal reflection",
+      "points": [
+        "Use the critical-angle relation sin θc = n₂/n₁ for total internal reflection"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 20,
+          "text": "Use the critical-angle relation sin θc = n₂/n₁ for total internal reflection.",
+          "matched_term": "3.5.8 Refraction at a plane surface"
+        }
+      ]
+    },
+    {
+      "title": "Optical fibres",
+      "points": [
+        "step-index optical fibres, cladding, material/modal dispersion, pulse broadening and absorption"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 20,
+          "text": "Explain step-index optical fibres, cladding, material/modal dispersion, pulse broadening and absorption.",
+          "matched_term": "3.5.8 Refraction at a plane surface"
+        }
+      ]
+    },
+    {
+      "title": "Excitation and ionisation",
+      "points": [
+        "ionisation and excitation in a fluorescent tube"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 21,
+          "text": "Distinguish ionisation and excitation in a fluorescent tube.",
+          "matched_term": "3.5.9 Collisions of electrons with atoms"
+        }
+      ]
+    },
+    {
+      "title": "Electron volt conversion in atomic collisions",
+      "points": [
+        "Use the electron volt and convert between eV and J"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 21,
+          "text": "Use the electron volt and convert between eV and J.",
+          "matched_term": "3.5.9 Collisions of electrons with atoms"
+        }
+      ]
+    },
+    {
+      "title": "Line spectra and energy-level transitions",
+      "points": [
+        "Interpret line spectra as evidence for discrete energy levels and use hf = E₁ − E₂"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 21,
+          "text": "Interpret line spectra as evidence for discrete energy levels and use hf = E₁ − E₂.",
+          "matched_term": "3.5.9 Collisions of electrons with atoms"
+        }
+      ]
+    },
+    {
+      "title": "Characteristic X-rays",
+      "points": [
+        "characteristic X-rays, medical applications and the basic X-ray tube"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 21,
+          "text": "Describe characteristic X-rays, medical applications and the basic X-ray tube.",
+          "matched_term": "3.5.9 Collisions of electrons with atoms"
+        }
+      ]
+    },
+    {
+      "title": "Photon energy",
+      "points": [
+        "Use the photon model E = hf = hc/λ and the Planck constant"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 21,
+          "text": "Use the photon model E = hf = hc/λ and the Planck constant.",
+          "matched_term": "3.5.10 Photoelectric effect"
+        }
+      ]
+    },
+    {
+      "title": "Threshold frequency and work function",
+      "points": [
+        "threshold frequency using the photon model",
+        "Use work function φ and stopping potential"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 21,
+          "text": "Explain threshold frequency using the photon model.",
+          "matched_term": "3.5.10 Photoelectric effect"
+        },
+        {
+          "page": 21,
+          "text": "Use work function φ and stopping potential.",
+          "matched_term": "3.5.10 Photoelectric effect"
+        }
+      ]
+    },
+    {
+      "title": "Photoelectric equation",
+      "points": [
+        "the photoelectric equation hf = φ + Ek(max)"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 21,
+          "text": "Apply the photoelectric equation hf = φ + Ek(max).",
+          "matched_term": "3.5.10 Photoelectric effect"
+        }
+      ]
+    },
+    {
+      "title": "Electron diffraction",
+      "points": [
+        "Use electron diffraction as evidence that particles have wave properties"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 22,
+          "text": "Use electron diffraction as evidence that particles have wave properties.",
+          "matched_term": "3.5.11 Wave particle duality"
+        }
+      ]
+    },
+    {
+      "title": "Photoelectric evidence for photon behaviour",
+      "points": [
+        "Use the photoelectric effect as evidence that electromagnetic waves have a particulate nature"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 22,
+          "text": "Use the photoelectric effect as evidence that electromagnetic waves have a particulate nature.",
+          "matched_term": "3.5.11 Wave particle duality"
+        }
+      ]
+    },
+    {
+      "title": "de Broglie wavelength",
+      "points": [
+        "the de Broglie equation λ = h/mv and explain how diffraction changes with momentum"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 22,
+          "text": "Apply the de Broglie equation λ = h/mv and explain how diffraction changes with momentum.",
+          "matched_term": "3.5.11 Wave particle duality"
+        }
+      ]
+    },
+    {
+      "title": "Evidence and changing models of matter",
+      "points": [
+        "how evidence changes scientific understanding of matter over time"
+      ],
+      "level_tags": [
+        "AS",
+        "International AS"
+      ],
+      "source_snippets": [
+        {
+          "page": 22,
+          "text": "Describe how evidence changes scientific understanding of matter over time.",
+          "matched_term": "3.5.11 Wave particle duality"
+        }
+      ]
+    }
+  ],
+  "assessments": [
+    {
+      "title": "Unit 1: Mechanics, materials and atoms",
+      "details": [
+        "Content: Sections 3.1-3.3",
+        "Written exam: 2 hours",
+        "80 marks",
+        "50% of International AS; 20% of International A-level",
+        "Section A 50 marks, Section B data analysis/application 16 marks, Section C multiple choice 14 marks"
+      ],
+      "source_snippets": [
+        {
+          "page": 10,
+          "text": "Unit 1: Mechanics, materials and atoms; Written exam: 2 hours; 80 marks",
+          "matched_term": "Unit 1"
+        }
+      ],
+      "code": "PH01",
+      "duration": "2 hours",
+      "marks": "80",
+      "weighting": "50% of AS; 20% of A-level",
+      "route_tags": [
+        "AS",
+        "January",
+        "May/June"
+      ]
+    },
+    {
+      "title": "Unit 2: Electricity, waves and particles",
+      "details": [
+        "Content: Sections 3.4-3.5",
+        "Written exam: 2 hours",
+        "80 marks",
+        "50% of International AS; 20% of International A-level",
+        "Section A 50 marks, Section B data analysis/application 16 marks, Section C multiple choice 14 marks"
+      ],
+      "source_snippets": [
+        {
+          "page": 10,
+          "text": "Unit 2: Electricity, waves and particles; Written exam: 2 hours; 80 marks",
+          "matched_term": "Unit 2"
+        }
+      ],
+      "code": "PH02",
+      "duration": "2 hours",
+      "marks": "80",
+      "weighting": "50% of AS; 20% of A-level",
+      "route_tags": [
+        "AS",
+        "January",
+        "May/June"
+      ]
+    }
+  ],
+  "source": {
+    "provider": "oxfordaqa",
+    "page_url": "https://www.oxfordaqa.com/qualifications/international-as-a-level-physics/",
+    "course_market": "international",
+    "specification_url": "https://www.oxfordaqa.com/wp-content/uploads/2022/08/oxfordaqa-a-level-physics-specification.pdf",
+    "listing_subject": "Physics",
+    "listing_qualification_type": "international_as_a_level",
+    "listing_group_label": "OxfordAQA International AS and A-level",
+    "listing_style_class": null,
+    "specification_sha256": "9e2ab37a44dfcad9f621642d1e28caf43721a8ca7723557f578d38ac2ae80aca",
+    "specification_path": "LOCAL_PATH\\Desktop\\as-physics-handbook\\source\\oxfordaqa-2022-specification.pdf",
+    "extracted_text_path": "LOCAL_PATH\\Desktop\\as-physics-handbook\\source\\oxfordaqa-2022-specification.txt",
+    "downloaded_at": "2026-09-06T14:20:18.577438+00:00",
+    "qualification_family": "OxfordAQA International AS and A-level Physics (9630)",
+    "issue_version": "Version 5.1",
+    "first_teaching": "September 2019 onwards",
+    "first_assessment": "May/June 2020 onwards",
+    "syllabus_year_range": "2027",
+    "selected_exam_year": "2027"
+  },
+  "audience_note": "OxfordAQA International AS-A-levels are modular international qualifications for international students in schools following a British curriculum outside the UK. Unit availability and entry routes should be confirmed locally.",
+  "provider": "oxfordaqa",
+  "qualification_family": "OxfordAQA International AS and A-level Physics (9630)",
+  "selected_exam_year": "2027",
+  "route_tags": [
+    "international",
+    "AS",
+    "2027",
+    "OxfordAQA",
+    "outline-source:llm-analyst",
+    "topic-split:atomic-exam-points"
+  ],
+  "command_words": [
+    "calculate",
+    "determine",
+    "describe",
+    "explain",
+    "estimate",
+    "interpret",
+    "compare",
+    "evaluate",
+    "sketch"
+  ],
+  "assessment_objectives": [
+    "AO1: Demonstrate knowledge and understanding of scientific ideas, processes, techniques and procedures.",
+    "AO2: Apply knowledge and understanding of scientific ideas, processes, techniques and procedures in familiar and unfamiliar contexts.",
+    "AO3: Analyse, interpret and evaluate scientific information, ideas and evidence, including in different forms.",
+    "AO4: Select, describe and evaluate scientific procedures."
+  ]
+}

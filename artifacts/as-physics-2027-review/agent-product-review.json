@@ -1,0 +1,33 @@
+{
+  "schema_version": "v0.7-llm-html-review-ledger",
+  "reviewer_type": "llm",
+  "html_opened_and_visually_inspected": true,
+  "complete_html_reviewed": true,
+  "reviewed_html_sha256": "4264385f0bfc4f4ea8dd0714803823d0aac32a598fc66ffef4d98ad3033d3b94",
+  "render_snapshot_id": "309f262141e886027dfe8023cfce5977c833c0fc7a01121f757793fa8559a850",
+  "review_ledger_index_sha256": "c6840f091decd960850f373ad12d8410e757e3399027adee7260e61a434981b3",
+  "review_iteration": 3,
+  "html_review_passed": true,
+  "machine_validation_used_only_as_supporting_evidence": true,
+  "repair_loop_completed": true,
+  "issues_found": [],
+  "repairs_made": [
+    "Rebound the current HTML to the current guide plan and render snapshot.",
+    "Replaced the Density visual prompt exponent with print-ready kg m⁻³ notation.",
+    "Removed print-only forced page breaks from infographic figures and rebuilt the embedded runtime Wheel; rechecked desktop, mobile, and print-media layout."
+  ],
+  "unresolved_fixable_issues": [],
+  "decision": "approved",
+  "reviewed_topic_count": 94,
+  "reviewed_visual_count": 94,
+  "evidence_locations": [
+    "qa/desktop-top.png",
+    "qa/desktop-full.png",
+    "qa/desktop-topic071.png",
+    "qa/desktop-topic094.png",
+    "qa/mobile-top.png",
+    "qa/mobile-topic071.png",
+    "qa/full-review-current/topics-current-01.jpg through topics-current-12.jpg",
+    "qa/full-review-current/visuals-current-01.jpg through visuals-current-12.jpg"
+  ]
+}
