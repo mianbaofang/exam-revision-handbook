@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.9.0 - 2026-11-14
+
+### Release correction and doctor line-ending parity - 2026-11-14
+
+- Release correction: the `v0.8.0` tag was cut before the doctor-identity,
+  `source_container_title`, evidence fail-closed, and CI-order commits landed,
+  while the 0.8.0 changelog section below already described them and the
+  shipped `exam-revision-handbook-v0.8.0.zip` was built from the earlier tree
+  (SHA-256 `610fd813…`). Everything listed under 0.8.0 plus the fix below ships
+  in this release; users who installed the v0.8.0 ZIP should upgrade to v0.9.0.
+- Fixed `doctor.py` source↔wheel payload comparison: text payloads are
+  normalized (CRLF/CR → LF) before byte comparison so a Windows-built wheel no
+  longer reports every text file as "changed"; binary payloads stay byte-exact,
+  and a regression test covers the normalization.
+- Added the verified `npx skills add mianbaofang/exam-revision-handbook`
+  install line to both READMEs.
+
 ## 0.8.0 - 2026-11-13
 
 ### Local Candidate Review - 2026-11-13

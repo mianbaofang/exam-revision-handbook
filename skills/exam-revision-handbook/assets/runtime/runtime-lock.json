@@ -2,9 +2,9 @@
   "schema_version": "v1-packaged-runtime-lock",
   "engine": {
     "distribution": "exam-revision-handbook",
-    "version": "0.8.0",
-    "file": "exam_revision_handbook-0.8.0-py3-none-any.whl",
-    "sha256": "4115686945254b6cc53dab982cf74970368651e14ada1586f1d933a4f756a13b",
+    "version": "0.9.0",
+    "file": "exam_revision_handbook-0.9.0-py3-none-any.whl",
+    "sha256": "a6e5801ab7e6381cdcea324a328760f3b3858f9cc31e85c5e204bc336630d365",
     "module": "intl_exam_guide"
   },
   "python": {

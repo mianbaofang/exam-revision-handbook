@@ -1,9 +1,9 @@
 {
   "name": "exam-revision-handbook",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "owner": "Ethan",
   "license": "MIT",
-  "updated_at": "2026-11-13",
+  "updated_at": "2026-11-14",
   "canonical_path": "skills/exam-revision-handbook",
   "status": "active",
   "maturity_tier": "governed",

@@ -53,12 +53,12 @@ npx skills add mianbaofang/exam-revision-handbook
 Preview or install with GitHub CLI:
 
 ```bash
-gh skill preview mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.8.0
-gh skill install mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.8.0 --agent universal --scope user
+gh skill preview mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.9.0
+gh skill install mianbaofang/exam-revision-handbook skills/exam-revision-handbook@v0.9.0 --agent universal --scope user
 ```
 
 The standalone install asset is the official
-[v0.8.0 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.8.0/exam-revision-handbook-v0.8.0.zip).
+[v0.9.0 Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.9.0/exam-revision-handbook-v0.9.0.zip).
 GitHub's source archive is a repository snapshot, not the Skill installer.
 Hosts that need an explicit file should use:
 [`skills/exam-revision-handbook/SKILL.md`](skills/exam-revision-handbook/SKILL.md).
@@ -216,7 +216,7 @@ https://github.com/mianbaofang/exam-revision-handbook
 ```
 
 Download the ready-to-use
-[v0.8.0 standard Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.8.0/exam-revision-handbook-v0.8.0.zip).
+[v0.9.0 standard Skill ZIP](https://github.com/mianbaofang/exam-revision-handbook/releases/download/v0.9.0/exam-revision-handbook-v0.9.0.zip).
 
 Then ask:
 
@@ -533,7 +533,7 @@ python scripts\run_runtime.py -- generate --query chemistry --level igcse --out 
 
 The CLI is for fetching official source material and writing `qualification.json`, `syllabus-evidence.json`, and `source/`. A real teaching handbook still requires Mode 1: an LLM Analyst outline, Writer-authored concepts/visual decisions, rendered HTML, repeated visible LLM review until approval, and gated PDF export afterward.
 
-GitHub `main`, its `v0.8.0` tag, and the attached Skill ZIP are the same current
+GitHub `main`, its `v0.9.0` tag, and the attached Skill ZIP are the same current
 standard Skill release. There is no separate source edition or install
 edition. Contributors changing its Python engine can use
 `pip install -e ".[dev]"`; the ZIP runs the pinned engine from
@@ -648,7 +648,7 @@ See [DISCLAIMER.md](DISCLAIMER.md) and [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md
 
 ## Status
 
-Current Skill version: `v0.8.0`. The Skill is public-ready as a framework for
+Current Skill version: `v0.9.0`. The Skill is public-ready as a framework for
 source-backed handbook generation. An individual handbook is final-ready only
 after its own complete LLM HTML review is recorded in
 `agent-product-review.json` and `review-ledger/`, the exact HTML passes the hash
