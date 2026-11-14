@@ -70,8 +70,15 @@ published GitHub Release assets.
 
 ## Publication
 
-- Do not push, tag, publish, or create a Release unless the user explicitly
-  requests it.
+- The maintainer has explicitly requested routine GitHub source synchronization: follow the standing synchronization policy below after validating authorized work. Tags, Releases, release-asset replacement, and registry publication still require an explicit release request.
 - Release attachments are only the versioned Skill ZIP and its
   checksum file unless the user explicitly changes that policy.
 - GitHub source archives are not substitutes for the installable Skill ZIP.
+
+## GitHub Synchronization
+
+- Standing maintainer instruction: after completing and validating an authorized change, commit the task's source, documentation, and tests, then push to the canonical GitHub branch. Do not leave completed work only in the local working tree unless the user explicitly requests local-only work or a concrete blocker prevents synchronization.
+- Fetch before committing; preserve unrelated edits and review remote divergence. Never discard work or force-push to make branches match.
+- Keep generated outputs, private data, secrets, local review reports, and release scratch files out of commits. Stage explicit task paths rather than blindly adding the entire working tree.
+- Verify the remote branch SHA matches the local commit after pushing. Report the branch, commit, and any remaining unpushed work or synchronization blocker.
+- Source synchronization does not itself authorize a new tag, GitHub Release, overwritten release asset, or package-registry publication. Keep unreleased behavior labeled accurately and report release-channel status separately.

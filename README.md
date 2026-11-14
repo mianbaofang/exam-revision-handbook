@@ -5,10 +5,6 @@ revision guides. It retrieves official AQA, Edexcel, CAIE, and College Board
 requirements, turns them into teachable handbooks, reviews the complete HTML,
 and exports PDF only after approval.**
 
-This is an **AI exam revision handbook** and **GCSE revision AI Agent Skill**
-for source-backed IGCSE and **A-Level revision handbook** workflows, plus AP
-study guides.
-
 <table align="center"><tr><td><a href="https://github.com/mianbaofang/exam-revision-handbook/releases/latest"><img src="https://img.shields.io/github/v/release/mianbaofang/exam-revision-handbook?style=flat-square&amp;label=release" alt="Latest release"></a></td><td><a href="https://github.com/mianbaofang/exam-revision-handbook/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/mianbaofang/exam-revision-handbook/ci.yml?branch=main&amp;style=flat-square&amp;label=tests" alt="CI status"></a></td><td><a href="LICENSE"><img src="https://img.shields.io/github/license/mianbaofang/exam-revision-handbook?style=flat-square" alt="MIT license"></a></td><td><a href="https://github.com/mianbaofang/exam-revision-handbook/stargazers"><img src="https://img.shields.io/github/stars/mianbaofang/exam-revision-handbook?style=flat-square" alt="GitHub stars"></a></td><td><a href="https://skills.sh/mianbaofang/exam-revision-handbook"><img src="https://skills.sh/b/mianbaofang/exam-revision-handbook" alt="skills.sh install count"></a></td></tr></table>
 
 <p align="center">
@@ -84,6 +80,20 @@ Install this Skill, then create an AQA International GCSE Chemistry revision han
 AS and A2 are stages within A-Level. Other curricula and exam boards do not
 have automatic source acquisition; manual imports remain experimental.
 
+## From installation to delivery
+
+> The doctor recovery hints below are unreleased source improvements. The published v0.9.0 teaching and approval workflow is unchanged.
+
+**Installation takes one command; a complete handbook needs source checks, writing, visual review and a full HTML review.** The first conversation collects board, qualification/stage, market, subject, year, language, style, visual capability, workflow mode, batch and output directory. Nothing is downloaded or generated until preflight is complete.
+
+| Stage | Result | Next step |
+|---|---|---|
+| Source preparation | Official documents and page evidence | Agent decomposes requirements and writes content |
+| HTML draft | Readable, printable handbook | Review every Topic / Visual and repair issues |
+| Approved delivery | PDF bound to the current review hashes | Verify the delivery record |
+
+Runtime trouble? `doctor` now lists status and the next command. It checks runtime integrity, never teaching quality. See [first use and recovery](docs/FIRST_RUN.md).
+
 ## Why This Skill Exists
 
 This project did not start as "a tool." It started with a real child moving through a difficult transition.
@@ -118,6 +128,9 @@ request but still uses the official Cambridge International catalogue. Other
 curriculum systems or exam boards cannot use automatic acquisition. Manual PDF
 import outside the supported routes is an unverified compatibility path and
 may fail with unknown parsing, extraction, metadata, or rendering errors.
+
+<details>
+<summary>What This Project Is</summary>
 
 ## What This Project Is
 
@@ -206,6 +219,11 @@ v0.7 status words are intentionally conservative:
   release. No current route should be called certified unless the
   release-evidence manifest says so.
 
+</details>
+
+<details>
+<summary>Detailed Usage</summary>
+
 ## Detailed Usage
 
 Most users do not need to install Python or run commands. Give this Skill link
@@ -263,6 +281,11 @@ handbook is generated, the Agent reports how many complex infographics are
 needed, runs or imports the confirmed route when available, and clearly marks
 any unresolved complex visuals as not yet reviewed.
 
+</details>
+
+<details>
+<summary>What It Produces</summary>
+
 ## What It Produces
 
 ```text
@@ -276,7 +299,7 @@ outputs/chemistry-9202/
   guide-plan.json            topic, example, and revision-task plan
   qualification.json         qualification and source metadata
   validation.json            quality-check report
-  final-review-packet.json   Agent/LLM final review evidence
+  final-review-packet.json   supporting diagnostics, not approval
   agent-product-review.json  active Agent product-review and repair evidence
   current-render.json        explicit current HTML/render snapshot pointer
   review-ledger/             hash-bound per-Topic, per-Visual, and holistic LLM review
@@ -333,6 +356,11 @@ download sources, discover providers, split the syllabus, write content, choose
 visuals, render HTML, or generate PDF until the form is complete. A configured
 image provider is not proof that the user supplied an external visual route.
 
+</details>
+
+<details>
+<summary>View four sets of teaching pages (preview evidence, not approval of a new run)</summary>
+
 ## Preview
 
 ### OxfordAQA IGCSE Biology
@@ -375,9 +403,9 @@ image provider is not proof that the user supplied an external visual route.
   </tr>
 </table>
 
-These are pages from four independently reviewed, current handbooks. They
-demonstrate layout and visual teaching quality; they do not limit the supported
-subjects or certify every subject in the source catalogues.
+These committed sample pages show layout and visual teaching examples. They are preview evidence, not approval of a new run or certification of every supported subject.
+
+</details>
 
 ## Supported Curriculum Sources
 
@@ -398,6 +426,9 @@ is a source-workflow support claim, not a claim that every subject already has
 a final-ready handbook sample. Other systems have no automatic acquisition
 support; manual imports remain unverified and may encounter unknown
 compatibility errors.
+
+<details>
+<summary>Visuals And Writing Styles</summary>
 
 ## Visuals And Writing Styles
 
@@ -458,6 +489,8 @@ figure contract: define the claim, labels, source evidence, and review risk
 before approving an asset. This is documentation guidance, not a runtime
 dependency.
 
+</details>
+
 ## Language Policy
 
 The handbook body is always English because the exams themselves are in
@@ -479,6 +512,9 @@ Version-by-version update notes live in
 [GitHub Releases](https://github.com/mianbaofang/exam-revision-handbook/releases)
 and [CHANGELOG.md](CHANGELOG.md). The README stays focused on what the Skill
 does and how users run it.
+
+<details>
+<summary>Developer Quick Start</summary>
 
 ## Developer Quick Start
 
@@ -548,6 +584,11 @@ python -m compileall -q src tests scripts
 python scripts/scan_for_raw_keys.py . ./outputs
 ```
 
+</details>
+
+<details>
+<summary>Mechanical Quality Metrics</summary>
+
 ## Mechanical Quality Metrics
 
 Version 0.4+ includes a quality metrics system for repeatable diagnostics such
@@ -593,6 +634,11 @@ else:
 See [docs/ACCURACY_POLICY.md](docs/ACCURACY_POLICY.md) for the boundary between
 mechanical diagnostics and handbook approval.
 
+</details>
+
+<details>
+<summary>Repository Layout</summary>
+
 ## Repository Layout
 
 ```text
@@ -622,6 +668,8 @@ tests/            tests and regression samples
 ```
 
 See [PROJECT.md](PROJECT.md) before maintaining or handing off the repository.
+
+</details>
 
 ## Safety And Source Policy
 

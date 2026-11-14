@@ -406,7 +406,7 @@ def main() -> int:
         )
         if args.deep:
             if not ready:
-                raise RuntimeError("isolated runtime is not bootstrapped; run scripts/bootstrap_runtime.py")
+                raise RuntimeError("isolated runtime is not bootstrapped; run: python scripts/bootstrap_runtime.py")
             result = subprocess.run(
                 [str(runtime_python(root)), "-m", str(lock["engine"]["module"]), "--help"],
                 check=False,
@@ -431,7 +431,11 @@ def main() -> int:
         AttributeError,
         json.JSONDecodeError,
     ) as exc:
-        print_json({"ok": False, "checks": checks, "error": str(exc)})
+        print_json({"ok": False, "checks": checks, "error": str(exc),
+                    "next_actions": (["python scripts/bootstrap_runtime.py", "python scripts/doctor.py --deep"]
+                                     if any(check.get("status") == "bootstrap-required" for check in checks)
+                                     else ["python scripts/doctor.py --static",
+                                           "See references/runtime-contract.md; restore missing or mismatched package files before retrying."])})
         return 2
     ok = all(check["status"] in {"pass", "skipped"} for check in checks)
     print_json(
@@ -439,6 +443,10 @@ def main() -> int:
             "ok": ok,
             "mode": "static" if args.static else ("deep" if args.deep else "integrity"),
             "checks": checks,
+            "runtime_status": "ready" if ready else "bootstrap-required",
+            "next_actions": ([] if ready or args.static else [
+                "python scripts/bootstrap_runtime.py", "python scripts/doctor.py --deep"]),
+            "scope": "Runtime integrity only; not handbook content or HTML approval.",
         }
     )
     return 0 if ok else 1

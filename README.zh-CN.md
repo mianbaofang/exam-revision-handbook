@@ -78,6 +78,20 @@ https://github.com/mianbaofang/exam-revision-handbook
 AS 和 A2 是 A-Level 内部阶段。其他课程体系和考试局不能自动获取官方大纲；手动导入
 仍是实验性兼容路径。
 
+## 从安装到交付
+
+> 下述 doctor 恢复提示是当前源码中的待发布改进；已发布 v0.9.0 的教学与审核流程不变。
+
+**安装只需一行；完整手册需要资料核对、内容编写、图示审查和逐项 HTML 审核。**首次对话会一次收齐考试局、课程/阶段、市场、科目、年份、语言、风格、图像能力、工作模式、批次和输出目录；未确认前不下载资料或生成内容。
+
+| 阶段 | 你能拿到什么 | 下一步 |
+|---|---|---|
+| 来源准备 | 官方资料及逐页证据 | Agent 拆分考点、编写内容 |
+| HTML 草稿 | 可读、可打印的手册 | 完整审阅所有 Topic / Visual 并修复 |
+| 审核后的交付 | 与当前审核哈希匹配的 PDF | 核对交付记录 |
+
+运行环境有问题时，`doctor` 会列出状态和下一条命令。它只检查运行环境完整性，不能批准教学内容。参阅 [首次使用与故障恢复](docs/FIRST_RUN.md)。
+
 ## 为什么要做这个 Skill
 
 这个项目最早不是为了做一个“工具”，而是为了帮一个真实的孩子轻一点地走过转轨期。
@@ -137,6 +151,9 @@ CLI 只是框架调试和草稿 fallback。直接运行 `python scripts/run_runt
 
 这套流程面向四个来源体系统一设计：先把官方 PDF 生成 Markdown companion 和 page-level evidence，让 Analyst 同时读两份输入判断结构并保留页码证据，再围绕当前 topic/source points 写出已复查的概念解释，生成例题、图文学习单元、复习题和 PDF。
 
+<details>
+<summary>详细使用方法</summary>
+
 ## 详细使用方法
 
 普通用户不需要安装 Python，也不需要看懂代码。把下面这个 Skill 链接发给你的
@@ -175,6 +192,11 @@ https://github.com/mianbaofang/exam-revision-handbook
 
 注意：不需要在一开始选择具体生图模型，但第一次预检必须先回答“本次是否有可调用的外部生图 Skill 或工具”。在得到明确回答前，Agent 不得下载来源、写手册或默认使用本地生图。等每个 topic 的配图决策完成后，再报告实际需要生成或复核的复杂视觉 ID。
 如果你有可调用的生图 API、Skill、脚本或已经生成好的图片目录，Writer 必须在确实有学习增益的 topic 使用视觉，并优先调用已确认的外部信息图路线，而不是退回简单线条 SVG；如果用户明确要求尽量不用 SVG，这一偏好就是本次运行的硬约束，图表、电路、波形和关系图也默认走外部生图并在复核时检查坐标轴、符号、单位、箭头和拓扑。如果没有外部路线，复杂信息图应保留为待生成/待复核任务，不得静默降级。SVG 只允许用于 `svg_fit="exact"` 且已复核的精确图，或有单独记录的、外部生图会造成不可接受语义风险的最后例外。
+
+</details>
+
+<details>
+<summary>会生成什么</summary>
 
 ## 会生成什么
 
@@ -219,6 +241,11 @@ outputs/chemistry-9202/
 
 只有 candidate 证据的路线不能说成交付级。如果 `concepts/concept_jobs.json` 里还有未导入的概念解释，或复杂信息图还 pending，这份手册只能算 draft。
 
+</details>
+
+<details>
+<summary>查看四套教学页面样例（不代表新运行已通过审核）</summary>
+
 ## 效果预览
 
 ### OxfordAQA IGCSE Biology
@@ -261,8 +288,9 @@ outputs/chemistry-9202/
   </tr>
 </table>
 
-这些页面来自四份分别完成拆纲、写作、配图、HTML 审查和 PDF 导出的当前手册，
-用于展示版式与图文教学效果；它们不代表项目只支持这四门课，也不等于所有目录科目都已认证。
+这些已提交的页面展示四套手册的排版与图文教学样例。它们是预览证据，不代表新运行已经通过当前协议的完整审核，也不代表所有支持科目均获认证。
+
+</details>
 
 ## 课程来源支持范围
 
@@ -290,6 +318,9 @@ v0.6 使用四个状态词：
 - `draft`：有当前输出，但概念、图片、PDF、validation 或自查仍有阻塞。
 - `final-ready`：当前证据显示这份手册已完成自己的全量 LLM HTML 审查，准确 topic/视觉覆盖和 HTML 哈希已记录，并通过 PDF 导出门禁；validation、概念和资产状态也没有阻塞。
 - `certified`：在 final-ready 之上，又经过发布负责人或熟悉学科的人确认；除非证据 manifest 明确记录，否则不要称为 certified。
+
+<details>
+<summary>图文与讲解风格</summary>
 
 ## 图文与讲解风格
 
@@ -321,6 +352,8 @@ v0.6 使用四个状态词：
 
 设计参考说明：讲解文字的反模板腔检查借鉴了 `qiaomu-novel-generator` 里的 anti-AI language gate 思路。SVG 复核规则采用 figure contract 的原则：先写清楚图要解释的 claim、标签、来源依据和误导风险，再决定是否批准资产。这只是文档约束，不是运行时依赖。
 
+</details>
+
 ## 语言策略
 
 手册正文始终使用英文，因为考试本身是英文。生成前选择的是“术语辅助语言”，不是“整本手册翻译语言”：
@@ -334,6 +367,9 @@ v0.6 使用四个状态词：
 
 版本更新说明统一放在 [GitHub Releases](https://github.com/mianbaofang/exam-revision-handbook/releases)
 和 [CHANGELOG.md](CHANGELOG.md)。中文 README 只保留项目定位、使用方式和核心生成流程。
+
+<details>
+<summary>开发者快速开始</summary>
 
 ## 开发者快速开始
 
@@ -366,6 +402,11 @@ python -m compileall -q src tests scripts
 python scripts/scan_for_raw_keys.py . ./outputs
 ```
 
+</details>
+
+<details>
+<summary>目录结构</summary>
+
 ## 目录结构
 
 ```text
@@ -394,6 +435,8 @@ tests/            测试与回归样例
 ```
 
 维护或交接项目前，请先阅读 [PROJECT.md](PROJECT.md)。
+
+</details>
 
 ## 安全与来源边界
 

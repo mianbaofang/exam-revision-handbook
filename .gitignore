@@ -35,3 +35,7 @@ artifacts/as-physics-2027-review/*
 as-physics-contact-sheet-all.png
 artifacts/as-physics-2027-review/syllabus-evidence.json
 artifacts/as-physics-2027-review/delivery-contract.json
+
+# Local release-build artifacts (published via Releases, not source commits)
+/exam-revision-handbook-v*.zip
+/exam-revision-handbook-v*.sha256

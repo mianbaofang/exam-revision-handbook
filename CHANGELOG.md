@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — 2026-11-14
+
+- Record the maintainer’s standing GitHub synchronization workflow in `AGENTS.md`: validate, commit task files, push the canonical branch, and verify the remote SHA; keep release publication separate.
+
+Prune dependency/cache trees in the redacted key scan while retaining user config and explicit-file checks; fail missing/unreadable scan roots. Add runtime-status/recovery guidance to doctor and synchronize the installed adapter. Improve bilingual README navigation and first-use documentation. No teaching engine or approval-contract change.
+
 ## 0.9.0 - 2026-11-14
 
 ### Release correction and doctor line-ending parity - 2026-11-14
